@@ -1,0 +1,30 @@
+{
+  "name": "cooper",
+  "version": "1.0.0",
+  "description": "get cooped with cooper",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node -r esm src/index.js"
+  },
+  "engines": {
+    "node": "12.x",
+    "npm": "6.x"
+  },
+  "author": "x",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.3.1",
+    "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
+    "esm": "^3.2.25"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev0ps221/cooper.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/dev0ps221/cooper/issues"
+  },
+  "homepage": "https://thecoop.group"
+}
