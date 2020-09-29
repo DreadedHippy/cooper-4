@@ -1,6 +1,6 @@
 import CoopCommand from '../core/classes/coopCommand';
 
-export default class RedeemCommand extends Command {
+export default class RedeemCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
@@ -24,17 +24,11 @@ export default class RedeemCommand extends Command {
 	async run(msg, { user }) {
 		super.run(msg);
 
-		
+		// Check user is not already a member.
 
-		if (user) {
-			try {
-				if (msg.channel.type !== 'dm') await msg.reply('Redeeeeeeeeeeeeemed.');
-				await msg.direct('You have been approved for The Coop, and now have full access as a member!');
-				
-			} catch(err) {
-				console.log('Unable to send user approval DM.')
-			}
-		}
+		// Create redemption embed, with democratic vote.
+
+		// Save offer to database
     }
     
 };
