@@ -1,20 +1,22 @@
-import { Command } from 'discord.js-commando';
+import CoopCommand from '../core/classes/coopCommand';
 
-export default class HelpCommand extends Command {
+export default class AboutCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
-			name: 'help',
+			name: 'about',
 			group: 'util',
-			memberName: 'help',
+			memberName: 'about',
 			aliases: [],
-			description: 'Help will always be granted at The Coop to those who ask for it.',
+			description: 'Information about our fine community!',
 			details: `Details`,
-			examples: ['help', 'help prefix'],
+			examples: ['about', 'about example?'],
 		});
 	}
 
 	async run(msg) {
+		super.run(msg);
+		
         try {
             await msg.direct('DM ;)');
             if (msg.channel.type !== 'dm') await msg.reply('Sent you a DM with information.');
