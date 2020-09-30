@@ -1,0 +1,1 @@
+// Currently, you have 0/${reqVotes} required votes.
