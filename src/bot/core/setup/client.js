@@ -6,7 +6,11 @@ export default () => {
 
     client.registry
         .registerGroups([ 
-            ['util', 'Utility and assistance commands.'] 
+            ['util', 'Utility and assistance commands.'],
+            ['community', 'Community related commands.'],
+            ['misc', 'Miscellaneous commands.'],
+            ['mod', 'Moderation commands.'],
+            ['info', 'Information commands.']
         ])
         .registerDefaultTypes()
         .registerCommandsIn(path.join(__dirname, '../../commands'));

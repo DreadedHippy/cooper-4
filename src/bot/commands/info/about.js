@@ -1,11 +1,11 @@
-import CoopCommand from '../core/classes/coopCommand';
+import CoopCommand from '../../core/classes/coopCommand';
 
 export default class AboutCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
 			name: 'about',
-			group: 'util',
+			group: 'info',
 			memberName: 'about',
 			aliases: [],
 			description: 'Information about our fine community!',

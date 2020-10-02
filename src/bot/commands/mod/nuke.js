@@ -1,5 +1,5 @@
-import CoopCommand from '../core/classes/coopCommand';
-import STATE from '../state';
+import CoopCommand from '../../core/classes/coopCommand';
+import STATE from '../../state';
 
 
 const endNuking = () => {
@@ -12,7 +12,7 @@ export default class NukeCommand extends CoopCommand {
 	constructor(client) {
 		super(client, {
 			name: 'nuke',
-			group: 'util',
+			group: 'mod',
 			memberName: 'nuke',
 			aliases: [],
 			description: 'Information nuke our fine community!',

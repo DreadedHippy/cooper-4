@@ -5,7 +5,7 @@ export default class HelpCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'help',
-			group: 'util',
+			group: 'info',
 			memberName: 'help',
 			aliases: [],
 			description: 'Help will always be granted at The Coop to those who ask for it.',
