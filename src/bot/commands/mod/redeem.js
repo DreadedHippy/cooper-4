@@ -11,11 +11,20 @@ const votingDuration = 5;
 const forEmoji = '🕊️';
 const againstEmoji = '⚔️';
 
-// const collectionDuration = 60 * votingDuration * 1000;
+const collectionDuration = 60 * votingDuration * 1000;
+
+
+const getRoles = (guild, rolesSelection) => guild.roles.cache.filter(r => rolesSelection.includes(r.name));
 
 const membersPings = (membersCollection) => {
 	return membersCollection.map(member => `<@${member.user.id}>`).join(', ');
 }
+
+const memberHasSomeOfRoleNames = (guild, member, roleNames) => {
+	return guild.roles.cache
+		.filter(role => roleNames.includes(role.name))
+		.some(role => member.roles.cache.has(role.id));
+};
 
 const getOnlineMembersByRoles = (guild, roleNames) => {
 	const notificiationRoles = guild.roles.cache.filter(role => roleNames.includes(role.name));
@@ -73,8 +82,7 @@ const trackVoting = (msg, member, requiredVotes) => {
 		return false;
 	};
 
-	// const collectionDuration = 60 * votingDuration * 1000;
-	const collectionDuration = 16000;
+
 	const collector = msg.createReactionCollector(filter, { time: collectionDuration });
 
 	collector.on('collect', (reaction, user) => {
@@ -83,7 +91,7 @@ const trackVoting = (msg, member, requiredVotes) => {
 
 		reaction.message.channel.send(
 			noWhiteSpace`
-				<@${user.id}> just voted on the fate of a soul, hope it wasn't yours!` + `\n\n` +
+				${user.username} voted!` + `\n\n` +
 				
 				noWhiteSpace`${reaction.emoji.name} 
 					<@${member.user.id}> now has ${results.yes}/${adjustedReq} of the necessary votes required for membership.
@@ -110,19 +118,21 @@ const trackVoting = (msg, member, requiredVotes) => {
 		// Respond to election result.
 		const won = results.yes >= adjustedReq;
 
-		setTimeout(() => { msg.channel.send('Hmm...'); }, 500);
-		setTimeout(() => { 
-			msg.channel.send(`Hmmmm...... Looks like you ${won ? 'won' : 'lost'}.`); 
+		msg.channel.send(`Hmmmm...... Looks like you ${won ? 'won' : 'lost'}.`); 
 
-			if (won) {
-				// CTA for winning
-				msg.channel.send('<:coop:725006245999935610>'.repeat(5));
+		if (won) {
+			// CTA for winning
+			msg.channel.send('<:coop:725006245999935610>'.repeat(5));
 
-				// Display result.
-				member.roles.add(msg.guild.roles.find(r => r.name === 'member :yellow_heart:'));
-				
-			} else member.roles.add(msg.guild.roles.find(r => r.name === 'business :briefcase:'));
-		}, 1000);
+			// Display result.
+			const newMemberRoles = getRoles(msg.guild, ['member 💛‍', 'beginner 🥚', 'announcement-subscriber']);
+			member.roles.add(newMemberRoles);
+			
+		} else {
+			// Kick the person out with a warning.
+			msg.channel.send('From our community, you have been rejected. Do not feel disrespected, you will now be ejected.');
+
+		}
 	});
 }
 
@@ -185,55 +195,57 @@ export default class RedeemCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
+			// Check person issuing command is a leader or commander.
+			const authorMember = msg.channel.guild.members.cache.find(member => member.id === msg.author.id);
+
+			const isAuthorised = memberHasSomeOfRoleNames(msg.guild, authorMember, ['⚔️.  leader', '👑.  commander']);
+			if (!isAuthorised) return msg.say(':no_entry_sign: You can\'t touch this. :no_entry_sign:');
+
+
 			// Check user is not already a member.
 			const member = msg.channel.guild.members.cache.find(member => member.id === user.id);
+			if (!member) return msg.reply(`User can't be foooooound.`);
 
-			if (member) {
-				const isMember = member.roles.cache.find(role => role.id === ROLES.MEMBER.id);
-				if (isMember) msg.reply(`Have you lost your cluckin' mind? ${user.username} is already approved.`);
-				else {
-					const totalMembers = msg.channel.guild.members.cache.filter(member => !member.user.bot).size; 
-					const reqVotes = Math.floor(totalMembers * 0.025);
+			const isMember = member.roles.cache.find(role => role.id === ROLES.MEMBER.id);
+			if (isMember) return msg.reply(`Have you lost your cluckin' mind? ${user.username} is already approved.`);
 
-					// Send offer embed
-					const embedMessage = await handleRedemptionEmbed(msg, user, reqVotes);
+			const totalMembers = msg.channel.guild.members.cache.filter(member => !member.user.bot).size; 
+			const reqVotes = Math.floor(totalMembers * 0.025);
 
-					const pollLink = MessagesHelper.link(embedMessage);
+			// Send offer embed
+			const embedMessage = await handleRedemptionEmbed(msg, user, reqVotes);
 
-					// Add message to feed/chat/spam
-					// const channelSelection = [CHANNELS.FEED.id, CHANNELS.TALK.id, CHANNELS.SPAM.id];
-					// member.guild.channels.cache
-					// 	.filter((channel) => channelSelection.includes(channel.id))
-					// 	.map(async (channel, index) => { 
-					// 		const jokeIntro = await channel.send(':egg: :cloud_lightning: How egg-citing, a new redemption opportunity appears.');
-					// 		setTimeout(() => { 
-					// 			jokeIntro.delete();
-					// 			channel.send(`<:coop:725006245999935610> Will you allow ${user.username} into The Coop? :scroll: Please vote here:\n ${pollLink}`);
-					// 		}, 2000 * index);
-					// 	});
+			const pollLink = MessagesHelper.link(embedMessage);
+
+			// Add message to feed/chat/spam
+			const channelSelection = [CHANNELS.FEED.id, CHANNELS.TALK.id, CHANNELS.SPAM.id];
+			member.guild.channels.cache
+				.filter((channel) => channelSelection.includes(channel.id))
+				.map(async (channel, index) => { 
+					const jokeIntro = await channel.send(':egg: :cloud_lightning: How egg-citing, a new redemption opportunity appears.');
+					setTimeout(() => { 
+						jokeIntro.delete();
+						channel.send(`<:coop:725006245999935610> Will you allow ${user.username} into The Coop? :scroll: Please vote here:\n ${pollLink}`);
+					}, 2000 * index);
+				});
 
 
-					// Ping all online mob/are-very-social users
-					// const membersToNotify = getOnlineMembersByRoles(msg.channel.guild, ['themob', 'are-very-social']);
-					// await msg.say(
-					// 	membersPings(membersToNotify) + noWhiteSpace`Scramble! All **active** __mob__ and __very-social__ members, 
-					// 	you're needed for a potential redemption! 
-					// 	A finite determination of infinity, 
-					// 	may now be further determined by its own negation.`
-					// );
+			// Ping all online mob/are-very-social users
+			const membersToNotify = getOnlineMembersByRoles(msg.channel.guild, ['themob', 'are-very-social']);
+			await msg.say(
+				membersPings(membersToNotify) + noWhiteSpace`Scramble! All **active** __mob__ and __very-social__ members, 
+				you're needed for a potential redemption! 
+				A finite determination of their infinity, 
+				may now be further determined by its own negation.`
+			);
 
-					// Track the poll voting.
-					// trackVoting(embedMessage, member, reqVotes);
+			// Track the poll voting.
+			trackVoting(embedMessage, member, reqVotes);
 
-					// Send poll link (DM) to one being considered and all active leaders.
-					const server = STATE.CLIENT.guilds.cache.find(guild => guild.id === msg.channel.guild.id);
-					console.log(server);
-					console.log(server.users);
-					if (server) server.users.cache.get(member.user.id).send(`Your fate is being voted on: ${pollLink}`);
-				}		
-			} else {
-				msg.reply(`User can't be foooooound.`);
-			}
+			// Send poll link (DM) to one being considered and all active leaders.
+			const server = STATE.CLIENT.guilds.cache.find(guild => guild.id === msg.channel.guild.id);
+			if (server) server.members.cache.get(member.user.id).send(`Your fate is being voted on: ${pollLink}`);
+
 		} catch(e) {
 			msg.say('Redemption failed, check logs. :mag_right::wood::wood::wood:');
 			console.error(e);
