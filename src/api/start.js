@@ -1,7 +1,7 @@
 // Convert all lines below this (and after) to ESM
-require = require("esm")(module);
+// require = require("esm")(module);
 
-import express from 'express';
+const express = require('express');
 
 const app = express()
 
