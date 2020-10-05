@@ -3,7 +3,7 @@ import registerLogging from './setup/logging';
 import registerCommunityEvents from '../../community/events/register';
 import state from '../state';
 
-export default () => {
+export default function bootstrap() {
     // Create client and setup basic Commandojs.
     const botClient = client()
 
