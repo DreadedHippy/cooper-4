@@ -9,7 +9,7 @@ export default class ChannelsHelper {
         return guild.channels.cache.get(id);
     }
     static getByCode(guild, code) {
-        return this.getByCode(guild, CHANNELS[code].id);
+        return this.getByID(guild, CHANNELS[code].id);
     }
     static filter(guild, filter) {
         return guild.channels.cache.filter(filter);

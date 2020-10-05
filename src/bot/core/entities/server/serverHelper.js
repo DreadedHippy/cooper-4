@@ -6,6 +6,6 @@ export default class ServerHelper {
     }
     static getByCode(client, code) {
         console.log(SERVERS[code]);
-        return this.getByCode(client, SERVERS[code].id);
+        return this.getByID(client, SERVERS[code].id);
     }
 }
