@@ -1,12 +1,37 @@
+import CHANNELS from "../../bot/core/config/channels.json";
+
 import workPostHandler from "../features/encouragement/workPosted";
 import joined from "./members/joined";
 
+import EggHuntMinigame from "../features/minigame/small/egghunt";
+import achievementPostedHandler from "../features/encouragement/achievementPosted";
+
+
 
 export default function registerCommunityEventsHandlers(discordClient) {
+
+  // Half-hourly checks for recurring events.
+  setInterval(() => {
+
+    EggHuntMinigame.run();
+
+  }, 60 * 10 * 1000);
+  // }, 2* 1000);
+
+
   // Handler for a new member has joined
   discordClient.on("guildMemberAdd", joined);
-  // TODO: Member left
 
-  // TODO: Add work posted event
-  // workPostHandler();
+  // TODO: Member left
+  
+
+  discordClient.on("message", msg => {
+    
+    // Encourage posters in show work channel.
+    if (msg.channel.id === CHANNELS.SHOWWORK.id) workPostHandler(msg);
+
+    // Encourage achievement posters
+    if (msg.channel.id === CHANNELS.ACHIEVEMENTS.id) achievementPostedHandler(msg);
+  });
+
 }

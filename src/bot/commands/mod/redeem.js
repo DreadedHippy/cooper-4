@@ -1,10 +1,13 @@
-import embedHelper from '../../../ui/embed/embedHelper';
-import CoopCommand from '../../core/classes/coopCommand';
 import ROLES from '../../core/config/roles.json';
 import CHANNELS from '../../core/config/channels.json';
+import EMOJIS from '../../core/config/emojis.json';
+
+import STATE from '../../state';
+
+import embedHelper from '../../../ui/embed/embedHelper';
+import CoopCommand from '../../core/classes/coopCommand';
 import UsersHelper from '../../core/entities/users/usersHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
-import STATE from '../../state';
 
 const votingDuration = 5;
 
@@ -25,6 +28,8 @@ const memberHasSomeOfRoleNames = (guild, member, roleNames) => {
 		.filter(role => roleNames.includes(role.name))
 		.some(role => member.roles.cache.has(role.id));
 };
+
+const getOnlineMembers = (guild) => guild.members.cache.filter(member => member.presence.status === 'online');
 
 const getOnlineMembersByRoles = (guild, roleNames) => {
 	const notificiationRoles = guild.roles.cache.filter(role => roleNames.includes(role.name));
@@ -61,43 +66,29 @@ const _calcResults = (results) => {
 }
 
 const trackVoting = (msg, member, requiredVotes) => {
+
+
 	const filter = (reaction, user) => {
 		const emoji = reaction.emoji.name;
 		const valid = [forEmoji, againstEmoji].includes(emoji);
 
-		// TODO: Make sure user has member role to vote (SECURITY)
-		const authorized = true;
+		// Don't count bot votes.
+		if (user.bot) return false;
 
-		// TODO: Warn voting non-members
-		if (valid && !authorized) {
-			// warn
-		}
+		// Don't count bot votes or invalid reactions.
+		if (!valid) return false;
 
-		// TODO: Block from voting for self.
+		// Make sure user has member role to vote, which will also block self-voting.
+		const votingMember = msg.channel.guild.members.cache.find(member => member.id === user.id);
+		const authorized = memberHasSomeOfRoleNames(msg.guild, votingMember, ['member 💛‍']);
+		if (valid && !authorized) return false;
 
-		if (valid && !user.bot) {
-			return true;
-		}
+		// TODO: Update embed
 
-		return false;
+		return true;
 	};
 
-
 	const collector = msg.createReactionCollector(filter, { time: collectionDuration });
-
-	collector.on('collect', (reaction, user) => {
-		const results = getResults(collector.collected);
-		const adjustedReq = requiredVotes + results.against;
-
-		reaction.message.channel.send(
-			noWhiteSpace`
-				${user.username} voted!` + `\n\n` +
-				
-				noWhiteSpace`${reaction.emoji.name} 
-					<@${member.user.id}> now has ${results.yes}/${adjustedReq} of the necessary votes required for membership.
-					${reaction.emoji.name}`
-		);
-	});
 	
 	collector.on('end', collected => {
 		const results = getResults(collected);
@@ -118,20 +109,18 @@ const trackVoting = (msg, member, requiredVotes) => {
 		// Respond to election result.
 		const won = results.yes >= adjustedReq;
 
-		msg.channel.send(`Hmmmm...... Looks like you ${won ? 'won' : 'lost'}.`); 
-
 		if (won) {
-			// CTA for winning
-			msg.channel.send('<:coop:725006245999935610>'.repeat(5));
+			// TODO: Post in feed, newest member
 
 			// Display result.
 			const newMemberRoles = getRoles(msg.guild, ['member 💛‍', 'beginner 🥚', 'announcement-subscriber']);
 			member.roles.add(newMemberRoles);
+
+			// TODO: DM, ask if they want themob and/or are-very-social roles.
 			
 		} else {
 			// Kick the person out with a warning.
 			msg.channel.send('From our community, you have been rejected. Do not feel disrespected, you will now be ejected.');
-
 		}
 	});
 }
@@ -201,7 +190,6 @@ export default class RedeemCommand extends CoopCommand {
 			const isAuthorised = memberHasSomeOfRoleNames(msg.guild, authorMember, ['⚔️.  leader', '👑.  commander']);
 			if (!isAuthorised) return msg.say(':no_entry_sign: You can\'t touch this. :no_entry_sign:');
 
-
 			// Check user is not already a member.
 			const member = msg.channel.guild.members.cache.find(member => member.id === user.id);
 			if (!member) return msg.reply(`User can't be foooooound.`);
@@ -218,22 +206,18 @@ export default class RedeemCommand extends CoopCommand {
 			const pollLink = MessagesHelper.link(embedMessage);
 
 			// Add message to feed/chat/spam
+			// TODO: Refactor to helper
 			const channelSelection = [CHANNELS.FEED.id, CHANNELS.TALK.id, CHANNELS.SPAM.id];
 			member.guild.channels.cache
 				.filter((channel) => channelSelection.includes(channel.id))
-				.map(async (channel, index) => { 
-					const jokeIntro = await channel.send(':egg: :cloud_lightning: How egg-citing, a new redemption opportunity appears.');
-					setTimeout(() => { 
-						jokeIntro.delete();
-						channel.send(`<:coop:725006245999935610> Will you allow ${user.username} into The Coop? :scroll: Please vote here:\n ${pollLink}`);
-					}, 2000 * index);
-				});
-
+				.map(async channel => await channel.send(
+					`<${EMOJIS.COOP}> Will you allow ${user.username} into The Coop? :scroll: Please vote here:\n ${pollLink}`
+				));
 
 			// Ping all online mob/are-very-social users
-			const membersToNotify = getOnlineMembersByRoles(msg.channel.guild, ['themob', 'are-very-social']);
+			const membersToNotify = getOnlineMembers(msg.channel.guild);
 			await msg.say(
-				membersPings(membersToNotify) + noWhiteSpace`Scramble! All **active** __mob__ and __very-social__ members, 
+				membersPings(membersToNotify) + noWhiteSpace`! Scramble! All **active** members, 
 				you're needed for a potential redemption! 
 				A finite determination of their infinity, 
 				may now be further determined by its own negation.`
@@ -244,7 +228,7 @@ export default class RedeemCommand extends CoopCommand {
 
 			// Send poll link (DM) to one being considered and all active leaders.
 			const server = STATE.CLIENT.guilds.cache.find(guild => guild.id === msg.channel.guild.id);
-			if (server) server.members.cache.get(member.user.id).send(`Your fate is being voted on: ${pollLink}`);
+			if (server) await server.members.cache.get(member.user.id).send(`Your fate is being voted on: ${pollLink}`);
 
 		} catch(e) {
 			msg.say('Redemption failed, check logs. :mag_right::wood::wood::wood:');

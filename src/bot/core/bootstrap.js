@@ -13,6 +13,9 @@ export default () => {
     // Register community events.
     registerCommunityEvents(botClient);
 
+    // TODO: Register recurring events.
+    
+
     // Login to Discord with the bot.
     botClient.login(process.env.DISCORD_TOKEN);
 
