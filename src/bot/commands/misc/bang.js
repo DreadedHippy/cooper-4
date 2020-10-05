@@ -18,37 +18,21 @@ export default class BangCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 		
-		 msg.channel.send('Bang!').then((msg) => { 
+		msg.send('🧨').then((msg) => { 
 			setTimeout(() => {
-				msg.edit('!1!').then((msg) => { 
+				msg.edit('🔥').then((msg) => { 
 					setTimeout(() => {
-						msg.edit('!!2!!').then((msg) => { 
+						msg.edit('💥').then((msg) => { 
 							setTimeout(() => {
-								msg.edit('!!!3!!!').then((msg) => { 
-									setTimeout(() => {
-										msg.edit('🧨').then((msg) => { 
-											setTimeout(() => {
-												msg.edit('🔥').then((msg) => { 
-													setTimeout(() => {
-														msg.edit('💥').then((msg) => { 
-															setTimeout(() => {
-																msg.edit('💨').then(msg => {
-																	setTimeout(() => { msg.delete() }, 200);
-																})
-															}, 200);
-														});
-													}, 200)	
-												}, 200);
-											}, 200);
-										})
-									}, 200);
+								msg.edit('💨').then(msg => {
+									setTimeout(() => { msg.delete() }, 200);
 								})
 							}, 200);
-						})
-					}, 200);
-				})
+						});
+					}, 200)	
+				}, 200);
 			}, 200);
-		});
+		})
     }
     
 };

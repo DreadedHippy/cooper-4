@@ -1,26 +1,27 @@
 import Chance from 'chance';
+import ChannelsHelper from '../../../../bot/core/entities/channels/channelsHelper';
 
-import SERVERS from '../../../../bot/core/config/servers.json';
+import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
+
 import state from '../../../../bot/state';
 
-
 const likelihood = 2.5;
-// const likelihood = 75;
 
 export default class EggHuntMinigame {
     
+    static collect() {
+
+    }
+
     static async run() {
         try {
             const rand = new Chance;
             if (rand.bool({ likelihood })) {
-                const server = state.CLIENT.guilds.cache.find(guild => guild.id === SERVERS.PROD.id);
-                const channelCount = server.channels.cache.size;
+                const server = ServerHelper.getByCode(state.CLIENT, 'PROD');
+                const textChannels = ChannelsHelper.filter(server, channel => channel.type === 'text');
     
-                const textChannels = server.channels.cache.filter(channel => channel.type === 'text');
-    
-                const channelIDs = Array.from(textChannels.keys());
-                const randomChannelIndex = rand.natural({ min: 0, max: channelCount - 1 });
-                const randomChannelID = channelIDs[randomChannelIndex];
+                const randomChannelIndex = rand.natural({ min: 0, max: server.channels.cache.size - 1 });
+                const randomChannelID = Array.from(textChannels.keys())[randomChannelIndex];
     
                 const dropChannel = textChannels.get(randomChannelID);
                 if (dropChannel) {
@@ -28,8 +29,7 @@ export default class EggHuntMinigame {
                     const eggMsg = await dropChannel.send('🥚');
                     // eggMsg.react('🧺');
 
-                    const feedChannel = textChannels.get(CHANNELS.FEED.id);
-                    feedChannel.send('Whoops! I dropped an egg, but where..?');
+                    ChannelsHelper._postToFeed('Whoops! I dropped an egg, but where..?');
                 }
             }
 

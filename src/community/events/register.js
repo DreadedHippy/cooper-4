@@ -12,11 +12,14 @@ export default function registerCommunityEventsHandlers(discordClient) {
 
   // Half-hourly checks for recurring events.
   setInterval(() => {
-
+    
     EggHuntMinigame.run();
 
+    // TODO: Minute of silence and stillness.
+
+    // TODO: Islamic prayer reminders
+
   }, 60 * 10 * 1000);
-  // }, 2* 1000);
 
 
   // Handler for a new member has joined
@@ -32,6 +35,8 @@ export default function registerCommunityEventsHandlers(discordClient) {
 
     // Encourage achievement posters
     if (msg.channel.id === CHANNELS.ACHIEVEMENTS.id) achievementPostedHandler(msg);
+
+
   });
 
 }

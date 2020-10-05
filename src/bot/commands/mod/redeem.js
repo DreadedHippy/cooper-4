@@ -8,6 +8,8 @@ import embedHelper from '../../../ui/embed/embedHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 import UsersHelper from '../../core/entities/users/usersHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
+import ServerHelper from '../../core/entities/server/serverHelper';
+import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 
 const votingDuration = 5;
 
@@ -16,7 +18,7 @@ const againstEmoji = '⚔️';
 
 const collectionDuration = 60 * votingDuration * 1000;
 
-
+// TODO: Refactor all of these below commands into a separate file.
 const getRoles = (guild, rolesSelection) => guild.roles.cache.filter(r => rolesSelection.includes(r.name));
 
 const membersPings = (membersCollection) => {
@@ -67,7 +69,6 @@ const _calcResults = (results) => {
 
 const trackVoting = (msg, member, requiredVotes) => {
 
-
 	const filter = (reaction, user) => {
 		const emoji = reaction.emoji.name;
 		const valid = [forEmoji, againstEmoji].includes(emoji);
@@ -110,13 +111,19 @@ const trackVoting = (msg, member, requiredVotes) => {
 		const won = results.yes >= adjustedReq;
 
 		if (won) {
-			// TODO: Post in feed, newest member
+			try {
+				// Post in feed, newest member
+				ChannelsHelper._postToFeed(`${member.user.id} was granted membership!`);
 
-			// Display result.
-			const newMemberRoles = getRoles(msg.guild, ['member 💛‍', 'beginner 🥚', 'announcement-subscriber']);
-			member.roles.add(newMemberRoles);
+				// Display result.
+				const newMemberRoles = getRoles(msg.guild, ['member 💛‍', 'beginner 🥚', 'announcement-subscriber']);
+				member.roles.add(newMemberRoles);
 
-			// TODO: DM, ask if they want themob and/or are-very-social roles.
+				// TODO: DM, ask if they want themob and/or are-very-social roles.
+				
+			} catch(e) {
+				console.error(e);
+			}
 			
 		} else {
 			// Kick the person out with a warning.
@@ -185,16 +192,16 @@ export default class RedeemCommand extends CoopCommand {
 
 		try {
 			// Check person issuing command is a leader or commander.
-			const authorMember = msg.channel.guild.members.cache.find(member => member.id === msg.author.id);
+			const authorMember = msg.channel.guild.members.cache.get(msg.author.id);
 
 			const isAuthorised = memberHasSomeOfRoleNames(msg.guild, authorMember, ['⚔️.  leader', '👑.  commander']);
 			if (!isAuthorised) return msg.say(':no_entry_sign: You can\'t touch this. :no_entry_sign:');
 
 			// Check user is not already a member.
-			const member = msg.channel.guild.members.cache.find(member => member.id === user.id);
+			const member = msg.channel.guild.members.cache.get(user.id);
 			if (!member) return msg.reply(`User can't be foooooound.`);
 
-			const isMember = member.roles.cache.find(role => role.id === ROLES.MEMBER.id);
+			const isMember = member.roles.cache.get(ROLES.MEMBER.id);
 			if (isMember) return msg.reply(`Have you lost your cluckin' mind? ${user.username} is already approved.`);
 
 			const totalMembers = msg.channel.guild.members.cache.filter(member => !member.user.bot).size; 
@@ -206,15 +213,15 @@ export default class RedeemCommand extends CoopCommand {
 			const pollLink = MessagesHelper.link(embedMessage);
 
 			// Add message to feed/chat/spam
-			// TODO: Refactor to helper
-			const channelSelection = [CHANNELS.FEED.id, CHANNELS.TALK.id, CHANNELS.SPAM.id];
-			member.guild.channels.cache
-				.filter((channel) => channelSelection.includes(channel.id))
-				.map(async channel => await channel.send(
-					`<${EMOJIS.COOP}> Will you allow ${user.username} into The Coop? :scroll: Please vote here:\n ${pollLink}`
-				));
+			ChannelsHelper.sendByCodes(
+				member.guild, 
+				['FEED', 'TALK', 'SPAM'],
+				`<${EMOJIS.COOP}> Will you allow ${user.username} into The Coop? :scroll:` +
+				` Please vote here:\n ${pollLink}`
+			)
 
 			// Ping all online mob/are-very-social users
+			// TODO: Refactor to an "alert".
 			const membersToNotify = getOnlineMembers(msg.channel.guild);
 			await msg.say(
 				membersPings(membersToNotify) + noWhiteSpace`! Scramble! All **active** members, 
@@ -227,7 +234,7 @@ export default class RedeemCommand extends CoopCommand {
 			trackVoting(embedMessage, member, reqVotes);
 
 			// Send poll link (DM) to one being considered and all active leaders.
-			const server = STATE.CLIENT.guilds.cache.find(guild => guild.id === msg.channel.guild.id);
+			const server = ServerHelper.getByID(STATE.CLIENT, msg.channel.guild.id);
 			if (server) await server.members.cache.get(member.user.id).send(`Your fate is being voted on: ${pollLink}`);
 
 		} catch(e) {
