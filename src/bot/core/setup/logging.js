@@ -11,6 +11,7 @@ export default (discordClient) => {
             console.log(`Logged in as ${discordClient.user.username}`); 
 
             const server = ServerHelper.getByCode(state.CLIENT, 'PROD');
+            console.log(server);
             const feedChannel = ChannelsHelper.getByCode(server, 'FEED');
 
             feedChannel.send('⏰ Ding, ding, ding! You can take me out of the oven now. I\'m ready!');

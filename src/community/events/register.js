@@ -12,7 +12,7 @@ export default function registerCommunityEventsHandlers(discordClient) {
 
   // Half-hourly checks for recurring events.
   setInterval(() => {
-    
+
     EggHuntMinigame.run();
 
     // TODO: Minute of silence and stillness.
@@ -36,6 +36,7 @@ export default function registerCommunityEventsHandlers(discordClient) {
     // Encourage achievement posters
     if (msg.channel.id === CHANNELS.ACHIEVEMENTS.id) achievementPostedHandler(msg);
 
+    // TODO: Encourage intro posts with a wave and coop emoji
 
   });
 

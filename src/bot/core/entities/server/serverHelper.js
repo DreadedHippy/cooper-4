@@ -5,6 +5,7 @@ export default class ServerHelper {
         return client.guilds.cache.get(id);
     }
     static getByCode(client, code) {
+        console.log(SERVERS[code]);
         return this.getByCode(client, SERVERS[code].id);
     }
 }
