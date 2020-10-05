@@ -16,7 +16,8 @@
     "chance": "^1.1.7",
     "discord.js": "^12.3.1",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
-    "esm": "^3.2.25"
+    "esm": "^3.2.25",
+    "express": "^4.17.1"
   },
   "devDependencies": {},
   "repository": {
