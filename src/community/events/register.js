@@ -1,7 +1,7 @@
 import CHANNELS from "../../bot/core/config/channels.json";
 
 import workPostHandler from "../features/encouragement/workPosted";
-import joined from "./members/joined";
+import joined from "./members/welcome/joined";
 
 import EggHuntMinigame from "../features/minigame/small/egghunt";
 import achievementPostedHandler from "../features/encouragement/achievementPosted";
@@ -18,6 +18,8 @@ export default function registerCommunityEventsHandlers(discordClient) {
     // TODO: Minute of silence and stillness.
 
     // TODO: Islamic prayer reminders
+
+    // TODO: Chance of random quote
 
   }, 60 * 10 * 1000);
 
@@ -37,7 +39,7 @@ export default function registerCommunityEventsHandlers(discordClient) {
     if (msg.channel.id === CHANNELS.ACHIEVEMENTS.id) achievementPostedHandler(msg);
 
     // TODO: Encourage intro posts with a wave and coop emoji
-
+    if (msg.channel.id === CHANNELS.INTRO.id) achievementPostedHandler(msg);
   });
 
 }
