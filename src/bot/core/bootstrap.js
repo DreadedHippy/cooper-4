@@ -3,7 +3,7 @@ import registerLogging from './setup/logging';
 import registerCommunityEvents from '../../community/events/register';
 import state from '../state';
 
-export default function bootstrap() {
+export default async function bootstrap() {
     // Create client and setup basic Commandojs.
     const botClient = client()
 
@@ -13,11 +13,12 @@ export default function bootstrap() {
     // Register community events.
     registerCommunityEvents(botClient);
 
-    // TODO: Register recurring events.
-    
-
     // Login to Discord with the bot.
-    botClient.login(process.env.DISCORD_TOKEN);
+    await botClient.login(process.env.DISCORD_TOKEN);
+
+    // Set activity
+    // TODO: Make into a command
+    botClient.user.setActivity('brb, 1 peck', { type: 'WATCHING' })
 
     // Add to state for global access
     state.CLIENT = botClient;

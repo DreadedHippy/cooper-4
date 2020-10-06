@@ -7,7 +7,6 @@ export default class MessagesHelper {
         return link;
     }
     static selfDestruct(msg) {
-        console.log(msg);
         setTimeout(() => { msg.delete() }, 3000);
         setTimeout(() => { msg.delete() }, 4000);
     }

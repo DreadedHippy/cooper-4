@@ -1,5 +1,5 @@
 import CHANNELS from "../../../bot/core/config/channels.json";
-
+import ChannelsHelper from "../../../bot/core/entities/channels/channelsHelper";
 import MessagesHelper from "../../../bot/core/entities/messages/messagesHelper";
 
 export default function achievementPostedHandler(msg) {
@@ -8,7 +8,5 @@ export default function achievementPostedHandler(msg) {
 
     // Post link to work in feed
     const workLink = MessagesHelper.link(msg);
-    msg.guild.channels.cache
-        .find(chan => chan.id === CHANNELS.FEED.id)
-        .send(`${msg.author.username} just posted an achievement! View it here:\n ${workLink}`);
+    ChannelsHelper._postToFeed(`${msg.author.username} just posted an achievement! View it here:\n ${workLink}`)
 }

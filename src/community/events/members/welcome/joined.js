@@ -4,7 +4,7 @@ import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
 
 import STATE from '../../../../bot/state';
 
-export default async (member) => {
+export default async function memberJoined(member) {
 
   try {
     const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');

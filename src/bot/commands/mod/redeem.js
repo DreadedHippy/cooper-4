@@ -213,22 +213,22 @@ export default class RedeemCommand extends CoopCommand {
 			const pollLink = MessagesHelper.link(embedMessage);
 
 			// Add message to feed/chat/spam
-			ChannelsHelper.sendByCodes(
-				member.guild, 
-				['FEED', 'TALK', 'SPAM'],
-				`<${EMOJIS.COOP}> Will you allow ${user.username} into The Coop? :scroll:` +
-				` Please vote here:\n ${pollLink}`
-			)
+			// ChannelsHelper.sendByCodes(
+			// 	member.guild, 
+			// 	['FEED', 'TALK', 'SPAM'],
+			// 	`<${EMOJIS.COOP}> Will you allow ${user.username} into The Coop? :scroll:` +
+			// 	` Please vote here:\n ${pollLink}`
+			// )
 
 			// Ping all online mob/are-very-social users
 			// TODO: Refactor to an "alert".
-			const membersToNotify = getOnlineMembers(msg.channel.guild);
-			await msg.say(
-				membersPings(membersToNotify) + noWhiteSpace`! Scramble! All **active** members, 
-				you're needed for a potential redemption! 
-				A finite determination of their infinity, 
-				may now be further determined by its own negation.`
-			);
+			// const membersToNotify = getOnlineMembers(msg.channel.guild);
+			// await msg.say(
+			// 	membersPings(membersToNotify) + noWhiteSpace`! Scramble! All **active** members, 
+			// 	you're needed for a potential redemption! 
+			// 	A finite determination of their infinity, 
+			// 	may now be further determined by its own negation.`
+			// );
 
 			// Track the poll voting.
 			trackVoting(embedMessage, member, reqVotes);

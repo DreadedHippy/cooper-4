@@ -1,12 +1,10 @@
-import CHANNELS from "../../bot/core/config/channels.json";
-
-import workPostHandler from "../features/encouragement/workPosted";
-import joined from "./members/welcome/joined";
-
 import EggHuntMinigame from "../features/minigame/small/egghunt";
-import achievementPostedHandler from "../features/encouragement/achievementPosted";
 
+import joined from "./members/welcome/joined";
+import left from "./members/welcome/left";
 
+import messageAddedHandler from "./message/messageAdded";
+import reactAddedHandler from "./reaction/reactionAdded";
 
 export default function registerCommunityEventsHandlers(discordClient) {
 
@@ -24,22 +22,16 @@ export default function registerCommunityEventsHandlers(discordClient) {
   }, 60 * 10 * 1000);
 
 
+  // Add handler for reaction added
+  client.on('messageReactionAdd', reactAddedHandler);
+
   // Handler for a new member has joined
   discordClient.on("guildMemberAdd", joined);
 
-  // TODO: Member left
-  
+  // Member left handler.
+  client.on('guildMemberRemove', left);
 
-  discordClient.on("message", msg => {
-    
-    // Encourage posters in show work channel.
-    if (msg.channel.id === CHANNELS.SHOWWORK.id) workPostHandler(msg);
-
-    // Encourage achievement posters
-    if (msg.channel.id === CHANNELS.ACHIEVEMENTS.id) achievementPostedHandler(msg);
-
-    // TODO: Encourage intro posts with a wave and coop emoji
-    if (msg.channel.id === CHANNELS.INTRO.id) achievementPostedHandler(msg);
-  });
+  // Message interceptors.
+  discordClient.on("message", messageAddedHandler);
 
 }
