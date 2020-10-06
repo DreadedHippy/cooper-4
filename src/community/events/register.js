@@ -6,7 +6,7 @@ import left from "./members/welcome/left";
 import messageAddedHandler from "./message/messageAdded";
 import reactAddedHandler from "./reaction/reactionAdded";
 
-export default function registerCommunityEventsHandlers(discordClient) {
+export default function registerCommunityEventsHandlers(client) {
 
   // Half-hourly checks for recurring events.
   setInterval(() => {
@@ -26,12 +26,12 @@ export default function registerCommunityEventsHandlers(discordClient) {
   client.on('messageReactionAdd', reactAddedHandler);
 
   // Handler for a new member has joined
-  discordClient.on("guildMemberAdd", joined);
+  client.on("guildMemberAdd", joined);
 
   // Member left handler.
   client.on('guildMemberRemove', left);
 
   // Message interceptors.
-  discordClient.on("message", messageAddedHandler);
+  client.on("message", messageAddedHandler);
 
 }
