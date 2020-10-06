@@ -18,7 +18,7 @@ export default async function bootstrap() {
 
     // Set activity
     // TODO: Make into a command
-    botClient.user.setActivity('brb, 1 peck', { type: 'WATCHING' })
+    botClient.user.setActivity('you...', { type: 'WATCHING' })
 
     // Add to state for global access
     state.CLIENT = botClient;

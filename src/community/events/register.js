@@ -21,17 +21,6 @@ export default function registerCommunityEventsHandlers(client) {
 
   }, 60 * 10 * 1000);
 
-
-  client.on('messageReactionAdd', (reaction, user) => {
-    // console.log('Reaction added; current count:', reaction.count);
-    console.log(reaction, user);
-  });
-  
-  client.on('messageReactionRemove', (reaction, user) => {
-    // console.log('Reaction removed; current count:', reaction.count);
-    console.log(reaction, user);
-  });
-
   // Add handler for reaction added
   client.on('messageReactionAdd', reactAddedHandler);
 

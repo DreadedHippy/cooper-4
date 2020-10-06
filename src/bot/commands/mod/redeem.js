@@ -224,7 +224,7 @@ export default class RedeemCommand extends CoopCommand {
 			// TODO: Refactor to an "alert".
 			// const membersToNotify = getOnlineMembers(msg.channel.guild);
 			// await msg.say(
-			// 	membersPings(membersToNotify) + noWhiteSpace`! Scramble! All **active** members, 
+			// 	membersPings(membersToNotify) + noWhiteSpace`Anyone @here? Scramble! All **active** members, 
 			// 	you're needed for a potential redemption! 
 			// 	A finite determination of their infinity, 
 			// 	may now be further determined by its own negation.`
