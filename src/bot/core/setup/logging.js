@@ -10,10 +10,8 @@ export default (discordClient) => {
         .on('ready', () => { 
             console.log(`Logged in as ${discordClient.user.username}`); 
 
-            const server = ServerHelper.getByCode(state.CLIENT, 'PROD');
-            const feedChannel = ChannelsHelper.getByCode(server, 'FEED');
-
-            feedChannel.send('⏰ Ding, ding, ding! You can take me out of the oven now. I\'m ready!');
+            // TODO: Turned off for resting.
+            // ChannelsHelper._postToFeed('⏰ Ding, ding, ding! You can take me out of the oven now. I\'m ready!');
         })
         .on('disconnect', () => { console.warn('Disconnected!'); })
         .on('reconnecting', () => { console.warn('Reconnecting...'); });

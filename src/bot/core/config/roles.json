@@ -1,5 +1,24 @@
 {
     "MEMBER": {
-        "id": "724394130465357915"
+        "id": "724394130465357915",
+        "name": "member 💛‍"
+    },
+    "COMMANDER": {
+        "name": "👑.  commander"
+    },
+    "LEADER": {
+        "name": "⚔️.  leader"
+    },
+    "BEGINNER": {
+        "name": "beginner 🥚"
+    },
+    "SUBSCRIBER": {
+        "name": "announcement-subscriber"
+    },
+    "THEMOB": {
+        "id": "754826407200292934"
+    },
+    "AREVERYSOCIAL": {
+        "id": "727576284074344489"
     }
 }

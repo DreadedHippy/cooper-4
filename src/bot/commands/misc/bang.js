@@ -18,7 +18,7 @@ export default class BangCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 		
-		msg.send('🧨').then((msg) => { 
+		msg.say('🧨').then((msg) => { 
 			setTimeout(() => {
 				msg.edit('🔥').then((msg) => { 
 					setTimeout(() => {

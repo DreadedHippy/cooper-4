@@ -1,11 +1,14 @@
 import client from './setup/client';
 import registerLogging from './setup/logging';
 import registerCommunityEvents from '../../community/events/register';
-import state from '../state';
+
+// Singleton state accessor
+import STATE from '../state';
+import Database from './setup/database';
 
 export default async function bootstrap() {
-    // Create client and setup basic Commandojs.
-    const botClient = client()
+    // Globalise the created client (extended Discordjs).
+    const botClient = STATE.CLIENT = client();
 
     // Register logging, debugging, errors, etc.
     registerLogging(botClient);
@@ -13,13 +16,12 @@ export default async function bootstrap() {
     // Register community events.
     registerCommunityEvents(botClient);
 
+    // Connect to PostGres Database
+    await Database.connect();
+
     // Login to Discord with the bot.
     await botClient.login(process.env.DISCORD_TOKEN);
 
-    // Set activity
-    // TODO: Make into a command
-    botClient.user.setActivity('you...', { type: 'WATCHING' })
-
-    // Add to state for global access
-    state.CLIENT = botClient;
+    // Set activity.
+    botClient.user.setActivity('you...', { type: 'WATCHING' });
 }

@@ -10,7 +10,6 @@ export default function registerCommunityEventsHandlers(client) {
 
   // Half-hourly checks for recurring events.
   setInterval(() => {
-
     EggHuntMinigame.run();
 
     // TODO: Minute of silence and stillness.
@@ -20,6 +19,7 @@ export default function registerCommunityEventsHandlers(client) {
     // TODO: Chance of random quote
 
   }, 60 * 10 * 1000);
+  // }, 60 * 2 * 1000);
 
   // Add handler for reaction added
   client.on('messageReactionAdd', reactAddedHandler);

@@ -1,6 +1,10 @@
 import { Command } from 'discord.js-commando';
+import PointsHelper from '../../../community/features/points/pointsHelper';
+import CoopCommand from '../../core/classes/coopCommand';
 
-export default class PointsCommand extends Command {
+
+
+export default class PointsCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
@@ -15,9 +19,13 @@ export default class PointsCommand extends Command {
 	}
 
 	async run(msg) {
+		super.run(msg);
+
         try {
-            await msg.direct('To topup your coop-points, boost The Cooper server. We accept swipecard, swipe here ---------');
-            if (msg.channel.type !== 'dm') await msg.channel.send('POINTS TABLE');
+            if (msg.channel.type !== 'dm') {
+				const points = await PointsHelper.getPointsByID(msg.author.id);
+				await msg.channel.send(`${msg.author.username}'s points: ${points}`);
+			}
         } catch(err) {
             await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
         }
