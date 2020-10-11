@@ -8,9 +8,9 @@ export default class PointsCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
-			name: 'points',
-			group: 'util',
-			memberName: 'points',
+			name: 'leaderboard',
+			group: 'community',
+			memberName: 'leaderboard',
 			aliases: [],
 			description: 'polls will always be stolen at The Coop by those who demand them.',
 			details: `Details of the points command`,
@@ -21,14 +21,16 @@ export default class PointsCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 
-        try {
-            if (msg.channel.type !== 'dm') {
-				const points = await PointsHelper.getPointsByID(msg.author.id);
-				await msg.channel.send(`${msg.author.username}'s points: ${points}`);
-			}
-        } catch(err) {
-            await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
-        }
+		try {
+			// Leaderboard position can either be:
+			// None: show top 10
+			// User: show user position and 5 either side
+			// Number: show rank number and 5 either side
+			const leaderboard = await PointsHelper.getLeaderboard();
+
+		} catch(e) {
+			console.error(e);
+		}
     }
     
 };

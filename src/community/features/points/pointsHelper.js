@@ -12,7 +12,24 @@ export default class PointsHelper {
         return points;
     }
     static async addPointsByID(id, points) {
-        // TODO: Implement
-        console.log('IMPLEMENT POINTS ADDITION');
+        let newPoints = 0;
+        const result = await Database.query({
+            name: 'add-user-points',
+            text: 'UPDATE users SET points = points + $1 WHERE discord_id = $2 RETURNING points',
+            values: [points, id],
+        });
+
+        newPoints = (result.rows[0] || { points: 0 }).points;
+
+        return result;
+    }
+    static async getLeaderboard(pos) {
+        const query = {
+            name: 'get-leaderboard',
+            text: 'SELECT points, discord_id FROM users ORDER BY points ASC LIMIT 10'
+        };
+        const result = await Database.query(query);
+        console.log(result);
+        return result;
     }
 }

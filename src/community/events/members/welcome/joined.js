@@ -1,6 +1,7 @@
 import CHANNELS_DATA from '../../../../bot/core/config/channels.json';
 import ChannelsHelper from '../../../../bot/core/entities/channels/channelsHelper';
 import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
+import UsersHelper from '../../../../bot/core/entities/users/usersHelper';
 
 import STATE from '../../../../bot/state';
 
@@ -18,7 +19,8 @@ export default async function memberJoined(member) {
 
     // TODO: Send direct message and channel message about next steps.
 
-    // TODO: Add to database
+    // Add to database
+    await UsersHelper.addToDatabase(member);
 
   } catch(e) {
     console.error(e)

@@ -1,3 +1,5 @@
+import Database from "../../setup/database";
+
 export default class UsersHelper {
     static avatar(user) {
         const avatarURL = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`;
@@ -34,6 +36,16 @@ export default class UsersHelper {
             const isOnline = member.presence.status === 'online';
             return matchingRoles && isOnline;
         });
+    }
+
+
+    static async addToDatabase(member) {
+        const query = {
+            name: "add-user",
+            text: "INSERT INTO 'users'(discord_id, join_date, points) VALUES ($1, $2, $3)",
+            values: [member.user.id, member.joinedDate, 0]
+        };
+        return await Database.query(query);
     }
     
 }

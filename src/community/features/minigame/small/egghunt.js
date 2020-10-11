@@ -1,27 +1,39 @@
 import Chance from 'chance';
 import ChannelsHelper from '../../../../bot/core/entities/channels/channelsHelper';
 
+import EMOJIS from '../../../../bot/core/config/emojis.json';
+
 import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
 
 import STATE from '../../../../bot/state';
 import PointsHelper from '../../points/pointsHelper';
 
-const likelihood = 2.5;
-// const likelihood = 75;
+const likelihood = 15;
 
-const POINTS = {
-    average: 10,
-    rare: 100,
-    legendary: 1000
-}
+const EGG_DATA = {
+    AVERAGE_EGG: {
+        points: 1,
+        emoji: EMOJIS.AVERAGE_EGG
+    },
+    RARE_EGG: {
+        points: 3,
+        emoji: EMOJIS.RARE_EGG
+    },
+    LEGENDARY_EGG: {
+        points: 75,
+        emoji: EMOJIS.LEGENDARY_EGG
+    },
+};
+
+
 
 export default class EggHuntMinigame {
     
     static onReaction(reaction, user) {
         try {
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
-            const isEggDrop = reaction.message.content === '🥚';            
-            if (isCooperMessage && isEggDrop) this.collect(reaction, user);
+            const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
+            if (isCooperMessage && hasEggRarity) this.collect(reaction, user);
 
         } catch(e) {
             console.error(e);
@@ -29,32 +41,31 @@ export default class EggHuntMinigame {
     }
 
     static calculateRarityFromMessage(msg) {
-        return 'average';
+        let eggRarity = null;
+
+        if (msg.content.indexOf('average_egg') > -1) eggRarity = 'AVERAGE_EGG';
+        if (msg.content.indexOf('rare_egg') > -1) eggRarity = 'RARE_EGG';
+        if (msg.content.indexOf('legendary_egg') > -1) eggRarity = 'LEGENDARY_EGG';
+
+        return eggRarity;
     }
 
     static async collect(reaction, user) {    
         try {
-            if (user.id !== STATE.CLIENT.user.id) {
-                console.log('Attempting to collect egg!', reaction, user);
-
-                const reward = POINTS[rarity];
+            if (user.id !== STATE.CLIENT.user.id) {               
+                const rarity = this.calculateRarityFromMessage(reaction.message);
+                const reward = EGG_DATA[rarity].points;
+                const emoji = EGG_DATA[rarity].emoji;
 
                 // Store points and egg collection data in database.
-                PointsHelper.addPointsByID(user.id, reward);
-
-                const rarity = this.calculateRarityFromMessage(reaction.message);
-                console.log(rarity);
-
+                const updated = await PointsHelper.addPointsByID(user.id, reward);
                 const acknowledgementMsg = await reaction.message.say(
-                    // (egg type)
-                    `🥚🧺 Egg Hunt! ${user.username} +${reward} points! ` // TODO: Show total points also
+                    `<${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})`
                 );
-                // setTimeout(() => { acknowledgementMsg.delete(); }, 4000);
                 
-                // TODO: add mention/link to channel it was collected from.
                 const channelName = reaction.message.channel.name;
                 ChannelsHelper._postToFeed(
-                    `${user.username} collected an egg in "${channelName}" channel!`
+                    `${user.username} collected an egg in "${channelName}" channel! <${emoji}>`
                 )
                 await reaction.message.delete();
             }
@@ -76,8 +87,7 @@ export default class EggHuntMinigame {
             const randomDelayBaseMs = 30000;
             setTimeout(async () => {
                 try {
-                    // TODO: Implement egg rarities
-                    const eggMsg = await dropChannel.send('🥚');
+                    const eggMsg = await dropChannel.send(`<${EGG_DATA[rarity].emoji}>`);
                     await eggMsg.react('🧺');
 
                     ChannelsHelper._postToFeed(dropText);
@@ -91,14 +101,14 @@ export default class EggHuntMinigame {
     static run() {
         const rand = new Chance;
         if (rand.bool({ likelihood })) {
-            this.drop('average', 'Whoops! I dropped an egg, but where...?');
+            this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg, but where...?');
 
             if (rand.bool({ likelihood: likelihood / 3 })) {
-                this.drop('rare', 'If this was implemented... it would have been **RARE**.');
+                this.drop('RARE_EGG', 'If this was implemented... it would have been **RARE**.');
 
                 if (rand.bool({ likelihood: likelihood / 6 })) {
-                    // TODO: Ping everyone!
-                    this.drop('legendary', 'If this was implemented... it would have been **LEGENDARY**.');
+                    ChannelsHelper._postToFeed('<@here>, a legendary egg was dropped! Grab it before others!');
+                    this.drop('LEGENDARY_EGG', 'If this was implemented... it would have been **LEGENDARY**.');
                 }
             }
         }
