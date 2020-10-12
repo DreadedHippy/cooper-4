@@ -21,7 +21,7 @@ export default class PointsHelper {
 
         newPoints = (result.rows[0] || { points: 0 }).points;
 
-        return result;
+        return newPoints;
     }
     static async getLeaderboard(pos) {
         const query = {

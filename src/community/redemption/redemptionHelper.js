@@ -30,8 +30,7 @@ const buildRedeemEmbedDescText = (reqVotes, dur, username) =>
 
 
 const votingCtaMsgText = MessagesHelper.noWhiteSpace`
-	<@&${ROLES.THEMOB.id}>, <@&${ROLES.AREVERYSOCIAL.id}>, Fuynckes! 
-	Members, you're needed for a potential redemption! 
+	Fuynckes! Members, you're needed for a potential redemption! 
 	A finite determination of their infinity, 
     may now be further determined by its own negation.`;
 
