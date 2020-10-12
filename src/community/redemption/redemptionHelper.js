@@ -9,7 +9,7 @@ import createEmbed from '../../ui/embed/embedHelper';
 import VotingHelper from "../events/voting/votingHelper";
 
 
-const votingDuration = 5;
+const votingDuration = 10;
 const redemptionPollDuration = 60 * votingDuration * 1000;
 
 
@@ -96,7 +96,7 @@ export default class RedemptionHelper {
             } else {
                 // Kick the person out with a warning.
                 this.msg.say(ejectionMsgText);
-                await this.member.kick();
+                await this.member.ban();
                 setTimeout(() => {
                     this.msg.say(`${this.member.user.username} got cooped! ${EMOJIS.VOTE_AGAINST.repeat(3)}`);
                 }, 5000);
