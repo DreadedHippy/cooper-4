@@ -8,6 +8,8 @@ import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
 import STATE from '../../../../bot/state';
 import PointsHelper from '../../points/pointsHelper';
 
+import _ from 'lodash';
+
 const likelihood = 15;
 
 const EGG_DATA = {
@@ -32,11 +34,11 @@ export default class EggHuntMinigame {
     static onReaction(reaction, user) {
         try {
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
-            const isEgghuntDrop = isCooperMessage && reaction.message.content.length === 1;
+            const isEgghuntDrop = _.map(usersResponse.rows, "emoji").indexOf(reaction.message.content.trim()) > -1;
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
-            console.log(reaction.message.content);
-            if (isEgghuntDrop && hasEggRarity) this.collect(reaction, user);
-
+            if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
+                this.collect(reaction, user);
+            }
         } catch(e) {
             console.error(e);
         }
