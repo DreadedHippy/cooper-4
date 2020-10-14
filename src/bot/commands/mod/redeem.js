@@ -37,8 +37,9 @@ export default class RedeemCommand extends CoopCommand {
 			
 			// Check person issuing command is a leader or commander.
 			const { LEADER, COMMANDER, MEMBER } = ROLES;
-			const isAuthorised = UsersHelper.hasRoleNames(guild, authorMember, [LEADER.name, COMMANDER.name]);
-			// if (!isAuthorised) return commandMSG.say(':no_entry_sign: You can\'t touch this. :no_entry_sign:');
+			// const isAuthorised = UsersHelper.hasRoleNames(guild, authorMember, [LEADER.name, COMMANDER.name]);
+			const isAuthorised = false;
+			if (!isAuthorised) return commandMSG.say(':no_entry_sign: You can\'t touch this. :no_entry_sign:');
 
 			// Access target member data for permissions/guards.
 			const targetMember = UsersHelper.getMemberByID(guild, user.id);
