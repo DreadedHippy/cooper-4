@@ -46,8 +46,11 @@ export default class RedemptionHelper {
             const reqAgainstVotes = VotingHelper.getNumRequired(guild, .025);
             
             // Remove invalid reactions
-            if (!UsersHelper.hasRoleID(voterMember, ROLES.MEMBER.id)) 
-            await reaction.remove(user.id);
+            if (!UsersHelper.hasRoleID(voterMember, ROLES.MEMBER.id)) {
+                // await reaction.remove(user.id);
+                console.log(reaction.id);
+                await reaction.message.reactions.get(reaction.id).remove();
+            }
             
             // Get existing reactions on message.
             reaction.message.reactions.cache.map(reactionType => {
@@ -71,7 +74,7 @@ export default class RedemptionHelper {
 
                 const introRolesNames = [MEMBER.name, BEGINNER.name, SUBSCRIBER.name];
                 const introRoles = RolesHelper.getRoles(this.msg.guild, introRolesNames)
-                
+
                 await targetMember.roles.add(introRoles);
                 await targetMember.send('You were voted into The Coop and now have full access!');
                 await this.notify(guild, 
