@@ -21,8 +21,16 @@ export default async (msg) => {
     if (userIntroData.hasOwnProperty('intro_link')) retrievedIntroLink = userIntroData.intro_link;
 
     if (retrievedIntroLink) {
-      const warningMsg = await msg.reply('You have already posted an intro, only one introduction message allowed.');
-      setTimeout(() => { warningMsg.delete(); }, 3333);
+      const warningMsg = await msg.reply(
+        `You have already posted an intro, only one introduction message allowed.
+        Deleting your message in 3 seconds, copy it if you want to preserve it.`
+      );
+      setTimeout(() => { 
+        warningMsg.delete(); 
+        setTimeout(() => { 
+          msg.delete(); 
+        }, 3333);
+      }, 3333);
     }
     else {
       // Add intro message link and time to intro
