@@ -54,15 +54,15 @@ export default class RedemptionHelper {
             
             // Get existing reactions on message.
             reaction.message.reactions.cache.map(reactionType => {
-                if (reactionType.emoji.name === EMOJIS.VOTE_FOR) forVotes = reactionType.count - 1;
-                if (reactionType.emoji.name === EMOJIS.VOTE_AGAINST) againstVotes = reactionType.count - 1;
+                if (reactionType.emoji.name === EMOJIS.VOTE_FOR) forVotes = Math.max(0, reactionType.count - 1);
+                if (reactionType.emoji.name === EMOJIS.VOTE_AGAINST) againstVotes = Math.max(0, reactionType.count - 1);
             });
             
             const votingStatusTitle = `${targetUser.username}'s entry was voted upon!`;
             const votingStatusText = votingStatusTitle +
-            `\nStill required: ` +
-            `Entry ${EMOJIS.VOTE_FOR}: ${Math.max(0, reqForVotes - forVotes)} | ` +
-            `Removal ${EMOJIS.VOTE_AGAINST}: ${Math.max(0, reqAgainstVotes - againstVotes)}`;
+                `\nStill required: ` +
+                `Entry ${EMOJIS.VOTE_FOR}: ${Math.max(0, reqForVotes - forVotes)} | ` +
+                `Removal ${EMOJIS.VOTE_AGAINST}: ${Math.max(0, reqAgainstVotes - againstVotes)}`;
             
             // Notify the relevant channels.
             await this.notify(guild, votingStatusText);
