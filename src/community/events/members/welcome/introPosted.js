@@ -16,8 +16,9 @@ export default async (msg) => {
     const memberSubject = UsersHelper.getMemberByID(msg.guild, msg.author.id);
 
     // Check they haven't already posted an intro
-    const userIntroData = (await UsersHelper.getIntro(memberSubject)).rows[0] || null;
-    const retrievedIntroLink = userIntroData.intro_link || false;
+    let retrievedIntroLink = null;
+    const userIntroData = (await UsersHelper.getIntro(memberSubject)).rows[0] || {};
+    if (userIntroData.hasOwnProperty('intro_link')) retrievedIntroLink = userIntroData.intro_link;
 
     if (retrievedIntroLink) {
       const warningMsg = await msg.reply('You have already posted an intro, only one introduction message allowed.');
