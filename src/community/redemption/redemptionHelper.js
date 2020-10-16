@@ -47,9 +47,7 @@ export default class RedemptionHelper {
             
             // Remove invalid reactions
             if (!UsersHelper.hasRoleID(voterMember, ROLES.MEMBER.id)) {
-                // await reaction.remove(user.id);
-                console.log(reaction.id);
-                await reaction.message.reactions.get(reaction.id).remove();
+                await reaction.users.remove(user.id)
             }
             
             // Get existing reactions on message.
