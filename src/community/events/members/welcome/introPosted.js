@@ -17,10 +17,7 @@ export default async (msg) => {
 
     // Check they haven't already posted an intro
     const userIntroData = (await UsersHelper.getIntro(memberSubject)).rows[0] || null;
-    // const retrievedIntroLink = userIntroData.intro_link || false;
-
-    // TODO: Put back after development completed.
-    const retrievedIntroLink = false;
+    const retrievedIntroLink = userIntroData.intro_link || false;
 
     if (retrievedIntroLink) {
       const warningMsg = await msg.reply('You have already posted an intro, only one introduction message allowed.');
