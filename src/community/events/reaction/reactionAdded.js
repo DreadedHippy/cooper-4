@@ -9,6 +9,7 @@ export default async function reactAddedHandler(reaction, user) {
     if (reaction.emoji.name === 'coop') await reaction.message.react(EMOJIS.COOP);
     if (reaction.emoji.name === '🤦‍♂️') await reaction.message.react('🤦‍♂️');
 
+    
     EggHuntMinigame.onReaction(reaction, user);
 
     // Check for reaction on intro message
