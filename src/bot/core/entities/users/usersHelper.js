@@ -41,7 +41,7 @@ export default class UsersHelper {
     static async removeFromDatabase(member) {
         const query = {
             name: "remove-user",
-            text: "DELETE FROM 'users' WHERE discord_id = $1",
+            text: "DELETE FROM users WHERE discord_id = $1",
             values: [member.user.id]
         };
         return await Database.query(query);
@@ -50,7 +50,7 @@ export default class UsersHelper {
     static async addToDatabase(member) {
         const query = {
             name: "add-user",
-            text: "INSERT INTO 'users'(discord_id, join_date, points) VALUES ($1, $2, $3)",
+            text: "INSERT INTO users(discord_id, join_date, points) VALUES ($1, $2, $3)",
             values: [member.user.id, member.joinedDate, 0]
         };
         return await Database.query(query);
