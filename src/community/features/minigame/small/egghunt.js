@@ -38,10 +38,9 @@ export default class EggHuntMinigame {
     static onReaction(reaction, user) {
         try {
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
-            let isEgghuntDrop = _.mapObject(EGG_DATA, "emoji");
+            const eggEmojiNames = _.mapObject(EGG_DATA, "emoji");
+            const isEgghuntDrop = eggEmojiNames.incudes(reaction.message.content.trim());
             console.log(isEgghuntDrop);
-            isEgghuntDrop = false;
-            // .incudes(reaction.message.content.trim());
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
                 this.collect(reaction, user);
