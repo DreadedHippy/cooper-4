@@ -86,6 +86,7 @@ export default class EggHuntMinigame {
     static async drop(rarity, dropText) {        
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const dropChannel = ChannelsHelper.getRandomChannel(server);
+        const rand = new Chance;
 
         if (dropChannel) {
             const randomDelayBaseMs = 30000;
@@ -124,7 +125,7 @@ export default class EggHuntMinigame {
             if (rand.bool({ likelihood: likelihood / 2 })) {
                 ChannelsHelper._postToFeed('Bonus eggs rolling!');
                 
-                const bonusEggsNum = rand.natural({ min: 3, max: 6 });
+                const bonusEggsNum = rand.natural({ min: 2, max: 8 });
                 for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE', null)
             }
         }
