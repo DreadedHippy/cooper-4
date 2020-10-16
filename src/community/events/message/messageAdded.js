@@ -20,7 +20,7 @@ export default function messageAddedHandler(msg) {
 
 
     // Inform feed that a suggestion was posted
-    if (msg.channel.id === CHANNELS.SUGGESTIONS.id) 
+    if (msg.channel.id === CHANNELS.SUGGESTIONS.id && !msg.author.bot) 
         ChannelsHelper._postToFeed(`New suggestion posted! <#${CHANNELS.SUGGESTIONS.id}>`);
 
     // TODO: When help message posted, post in feed

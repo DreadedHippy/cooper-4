@@ -4,6 +4,8 @@ import EMOJIS from "../../../bot/core/config/emojis.json";
 import MessagesHelper from "../../../bot/core/entities/messages/messagesHelper";
 
 export default function workPostHandler(msg) {
+    // Ignore Cooper.
+    if (msg.author.bot) return false;
     
     // Check if image.
     if (msg.attachments.size > 0) {

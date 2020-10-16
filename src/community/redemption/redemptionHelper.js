@@ -71,7 +71,7 @@ export default class RedemptionHelper {
                 const { MEMBER, BEGINNER, SUBSCRIBER } = ROLES;
 
                 const introRolesNames = [MEMBER.name, BEGINNER.name, SUBSCRIBER.name];
-                const introRoles = RolesHelper.getRoles(this.msg.guild, introRolesNames)
+                const introRoles = RolesHelper.getRoles(this.msg.guild, introRolesNames);
 
                 await targetMember.roles.add(introRoles);
                 await targetMember.send('You were voted into The Coop and now have full access!');
@@ -80,7 +80,7 @@ export default class RedemptionHelper {
                     `${forVotes ? `\n\n${EMOJIS.VOTE_FOR.repeat(forVotes)}` : ''}` +
                     `${againstVotes ? `\n\n${EMOJIS.VOTE_AGAINST.repeat(againstVotes)}` : ''}`
                 );
-                    
+
             // Handle user rejected.
             } else if (againstVotes >= reqAgainstVotes) {
                 await this.notify(guild, `${targetUser.username} was removed and banned (voted out)!`);
