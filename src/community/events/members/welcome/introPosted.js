@@ -1,25 +1,56 @@
 import EMOJIS from '../../../../bot/core/config/emojis.json';
+import ROLES from '../../../../bot/core/config/roles.json';
+
 import ChannelsHelper from '../../../../bot/core/entities/channels/channelsHelper';
-import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
-import STATE from '../../../../bot/state';
+import MessagesHelper from '../../../../bot/core/entities/messages/messagesHelper';
+import UsersHelper from '../../../../bot/core/entities/users/usersHelper';
+import createEmbed from '../../../../ui/embed/embedHelper';
 
 export default async (msg) => {
 
   try {
-    // TODO: Check they haven't already posted an intro
-    // TODO: Add intro message link column into users table
+    // Ignore Cooper's messages.
+    if (msg.author.bot) return false;
 
-    // Form the notice message.
-    const notice = `${msg.author.username} posted an introduction! 👋`;
+    // Access the full featured member object for the user.
+    const memberSubject = UsersHelper.getMemberByID(msg.guild, msg.author.id);
 
-    // Post message in hell and feed
-    const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-    ChannelsHelper.sendByCodes(server, ['ENTRY', 'FEED'], notice);
+    // Check they haven't already posted an intro
+    const userIntroData = (await UsersHelper.getIntro(memberSubject)).rows[0] || null;
+    // const retrievedIntroLink = userIntroData.intro_link || false;
 
+    // TODO: Put back after development completed.
+    const retrievedIntroLink = false;
 
-    await msg.react('👋');
-    setTimeout(() => { await msg.react(EMOJIS.VOTE_FOR); }, 333);
-    setTimeout(() => { await msg.react(EMOJIS.VOTE_AGAINST); }, 666);
+    if (retrievedIntroLink) {
+      const warningMsg = await msg.reply('You have already posted an intro, only one introduction message allowed.');
+      setTimeout(() => { warningMsg.delete(); }, 3333);
+    }
+    else {
+      // Add intro message link and time to intro
+      const introLink = MessagesHelper.link(msg);
+      await UsersHelper.setIntro(memberSubject, introLink, Math.floor(+new Date() / 1000));
+
+      // Send avatar + header embed (due to loading jitter issue)
+      const username = memberSubject.user.username;
+
+      // Post message in feed
+      await ChannelsHelper._postToFeed(`${username} posted an introduction! 👋`);
+
+      // Send embed to approval channel for redeeming non-members via introduction.
+      if (!UsersHelper.hasRoleID(memberSubject, ROLES.MEMBER.id)) {
+        await ChannelsHelper._postToChannelCode('ENTRY', { embed: createEmbed({
+          url: MessagesHelper.link(msg),
+          title: `${username}, you are being considered for approval!`,
+          description: `To vote for ${username} use the emojis on their intro post.`,
+          thumbnail: UsersHelper.avatar(memberSubject.user)
+        })});
+      }
+
+      await msg.react('👋');
+      setTimeout(async () => { await msg.react(EMOJIS.VOTE_FOR); }, 333);
+      setTimeout(async () => { await msg.react(EMOJIS.VOTE_AGAINST); }, 666);
+    }
 
   } catch(e) {
     console.error(e)

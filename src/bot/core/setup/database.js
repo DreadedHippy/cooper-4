@@ -16,7 +16,7 @@ export default class Database {
         await client.connect();
 
         client.on('error', e => {
-            console.log(e);
+            console.error(e);
         })
 
         this.connection = client;

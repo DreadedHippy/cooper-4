@@ -7,5 +7,5 @@ try {
     );
     
 } catch(err) {
-    console.log('Unable to send user approval DM.')
+    console.error('Unable to send user approval DM.')
 }

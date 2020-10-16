@@ -4,7 +4,8 @@
   "description": "get cooped with cooper",
   "main": "src/index.js",
   "scripts": {
-    "start": "node -r esm src/index.js"
+    "start": "node -r esm src/index.js",
+    "db": "heroku pg:psql --app cooperchickenbot"
   },
   "engines": {
     "node": "12.x",

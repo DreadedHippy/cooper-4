@@ -38,12 +38,38 @@ export default class UsersHelper {
         });
     }
 
+    static async removeFromDatabase(member) {
+        const query = {
+            name: "remove-user",
+            text: "DELETE FROM 'users' WHERE discord_id = $1",
+            values: [member.user.id]
+        };
+        return await Database.query(query);
+    }
 
     static async addToDatabase(member) {
         const query = {
             name: "add-user",
             text: "INSERT INTO 'users'(discord_id, join_date, points) VALUES ($1, $2, $3)",
             values: [member.user.id, member.joinedDate, 0]
+        };
+        return await Database.query(query);
+    }
+
+    static async setIntro(member, link, time) {
+        const query = {
+            name: "set-user-intro",
+            text: 'UPDATE users SET intro_time = $1, intro_link = $2 WHERE discord_id = $3 RETURNING intro_link, intro_time',
+            values: [time, link, member.user.id],
+        };
+        return await Database.query(query);
+    }
+
+    static async getIntro(member) {
+        const query = {
+            name: "get-user-intro",
+            text: "SELECT intro_link, intro_time FROM users WHERE discord_id = $1",
+            values: [member.user.id]
         };
         return await Database.query(query);
     }

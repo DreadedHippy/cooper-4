@@ -10,9 +10,13 @@ import PointsHelper from '../../points/pointsHelper';
 
 import _ from 'lodash';
 
-const likelihood = 15;
+const likelihood = 20;
 
 const EGG_DATA = {
+    TOXIC_EGG: {
+        points: -5,
+        emoji: EMOJIS.TOXIC_EGG
+    },
     AVERAGE_EGG: {
         points: 1,
         emoji: EMOJIS.AVERAGE_EGG
@@ -34,7 +38,7 @@ export default class EggHuntMinigame {
     static onReaction(reaction, user) {
         try {
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
-            const isEgghuntDrop = _.map(usersResponse.rows, "emoji").indexOf(reaction.message.content.trim()) > -1;
+            const isEgghuntDrop = _.map(EGG_DATA, "emoji").indexOf(reaction.message.content.trim()) > -1;
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
                 this.collect(reaction, user);
@@ -50,6 +54,7 @@ export default class EggHuntMinigame {
         if (msg.content.indexOf('average_egg') > -1) eggRarity = 'AVERAGE_EGG';
         if (msg.content.indexOf('rare_egg') > -1) eggRarity = 'RARE_EGG';
         if (msg.content.indexOf('legendary_egg') > -1) eggRarity = 'LEGENDARY_EGG';
+        if (msg.content.indexOf('toxic_egg') > -1) eggRarity = 'TOXIC_EGG';
 
         return eggRarity;
     }
@@ -80,13 +85,8 @@ export default class EggHuntMinigame {
 
     static async drop(rarity, dropText) {        
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-        const textChannels = ChannelsHelper.filter(server, channel => channel.type === 'text');
-        
-        const rand = new Chance;
-        const randomChannelIndex = rand.natural({ min: 0, max: server.channels.cache.size - 1 });
-        const randomChannelID = Array.from(textChannels.keys())[randomChannelIndex];
-        
-        const dropChannel = textChannels.get(randomChannelID);
+        const dropChannel = ChannelsHelper.getRandomChannel(server);
+
         if (dropChannel) {
             const randomDelayBaseMs = 30000;
             setTimeout(async () => {
@@ -94,7 +94,7 @@ export default class EggHuntMinigame {
                     const eggMsg = await dropChannel.send(`<${EGG_DATA[rarity].emoji}>`);
                     await eggMsg.react('🧺');
 
-                    ChannelsHelper._postToFeed(dropText);
+                    if (dropText) ChannelsHelper._postToFeed(dropText);
                 } catch(e) {
                     console.error(e);
                 }
@@ -107,13 +107,25 @@ export default class EggHuntMinigame {
         if (rand.bool({ likelihood })) {
             this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg, but where...?');
 
+            if (rand.bool({ likelihood: likelihood / 2 })) {
+                this.drop('TOXIC_EGG', 'Dropped a toxic egg, be careful!');
+            }
+
             if (rand.bool({ likelihood: likelihood / 3 })) {
-                this.drop('RARE_EGG', 'If this was implemented... it would have been **RARE**.');
+                this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
 
                 if (rand.bool({ likelihood: likelihood / 6 })) {
                     ChannelsHelper._postToFeed('<@here>, a legendary egg was dropped! Grab it before others!');
-                    this.drop('LEGENDARY_EGG', 'If this was implemented... it would have been **LEGENDARY**.');
+                    this.drop('LEGENDARY_EGG', 'Whoa! I\'ve dropped a legendary egg!');
                 }
+            }
+
+            // Bonus eggs            
+            if (rand.bool({ likelihood: likelihood / 2 })) {
+                ChannelsHelper._postToFeed('Bonus eggs rolling!');
+                
+                const bonusEggsNum = rand.natural({ min: 3, max: 6 });
+                for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE', null)
             }
         }
     }

@@ -32,7 +32,7 @@ export default class PollCommand extends CoopCommand {
 			}
 
         } catch(err) {
-			console.log(err);
+			console.error(err);
             await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
         }
     }
