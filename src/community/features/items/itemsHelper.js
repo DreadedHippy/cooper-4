@@ -13,7 +13,7 @@ export default class ItemsHelper {
                 VALUES($1, $2, $3) 
                 ON CONFLICT (owner_id, item_code)
                 DO 
-                UPDATE SET items.quantity = items.quantity + EXCLUDED.quantity`,
+                UPDATE SET quantity = quantity + EXCLUDED.quantity`,
                 // WHERE owner_id = $1 AND item_code = $2
             values: [userID, item_code, quantity]
         };
