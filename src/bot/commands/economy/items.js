@@ -1,6 +1,8 @@
 import ItemsHelper from '../../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 
+import EMOJIS from '../../core/config/emojis.json';
+
 export default class ItemsCommand extends CoopCommand {
 
 	constructor(client) {
@@ -22,14 +24,14 @@ export default class ItemsCommand extends CoopCommand {
 		if (msg.mentions.users.first()) targetUser = msg.mentions.users.first();
 
         try {
-			const noItemsMsg = 'You currently do not own any items.';
+			const noItemsMsg = `${targetUser.username} does not own any items.`;
 			const items = await ItemsHelper.getUserItems(targetUser.id);
 			
 			if (items.rows.length === 0) await msg.say(noItemsMsg);
 			else {
 				let itemDisplayMsg = `${targetUser.username}'s items:`;
 				items.rows.forEach(item => {
-					itemDisplayMsg += `\n${item.item_code} x${item.quantity}`;
+					itemDisplayMsg += `\n<${EMOJIS[item.item_code]}> x${item.quantity}`;
 				})
 				await msg.say(itemDisplayMsg);
 			}
