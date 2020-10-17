@@ -5,8 +5,12 @@ export default class ItemsHelper {
     static async add(userID, item_code, quantity) {
         const query = {
             name: "add-item",
-            text: "DELETE FROM items WHERE discord_id = $1",
-            values: [userID]
+            text: `INSERT INTO items(owner_id, item_code, quantity)
+                VALUES($1, $2, $3) 
+                ON CONFLICT (name) 
+                DO 
+                UPDATE SET quantity = quantity + $3`,
+            values: [userID, item_code, quantity]
         };
         return await Database.query(query);
     }
@@ -20,7 +24,6 @@ export default class ItemsHelper {
         };
         return await Database.query(query);
     }
-
 
     static async create(member) {
         const query = {

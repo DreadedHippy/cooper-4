@@ -1,16 +1,14 @@
 import Chance from 'chance';
 import _ from 'lodash';
 
-
-
 import EMOJIS from '../../../../bot/core/config/emojis.json';
 
 import ChannelsHelper from '../../../../bot/core/entities/channels/channelsHelper';
 import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
 import PointsHelper from '../../points/pointsHelper';
+import ItemsHelper from '../../items/itemsHelper';
 
 import STATE from '../../../../bot/state';
-import ItemsHelper from '../../items/itemsHelper';
 
 
 const likelihood = 20;
@@ -37,14 +35,12 @@ const EGG_DATA = {
 const removeSymbols = str => str.replace('>', '').replace('<', '');
 const getEmojiIdentifier = rct => removeSymbols(rct.message.content.trim());
 
-
 export default class EggHuntMinigame {
     
     static onReaction(reaction, user) {
         try {
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
             const eggEmojiNames = _.map(_.values(EGG_DATA), "emoji");
-            console.log(reaction.message.content);
             const isEgghuntDrop = eggEmojiNames.includes(getEmojiIdentifier(reaction));
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
@@ -77,7 +73,7 @@ export default class EggHuntMinigame {
                 const updated = await PointsHelper.addPointsByID(user.id, reward);
 
                 // Add/update egg item to user
-                // await ItemsHelper.add(user.id, rarity, 1);
+                await ItemsHelper.add(user.id, rarity, 1);
 
                 const acknowledgementMsg = await reaction.message.say(
                     `<${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})`
