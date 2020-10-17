@@ -7,7 +7,7 @@ export default class ItemsHelper {
             name: "add-item",
             text: `INSERT INTO items(owner_id, item_code, quantity)
                 VALUES($1, $2, $3) 
-                ON CONFLICT (name) 
+                ON CONFLICT
                 DO 
                 UPDATE SET quantity = quantity + $3`,
             values: [userID, item_code, quantity]
