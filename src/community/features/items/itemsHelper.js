@@ -9,7 +9,7 @@ export default class ItemsHelper {
     static async add(userID, item_code, quantity) {
         const query = {
             name: "add-item",
-            text: `INSERT INTO items(owner_id, item_code, quantity)
+            text: `INSERT INTO "items"(owner_id, item_code, quantity)
                 VALUES($1, $2, $3) 
                 ON CONFLICT (owner_id, item_code)
                 DO 
