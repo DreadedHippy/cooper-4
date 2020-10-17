@@ -1,4 +1,6 @@
 import EMOJIS from '../../../../bot/core/config/emojis.json';
+import ChannelsHelper from '../../../../bot/core/entities/channels/channelsHelper';
+import EventsHelper from '../../events/eventsHelper';
 
 
 // TODO: Think of rewards
@@ -14,15 +16,37 @@ import EMOJIS from '../../../../bot/core/config/emojis.json';
  */
 const CRATE_DATA = {
     AVERAGE_CRATE: {
-        emoji: EMOJIS.AVERAGE_CRATE
+        emoji: EMOJIS.AVERAGE_CRATE,
+        rewards: [
+            'BOMB',
+            'LAXATIVE',
+            'TOXIC_EGG',
+            'PICK_AXE'
+        ]
     },
     RARE_CRATE: {
-        emoji: EMOJIS.RARE_CRATE
+        emoji: EMOJIS.RARE_CRATE,
+        rewards: [
+            'ROPE',
+            'SHIELD',
+            'MINE',
+            'SHIELD',
+            'DEFUSE_KIT'
+        ]
     },
     LEGENDARY_CRATE: {
-        emoji: EMOJIS.LEGENDARY_CRATE
+        emoji: EMOJIS.LEGENDARY_CRATE,
+        rewards: [
+            'IED',
+            'RPG',
+            'GOLD_BAR',
+            'GOLD_COIN',
+        ]
     },
 };
+
+// Two hour drop interval.
+const dropInterval = 60 * 60 * 2;
 
 
 export default class CratedropMinigame {
@@ -37,7 +61,32 @@ export default class CratedropMinigame {
         return crateRarity;
     }
 
-    static run() {
+    static async drop() {
+
+        await ChannelsHelper._postToFeed(`Would have dropped a crate!`);
+
+        await this.resetCountdown();
+        return true;
+    }
+
+    static async resetCountdown() {
+        const nextOccurring = Math.floor(+new Date() / 1000) + dropInterval;
+        return await EventsHelper.update('CRATE_DROP', nextOccurring);
+    }
+
+    static async run() {
+        // Check next cratedrop time
+        const crateDropData = await EventsHelper.read('CRATE_DROP');
+        const lastOccurred = crateDropData.last_occurred;
+        const currUnixSecs = Math.floor(+new Date() / 1000);
+
+        // If time passed, drop a random crate and reset event timer.
+        if (currUnixSecs > lastOccurred + dropInterval)
+            await this.drop();
+
+        // Otherwise notify the server via feed of impending crate.
+        else
+            await ChannelsHelper._postToFeed(`${currUnixSecs - lastOccurred} seconds remaining until crate drop!`);
 
     }
 

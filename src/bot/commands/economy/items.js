@@ -1,3 +1,4 @@
+import EventsHelper from '../../../community/features/events/eventsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 
 export default class EgghuntCommand extends CoopCommand {
@@ -21,7 +22,11 @@ export default class EgghuntCommand extends CoopCommand {
 		if (msg.mentions.users.first()) targetUser = msg.mentions.users.first();
 
         try {
-			await msg.say('Your Items: 0');
+			// TODO: Remove after testing.
+			const crateDropData = await EventsHelper.read('CRATE_DROP');
+			console.log(crateDropData);
+
+			// await msg.say('Your Items: 0');
 
         } catch(err) {
             console.error(err);

@@ -1,3 +1,4 @@
+import CratedropMinigame from "../features/minigame/small/cratedrop";
 import EggHuntMinigame from "../features/minigame/small/egghunt";
 
 import joined from "./members/welcome/joined";
@@ -11,15 +12,13 @@ export default function registerCommunityEventsHandlers(client) {
   // Half-hourly checks for recurring events.
   setInterval(() => {
     EggHuntMinigame.run();
+    CratedropMinigame.run();
 
     // TODO: Minute of silence and stillness.
-
     // TODO: Islamic prayer reminders
-
     // TODO: Chance of random quote
 
   }, 60 * 10 * 1000);
-  // }, 60 * 2 * 1000);
 
   // Add handler for reaction added
   client.on('messageReactionAdd', reactAddedHandler);
