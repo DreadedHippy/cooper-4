@@ -34,6 +34,8 @@ const EGG_DATA = {
     },
 };
 
+const removeSymbols = str => str.replace('>', '').replace('<', '');
+const getEmojiIdentifier = rct => removeSymbols(rct.message.content.trim());
 
 
 export default class EggHuntMinigame {
@@ -43,7 +45,7 @@ export default class EggHuntMinigame {
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
             const eggEmojiNames = _.map(_.values(EGG_DATA), "emoji");
             console.log(reaction.message.content);
-            const isEgghuntDrop = eggEmojiNames.includes(reaction.message.content.trim());
+            const isEgghuntDrop = eggEmojiNames.includes(getEmojiIdentifier(reaction));
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
                 this.collect(reaction, user);
@@ -75,7 +77,7 @@ export default class EggHuntMinigame {
                 const updated = await PointsHelper.addPointsByID(user.id, reward);
 
                 // Add/update egg item to user
-                await ItemsHelper.add(user.id, rarity, 1);
+                // await ItemsHelper.add(user.id, rarity, 1);
 
                 const acknowledgementMsg = await reaction.message.say(
                     `<${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})`
