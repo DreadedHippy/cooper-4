@@ -18,8 +18,13 @@ export default class AboutCommand extends CoopCommand {
 		super.run(msg);
 		
         try {
-            await msg.direct('DM ;)');
-            if (msg.channel.type !== 'dm') await msg.reply('Sent you a DM with information.');
+            // await msg.direct('DM ;)');
+			// if (msg.channel.type !== 'dm') await msg.reply('Sent you a DM with information.');
+
+			await msg.reply('Check the about channel, under welcome category!');
+
+			// TODO: Check if asking for about in about channel... reply, that's just stupid.
+
         } catch(err) {
             await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
         }

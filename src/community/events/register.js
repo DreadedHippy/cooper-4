@@ -12,7 +12,7 @@ export default function registerCommunityEventsHandlers(client) {
   // Half-hourly checks for recurring events.
   setInterval(() => {
     EggHuntMinigame.run();
-    CratedropMinigame.run();
+    // CratedropMinigame.run();
 
     // TODO: Minute of silence and stillness.
     // TODO: Islamic prayer reminders

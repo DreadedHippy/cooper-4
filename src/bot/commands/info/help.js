@@ -1,6 +1,6 @@
-import { Command } from 'discord.js-commando';
+import CoopCommand from '../../core/classes/coopCommand';
 
-export default class HelpCommand extends Command {
+export default class HelpCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
@@ -15,8 +15,15 @@ export default class HelpCommand extends Command {
 	}
 
 	async run(msg) {
+		super.run(msg);
+		
         try {
-            await msg.direct('DM ;)');
+			// TODO: Implement properly.
+			await msg.direct(`
+
+				HELP, HELP, HELP!
+			
+			`);
             if (msg.channel.type !== 'dm') await msg.reply('Sent you a DM with information.');
         } catch(err) {
             await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
