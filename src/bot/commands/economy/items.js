@@ -1,7 +1,7 @@
-import EventsHelper from '../../../community/features/events/eventsHelper';
+import ItemsHelper from '../../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 
-export default class EgghuntCommand extends CoopCommand {
+export default class ItemsCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
@@ -22,11 +22,17 @@ export default class EgghuntCommand extends CoopCommand {
 		if (msg.mentions.users.first()) targetUser = msg.mentions.users.first();
 
         try {
-			// TODO: Remove after testing.
-			const crateDropData = await EventsHelper.read('CRATE_DROP');
-			console.log(crateDropData);
-
-			// await msg.say('Your Items: 0');
+			const noItemsMsg = 'You currently do not own any items.';
+			const items = await ItemsHelper.getUserItems(targetUser.id);
+			
+			if (items.rows.length === 0) await msg.say(noItemsMsg);
+			else {
+				let itemDisplayMsg = `${targetUser.username}'s items:`;
+				items.rows.forEach(item => {
+					itemDisplayMsg += `\n${item.item_code} x${item.quantity}`;
+				})
+				await msg.say(itemDisplayMsg);
+			}
 
         } catch(err) {
             console.error(err);

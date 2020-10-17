@@ -6,6 +6,10 @@ import ChannelsHelper from "../../bot/core/entities/channels/channelsHelper";
 import VotingHelper from "../events/voting/votingHelper";
 import UsersHelper from "../../bot/core/entities/users/usersHelper";
 
+import STATE from '../../bot/state';
+
+
+
 export default class RedemptionHelper {
 
     static async onReaction(reaction, user) {
@@ -63,6 +67,8 @@ export default class RedemptionHelper {
                 `Removal ${EMOJIS.VOTE_AGAINST}: ${Math.max(0, reqAgainstVotes - againstVotes)}`;
             
             // Notify the relevant channels.
+            // TODO: Throttle based on last entry vote time.
+            // STATE.LAST_ENTRY_VOTE_TIME
             await this.notify(guild, votingStatusText);
             
             // Handle user approved.

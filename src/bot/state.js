@@ -3,5 +3,8 @@ export default {
 
 
     // Track current nuking action.
-    NUKING: null
+    NUKING: null,
+
+    // Last redemption update time.
+    LAST_ENTRY_VOTE_TIME: null
 }

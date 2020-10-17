@@ -14,8 +14,18 @@ export default class ItemsHelper {
                 ON CONFLICT (owner_id, item_code)
                 DO 
                 UPDATE SET quantity = items.quantity + EXCLUDED.quantity`,
-                // WHERE owner_id = $1 AND item_code = $2
             values: [userID, item_code, quantity]
+        };
+        return await Database.query(query);
+    }
+
+    static async getUserItem(userID, itemCode) {}
+    
+    static async getUserItems(userID) {
+        const query = {
+            name: "get-all-user-items",
+            text: `SELECT * FROM "items" WHERE owner_id = $1`,
+            values: [userID]
         };
         return await Database.query(query);
     }
