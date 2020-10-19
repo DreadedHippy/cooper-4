@@ -119,7 +119,7 @@ export default class EggHuntMinigame {
             this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg, but where...?');
 
             if (rand.bool({ likelihood: likelihood / 2 })) {
-                this.drop('TOXIC_EGG', 'Dropped a toxic egg, be careful!');
+                this.drop('TOXIC_EGG', 'I dropped an egg, but where...? Tsk.');
             }
 
             if (rand.bool({ likelihood: likelihood / 3 })) {
@@ -136,7 +136,10 @@ export default class EggHuntMinigame {
                 ChannelsHelper._postToFeed('Bonus eggs rolling!');
                 
                 const bonusEggsNum = rand.natural({ min: 2, max: 8 });
-                for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE', null)
+                for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE_EGG', null);
+
+                const toxicEggsMixupNum = rand.natural({ min: 1, max: Math.floor(bonusEggsNum / 3) });
+                for (let i = 0; i < toxicEggsMixupNum; i++) this.drop('TOXIC_EGG', null)
             }
         }
     }
