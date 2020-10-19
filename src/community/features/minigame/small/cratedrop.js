@@ -21,7 +21,7 @@ const CRATE_DATA = {
             'BOMB',
             'LAXATIVE',
             'TOXIC_EGG',
-            'PICK_AXE'
+            'PICK_AXE'  
         ]
     },
     RARE_CRATE: {

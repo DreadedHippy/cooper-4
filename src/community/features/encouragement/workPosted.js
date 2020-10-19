@@ -1,9 +1,11 @@
 import CHANNELS from "../../../bot/core/config/channels.json";
 import EMOJIS from "../../../bot/core/config/emojis.json";
+import ChannelsHelper from "../../../bot/core/entities/channels/channelsHelper";
 
 import MessagesHelper from "../../../bot/core/entities/messages/messagesHelper";
+import CDNManager from "../../../bot/core/setup/cdn";
 
-export default function workPostHandler(msg) {
+export default async function workPostHandler(msg) {
     // Ignore Cooper.
     if (msg.author.bot) return false;
     
@@ -14,8 +16,13 @@ export default function workPostHandler(msg) {
 
         // Post link to work in feed
         const workLink = MessagesHelper.link(msg);
-        msg.guild.channels.cache
-            .find(chan => chan.id === CHANNELS.FEED.id)
-            .send(`${msg.author.username} just posted some work! View it here:\n ${workLink}`);
+        await ChannelsHelper._postToFeed(
+            `${msg.author.username} just posted some work! View it here:\n ${workLink}`
+        );
+
+        msg.attachments.map(async (file) => {
+            console.log(file.url);
+            await CDNManager.upload(file.url);
+        })
     }
 }

@@ -1,10 +1,13 @@
 import client from './setup/client';
 import registerLogging from './setup/logging';
+import Database from './setup/database';
+import CDNManager from './setup/cdn';
+
+// Feature/abstract usage.
 import registerCommunityEvents from '../../community/events/register';
 
 // Singleton state accessor
 import STATE from '../state';
-import Database from './setup/database';
 
 export default async function bootstrap() {
     // Globalise the created client (extended Discordjs).
@@ -22,6 +25,9 @@ export default async function bootstrap() {
     // Login to Discord with the bot.
     await botClient.login(process.env.DISCORD_TOKEN);
 
+    // Start basic CDN
+    await CDNManager.start();
+
     // Set activity.
-    botClient.user.setActivity('you...', { type: 'WATCHING' });
+    botClient.user.setActivity('myself... Hmm.', { type: 'WATCHING' });
 }

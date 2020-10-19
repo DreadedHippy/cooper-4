@@ -79,6 +79,9 @@ export default class EggHuntMinigame {
                     `<${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})`
                 );
                 
+                // Remove acknowledgement message after 30 seconds.
+                setTimeout(() => { acknowledgementMsg.delete(); }, 30000)
+                
                 const channelName = reaction.message.channel.name;
                 ChannelsHelper._postToFeed(
                     `${user.username} collected an egg in "${channelName}" channel! <${emoji}>`
