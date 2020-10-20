@@ -1,9 +1,18 @@
 {
     "COOP": ":coop:725006245999935610",
+
     "VOTE_FOR": "🕊️",
     "VOTE_AGAINST": "⚔️",
+
     "LEGENDARY_EGG": ":legendary_egg:764511545991626783",
     "RARE_EGG": ":rare_egg:764511545739968544",
     "AVERAGE_EGG": ":average_egg:764511545522257932",
-    "TOXIC_EGG": ":toxic_egg:766078771467386911"
+    "TOXIC_EGG": ":toxic_egg:766078771467386911",
+
+    "LEGENDARY_CRATE": ":legendary_crate:766749242198720573",
+    "LEGENDARY_CRATE_OPEN": ":legendary_crate_open:766749242198720573",
+    "RARE_CRATE": ":rare_crate:766749242504642561",
+    "RARE_CRATE_OPEN": ":rare_crate_open:766749242432815114",
+    "AVERAGE_CRATE": ":average_crate:766749242047070278",
+    "AVERAGE_CRATE_OPEN": ":average_crate_open:766749241698942997"
 }

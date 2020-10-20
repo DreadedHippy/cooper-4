@@ -16,4 +16,10 @@ export default class MessagesHelper {
         let withoutSpace = withSpace.replace(/\s\s+/g, ' ');
         return withoutSpace;
     }
+    static removeSymbols(str) {
+        return str.replace('>', '').replace('<', '');
+    }
+    static getEmojiIdentifier(msg) {
+        return this.removeSymbols(msg.content.trim());
+    }
 }

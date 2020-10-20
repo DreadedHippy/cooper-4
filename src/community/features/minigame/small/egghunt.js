@@ -9,6 +9,7 @@ import PointsHelper from '../../points/pointsHelper';
 import ItemsHelper from '../../items/itemsHelper';
 
 import STATE from '../../../../bot/state';
+import MessagesHelper from '../../../../bot/core/entities/messages/messagesHelper';
 
 
 const likelihood = 20;
@@ -32,8 +33,6 @@ const EGG_DATA = {
     },
 };
 
-const removeSymbols = str => str.replace('>', '').replace('<', '');
-const getEmojiIdentifier = rct => removeSymbols(rct.message.content.trim());
 
 export default class EggHuntMinigame {
     
@@ -41,7 +40,8 @@ export default class EggHuntMinigame {
         try {
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
             const eggEmojiNames = _.map(_.values(EGG_DATA), "emoji");
-            const isEgghuntDrop = eggEmojiNames.includes(getEmojiIdentifier(reaction));
+            const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
+            const isEgghuntDrop = eggEmojiNames.includes(emojiIdentifier);
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
                 // Check if basket emoji or frying pan emoji
