@@ -22,7 +22,7 @@ export default class EventsHelper {
     static async update(eventCode, time) {
         const query = {
             name: "update-event",
-            text: 'UPDATE users SET last_occurred = $1 WHERE event_code = $2 RETURNING event_code, last_occurred',
+            text: 'UPDATE events SET last_occurred = $1 WHERE event_code = $2 RETURNING event_code, last_occurred',
             values: [time, eventCode]
         };
         const response = await Database.query(query);

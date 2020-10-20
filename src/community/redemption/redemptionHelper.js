@@ -50,7 +50,7 @@ export default class RedemptionHelper {
             const reqForVotes = VotingHelper.getNumRequired(guild, .025);
             const reqAgainstVotes = VotingHelper.getNumRequired(guild, .015);
             
-            // Remove invalid reactions
+            // Remove invalid reactions.
             if (!UsersHelper.hasRoleID(voterMember, ROLES.MEMBER.id)) {
                 return await reaction.users.remove(user.id)
             }

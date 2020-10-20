@@ -16,24 +16,21 @@ export default class PollCommand extends CoopCommand {
 	}
 
 	async run(msg) {
-		// Run as a coop command
+		// Run as a coop command (clean up the original calling message)
 		super.run(msg);
 
-		const isDMCommand = msg.channel.type !== 'dm';
         try {
-			// TODO: Send link	
-			if (isDMCommand) {
-				const pollAcknowledgement = await msg.reply('Poll started...');
+			const pollAcknowledgement = await msg.reply(msg.content);
 
-				// TODO: Add reactions
-			
-				// Send poll tracking link.
-				await msg.direct('I started your poll, track its progress with this link: ' + MessagesHelper.link(pollAcknowledgement));
-			}
+			// Add reactions for people to use.
+			setTimeout(async () => { await pollAcknowledgement.react('🟢'); }, 333);
+			setTimeout(async () => { await pollAcknowledgement.react('🔴'); }, 666);
+		
+			// Send poll tracking link.
+			await msg.direct('I started your poll, track its progress with this link: ' + MessagesHelper.link(pollAcknowledgement));
 
         } catch(err) {
 			console.error(err);
-            await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
         }
     }
     

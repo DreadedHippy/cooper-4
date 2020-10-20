@@ -21,7 +21,8 @@ const CRATE_DATA = {
             'BOMB',
             'LAXATIVE',
             'TOXIC_EGG',
-            'PICK_AXE'  
+            'PICK_AXE',
+            'FRYING_PAN'
         ]
     },
     RARE_CRATE: {
@@ -62,11 +63,8 @@ export default class CratedropMinigame {
     }
 
     static async drop() {
-
         await ChannelsHelper._postToFeed(`Would have dropped a crate!`);
-
         await this.resetCountdown();
-        return true;
     }
 
     static async resetCountdown() {
@@ -77,7 +75,7 @@ export default class CratedropMinigame {
     static async run() {
         // Check next cratedrop time
         const crateDropData = await EventsHelper.read('CRATE_DROP');
-        const lastOccurred = crateDropData.last_occurred;
+        const lastOccurred = parseInt(crateDropData.last_occurred);
         const currUnixSecs = Math.floor(+new Date() / 1000);
 
         // If time passed, drop a random crate and reset event timer.
@@ -85,9 +83,12 @@ export default class CratedropMinigame {
             await this.drop();
 
         // Otherwise notify the server via feed of impending crate.
-        else
-            await ChannelsHelper._postToFeed(`${currUnixSecs - lastOccurred} seconds remaining until crate drop!`);
-
+        else {
+            const remainingSecs = Math.max(0, (lastOccurred + dropInterval) - currUnixSecs);
+            await ChannelsHelper._postToFeed(
+                `${remainingSecs} seconds remaining until crate drop!`
+            );
+        }
     }
 
 }

@@ -6,7 +6,6 @@ import workPostHandler from "../../features/encouragement/workPosted";
 import introPosted from "../members/welcome/introPosted";
 
 
-
 export default function messageAddedHandler(msg) {
     
     // Encourage posters in show work channel.
@@ -18,10 +17,9 @@ export default function messageAddedHandler(msg) {
     // Encourage intro posts with a wave and coop emoji
     if (msg.channel.id === CHANNELS.INTRO.id) introPosted(msg);
 
-
     // Inform feed that a suggestion was posted
     if (msg.channel.id === CHANNELS.SUGGESTIONS.id && !msg.author.bot) 
-        ChannelsHelper._postToFeed(`New suggestion posted! <#${CHANNELS.SUGGESTIONS.id}>`);
+        ChannelsHelper._postToFeed(`New suggestion: <#${CHANNELS.SUGGESTIONS.id}>`);
 
     // TODO: When help message posted, post in feed
 
@@ -29,4 +27,5 @@ export default function messageAddedHandler(msg) {
     if (msg.content.indexOf('🤦‍♂️') > -1 && msg.author.id === '208938112720568320') {
         msg.react('🤦‍♂️');
     }
+
 }

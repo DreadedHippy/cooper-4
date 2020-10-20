@@ -44,7 +44,10 @@ export default class EggHuntMinigame {
             const isEgghuntDrop = eggEmojiNames.includes(getEmojiIdentifier(reaction));
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
+                // Check if basket emoji or frying pan emoji
                 this.collect(reaction, user);
+                // TODO: Implement frying functionality.
+                // SHARE OR STEAL
             }
         } catch(e) {
             console.error(e);
@@ -80,7 +83,7 @@ export default class EggHuntMinigame {
                 );
                 
                 // Remove acknowledgement message after 30 seconds.
-                setTimeout(() => { acknowledgementMsg.delete(); }, 30000)
+                setTimeout(async () => { await acknowledgementMsg.delete(); }, 30000)
                 
                 const channelName = reaction.message.channel.name;
                 ChannelsHelper._postToFeed(
@@ -104,6 +107,11 @@ export default class EggHuntMinigame {
                 try {
                     const eggMsg = await dropChannel.send(`<${EGG_DATA[rarity].emoji}>`);
                     await eggMsg.react('🧺');
+
+                    // Remove toxic egg after 5 minutes so people aren't forced to take it.
+                    if (rarity === 'TOXIC_EGG') {
+                        setTimeout(async () => { await eggMsg.delete(); }, 60 * 5 * 1000);
+                    }
 
                     if (dropText) ChannelsHelper._postToFeed(dropText);
                 } catch(e) {
