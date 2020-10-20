@@ -165,7 +165,7 @@ export default class CratedropMinigame {
             const readableRemaining = EventsHelper.msToReadable(remainingSecs * 1000);
 
             await ChannelsHelper._postToFeed(
-                `${readableRemaining} seconds remaining until crate drop!`
+                `${readableRemaining} remaining until crate drop!`
             );
         }
     }
