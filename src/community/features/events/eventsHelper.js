@@ -44,12 +44,12 @@ export default class EventsHelper {
         let hours = Math.floor((temp %= 86400) / 3600);
         if (hours) return hours + ' hour' + numberEnding(hours);
 
-    
         let minutes = Math.floor((temp %= 3600) / 60);
         if (minutes) return minutes + ' minute' + numberEnding(minutes);
 
         let seconds = temp % 60;
         if (seconds) return seconds + ' second' + numberEnding(seconds);
+        
         return 'less than a second';
     }
 
