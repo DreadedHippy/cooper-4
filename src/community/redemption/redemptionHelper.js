@@ -47,8 +47,8 @@ export default class RedemptionHelper {
             if (UsersHelper.hasRoleID(targetMember, ROLES.MEMBER.id)) return false;
             
             // Calculate the number of required votes for the redemption poll.
-            const reqForVotes = VotingHelper.getNumRequired(guild, .05);
-            const reqAgainstVotes = VotingHelper.getNumRequired(guild, .025);
+            const reqForVotes = VotingHelper.getNumRequired(guild, .025);
+            const reqAgainstVotes = VotingHelper.getNumRequired(guild, .015);
             
             // Remove invalid reactions
             if (!UsersHelper.hasRoleID(voterMember, ROLES.MEMBER.id)) {
