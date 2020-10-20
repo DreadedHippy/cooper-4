@@ -7,6 +7,7 @@ import VotingHelper from "../events/voting/votingHelper";
 import UsersHelper from "../../bot/core/entities/users/usersHelper";
 
 import STATE from '../../bot/state';
+import RolesHelper from '../../bot/core/entities/roles/rolesHelper';
 
 
 
@@ -77,7 +78,7 @@ export default class RedemptionHelper {
                 const { MEMBER, BEGINNER, SUBSCRIBER } = ROLES;
 
                 const introRolesNames = [MEMBER.name, BEGINNER.name, SUBSCRIBER.name];
-                const introRoles = RolesHelper.getRoles(this.msg.guild, introRolesNames);
+                const introRoles = RolesHelper.getRoles(guild, introRolesNames);
 
                 await targetMember.roles.add(introRoles);
                 await targetMember.send('You were voted into The Coop and now have full access!');
