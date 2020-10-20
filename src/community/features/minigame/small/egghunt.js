@@ -95,6 +95,7 @@ export default class EggHuntMinigame {
             console.error(e);
         }
     }
+    
 
     static async drop(rarity, dropText) {        
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');

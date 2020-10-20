@@ -20,6 +20,7 @@ export default class EventsHelper {
 
         return value;
     }
+    
 
     static async update(eventCode, time) {
         const query = {
@@ -31,7 +32,7 @@ export default class EventsHelper {
         return response;
     }
 
-    static async msToReadable(milliseconds) {   
+    static msToReadable(milliseconds) {   
         let temp = Math.floor(milliseconds / 1000);
 
         let years = Math.floor(temp / 31536000);
@@ -43,6 +44,7 @@ export default class EventsHelper {
         let hours = Math.floor((temp %= 86400) / 3600);
         if (hours) return hours + ' hour' + numberEnding(hours);
 
+    
         let minutes = Math.floor((temp %= 3600) / 60);
         if (minutes) return minutes + ' minute' + numberEnding(minutes);
 
