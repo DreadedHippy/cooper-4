@@ -135,7 +135,7 @@ export default class CratedropMinigame {
         try {
             const rarity = this.selectRandomRarity();
             const rarityWord = titleCase(rarity.split('_')[0]);
-            await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress.`);
+            await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress. (TESTING)`);
 
         } catch(e) {
             console.error(e);
