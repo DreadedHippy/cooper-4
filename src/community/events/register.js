@@ -11,8 +11,13 @@ export default function registerCommunityEventsHandlers(client) {
 
   // Half-hourly checks for recurring events.
   setInterval(() => {
-    EggHuntMinigame.run();
+    // TODO: If less than 30 minutes don't update the notice (may be inaccurate below 30 mins)
     CratedropMinigame.run();
+  }, 60 * 30 * 1000);
+
+  // Ten minute checks for recurring events.
+  setInterval(() => {
+    EggHuntMinigame.run();
 
     // TODO: Minute of silence and stillness.
     // Need to pick a time in the day for this.
@@ -20,7 +25,7 @@ export default function registerCommunityEventsHandlers(client) {
 
     // TODO: Islamic prayer reminders
     // TODO: Chance of random quote
-  }, 60 * 10 * 1000);
+  }, 60 * 15 * 1000);
 
   // Add handler for reaction added
   client.on('messageReactionAdd', reactAddedHandler);
