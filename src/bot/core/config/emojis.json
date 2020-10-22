@@ -16,19 +16,19 @@
     "AVERAGE_CRATE": ":average_crate:766749242047070278",
     "AVERAGE_CRATE_OPEN": ":average_crate_open:766749241698942997",
 
-    "LAXATIVE": "🍫",
-    "BOMB": "💣",
-    "PICK_AXE": "⛏️",
-    "FRYING_PAN": "🍳",
-    "EMPTY_GIFTBOX": "🎁",
+    "LAXATIVE": ":chocolate_bar:",
+    "BOMB": ":bomb:",
+    "PICK_AXE": ":pick:",
+    "FRYING_PAN": ":cooking:",
+    "EMPTY_GIFTBOX": ":gift:",
 
     "ROPE": ":twisty_rope:739153442341388421",
-    "SHIELD": "🛡️",
-    "MINE": "🥌",
-    "DEFUSE_KIT": "🧰",
+    "SHIELD": ":shield:",
+    "MINE": ":curling_stone:",
+    "DEFUSE_KIT": ":toolbox:",
 
-    "IED": "📠",
-    "RPG": "🚀",
-    "GOLD_BAR": "⚙️",
+    "IED": ":fax:",
+    "RPG": ":rocket:",
+    "GOLD_BAR": ":trophy:",
     "GOLD_COIN": ":coin:"
 }

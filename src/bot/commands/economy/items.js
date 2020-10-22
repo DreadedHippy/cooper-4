@@ -32,6 +32,7 @@ export default class ItemsCommand extends CoopCommand {
 			else {
 				let itemDisplayMsg = `${targetUser.username}'s items:`;
 				items.rows.forEach(item => {
+					console.log(EMOJIS[item.item_code].length);
 					const emojiIcon = MessagesHelper.emojifyID(EMOJIS[item.item_code]);
 					const itemText = `\n${emojiIcon} (${item.item_code}) x ${item.quantity}`;
 					itemDisplayMsg += itemText;
