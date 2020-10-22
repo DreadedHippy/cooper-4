@@ -10,15 +10,11 @@ import MessagesHelper from '../../../../bot/core/entities/messages/messagesHelpe
 import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
 import VotingHelper from '../../../events/voting/votingHelper';
 
+import _ from 'lodash';
+import { Message } from 'discord.js';
+import ItemsHelper from '../../items/itemsHelper';
 
-// TODO: Refactor into another helper, get it out of here.
-const titleCase = (str) => {
-    str = str.toLowerCase().split(' ');
-    for (let i = 0; i < str.length; i++) {
-        str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
-    }
-    return str.join(' ');
-};
+
 
 
 // TODO: Think of rewards
@@ -52,7 +48,6 @@ const CRATE_DATA = {
             'ROPE',
             'SHIELD',
             'MINE',
-            'SHIELD',
             'DEFUSE_KIT'
         ]
     },
@@ -101,32 +96,64 @@ export default class CratedropMinigame {
             const rand = new Chance;
     
             const msg = reaction.message;
+
             const rarity = this.calculateRarityFromMessage(msg);
-            const reqHits = VotingHelper.getNumRequired(STATE.CLIENT, .025);
-    
+            const reqHits = this.calculateHitsRequired(rarity);
+
             // Count the hits
-            const hitCounter = (accum, val) => {
-                if (val.emoji.name === '🪓') accum + val.count;
-            };
-            const hitCount = msg.reactions.reduce(hitCounter);
+            const hitCount = msg.reactions.cache.find(react => react.emoji.name === '🪓').count || 0;
     
             // Check if there are enough hits to open the crate.
             if (hitCount >= reqHits) {
-                await msg.edit(EMOJIS[rarity + '_OPEN']);
+                // Edit the crate to visually show it opening.
+                await msg.edit(MessagesHelper.emojifyID(EMOJIS[rarity + '_OPEN']));
+
+                // A short time after, to avoid rate-limits... award items.
                 setTimeout(async () => {
-                    // Grant rewards
                     const crate = CRATE_DATA[rarity];
-                    const amountReward = rand.natural({ min: 1, max: crate.maxReward });
+                    const rewardedUsersNum = rand.natural({ min: 1, max: crate.maxReward });
+                    const hitters = reaction.users.cache.map(user => user);
         
-                    // TODO: Reward each of the openers until the amount of rewards run out.
-                    const hitters = reaction.users.map(user => user);
+                    // Pick the amount of rewarded users.
+                    rand.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
+                        // Calculate a random amount of rewards to give to the user.
+                        const rewardItemsNum = rand.natural({ min: 1, max: crate.maxReward });
+                        const rewardsKeys = rand.pickset(crate.rewards, rewardItemsNum);
 
-                    // TODO: Reward with a random item from the possible rewards.
-                    console.log(crate, amountReward, hitters);
+                        // Grant rewards to users with a random quantity.
+                        rewardsKeys.forEach(async (reward, rewardIndex) => {
+                            const rewardItemQuantity = rand.natural({ min: 1, max: crate.maxReward });
+                            // Use rewardeeIndex + rewardIndex for delays (rate limiting).
+                            const rateLimitBypassDelay = (rewardeeIndex * 666) + (333 * rewardIndex);
 
-                    // crate.rewards;
-                    // crate.maxReward;
-                    // rand.pickone()
+                            try {
+                                // Add the items to the user.
+                                await ItemsHelper.add(user.id, reward, rewardItemQuantity);
+
+                                // TODO: If toxic egg item, subtract points from the user.
+
+                                setTimeout(async () => {
+                                    const rewardMessageText = `${user.username} took ${reward}x${rewardItemQuantity} from the crate!`;
+                                    
+                                    setTimeout(async () => {
+                                        await ChannelsHelper._postToFeed(rewardMessageText);
+                                    }, 666);
+
+                                    // If the channel isn't feed, then give feedback in crate channel.
+                                    if (msg.channel.id !== CHANNELS.FEED.id) {
+                                        const rewardMsg = await msg.say(rewardMessageText);
+                                        setTimeout(async () => {
+                                            // Remove the reward message because it was placed in a random channel.
+                                            await rewardMsg.delete();
+                                        }, 30000);
+                                    }
+                                }, rateLimitBypassDelay);
+
+                            } catch(e) {
+                                console.error(e);
+                            }
+                        });
+                    })
 
                     setTimeout(async () => {
                         // Remove the opened crate.
@@ -136,11 +163,23 @@ export default class CratedropMinigame {
 
     
             } else {
-                await msg.say(`${user.username} wants to open this crate!`);
+                const hitsLeft = reqHits - hitCount;
+                const openingUpdateMsg = await msg.say(
+                    `${user.username} tried opening the crate! ${hitsLeft} more hits to break!`
+                );
+
+                // Remove message after it was visible by the contact.
+                setTimeout(() => { openingUpdateMsg.delete(); }, 30000);
             }
         } catch(e) {
             console.error(e);
         }
+    }
+
+    // TODO: Implement number of hits required based on rarity.
+    static calculateHitsRequired(crateType) {
+        const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+        return VotingHelper.getNumRequired(guild, .025);
     }
 
     static isCrateOpen(msg) {
@@ -178,15 +217,15 @@ export default class CratedropMinigame {
     static async drop() {
         try {
             const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-            const dropChannel = ChannelsHelper.getRandomChannel(server);
+            const dropChannel = await ChannelsHelper.fetchRandomTextChannel(server);
 
             const rarity = this.selectRandomRarity();
-            const rarityWord = titleCase(rarity.split('_')[0]);
+            const rarityWord = MessagesHelper.titleCase(rarity.split('_')[0]);
             await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress. (TESTING)`);
 
             // Drop the crate!
-            await dropChannel.send(EMOJIS[rarity]);
-
+            await dropChannel.send(MessagesHelper.emojifyID(EMOJIS[rarity]));
+            
         } catch(e) {
             console.error(e);
         }
@@ -213,10 +252,12 @@ export default class CratedropMinigame {
             // Calculate time until next crate drop.
             const remainingSecs = Math.max(0, (lastOccurred + dropInterval) - currUnixSecs);
             const readableRemaining = EventsHelper.msToReadable(remainingSecs * 1000);
+            let countdownText = `${readableRemaining} remaining until crate drop!`;
 
-            await ChannelsHelper._postToFeed(
-                `${readableRemaining} remaining until crate drop!`
-            );
+            // TODO: If less than hanf al hour
+            // if () countdownText = 'Crate dropping any time soon!';
+
+            await ChannelsHelper._postToFeed(countdownText);
         }
     }
 

@@ -99,7 +99,7 @@ export default class EggHuntMinigame {
 
     static async drop(rarity, dropText) {        
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-        const dropChannel = ChannelsHelper.getRandomChannel(server);
+        const dropChannel = await ChannelsHelper.fetchRandomTextChannel(server);
         const rand = new Chance;
 
         if (dropChannel) {
