@@ -22,7 +22,9 @@ export default class MessagesHelper {
     static getEmojiIdentifier(msg) {
         return this.removeSymbols(msg.content.trim());
     }
-    static emojifyID = emojiID => `<${emojiID}>`;
+    
+    // Convert emojiID into Discord format, but not if its merely an unicode emoji.
+    static emojifyID = emojiID => emojiID.length === 1 ? emojiID : `<${emojiID}>`;
 
     static titleCase = (str) => {
         str = str.toLowerCase().split(' ');
