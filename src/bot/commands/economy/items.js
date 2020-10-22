@@ -2,6 +2,7 @@ import ItemsHelper from '../../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 
 import EMOJIS from '../../core/config/emojis.json';
+import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 export default class ItemsCommand extends CoopCommand {
 
@@ -31,7 +32,9 @@ export default class ItemsCommand extends CoopCommand {
 			else {
 				let itemDisplayMsg = `${targetUser.username}'s items:`;
 				items.rows.forEach(item => {
-					itemDisplayMsg += `\n<${EMOJIS[item.item_code]}> x${item.quantity}`;
+					const emojiIcon = MessagesHelper.emojifyID(EMOJIS[item.item_code]);
+					const itemText = `\n${emojiIcon} (${item.item_code}) x ${item.quantity}`;
+					itemDisplayMsg += itemText;
 				})
 				await msg.say(itemDisplayMsg);
 			}
