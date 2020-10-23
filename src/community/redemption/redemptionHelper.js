@@ -67,10 +67,7 @@ export default class RedemptionHelper {
                 `Entry ${EMOJIS.VOTE_FOR}: ${Math.max(0, reqForVotes - forVotes)} | ` +
                 `Removal ${EMOJIS.VOTE_AGAINST}: ${Math.max(0, reqAgainstVotes - againstVotes)}`;
             
-            // Notify the relevant channels.
-            // TODO: Throttle based on last entry vote time.
-            // STATE.LAST_ENTRY_VOTE_TIME
-            await this.notify(guild, votingStatusText);
+
             
             // Handle user approved.
             if (forVotes >= reqForVotes) {
@@ -93,7 +90,16 @@ export default class RedemptionHelper {
                 await this.notify(guild, `${targetUser.username} was removed and banned (voted out)!`);
                 await targetMember.send('You were voted out of The Coop!');
                 await targetMember.ban();
-            }            
+            } else {
+                // Notify the relevant channels (throttle based on last entry vote time).
+                const currentTime = +new Date();
+                const lastVotetime = STATE.LAST_ENTRY_VOTE_TIME;
+                const FiveSecondsAgo = currentTime - (5 * 1000);
+                if (!lastVotetime || lastVotetime < FiveSecondsAgo) {
+                    STATE.LAST_ENTRY_VOTE_TIME = currentTime;
+                    await this.notify(guild, votingStatusText);
+                }
+            }
                 
         } catch(e) {
             console.error(e);
