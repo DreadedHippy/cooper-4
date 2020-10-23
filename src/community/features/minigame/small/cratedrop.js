@@ -224,21 +224,18 @@ export default class CratedropMinigame {
         }
     }
     
-    static async resetCountdown(dropIntervalTick) {
-        const nextOccurring = Math.floor(+new Date() / 1000) + (dropIntervalTick * 3);
-        return await EventsHelper.update('CRATE_DROP', nextOccurring);
-    }
-
     static async run(dropIntervalTick) {
         // Check next cratedrop time
         const crateDropData = await EventsHelper.read('CRATE_DROP');
         const lastOccurred = parseInt(crateDropData.last_occurred);
         const currUnixSecs = Math.floor(+new Date() / 1000);
+        const nextOccurring = Math.floor(+new Date() / 1000) + (dropIntervalTick * 3);
 
         // If time passed, drop a random crate and reset event timer.
-        if (currUnixSecs > lastOccurred + dropInterval) {
+        if (currUnixSecs > lastOccurred + dropIntervalTick) {
             await this.drop();
             await this.resetCountdown(dropIntervalTick);
+            await EventsHelper.update('CRATE_DROP', nextOccurring);
 
         // Otherwise notify the server via feed of impending crate.
         } else {
