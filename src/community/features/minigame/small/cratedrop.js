@@ -1,4 +1,5 @@
 import Chance from 'chance';
+import _ from 'lodash';
 
 import EMOJIS from '../../../../bot/core/config/emojis.json';
 
@@ -9,12 +10,7 @@ import EventsHelper from '../../events/eventsHelper';
 import MessagesHelper from '../../../../bot/core/entities/messages/messagesHelper';
 import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
 import VotingHelper from '../../../events/voting/votingHelper';
-
-import _ from 'lodash';
-import { Message } from 'discord.js';
 import ItemsHelper from '../../items/itemsHelper';
-
-
 
 
 // TODO: Think of rewards
@@ -62,9 +58,6 @@ const CRATE_DATA = {
         ]
     },
 };
-
-// Two hour drop interval.
-const dropInterval = 60 * 60 * 2;
 
 // Rarity likelihood base number.
 const likelihood = 15;
@@ -230,13 +223,13 @@ export default class CratedropMinigame {
             console.error(e);
         }
     }
-
-    static async resetCountdown() {
-        const nextOccurring = Math.floor(+new Date() / 1000) + dropInterval;
+    
+    static async resetCountdown(dropIntervalTick) {
+        const nextOccurring = Math.floor(+new Date() / 1000) + (dropIntervalTick * 3);
         return await EventsHelper.update('CRATE_DROP', nextOccurring);
     }
 
-    static async run() {
+    static async run(dropIntervalTick) {
         // Check next cratedrop time
         const crateDropData = await EventsHelper.read('CRATE_DROP');
         const lastOccurred = parseInt(crateDropData.last_occurred);
@@ -245,17 +238,14 @@ export default class CratedropMinigame {
         // If time passed, drop a random crate and reset event timer.
         if (currUnixSecs > lastOccurred + dropInterval) {
             await this.drop();
-            await this.resetCountdown();
+            await this.resetCountdown(dropIntervalTick);
 
         // Otherwise notify the server via feed of impending crate.
         } else {
             // Calculate time until next crate drop.
             const remainingSecs = Math.max(0, (lastOccurred + dropInterval) - currUnixSecs);
-            const readableRemaining = EventsHelper.msToReadable(remainingSecs * 1000);
-            let countdownText = `${readableRemaining} remaining until crate drop!`;
-
-            // TODO: If less than hanf al hour
-            // if () countdownText = 'Crate dropping any time soon!';
+            const readableRemaining = EventsHelper.msToReadableHours(remainingSecs * 1000);
+            let countdownText = `Time remaining until crate drop: ${readableRemaining}!`;
 
             await ChannelsHelper._postToFeed(countdownText);
         }

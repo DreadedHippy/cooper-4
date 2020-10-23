@@ -61,7 +61,7 @@ export default class RedemptionHelper {
                 if (reactionType.emoji.name === EMOJIS.VOTE_AGAINST) againstVotes = Math.max(0, reactionType.count - 1);
             });
             
-            const votingStatusTitle = `${targetUser.username}'s entry was voted upon!`;
+            const votingStatusTitle = `<@${targetUser.id}>'s entry was voted upon!`;
             const votingStatusText = votingStatusTitle +
                 `\nStill required: ` +
                 `Entry ${EMOJIS.VOTE_FOR}: ${Math.max(0, reqForVotes - forVotes)} | ` +

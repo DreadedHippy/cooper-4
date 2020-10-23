@@ -10,10 +10,10 @@ import reactAddedHandler from "./reaction/reactionAdded";
 export default function registerCommunityEventsHandlers(client) {
 
   // Half-hourly checks for recurring events.
+  const crateDropInterval = 60 * 1 * 1000;
   setInterval(() => {
-    // TODO: If less than 30 minutes don't update the notice (may be inaccurate below 30 mins)
-    CratedropMinigame.run();
-  }, 60 * 30 * 1000);
+    CratedropMinigame.run(crateDropInterval);
+  }, crateDropInterval);
 
   // Ten minute checks for recurring events.
   setInterval(() => {

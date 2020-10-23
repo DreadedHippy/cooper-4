@@ -32,6 +32,13 @@ export default class EventsHelper {
         return response;
     }
 
+    static msToReadableHours(ms) {
+        let temp = Math.floor(milliseconds / 1000);
+        let hours = Math.floor((temp %= 86400) / 3600);
+        if (hours) return hours + ' hour' + numberEnding(hours);
+        return 'now';
+    }
+
     static msToReadable(milliseconds) {   
         let temp = Math.floor(milliseconds / 1000);
 
