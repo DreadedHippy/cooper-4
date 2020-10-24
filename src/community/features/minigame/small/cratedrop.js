@@ -229,7 +229,8 @@ export default class CratedropMinigame {
         const crateDropData = await EventsHelper.read('CRATE_DROP');
         const lastOccurred = parseInt(crateDropData.last_occurred);
         const currUnixSecs = Math.floor(+new Date() / 1000);
-        const nextOccurring = Math.floor(+new Date() / 1000) + (dropIntervalTick * 3);
+        const dropDuration = dropIntervalTick * 3;
+        const nextOccurring = Math.floor(+new Date() / 1000) + (dropDuration);
 
         // If time passed, drop a random crate and reset event timer.
         if (currUnixSecs > lastOccurred + dropIntervalTick) {
@@ -240,7 +241,7 @@ export default class CratedropMinigame {
         // Otherwise notify the server via feed of impending crate.
         } else {
             // Calculate time until next crate drop.
-            const remainingSecs = Math.max(0, (lastOccurred + dropInterval) - currUnixSecs);
+            const remainingSecs = Math.max(0, (lastOccurred + dropDuration) - currUnixSecs);
             const readableRemaining = EventsHelper.msToReadableHours(remainingSecs * 1000);
             let countdownText = `Time remaining until crate drop: ${readableRemaining}!`;
 
