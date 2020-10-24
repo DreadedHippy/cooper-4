@@ -14,6 +14,33 @@ export default class ChopperCommand extends CoopCommand {
 		});
 	}
 
+	static startScreen(msg) {
+		msg.say(`
+			\`\`\`
+				___.___
+				c00D\`=--/
+			
+			
+			
+			    ___.___
+				c[_]\`=--/  
+			
+			
+			
+			   ___.___
+				cHHD\`=--/  
+			
+			
+			
+			  ___.___
+			  -c00D\`=--/  
+						
+			     ___.___
+				-cC0D\`=--/  
+				\`\`\`
+		`);
+	}
+
 	async run(msg) {
 		super.run(msg);
 		
@@ -48,10 +75,10 @@ export default class ChopperCommand extends CoopCommand {
 							msg.edit('💨').then(msg => {
 								setTimeout(() => { msg.delete() }, 200);
 							})
-						}, 200);
+						}, 2000);
 					});
-				}, 200)	
-			}, 200);
+				}, 2000)	
+			}, 2000);
 		})
     }
     

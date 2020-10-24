@@ -1,5 +1,6 @@
 import CratedropMinigame from '../../../community/features/minigame/small/cratedrop';
 import CoopCommand from '../../core/classes/coopCommand';
+import ChopperCommand from './chopper';
 
 export default class NukeCommand extends CoopCommand {
 
@@ -21,7 +22,9 @@ export default class NukeCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 
-		CratedropMinigame.drop();
+		// CratedropMinigame.drop();
+
+		ChopperCommand.startScreen(msg)
     }
     
 };
