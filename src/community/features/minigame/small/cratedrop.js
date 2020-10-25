@@ -229,23 +229,28 @@ export default class CratedropMinigame {
         const crateDropData = await EventsHelper.read('CRATE_DROP');
         const lastOccurred = parseInt(crateDropData.last_occurred);
         const currUnixSecs = Math.floor(+new Date() / 1000);
-        const dropDuration = dropIntervalTick * 3;
-        const nextOccurring = Math.floor(+new Date() / 1000) + (dropDuration);
+        const dropDuration = dropIntervalTick * 3 / 1000;
+        const nextOccurring = Math.floor((+new Date() / 1000) + dropDurationSecs);
 
-        // If time passed, drop a random crate and reset event timer.
-        if (currUnixSecs > lastOccurred + dropIntervalTick) {
-            await this.drop();
-            await this.resetCountdown(dropIntervalTick);
-            await EventsHelper.update('CRATE_DROP', nextOccurring);
-
-        // Otherwise notify the server via feed of impending crate.
-        } else {
-            // Calculate time until next crate drop.
-            const remainingSecs = Math.max(0, (lastOccurred + dropDuration) - currUnixSecs);
-            const readableRemaining = EventsHelper.msToReadableHours(remainingSecs * 1000);
-            let countdownText = `Time remaining until crate drop: ${readableRemaining}!`;
-
-            await ChannelsHelper._postToFeed(countdownText);
+        try {
+            // If time passed, drop a random crate and reset event timer.
+            if (currUnixSecs > lastOccurred + dropDuration) {
+                await this.drop();
+                await EventsHelper.update('CRATE_DROP', nextOccurring);
+    
+            // Otherwise notify the server via feed of impending crate.
+            } else {
+                // Calculate time until next crate drop.
+                const remainingSecs = Math.max(0, (lastOccurred + dropDuration) - currUnixSecs);
+                const readableRemaining = EventsHelper.msToReadableHours(remainingSecs * 1000);
+                let countdownText = `Time remaining until crate drop: ${readableRemaining}!`;
+    
+                // TODO: Integrate shooting down chopper here
+    
+                await ChannelsHelper._postToFeed(countdownText);
+            }
+        } catch(e) {
+            console.error(e);
         }
     }
 

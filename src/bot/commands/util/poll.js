@@ -27,7 +27,11 @@ export default class PollCommand extends CoopCommand {
 			setTimeout(async () => { await pollAcknowledgement.react('🔴'); }, 666);
 		
 			// Send poll tracking link.
-			await msg.direct('I started your poll, track its progress with this link: ' + MessagesHelper.link(pollAcknowledgement));
+			await msg.direct(
+				'I started your poll, track its progress with this link: ' + 
+				MessagesHelper.link(pollAcknowledgement) + 
+				+ " \n\n\n " + msg.content
+			);
 
         } catch(err) {
 			console.error(err);

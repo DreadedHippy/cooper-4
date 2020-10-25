@@ -10,7 +10,7 @@ import reactAddedHandler from "./reaction/reactionAdded";
 export default function registerCommunityEventsHandlers(client) {
 
   // Half-hourly checks for recurring events.
-  const crateDropInterval = 60 * 1 * 1000;
+  const crateDropInterval = 60 * 60 * 1000;
   setInterval(() => {
     CratedropMinigame.run(crateDropInterval);
   }, crateDropInterval);
