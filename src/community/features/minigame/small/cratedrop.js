@@ -2,6 +2,7 @@ import Chance from 'chance';
 import _ from 'lodash';
 
 import EMOJIS from '../../../../bot/core/config/emojis.json';
+import CHANNELS from '../../../../bot/core/config/channels.json';
 
 import STATE from '../../../../bot/state';
 
@@ -214,7 +215,7 @@ export default class CratedropMinigame {
 
             const rarity = this.selectRandomRarity();
             const rarityWord = MessagesHelper.titleCase(rarity.split('_')[0]);
-            await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress. (TESTING)`);
+            await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress.`);
 
             // Drop the crate!
             await dropChannel.send(MessagesHelper.emojifyID(EMOJIS[rarity]));
