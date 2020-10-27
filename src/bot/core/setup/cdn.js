@@ -32,7 +32,7 @@ export default class CDNManager {
         }
     }
 
-    static async share(imageData) {
+    static async share(imageData, title, description) {
         const config = {
             method: 'post',
             url: `https://api.imgur.com/3/gallery/image/${imageData.id}`,
@@ -41,6 +41,7 @@ export default class CDNManager {
             },
             data: {
                 title: imageData.title,
+                description: description,
                 terms: 1
             }
         };
@@ -75,7 +76,7 @@ export default class CDNManager {
 
             if (typeof response.data !== 'undefined' && typeof response.data.data !== 'undefined') {
                 data = response.data.data;
-                await this.share(data);
+                await this.share(data, title, description);
             }
 
         } catch(e) {
