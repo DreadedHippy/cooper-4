@@ -54,7 +54,7 @@ export default class CDNManager {
         }
     }
 
-    static async upload(url) {
+    static async upload(url, title, description) {
 
         const config = {
             method: 'post',
@@ -64,7 +64,8 @@ export default class CDNManager {
             },
             data: {
                 image: url,
-                title: 'some random testtttttt',
+                title,
+                description
             }
         };
 

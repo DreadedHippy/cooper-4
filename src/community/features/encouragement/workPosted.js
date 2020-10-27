@@ -22,7 +22,23 @@ export default async function workPostHandler(msg) {
             );
     
             msg.attachments.map(async (file) => {
-                await CDNManager.upload(file.url);
+
+                const annotationLines = msg.content.split('\n');
+
+                console.log(annotationLines);
+
+                const name = annotationLines[0] || 'Another The Coop Image!'
+
+                // Remove the name now it is no longer needed.
+                annotationLines.shift()
+
+                const description = annotationLines.join('\n') + "\n\n" +
+                    "Do you have Business/Art/Code interests? Join us! https://discord.gg/5cmN8uW"
+                await CDNManager.upload(
+                    file.url,
+                    name,
+                    description
+                );
             });
         } catch(e) {
             console.error(e);
