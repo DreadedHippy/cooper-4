@@ -108,7 +108,7 @@ export default class CratedropMinigame {
                     const rewardedUsersNum = rand.natural({ min: 1, max: crate.maxReward });
                     const hitters = reaction.users.cache.map(user => user);
         
-                    // Pick the amount of rewarded users.
+                    // Pick the amount of rewarded users.1
                     rand.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
                         // Calculate a random amount of rewards to give to the user.
                         const rewardItemsNum = rand.natural({ min: 1, max: crate.maxReward });
@@ -231,7 +231,7 @@ export default class CratedropMinigame {
         const lastOccurred = parseInt(crateDropData.last_occurred);
         const currUnixSecs = Math.floor(+new Date() / 1000);
         const dropDuration = dropIntervalTick * 3 / 1000;
-        const nextOccurring = Math.floor((+new Date() / 1000) + dropDurationSecs);
+        const nextOccurring = Math.floor((+new Date() / 1000) + dropDuration);
 
         try {
             // If time passed, drop a random crate and reset event timer.

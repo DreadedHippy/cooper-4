@@ -19,7 +19,7 @@ export default class SacrificeCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
-			
+			await msg.say('Add sacrifice message.');
 
 		} catch(e) {
 			console.error(e);
