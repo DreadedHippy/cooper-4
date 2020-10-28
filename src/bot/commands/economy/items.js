@@ -30,7 +30,7 @@ export default class ItemsCommand extends CoopCommand {
 			
 			if (items.rows.length === 0) await msg.say(noItemsMsg);
 			else {
-				const itemDisplayMsg = ItemsHelp.formItemDropText(targetUser, items.rows);
+				const itemDisplayMsg = ItemsHelper.formItemDropText(targetUser, items.rows);
 				await msg.say(itemDisplayMsg);
 			}
 
