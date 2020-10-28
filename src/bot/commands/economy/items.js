@@ -1,9 +1,6 @@
 import ItemsHelper from '../../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 
-import EMOJIS from '../../core/config/emojis.json';
-import MessagesHelper from '../../core/entities/messages/messagesHelper';
-
 export default class ItemsCommand extends CoopCommand {
 
 	constructor(client) {

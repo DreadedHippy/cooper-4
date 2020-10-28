@@ -1,4 +1,7 @@
+import MessagesHelper from "../../../bot/core/entities/messages/messagesHelper";
 import Database from "../../../bot/core/setup/database";
+
+import EMOJIS from '../../../bot/core/config/emojis.json';
 
 export default class ItemsHelper {
 
@@ -76,9 +79,10 @@ export default class ItemsHelper {
         return await Database.query(query);
     }
 
+    
     static formItemDropText(user, items) {
         let itemDisplayMsg = `${user.username}'s items:`;
-        items.rows.forEach(item => {
+        items.forEach(item => {
             const emojiIcon = MessagesHelper.emojifyID(EMOJIS[item.item_code]);
             const itemText = `\n${emojiIcon} (${item.item_code}) x ${item.quantity}`;
             itemDisplayMsg += itemText;

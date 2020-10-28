@@ -24,7 +24,7 @@ export default class MessagesHelper {
     }
 
     // Convert emojiID into Discord format, but not if its merely an unicode emoji.
-    static emojifyID = emojiID => emojiID.length === 1 ? emojiID : `<${emojiID}>`;
+    static emojifyID = emojiID => emojiID.split(':')[2].length > 1 ? `<${emojiID}>` : emojiID;
 
     static titleCase = (str) => {
         str = str.toLowerCase().split(' ');
