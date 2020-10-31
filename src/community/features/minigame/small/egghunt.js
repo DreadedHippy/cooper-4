@@ -99,7 +99,7 @@ export default class EggHuntMinigame {
 
     static async drop(rarity, dropText) {        
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-        const dropChannel = await ChannelsHelper.fetchRandomTextChannel(server);
+        const dropChannel = ChannelsHelper.fetchRandomTextChannel(server);
         const rand = new Chance;
 
         if (dropChannel) {
@@ -134,7 +134,7 @@ export default class EggHuntMinigame {
             if (rand.bool({ likelihood: likelihood / 3 })) {
                 this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
 
-                if (rand.bool({ likelihood: likelihood / 6 })) {
+                if (rand.bool({ likelihood: likelihood / 5 })) {
                     ChannelsHelper._postToFeed('<@here>, a legendary egg was dropped! Grab it before others!');
                     this.drop('LEGENDARY_EGG', 'Whoa! I\'ve dropped a legendary egg!');
                 }
@@ -147,7 +147,7 @@ export default class EggHuntMinigame {
                 const bonusEggsNum = rand.natural({ min: 2, max: 8 });
                 for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE_EGG', null);
 
-                const toxicEggsMixupNum = rand.natural({ min: 1, max: Math.floor(bonusEggsNum / 3) });
+                const toxicEggsMixupNum = rand.natural({ min: 1, max: Math.ceil(bonusEggsNum / 3) });
                 for (let i = 0; i < toxicEggsMixupNum; i++) this.drop('TOXIC_EGG', null)
             }
         }

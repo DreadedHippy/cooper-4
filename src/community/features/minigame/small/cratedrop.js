@@ -211,7 +211,7 @@ export default class CratedropMinigame {
     static async drop() {
         try {
             const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-            const dropChannel = await ChannelsHelper.fetchRandomTextChannel(server);
+            const dropChannel = ChannelsHelper.fetchRandomTextChannel(server);
 
             const rarity = this.selectRandomRarity();
             const rarityWord = MessagesHelper.titleCase(rarity.split('_')[0]);
