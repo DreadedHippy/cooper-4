@@ -5,6 +5,9 @@ import CratedropMinigame from "../../features/minigame/small/cratedrop";
 
 export default async function reactAddedHandler(reaction, user) {
     if (reaction.message.partial) await reaction.message.fetch();
+    // if (reaction.channel.partial) await reaction.channel.fetch();
+    // if (reaction.guild.partial) await reaction.guild.fetch();
+    if (reaction.partial) await reaction.fetch();
 
     // If coop emoji ever added, double down on it... just because.
     if (reaction.emoji.name === 'coop') await reaction.message.react(EMOJIS.COOP);
