@@ -36,7 +36,7 @@ export default class ChannelsHelper {
             .map(async channel => await channel.send(message));
     }
 
-    fetchRandomTextChannel = (guild) => {
+    static fetchRandomTextChannel = (guild) => {
         guild.channels.random().then(channel => {
             if (channel.type === 'text') return channel;
             else return ChannelsHelper.fetchRandomTextChannel(guild);

@@ -30,7 +30,7 @@ export default class PollCommand extends CoopCommand {
 			await msg.direct(
 				'I started your poll, track its progress with this link: ' + 
 				MessagesHelper.link(pollAcknowledgement) + 
-				+ " \n\n\n " + msg.content
+				+ " \n\n\n " + " _ " + msg.content
 			);
 
         } catch(err) {
