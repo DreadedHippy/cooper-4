@@ -8,6 +8,7 @@ import UsersHelper from "../../bot/core/entities/users/usersHelper";
 
 import STATE from '../../bot/state';
 import RolesHelper from '../../bot/core/entities/roles/rolesHelper';
+import ServerHelper from '../../bot/core/entities/server/serverHelper';
 
 
 
@@ -35,15 +36,18 @@ export default class RedemptionHelper {
     }
 
     static async processVote(reaction, user) {
-        const guild = reaction.message.guild;
-        const voterMember = UsersHelper.getMemberByID(guild, user.id);
+        const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+
         const targetUser = reaction.message.author;
-        const targetMember = UsersHelper.getMemberByID(guild, targetUser.id);
 
         let forVotes = 0;
         let againstVotes = 0;
 
         try {
+            const voterMember = await UsersHelper.fetchMemberByID(guild, user.id);
+            const targetMember = await UsersHelper.fetchMemberByID(guild, targetUser.id);
+
+            console.log('voterMember', voterMember);
             console.log('targetMember', targetMember);
 
             // If member left, don't do anything.

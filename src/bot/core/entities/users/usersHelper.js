@@ -8,6 +8,8 @@ export default class UsersHelper {
 
     static getMemberByID = (guild, id) => guild.members.cache.get(id);
 
+    static fetchMemberByID = (guild, id) => guild.members.fetch(id);
+
     static getUserByID = (guild, id) => guild.users.cache.get(id);
 
     static hasRoleID = (member, id) => {
