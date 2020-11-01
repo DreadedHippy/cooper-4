@@ -46,10 +46,6 @@ export default class ChannelsHelper {
 
         const channel = guild.channels.cache.get(channelID);
         
-        console.log(guild.channels.getOwnPropertyNames());
-
-        console.log('random channel', channel);
-
-        return dropChannel;
+        return channel;
     }
 }
