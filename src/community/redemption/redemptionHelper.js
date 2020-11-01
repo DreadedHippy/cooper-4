@@ -44,6 +44,8 @@ export default class RedemptionHelper {
         let againstVotes = 0;
 
         try {
+            console.log('targetMember', targetMember);
+
             // If member left, don't do anything.
             if (!targetMember) return false;
             
