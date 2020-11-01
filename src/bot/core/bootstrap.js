@@ -28,6 +28,9 @@ export default async function bootstrap() {
     // Start basic CDN
     await CDNManager.start();
 
+    // Prepare cache (avoid partials)!
+    // TODO: Load the past 10 introduction messages into cache! Fuck Partials!
+
     // Set activity.
     botClient.user.setActivity('myself... Hmm.', { type: 'WATCHING' });
 }

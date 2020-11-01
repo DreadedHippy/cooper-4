@@ -44,7 +44,7 @@ export default class ChannelsHelper {
 
         const channelID = CHANNELS[channelKey].id;
 
-        const channel = guild.channels.get(channelID);
+        const channel = guild.channels.cache.get(channelID);
         
         console.log(guild.channels.getOwnPropertyNames());
 
