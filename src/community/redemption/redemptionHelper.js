@@ -22,6 +22,10 @@ export default class RedemptionHelper {
         if (!isVoteEmoji) return false;
         if (channelID !== CHANNELS.INTRO.id) return false;
 
+        console.log('Trying to redeem!');
+        console.log(reaction);
+        console.log(user);
+
         // Process the vote
         this.processVote(reaction, user);
     }
