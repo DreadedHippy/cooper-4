@@ -6,7 +6,7 @@ export default () => {
         owner: '723652650389733557',
         // https://stackoverflow.com/questions/56063379/how-to-fix-problem-with-reactions-restart-bot
         // https://discordjs.guide/popular-topics/partials.html#enabling-partials
-        partials: ['CHANNEL', 'MESSAGE', 'REACTION']
+        // partials: ['CHANNEL', 'MESSAGE', 'REACTION']
     });
 
     client.registry
