@@ -28,12 +28,15 @@ export default class SayCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
-			const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+			// const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
 
-			if (channelParam) {
-				const channel = ChannelsHelper.getByCode(guild, channelReq);
-				await channel.say(messageParam);
-			}
+			const statement = msg.content.replace('!say ', '');
+			await msg.say(statement)
+
+			// if (channelParam) {
+			// 	const channel = ChannelsHelper.getByCode(guild, channelReq);
+			// 	await channel.say(statement);
+			// }
 
 		} catch(e) {
 			console.error(e);
