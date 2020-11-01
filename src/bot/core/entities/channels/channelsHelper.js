@@ -36,22 +36,24 @@ export default class ChannelsHelper {
             .map(async channel => await channel.send(message));
     }
 
-    static fetchRandomTextChannel = (guild) => {
-        guild.channels.random().then(channel => {
-            if (channel.type === 'text') return channel;
-            else return ChannelsHelper.fetchRandomTextChannel(guild);
-        });
-    };
+    // static fetchRandomTextChannel = (guild) => {
+    //     guild.channels.random().then(channel => {
+    //         if (channel.type === 'text') return channel;
+    //         else return ChannelsHelper.fetchRandomTextChannel(guild);
+    //     });
+    // };
 
-    // static async fetchRandomTextChannel(guild) {
-    //     const textChannels = ChannelsHelper.filter(guild, channel => channel.type === 'text');
+    static fetchRandomTextChannel(guild) {
+        const textChannels = ChannelsHelper.filter(guild, channel => channel.type === 'text');
 
-    //     const rand = new Chance;
-    //     const randomChannelIndex = rand.natural({ min: 0, max: guild.channels.cache.size - 1 });
-    //     const randomChannelID = Array.from(textChannels.keys())[randomChannelIndex];
+        const rand = new Chance;
+        const randomChannelIndex = rand.natural({ min: 0, max: guild.channels.cache.size - 1 });
+        const randomChannelID = Array.from(textChannels.keys())[randomChannelIndex];
         
-    //     const dropChannel = textChannels.get(randomChannelID);
+        const dropChannel = textChannels.get(randomChannelID);
+        
+        console.log('random channel', dropChannel);
 
-    //     return dropChannel;
-    // }
+        return dropChannel;
+    }
 }
