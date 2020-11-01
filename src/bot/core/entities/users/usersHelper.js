@@ -18,6 +18,7 @@ export default class UsersHelper {
             .some(role => member.roles.cache.has(role.id));
 
     static count(guild, includeBots = false) {
+        console.log('counting guild members', guild.members.cache);
         if (includeBots) return guild.members.cache.size;
         else return this.filterMembers(guild, member => !member.user.bot).size; 
     }
