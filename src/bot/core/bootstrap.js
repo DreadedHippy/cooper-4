@@ -8,6 +8,7 @@ import registerCommunityEvents from '../../community/events/register';
 
 // Singleton state accessor
 import STATE from '../state';
+import ServerHelper from './entities/server/serverHelper';
 
 export default async function bootstrap() {
     // Globalise the created client (extended Discordjs).
@@ -29,7 +30,14 @@ export default async function bootstrap() {
     await CDNManager.start();
 
     // Prepare cache (avoid partials)!
-    // TODO: Load the past 10 introduction messages into cache! Fuck Partials!
+    botClient.on('ready', () => {
+        const guild = ServerHelper.getByCode(botClient, 'PROD');
+        guild.channels.cache.each(channel => {
+            if (channel.type === 'text') {
+                channel.messages.fetch({ limit: 10 });
+            }
+        })
+    })
 
     // Set activity.
     botClient.user.setActivity('myself... Hmm.', { type: 'WATCHING' });
