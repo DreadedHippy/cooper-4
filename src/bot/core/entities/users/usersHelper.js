@@ -10,7 +10,10 @@ export default class UsersHelper {
 
     static getUserByID = (guild, id) => guild.users.cache.get(id);
 
-    static hasRoleID = (member, id) => member.roles.cache.get(id);
+    static hasRoleID = (member, id) => {
+        console.log('roleID member', member);
+        return member.roles.cache.get(id);
+    }
 
     static hasRoleNames = (guild, member, roleNames) => 
         guild.roles.cache
