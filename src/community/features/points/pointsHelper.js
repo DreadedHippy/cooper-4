@@ -29,7 +29,6 @@ export default class PointsHelper {
             text: 'SELECT points, discord_id FROM users ORDER BY points ASC LIMIT 10'
         };
         const result = await Database.query(query);
-        console.log(result);
         return result;
     }
 }

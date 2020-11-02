@@ -174,9 +174,9 @@ export default class CratedropMinigame {
     }
 
     // TODO: Implement number of hits required based on rarity.
-    static async calculateHitsRequired(crateType) {
+    static calculateHitsRequired(crateType) {
         const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-        return await VotingHelper.getNumRequired(guild, .025);
+        return VotingHelper.getNumRequired(guild, .025);
     }
 
     static isCrateOpen(msg) {

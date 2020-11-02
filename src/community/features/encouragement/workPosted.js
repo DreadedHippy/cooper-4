@@ -22,11 +22,7 @@ export default async function workPostHandler(msg) {
             );
     
             msg.attachments.map(async (file) => {
-
                 const annotationLines = msg.content.split('\n');
-
-                console.log(annotationLines);
-
                 const name = annotationLines[0] || 'Another The Coop Image!'
 
                 // Remove the name now it is no longer needed.

@@ -23,10 +23,6 @@ export default class RedemptionHelper {
         if (!isVoteEmoji) return false;
         if (channelID !== CHANNELS.INTRO.id) return false;
 
-        console.log('Trying to redeem!');
-        console.log(reaction);
-        console.log(user);
-
         // Process the vote
         this.processVote(reaction, user);
     }
@@ -46,9 +42,6 @@ export default class RedemptionHelper {
         try {
             const voterMember = await UsersHelper.fetchMemberByID(guild, user.id);
             const targetMember = await UsersHelper.fetchMemberByID(guild, targetUser.id);
-
-            console.log('voterMember', voterMember);
-            console.log('targetMember', targetMember);
 
             // If member left, don't do anything.
             if (!targetMember) return false;
