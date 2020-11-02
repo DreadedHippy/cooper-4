@@ -35,7 +35,8 @@ const CRATE_DATA = {
             'TOXIC_EGG',
             'PICK_AXE',
             'FRYING_PAN',
-            'EMPTY_GIFTBOX'
+            'EMPTY_GIFTBOX',
+            'WOOD'
         ]
     },
     RARE_CRATE: {
@@ -56,6 +57,8 @@ const CRATE_DATA = {
             'RPG',
             'GOLD_BAR',
             'GOLD_COIN',
+            'SILVER_BAR',
+            'DIAMOND'
         ]
     },
 };
@@ -171,9 +174,9 @@ export default class CratedropMinigame {
     }
 
     // TODO: Implement number of hits required based on rarity.
-    static calculateHitsRequired(crateType) {
+    static async calculateHitsRequired(crateType) {
         const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-        return VotingHelper.getNumRequired(guild, .025);
+        return await VotingHelper.getNumRequired(guild, .025);
     }
 
     static isCrateOpen(msg) {

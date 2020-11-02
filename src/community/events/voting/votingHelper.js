@@ -3,10 +3,7 @@ import UsersHelper from "../../../bot/core/entities/users/usersHelper";
 
 export default class VotingHelper {
 
-  static getNumRequired = (guild, rate) => {
-
-    console.log('getting number required ' + rate, guild);
-
+  static getNumRequired(guild, rate) {
     return Math.floor(UsersHelper.count(guild) * rate);
   }
 

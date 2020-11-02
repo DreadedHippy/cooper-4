@@ -1,7 +1,6 @@
-import { Message } from "discord.js";
-import CHANNELS from "../../../bot/core/config/channels.json";
 import ChannelsHelper from "../../../bot/core/entities/channels/channelsHelper";
 import MessagesHelper from "../../../bot/core/entities/messages/messagesHelper";
+import STATE from "../../../bot/state";
 
 export default function achievementPostedHandler(msg) {
 
@@ -11,8 +10,18 @@ export default function achievementPostedHandler(msg) {
     // Encourage with reaction.
     msg.react('🌟');
 
-    // Post link to work in feed
-    const workLink = MessagesHelper.link(msg);
-    ChannelsHelper._postToFeed(`${msg.author.username} just posted an achievement! View it here:\n ${workLink}`)
+    // Throttle achievements posted.
+    const now = Date.now();
+    const fiveMinutesAgo = now - (60 * 5 * 1000);
+    const lastNotified = STATE.LAST_ACHIEVEMENT_NOTIFICATION;
+    if (!lastNotified || lastNotified < fiveMinutesAgo) {
+
+        // Post link to work in feed
+        const workLink = MessagesHelper.link(msg);
+        ChannelsHelper._postToFeed(`${msg.author.username} just posted an achievement! View it here:\n ${workLink}`)
+
+        STATE.LAST_ACHIEVEMENT_NOTIFICATION = now;
+    }
+
 
 }

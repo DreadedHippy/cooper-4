@@ -6,5 +6,6 @@ export default {
     NUKING: null,
 
     // Last redemption update time.
-    LAST_ENTRY_VOTE_TIME: null
+    LAST_ENTRY_VOTE_TIME: null,
+    LAST_ACHIEVEMENT_NOTIFICATION: null
 }

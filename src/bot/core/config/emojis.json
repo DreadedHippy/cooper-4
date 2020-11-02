@@ -29,6 +29,12 @@
 
     "IED": ":fax:",
     "RPG": ":rocket:",
-    "GOLD_BAR": ":trophy:",
-    "GOLD_COIN": ":coin:"
+    "GOLD_COIN": ":coin:",
+    
+    "SILVER_BAR": ":silver_bar:772572668259991633",
+    "GOLD_BAR": ":Gold:751968182356541450",
+
+    "DIAMOND": ":diamond:772571588666458142",
+
+    "WOOD": ":wood:"
 }

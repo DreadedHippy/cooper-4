@@ -12,8 +12,11 @@ export default function registerCommunityEventsHandlers(client) {
   // Half-hourly checks for recurring events.
   const crateDropInterval = 60 * 60 * 1000;
   setInterval(() => {
+    // TODO: Check every 5 minutes for cratedrop etc, just don't ping every time.
+    // Make message "within next few minutes, not now"
     CratedropMinigame.run(crateDropInterval);
   }, crateDropInterval);
+
 
   // Ten minute checks for recurring events.
   setInterval(() => {
