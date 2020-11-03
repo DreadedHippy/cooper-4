@@ -80,7 +80,9 @@ export default class CratedropMinigame {
             const crateEmojiNames = _.map(_.values(CRATE_DATA), "emoji");
             if (!crateEmojiNames.includes(emojiIdentifier)) return false;
             
-            this.open(reaction, user);
+            this.axeHit(reaction, user);
+
+            // TODO: Implement using bomb on crate.
 
         } catch(e) {
             console.error(e);
@@ -88,7 +90,7 @@ export default class CratedropMinigame {
     }
 
     // If enough reactions to open reward all 'reactors' with random selection of rewards.
-    static async open(reaction, user) {
+    static async axeHit(reaction, user) {
         try {
             const rand = new Chance;
     

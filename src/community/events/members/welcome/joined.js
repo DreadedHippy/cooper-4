@@ -7,6 +7,8 @@ import UsersHelper from '../../../../bot/core/entities/users/usersHelper';
 export default async function memberJoined(member) {
 
   try {
+    console.log('MEMBER JOINED');
+
     const welcomeMessage = await ChannelsHelper._postToChannelCode('ENTRY', 
       `Welcome <@${member.user.id}> to The Coop, I am Cooper.` +
       ` We are an referral/invite only community, please introduce yourself. <#${CHANNELS.INTRO.id}>`
