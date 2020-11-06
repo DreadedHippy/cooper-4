@@ -33,7 +33,7 @@ export default class SacrificeCommand extends CoopCommand {
 			// Add message to sacrifice
 			const sacrificeEmbed = { embed: embedHelper({ 
 				title: `${targetUser.username}, you are being considered for sacrifice!`,
-				description: `To sacrifice ${targetUser.username} add swords reaction on this message, to protect the user from sacrifice add the shield emoji via reaction.`,
+				description: `To sacrifice <@${targetUser.id}> add swords reaction on this message, to protect the user from sacrifice add the shield emoji via reaction.`,
 				thumbnail: UsersHelper.avatar(targetUser)
 			}) };
 			const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
