@@ -48,8 +48,8 @@ export default class SacrificeCommand extends CoopCommand {
 			}, 1500);
 
 			// Add reactions for voting
-			setTimeout(() => { await sacrificeMsg.react(EMOJIS.VOTE_AGAINST); }, 1500);
-			setTimeout(() => { await sacrificeMsg.react(EMOJIS.VOTE_FOR); }, 2000);
+			setTimeout(async () => { await sacrificeMsg.react(EMOJIS.VOTE_AGAINST); }, 1500);
+			setTimeout(async () => { await sacrificeMsg.react(EMOJIS.VOTE_FOR); }, 2000);
 
 		} catch(e) {
 			console.error(e);
