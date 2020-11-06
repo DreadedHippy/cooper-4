@@ -33,7 +33,7 @@ export default class SacrificeCommand extends CoopCommand {
 			// Add message to sacrifice
 			const sacrificeEmbed = { embed: embedHelper({ 
 				title: `${targetUser.username}, you are being considered for sacrifice!`,
-				description: `To sacrifice ${targetUser.username} add swords reaction on sacrifice channel message.`,
+				description: `To sacrifice ${targetUser.username} add swords reaction on this message, to protect the user from sacrifice add the shield emoji via reaction.`,
 				thumbnail: UsersHelper.avatar(targetUser)
 			}) };
 			const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
@@ -42,13 +42,14 @@ export default class SacrificeCommand extends CoopCommand {
 			// Post to feed
 			setTimeout(() => {
 				ChannelsHelper._postToFeed(
-					`${targetUser.username} is being considered for sacrifice! Vote now! :O `
+					`<@${targetUser.id}> is being considered for sacrifice! Vote now! :O `
 					+ sacrificeLink
 				);
 			}, 1500);
 
 			// Add reactions for voting
-			await sacrificeMsg.react(EMOJIS.VOTE_AGAINST);
+			setTimeout(() => { await sacrificeMsg.react(EMOJIS.VOTE_AGAINST); }, 1500);
+			setTimeout(() => { await sacrificeMsg.react(EMOJIS.VOTE_FOR); }, 2000);
 
 		} catch(e) {
 			console.error(e);
