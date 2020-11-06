@@ -1,6 +1,6 @@
 import CoopCommand from '../../core/classes/coopCommand';
-import EMOJIS from '../../bot/core/config/emojis.json';
-import ChannelsHelper from "../../bot/core/entities/channels/channelsHelper";
+import EMOJIS from '../../core/config/emojis.json';
+import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 
 export default class SacrificeCommand extends CoopCommand {
 

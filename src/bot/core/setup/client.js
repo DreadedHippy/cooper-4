@@ -5,12 +5,12 @@ export default () => {
     const client = new Client({ 
         owner: '723652650389733557',
 
-        ws: { 
-            intents: [
-                "GUILD_MESSAGES",
-                'GUILD_MEMBERS'
-            ]
-        }
+        // ws: { 
+        //     intents: [
+        //         "GUILD_MESSAGES",
+        //         'GUILD_MEMBERS'
+        //     ]
+        // }
     });
 
     client.registry
