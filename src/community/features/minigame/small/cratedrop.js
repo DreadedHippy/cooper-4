@@ -14,7 +14,10 @@ import VotingHelper from '../../../events/voting/votingHelper';
 import ItemsHelper from '../../items/itemsHelper';
 
 
-// TODO: Think of rewards
+// TODO: Check every 5 minutes for cratedrop etc, just don't ping every time.
+// Make message "within next few minutes, not now"
+
+
 /**
  * Laxative - Spawns an egg randomly
  * Toxic Egg - Places a toxic egg
