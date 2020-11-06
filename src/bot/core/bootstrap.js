@@ -14,17 +14,22 @@ export default async function bootstrap() {
     // Globalise the created client (extended Discordjs).
     const botClient = STATE.CLIENT = client();
 
-    // Register logging, debugging, errors, etc.
-    registerLogging(botClient);
-
-    // Register community events.
-    registerCommunityEvents(botClient);
-
     // Connect to PostGres Database
     await Database.connect();
 
     // Login to Discord with the bot.
     await botClient.login(process.env.DISCORD_TOKEN);
+
+    botClient.on('guildMemberAdd', (member) => {
+        console.log('member added')
+        console.log(member);
+    });
+
+    // Register community events.
+    registerCommunityEvents(botClient);
+
+    // Register logging, debugging, errors, etc.
+    registerLogging(botClient);
 
     // Start basic CDN
     await CDNManager.start();

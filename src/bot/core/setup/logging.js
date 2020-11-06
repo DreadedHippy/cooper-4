@@ -1,13 +1,11 @@
-import state from "../../state";
-import ChannelsHelper from "../entities/channels/channelsHelper";
 import ServerHelper from "../entities/server/serverHelper";
 
 export default (discordClient) => {
     discordClient
         .on('error', console.error)
         .on('warn', console.warn)
-        // .on('debug', console.log)
-        .on('ready', async () => { 
+        .on('debug', console.log)
+        .on('ready', () => { 
             try {
                 console.log(`Logged in as ${discordClient.user.username}`); 
     

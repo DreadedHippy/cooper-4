@@ -1,5 +1,6 @@
-import PointsHelper from '../../../community/features/points/pointsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
+import EMOJIS from '../../bot/core/config/emojis.json';
+import ChannelsHelper from "../../bot/core/entities/channels/channelsHelper";
 
 export default class SacrificeCommand extends CoopCommand {
 
@@ -21,8 +22,27 @@ export default class SacrificeCommand extends CoopCommand {
 		try {
 			await msg.say('Add sacrifice message.');
 
+			// Get sacrifice target
+			let targetUser;
+			if (msg.mentions.users.first()) targetUser = msg.mentions.users.first();
+			if (!targetUser) throw new Error('Sacrifice target required.');
+
+			// Add message to sacrifice
+			const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', 'TEST');
+
+			// Add reactions for voting
+			await sacrificeMsg.react(EMOJIS.VOTE_AGAINST);
+
 		} catch(e) {
 			console.error(e);
+
+			// Create error message.
+			const errorMsg = await msg.say(e.message);
+
+			// Delete error message when no longer necessary.
+			if (errorMsg) setTimeout(() => {
+				errorMsg.delete();
+			}, 3000);
 		}
     }
     
