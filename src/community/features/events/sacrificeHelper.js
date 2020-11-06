@@ -1,3 +1,6 @@
+import EMOJIS from '../../../bot/core/config/emojis.json';
+import CHANNELS from '../../../bot/core/config/channels.json';
+
 export default class SacrificeHelper {
    
     static async onReaction(reaction, user) {
@@ -17,7 +20,13 @@ export default class SacrificeHelper {
         // const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
 
         // Try to access sacrificee from message
-        console.log(reaction.message.mentions);
+        try {
+            const sacrificeEmbedDesc = reaction.message.embeds[0].description;
+            console.log(sacrificeEmbedDesc);
+
+        } catch(e) {
+            console.error(e);
+        }
 
         // const targetUser = reaction.message.author;
 
