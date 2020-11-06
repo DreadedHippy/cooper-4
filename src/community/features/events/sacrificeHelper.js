@@ -58,8 +58,8 @@ export default class SacrificeHelper {
 
             // TODO: Notify when user is voted out.
                 
-        } catch(e) {
-            console.error(e);
-        }
+        // } catch(e) {
+        //     console.error(e);
+        // }
     }
 }
