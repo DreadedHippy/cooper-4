@@ -16,6 +16,8 @@ export default class SacrificeCommand extends CoopCommand {
 			description: 'The command for starting a round of sacrifices.',
 			details: `Details of the points command`,
 			examples: ['points', 'an example of how coop-econmics functions, trickle down, sunny side up Egg & Reagonmics. Supply and demand.'],
+
+			ownerOnly: true
 		});
 	}
 
@@ -31,8 +33,8 @@ export default class SacrificeCommand extends CoopCommand {
 			// Add message to sacrifice
 			const sacrificeEmbed = { embed: embedHelper({ 
 				title: `${targetUser.username}, you are being considered for sacrifice!`,
-				description: `To vote for ${targetUser.username} use the emojis on their intro post.`,
-				thumbnail: UsersHelper.avatar(targetUser.user)
+				description: `To sacrifice ${targetUser.username} add swords reaction on sacrifice channel message.`,
+				thumbnail: UsersHelper.avatar(targetUser)
 			}) };
 			const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
 			const sacrificeLink = MessagesHelper.link(sacrificeMsg);
