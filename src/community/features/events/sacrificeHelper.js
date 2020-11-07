@@ -28,13 +28,7 @@ export default class SacrificeHelper {
         try {
             const sacrificeEmbedDesc = reaction.message.embeds[0].description;
             const sacrificeeID = /<@(\d+)>/.exec(sacrificeEmbedDesc)[1];
-            const sacrificee = guild.members.cache.get(sacrificeeID);
-
-            console.log(sacrificeeID);
-            console.log(sacrificee);
-
-            const sacrificeMember = await UsersHelper.fetchMemberByID(guild, user.id);
-            const targetMember = await UsersHelper.fetchMemberByID(guild, sacrificee.id);
+            const targetMember = await UsersHelper.fetchMemberByID(guild, sacrificeeID);
 
             // If member left, don't do anything.
             if (!targetMember) return false;
