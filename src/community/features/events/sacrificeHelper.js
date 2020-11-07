@@ -5,6 +5,9 @@ import ServerHelper from '../../../bot/core/entities/server/serverHelper';
 import UsersHelper from '../../../bot/core/entities/users/usersHelper';
 import VotingHelper from '../../events/voting/votingHelper';
 import STATE from '../../../bot/state';
+import MessagesHelper from '../../../bot/core/entities/messages/messagesHelper';
+import embedHelper from '../../../ui/embed/embedHelper';
+
 
 export default class SacrificeHelper {
    
@@ -83,5 +86,30 @@ export default class SacrificeHelper {
         } catch(e) {
             console.error(e);
         }
+    }
+
+    static async offer(user) {
+        // TODO: Check last sacrifice time
+
+        // Add message to sacrifice
+        const sacrificeEmbed = { embed: embedHelper({ 
+            title: `${user.username}, you are being considered for sacrifice!`,
+            description: `To sacrifice <@${user.id}> press dagger, to protect the user press the shield.`,
+            thumbnail: UsersHelper.avatar(user)
+        }) };
+        const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
+        const sacrificeLink = MessagesHelper.link(sacrificeMsg);
+
+        // Post to feed
+        setTimeout(() => {
+            const sacrificeMsgText = `<@${user.id}> is being considered for sacrifice! Vote now! :O ` + sacrificeLink;
+            ChannelsHelper._postToFeed(sacrificeMsgText);
+        }, 1500);
+
+        // Add reactions for voting
+        setTimeout(async () => { await sacrificeMsg.react(EMOJIS.DAGGER); }, 1500);
+        setTimeout(async () => { await sacrificeMsg.react(EMOJIS.SHIELD); }, 2000);
+
+        return true;
     }
 }
