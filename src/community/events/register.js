@@ -19,10 +19,10 @@ export default function registerCommunityEventsHandlers(client) {
     CratedropMinigame.run(crateDropInterval);
 
     // Misc
-    if (rand.bool({ likelihood: 5 })) ChannelsHelper._postToFeed(';-;');
+    if (chanceInstance.bool({ likelihood: 5 })) ChannelsHelper._postToFeed(';-;');
 
     const extraUs = 'u'.repeat(chanceInstance.natural({ min: 1, max: 20 }));
-    if (rand.bool({ likelihood: 2.5 })) ChannelsHelper._postToFeed('Ruuuuuu' + extraUs);
+    if (chanceInstance.bool({ likelihood: 2.5 })) ChannelsHelper._postToFeed('Ruuuuuu' + extraUs);
   }, crateDropInterval);
 
 
