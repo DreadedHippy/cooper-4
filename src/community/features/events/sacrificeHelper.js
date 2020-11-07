@@ -13,7 +13,7 @@ export default class SacrificeHelper {
    
     static async onReaction(reaction, user) {
         const emoji = reaction.emoji.name;
-        const isVoteEmoji = EMOJIS.DAGGER === emoji;
+        const isVoteEmoji = [EMOJIS.DAGGER, EMOJIS.SHIELD].indexOf(emoji) > -1;
         const channelID = reaction.message.channel.id;
 
         if (user.bot) return false;
@@ -47,6 +47,11 @@ export default class SacrificeHelper {
                 if (reactionType.emoji.name === EMOJIS.DAGGER) sacrificeVotes = Math.max(0, reactionType.count - 1);
                 if (reactionType.emoji.name === EMOJIS.SHIELD) keepVotes = Math.max(0, reactionType.count - 1);
             });
+
+            rawKeepVotes 5
+            5
+            5
+            false
 
             // Process votes with feedback for currently unprotected user.
             const rawKeepVotes = reqKeepVotes - keepVotes;
