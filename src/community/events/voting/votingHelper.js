@@ -15,13 +15,6 @@ export default class VotingHelper {
       };
     }));
   }
-
-  // static collectReactions(msgReactionCache, emojis) {
-  //   return msgReactionCache.map(reactionType => {
-  //     if (reactionType.emoji.name === EMOJIS.VOTE_AGAINST) sacrificeVotes = Math.max(0, reactionType.count - 1);
-  //     if (reactionType.emoji.name === EMOJIS.VOTE_FOR) keepVotes = Math.max(0, reactionType.count - 1);
-  //   });
-  // }
   
   static _calcResults(results) {
     // Remove Cooper's initial emojis (prompts)

@@ -33,7 +33,7 @@ export default class SacrificeCommand extends CoopCommand {
 			// Add message to sacrifice
 			const sacrificeEmbed = { embed: embedHelper({ 
 				title: `${targetUser.username}, you are being considered for sacrifice!`,
-				description: `To sacrifice <@${targetUser.id}> add swords reaction on this message, to protect the user from sacrifice add the shield emoji via reaction.`,
+				description: `To sacrifice <@${targetUser.id}> press dagger, to protect the user press the shield.`,
 				thumbnail: UsersHelper.avatar(targetUser)
 			}) };
 			const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
@@ -41,15 +41,13 @@ export default class SacrificeCommand extends CoopCommand {
 
 			// Post to feed
 			setTimeout(() => {
-				ChannelsHelper._postToFeed(
-					`<@${targetUser.id}> is being considered for sacrifice! Vote now! :O `
-					+ sacrificeLink
-				);
+				const sacrificeMsgText = `<@${targetUser.id}> is being considered for sacrifice! Vote now! :O ` + sacrificeLink;
+				ChannelsHelper._postToFeed(sacrificeMsgText);
 			}, 1500);
 
 			// Add reactions for voting
-			setTimeout(async () => { await sacrificeMsg.react(EMOJIS.VOTE_AGAINST); }, 1500);
-			setTimeout(async () => { await sacrificeMsg.react(EMOJIS.VOTE_FOR); }, 2000);
+			setTimeout(async () => { await sacrificeMsg.react(EMOJIS.DAGGER); }, 1500);
+			setTimeout(async () => { await sacrificeMsg.react(EMOJIS.SHIELD); }, 2000);
 
 		} catch(e) {
 			console.error(e);
@@ -58,9 +56,7 @@ export default class SacrificeCommand extends CoopCommand {
 			const errorMsg = await msg.say(e.message);
 
 			// Delete error message when no longer necessary.
-			if (errorMsg) setTimeout(() => {
-				errorMsg.delete();
-			}, 3000);
+			if (errorMsg) setTimeout(() => { errorMsg.delete(); }, 3000);
 		}
     }
     
