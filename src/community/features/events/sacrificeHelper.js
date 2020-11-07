@@ -1,6 +1,9 @@
 import EMOJIS from '../../../bot/core/config/emojis.json';
 import CHANNELS from '../../../bot/core/config/channels.json';
 import ChannelsHelper from '../../../bot/core/entities/channels/channelsHelper';
+import ServerHelper from '../../../bot/core/entities/server/serverHelper';
+import UsersHelper from '../../../bot/core/entities/users/usersHelper';
+import VotingHelper from '../../events/voting/votingHelper';
 
 export default class SacrificeHelper {
    
@@ -57,7 +60,7 @@ export default class SacrificeHelper {
                 `\nTo Protect: ${EMOJIS.VOTE_AGAINST}: ${Math.max(0, reqKeepVotes - againstVotes)}`;
 
             await ChannelsHelper._postToFeed(votingStatusText);
-            
+
             // TODO: Notify when user is protected/kept.
             // TODO: Notify when user is voted out.
                     
