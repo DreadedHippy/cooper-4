@@ -46,13 +46,13 @@ export default class SacrificeHelper {
             });
 
             // TODO: Implement if enough keep votes, don't proccess sacrifice.
-            
+
             // TODO: Add type of vote
             // TODO: When type of vote is identified, only update for that type of vote.
-            const votingStatusTitle = `<@${targetUser.id}>'s sacrifice was voted upon! Remaining Votes:`;
+            const votingStatusTitle = `<@${targetMember.id}>'s sacrifice was voted upon! Remaining Votes:`;
             const votingStatusText = votingStatusTitle +
-                `\nTo Sacrifice: ${EMOJIS.VOTE_FOR}: ${Math.max(0, reqSacrificeVotes - forVotes)} | ` +
-                `\nTo Protect: ${EMOJIS.VOTE_AGAINST}: ${Math.max(0, reqKeepVotes - againstVotes)}`;
+                `\nTo Protect: ${EMOJIS.VOTE_FOR}: ${Math.max(0, reqKeepVotes - keepVotes)} | ` +
+                `\nTo Sacrifice: ${EMOJIS.VOTE_AGAINST}: ${Math.max(0, reqSacrificeVotes - sacrificeVotes)}`;
 
             await ChannelsHelper._postToFeed(votingStatusText);
 
