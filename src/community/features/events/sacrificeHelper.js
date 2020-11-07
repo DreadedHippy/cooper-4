@@ -107,8 +107,8 @@ export default class SacrificeHelper {
         }, 1500);
 
         // Add reactions for voting
-        setTimeout(async () => { await sacrificeMsg.react(EMOJIS.DAGGER); }, 1500);
-        setTimeout(async () => { await sacrificeMsg.react(EMOJIS.SHIELD); }, 2000);
+        setTimeout(async () => { await sacrificeMsg.react('\\' + EMOJIS.DAGGER); }, 1500);
+        setTimeout(async () => { await sacrificeMsg.react('\\' + EMOJIS.SHIELD); }, 2000);
 
         return true;
     }
