@@ -4,6 +4,7 @@ import ChannelsHelper from '../../../bot/core/entities/channels/channelsHelper';
 import ServerHelper from '../../../bot/core/entities/server/serverHelper';
 import UsersHelper from '../../../bot/core/entities/users/usersHelper';
 import VotingHelper from '../../events/voting/votingHelper';
+import STATE from '../../../bot/state';
 
 export default class SacrificeHelper {
    
