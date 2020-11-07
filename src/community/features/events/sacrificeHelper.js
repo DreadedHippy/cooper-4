@@ -48,21 +48,12 @@ export default class SacrificeHelper {
                 if (reactionType.emoji.name === EMOJIS.SHIELD) keepVotes = Math.max(0, reactionType.count - 1);
             });
 
-            rawKeepVotes 5
-            5
-            5
-            false
 
             // Process votes with feedback for currently unprotected user.
             const rawKeepVotes = reqKeepVotes - keepVotes;
-            console.log('rawKeepVotes', rawKeepVotes);
             if (rawKeepVotes > 0) {
                 const remainingProtectVotes = Math.max(0, rawKeepVotes);
                 const remainingSacrificeVotes = Math.max(0, reqSacrificeVotes - sacrificeVotes);   
-                
-                console.log(remainingSacrificeVotes);
-                console.log(remainingProtectVotes);
-                console.log(remainingSacrificeVotes === 0)
 
                 // Check if enough votes to sacrifice.
                 if (remainingSacrificeVotes === 0) {

@@ -26,6 +26,8 @@ export default function registerCommunityEventsHandlers(client) {
 
   /** ___--___ EVENT/FEATURE RELATED SCHEDULING ___--___ */
 
+  // TODO: Every 6 hours 25% chance of offering someone for sacrifice.
+
   const crateDropInterval = 60 * 60 * 1000;
   setInterval(() => { CratedropMinigame.run(crateDropInterval); }, crateDropInterval);
 
