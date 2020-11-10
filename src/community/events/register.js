@@ -40,6 +40,11 @@ export default function registerCommunityEventsHandlers(client) {
 
     const extraUs = 'u'.repeat(chanceInstance.natural({ min: 1, max: 20 }));
     if (chanceInstance.bool({ likelihood: 2.5 })) ChannelsHelper._postToFeed('Ruuuuuu' + extraUs);
-  }, 60 * 60 * 1000);
+  }, 60 * 45 * 1000);
+
+  setInterval(() => {
+    if (chanceInstance.bool({ likelihood: 5 })) ChannelsHelper._postToFeed('._.');
+  }, 60 * 120 * 1000);
+
 
 }
