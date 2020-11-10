@@ -1,10 +1,14 @@
+import Axios from "axios";
+import { Chance } from "chance";
 import CHANNELS from "../../../bot/core/config/channels.json";
 import ChannelsHelper from "../../../bot/core/entities/channels/channelsHelper";
+import STATE from "../../../bot/state";
 
 import achievementPostedHandler from "../../features/encouragement/achievementPosted";
 import workPostHandler from "../../features/encouragement/workPosted";
 import introPosted from "../members/welcome/introPosted";
 
+const rand = new Chance;
 
 export default function messageAddedHandler(msg) {
     
@@ -28,4 +32,46 @@ export default function messageAddedHandler(msg) {
         msg.react('🤦‍♂️');
     }
 
+
+    const target = msg.mentions.users.first();
+    if (target) {
+
+        // If targetting Cooper.
+        if (target.id === STATE.CLIENT.user.id) {
+            if (msg.content.indexOf(';-;') > -1) {
+                msg.say(';-;');
+            }
+
+            if (msg.content.indexOf('._.') > -1) {
+                msg.say('._.');
+            }
+        }
+
+        if (
+            msg.content.indexOf('hate you') > -1 ||
+            msg.content.indexOf('fuck you') > -1 ||
+            msg.content.indexOf('die') > -1 ||
+            msg.content.indexOf('stupid') > -1 ||
+            msg.content.indexOf('dumb') > -1 ||
+            msg.content.indexOf('idiot') > -1 ||
+            msg.content.indexOf('retard') > -1 ||
+            msg.content.indexOf('gay') > -1 ||
+            msg.content.indexOf('ugly') > -1
+        ) {
+            setTimeout(async () => {
+
+                // Implement chance-based to rate limit and make easter egg not every time/ubiquitous.
+                if (rand.bool({ likelihood: 12.5 })) {
+                    const endpoint = 'https://api.fungenerators.com/taunt/generate?category=shakespeare&limit=1';
+                    const result = (await Axios.get(endpoint)).data || null;
+                    const insults = (result.contents || null).taunts || null;
+                    if (insults) msg.say(insults[0]);
+                }
+            }, 250);
+        }
+
+
+        // https://api.fungenerators.com/taunt/generate?category=shakespeare&limit=1
+        // https://insult.mattbas.org/api/insult
+    }
 }
