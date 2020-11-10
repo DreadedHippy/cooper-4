@@ -21,7 +21,7 @@ export default class InklingboiCommand extends CoopCommand {
         setTimeout(() => {
             super.run(msg);
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 const repeatNum = chanceInstance.natural({ min: 1, max: 20 });
                 const first = `Inklingboiiiiii?!?!??!!?!?!?! 🌋🌋🌋`;
                 const second = 'Ruuuuuu' + 'u'.repeat(repeatNum) + '!!!';
