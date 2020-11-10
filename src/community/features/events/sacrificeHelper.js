@@ -59,9 +59,7 @@ export default class SacrificeHelper {
                 if (remainingSacrificeVotes === 0) {
                     // Notify when user is voted out.
                     await ChannelsHelper._postToFeed(`<@${targetMember.id}>'s was sacrificed!`);
-
-                    // TODO: await targetMember.ban();
-                    await ChannelsHelper._postToFeed('User should be banned... (note)');
+                    await targetMember.ban();
 
                 } else {
                     // Provide feedback for user who is not currently protected or sacrificed.
