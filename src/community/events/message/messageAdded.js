@@ -36,13 +36,14 @@ export default function messageAddedHandler(msg) {
     const target = msg.mentions.users.first();
     if (target) {
 
-        
+
         // If targetting Cooper.
         if (target.id === STATE.CLIENT.user.id) {
             if (msg.content.indexOf(';-;') > -1) msg.say(';-;');
             if (msg.content.indexOf('._.') > -1) msg.say('._.');
             if (msg.content.indexOf(':]') > -1) msg.say(':]');
             if (msg.content.indexOf(':}') > -1) msg.say(':}');
+            if (msg.content.indexOf(':3') >-1) msg.say(':3');
         }
 
         if (
