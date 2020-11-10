@@ -1,17 +1,17 @@
 import { Chance } from 'chance';
 import CoopCommand from '../../core/classes/coopCommand';
 
-export default class InklingboiCommand extends CoopCommand {
+export default class SalCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
-			name: 'inklingboi',
+			name: 'sal',
 			group: 'misc',
-			memberName: 'inklingboi',
+			memberName: 'sal',
 			aliases: [],
-			description: 'Information inklingboi our fine community!',
+			description: 'Information sal our fine community!',
 			details: `Details`,
-			examples: ['inklingboi', 'inklingboi example?'],
+			examples: ['sal', 'sal example?'],
 		});
 	}
 
@@ -37,12 +37,6 @@ export default class InklingboiCommand extends CoopCommand {
                         await inklingMsg.edit(third);
                         setTimeout(() => { inklingMsg.reactions.removeAll(); }, 250);
                         setTimeout(() => { inklingMsg.react('🇩🇪'); }, 500);
-
-                        setTimeout(async () => {
-                            await inklingMsg.edit(';-;');
-                            setTimeout(() => { inklingMsg.reactions.removeAll(); }, 250);
-                            setTimeout(() => { inklingMsg.react('😭'); }, 500);
-                        }, 2000);
                     }, 3000);
                 }, 3000);
             }, 300);
