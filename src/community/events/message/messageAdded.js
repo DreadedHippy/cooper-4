@@ -44,33 +44,35 @@ export default function messageAddedHandler(msg) {
             if (msg.content.indexOf(':]') > -1) msg.say(':]');
             if (msg.content.indexOf(':}') > -1) msg.say(':}');
             if (msg.content.indexOf(':3') >-1) msg.say(':3');
+
+            if (
+                msg.content.indexOf('hate you') > -1 ||
+                msg.content.indexOf('fuck you') > -1 ||
+                msg.content.indexOf('die') > -1 ||
+                msg.content.indexOf('stupid') > -1 ||
+                msg.content.indexOf('dumb') > -1 ||
+                msg.content.indexOf('idiot') > -1 ||
+                msg.content.indexOf('retard') > -1 ||
+                msg.content.indexOf('gay') > -1 ||
+                msg.content.indexOf('ugly') > -1
+            ) {
+                setTimeout(async () => {
+    
+                    // Implement chance-based to rate limit and make easter egg not every time/ubiquitous.
+                    if (rand.bool({ likelihood: 12.5 })) {
+                        const endpoint = 'https://api.fungenerators.com/taunt/generate?category=shakespeare&limit=1';
+                        const result = (await Axios.get(endpoint)).data || null;
+                        const insults = (result.contents || null).taunts || null;
+                        if (insults) msg.say(insults[0]);
+                    }
+                }, 250);
+            }
         }
-
-        if (
-            msg.content.indexOf('hate you') > -1 ||
-            msg.content.indexOf('fuck you') > -1 ||
-            msg.content.indexOf('die') > -1 ||
-            msg.content.indexOf('stupid') > -1 ||
-            msg.content.indexOf('dumb') > -1 ||
-            msg.content.indexOf('idiot') > -1 ||
-            msg.content.indexOf('retard') > -1 ||
-            msg.content.indexOf('gay') > -1 ||
-            msg.content.indexOf('ugly') > -1
-        ) {
-            setTimeout(async () => {
-
-                // Implement chance-based to rate limit and make easter egg not every time/ubiquitous.
-                if (rand.bool({ likelihood: 12.5 })) {
-                    const endpoint = 'https://api.fungenerators.com/taunt/generate?category=shakespeare&limit=1';
-                    const result = (await Axios.get(endpoint)).data || null;
-                    const insults = (result.contents || null).taunts || null;
-                    if (insults) msg.say(insults[0]);
-                }
-            }, 250);
-        }
-
 
         // https://api.fungenerators.com/taunt/generate?category=shakespeare&limit=1
         // https://insult.mattbas.org/api/insult
     }
+
+    // Intercept inklingboi
+    if (msg.author.id === '687280609558528000' && msg.content === ';-;') inklingMsg.react('😉'); 
 }
