@@ -7,7 +7,9 @@ import VotingHelper from '../../events/voting/votingHelper';
 import STATE from '../../../bot/state';
 import MessagesHelper from '../../../bot/core/entities/messages/messagesHelper';
 import embedHelper from '../../../ui/embed/embedHelper';
+import Chance from 'chance';
 
+const chanceInstance = new Chance;
 
 export default class SacrificeHelper {
    
@@ -105,5 +107,16 @@ export default class SacrificeHelper {
         setTimeout(async () => { await sacrificeMsg.react(EMOJIS.SHIELD); }, 2000);
 
         return true;
+    }
+
+    static async random() {
+        const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+        const membersArray = Array.from(guild.members.cache);
+        const randomMember = membersArray[Math.floor(Math.random() * membersArray.length)];
+
+        // TODO: Work around privileged intents 
+
+        console.log(randomMember);
+        console.log(guild.members.cache);
     }
 }

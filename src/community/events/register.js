@@ -8,6 +8,7 @@ import left from "./members/welcome/left";
 import messageAddedHandler from "./message/messageAdded";
 import reactAddedHandler from "./reaction/reactionAdded";
 import ChannelsHelper from "../../bot/core/entities/channels/channelsHelper";
+import SacrificeHelper from "../features/events/sacrificeHelper";
 
 export default function registerCommunityEventsHandlers(client) {
 
@@ -26,25 +27,33 @@ export default function registerCommunityEventsHandlers(client) {
 
   /** ___--___ EVENT/FEATURE RELATED SCHEDULING ___--___ */
 
+  
+  const chanceInstance = new Chance;
+
   // TODO: Every 6 hours 25% chance of offering someone for sacrifice.
+  setInterval(() => {
+    if (chanceInstance.bool({ likelihood: 25 })) {
+      SacrificeHelper.random();
+    }
+  }, ((60 * 60) * 6) * 1000);
 
   const crateDropInterval = 60 * 60 * 1000;
   setInterval(() => { CratedropMinigame.run(crateDropInterval); }, crateDropInterval);
 
-  setInterval(EggHuntMinigame.run, 60 * 15 * 1000);
+  setInterval(() => { EggHuntMinigame.run(); }, 60 * 15 * 1000);
 
-  // Miscellaneous features.
-  const chanceInstance = new Chance;
+// Miscellaneous features.
   setInterval(() => {
-    if (chanceInstance.bool({ likelihood: 5 })) ChannelsHelper._postToFeed(';-;');
+    if (chanceInstance.bool({ likelihood: 4 })) ChannelsHelper._postToFeed(';-;');
+  }, 60 * 45 * 1000);
 
+  setInterval(() => {
     const extraUs = 'u'.repeat(chanceInstance.natural({ min: 1, max: 20 }));
     if (chanceInstance.bool({ likelihood: 2.5 })) ChannelsHelper._postToFeed('Ruuuuuu' + extraUs);
-  }, 60 * 45 * 1000);
+  }, ((60 * 60) * 3) * 1000);
 
   setInterval(() => {
     if (chanceInstance.bool({ likelihood: 5 })) ChannelsHelper._postToFeed('._.');
   }, 60 * 120 * 1000);
-
 
 }

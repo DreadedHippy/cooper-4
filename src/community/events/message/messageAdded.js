@@ -74,5 +74,5 @@ export default function messageAddedHandler(msg) {
     }
 
     // Intercept inklingboi
-    if (msg.author.id === '687280609558528000' && msg.content === ';-;') inklingMsg.react('😉'); 
+    if (msg.author.id === '687280609558528000' && msg.content === ';-;') msg.react('😉'); 
 }
