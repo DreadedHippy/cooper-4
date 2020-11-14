@@ -148,7 +148,10 @@ export default class SacrificeHelper {
             setTimeout(async () => {
                 // May have got stabbed more in the past 3 seconds.
                 let updatedNumVotes = sacrificeVotes;
+                const backstabbers = [];
                 reaction.message.reactions.cache.map(reactionType => {
+                    console.log('attempt to log reactor so we can provide a list of the backstabbers');
+                    console.log(reactionType);
                     const emoji = reactionType.emoji.name;
                     if (this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER)) {
                         updatedNumVotes = reactionType.count;
@@ -158,9 +161,9 @@ export default class SacrificeHelper {
                 const backstabMsg = await reaction.message.say(
                     `${targetMember.user.username} got backstabbed! ${EMOJIS.DAGGER.repeat(updatedNumVotes)}`
                 );
-                setTimeout(async () => {
-                    await backstabMsg.remove();
-                }, 3500)
+                // setTimeout(async () => {
+                //     await backstabMsg.delete();
+                // }, 3500)
             }, 3000)
         }
     }
