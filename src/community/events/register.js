@@ -30,7 +30,7 @@ export default function registerCommunityEventsHandlers(client) {
   
   const chanceInstance = new Chance;
 
-  // TODO: Every 6 hours 25% chance of offering someone for sacrifice.
+  // Every 6 hours 25% chance of offering someone for sacrifice.
   setInterval(() => {
     if (chanceInstance.bool({ likelihood: 25 })) {
       SacrificeHelper.random();

@@ -35,8 +35,6 @@ export default class ChannelsHelper {
             .filterByCodes(guild, codes)
             .map(async channel => await channel.send(message));
     }
-
-
     static fetchRandomTextChannel(guild) {
         const rand = new Chance;
 

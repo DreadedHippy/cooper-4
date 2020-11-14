@@ -119,19 +119,24 @@ export default class SacrificeHelper {
         const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
 
         // Calculate the number of required votes for the redemption poll.
-        const reqSacrificeVotes = VotingHelper.getNumRequired(guild, .025);
+        const reqSacrificeVotes = VotingHelper.getNumRequired(guild, .015);
     
         // Get existing reactions on message.
         let sacrificeVotes = 0;
         reaction.message.reactions.cache.map(reactionType => {
             const emoji = reactionType.emoji.name;
             if (this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER)) {
-                sacrificeVotes = Math.max(0, reactionType.count - 1);
+                sacrificeVotes = reactionType.count;
             }
         });
 
+        console.log('process back dagger');
+        console.log(sacrificeVotes, reqSacrificeVotes);
+
         if (sacrificeVotes > reqSacrificeVotes) {
-            this.offer(reaction.message.author);
+            const targetID = reaction.message.author.id;
+            const targetMember = await UsersHelper.fetchMemberByID(guild, targetID);
+            await this.offer(targetMember.user);
         }
     }
 
