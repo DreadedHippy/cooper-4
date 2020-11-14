@@ -133,10 +133,35 @@ export default class SacrificeHelper {
         console.log('process back dagger');
         console.log(sacrificeVotes, reqSacrificeVotes);
 
-        if (sacrificeVotes > reqSacrificeVotes) {
+        if (sacrificeVotes >= reqSacrificeVotes) {
             const targetID = reaction.message.author.id;
             const targetMember = await UsersHelper.fetchMemberByID(guild, targetID);
+
+            // TODO: Add self-destructing USER got backstabbed message.
+            // TODO: Award points to bakcstabbers
+            // TODO: Award points for successfully removing a backstabbed member.
+
+            // TODO: Also reward points for approving/rejecting an incoming member (reward more for rejection)
+
             await this.offer(targetMember.user);
+
+            setTimeout(async () => {
+                // May have got stabbed more in the past 3 seconds.
+                let updatedNumVotes = sacrificeVotes;
+                reaction.message.reactions.cache.map(reactionType => {
+                    const emoji = reactionType.emoji.name;
+                    if (this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER)) {
+                        updatedNumVotes = reactionType.count;
+                    }
+                });
+
+                const backstabMsg = await reaction.message.say(
+                    `${targetMember.user.username} got backstabbed! ${EMOJIS.DAGGER.repeat(updatedNumVotes)}`
+                );
+                setTimeout(async () => {
+                    await backstabMsg.remove();
+                }, 3500)
+            }, 3000)
         }
     }
 
