@@ -79,6 +79,9 @@ export default class RedemptionHelper {
 
                 const introRolesNames = [MEMBER.name, BEGINNER.name, SUBSCRIBER.name];
                 const introRoles = RolesHelper.getRoles(guild, introRolesNames);
+                
+                // Add to database
+                await UsersHelper.addToDatabase(targetMember);
 
                 await targetMember.roles.add(introRoles);
                 await targetMember.send('You were voted into The Coop and now have full access!');

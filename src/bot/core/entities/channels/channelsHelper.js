@@ -39,8 +39,12 @@ export default class ChannelsHelper {
 
     static fetchRandomTextChannel(guild) {
         const rand = new Chance;
-        const channelKeys = Object.keys(CHANNELS);
-        const channelKey = rand.pickone(channelKeys);
+
+        // Prevent egg and crate drops in unverified channels.
+        const filteredKeys = Object.keys(CHANNELS)
+            .filter(key => !['ENTRY', 'INTRO', 'ROLES'].includes(key));
+
+        const channelKey = rand.pickone(filteredKeys);
 
         const channelID = CHANNELS[channelKey].id;
 

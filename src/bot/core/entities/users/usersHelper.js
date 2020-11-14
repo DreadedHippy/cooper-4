@@ -70,6 +70,14 @@ export default class UsersHelper {
         return await Database.query(query);
     }
 
+    static async load() {
+        const query = {
+            name: "get-users",
+            text: "SELECT * FROM users"
+        };
+        return await Database.query(query);        
+    }
+
     static async getIntro(member) {
         const query = {
             name: "get-user-intro",

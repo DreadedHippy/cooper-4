@@ -13,7 +13,7 @@ const chanceInstance = new Chance;
 
 export default class SacrificeHelper {
    
-    static async onReaction(reaction, user) {
+    static isReactionSacrificeVote(reaction, user) {
         const emoji = reaction.emoji.name;
         const isVoteEmoji = [EMOJIS.DAGGER, EMOJIS.SHIELD].indexOf(emoji) > -1;
         const channelID = reaction.message.channel.id;
@@ -22,8 +22,39 @@ export default class SacrificeHelper {
         if (!isVoteEmoji) return false;
         if (channelID !== CHANNELS.SACRIFICE.id) return false;
 
+        // Guards passed.
+        return true;
+    }
+
+    static emojiToUni(emoji) {
+        return emoji.codePointAt(0).toString(16);
+    }
+
+    static isBackDagger(reaction, user) {
+        const emoji = reaction.emoji.name;
+        const channelID = reaction.message.channel.id;
+        const isSacrificeChannel = channelID === CHANNELS.SACRIFICE.id;
+        const isDagger = this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER);
+
+        if (isSacrificeChannel) return false;
+        if (user.bot) return false;
+        if (reaction.message.author.bot) return false;
+        if (!isDagger) return false;
+
+        // Guards passed.
+        return true;
+    }
+
+    static async onReaction(reaction, user) {
+        // Is back dagger
+        if (this.isBackDagger(reaction, user)) {
+            this.processBackDagger(reaction, user);
+        }
+
         // Process the vote.
-        this.processVote(reaction, user);
+        if (this.isReactionSacrificeVote(reaction, user)) {
+            this.processVote(reaction, user);
+        }
     }
 
     static async processVote(reaction, user) {
@@ -84,6 +115,26 @@ export default class SacrificeHelper {
         }
     }
 
+    static async processBackDagger(reaction, user) {
+        const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+
+        // Calculate the number of required votes for the redemption poll.
+        const reqSacrificeVotes = VotingHelper.getNumRequired(guild, .025);
+    
+        // Get existing reactions on message.
+        let sacrificeVotes = 0;
+        reaction.message.reactions.cache.map(reactionType => {
+            const emoji = reactionType.emoji.name;
+            if (this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER)) {
+                sacrificeVotes = Math.max(0, reactionType.count - 1);
+            }
+        });
+
+        if (sacrificeVotes > reqSacrificeVotes) {
+            this.offer(reaction.message.author);
+        }
+    }
+
     static async offer(user) {
         // TODO: Check last sacrifice time
 
@@ -110,13 +161,16 @@ export default class SacrificeHelper {
     }
 
     static async random() {
-        const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-        const membersArray = Array.from(guild.members.cache);
-        const randomMember = membersArray[Math.floor(Math.random() * membersArray.length)];
+        const usersQuery = await UsersHelper.load();
+        const rowCount = usersQuery.rowCount || 0;
+        const users = usersQuery.rows || [];
+        if (rowCount > 0) {
+            const randomIndex = chanceInstance.natural({ min: 0, max: rowCount });
+            const randomUser = users[randomIndex];
 
-        // TODO: Work around privileged intents 
-
-        console.log(randomMember);
-        console.log(guild.members.cache);
+            const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+            const member = await guild.members.fetch(randomUser.discord_id);
+            if (member) this.offer(member.user);
+        }
     }
 }

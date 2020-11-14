@@ -20,9 +20,6 @@ export default async function memberJoined(member) {
       MessagesHelper.link(welcomeMessage)
     );
 
-    // Add to database
-    await UsersHelper.addToDatabase(member);
-
   } catch(e) {
     console.error(e)
   }
