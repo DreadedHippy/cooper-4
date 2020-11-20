@@ -12,6 +12,12 @@ const rand = new Chance;
 
 export default function messageAddedHandler(msg) {
     
+    // Prevent the bruhs
+    if (msg.content.indexOf('bruh') > -1) {
+        msg.say('bruh');
+        // TODO: Subtract points
+    }
+
     // Encourage posters in show work channel.
     if (msg.channel.id === CHANNELS.SHOWWORK.id) workPostHandler(msg);
 
@@ -72,4 +78,5 @@ export default function messageAddedHandler(msg) {
     // Intercept inklingboi
     if (msg.author.id === '723652650389733557' && msg.content === ';-;') msg.react('😉');
     if (msg.author.id === '723652650389733557' && msg.content === ';--;') msg.react('😉');
+
 }
