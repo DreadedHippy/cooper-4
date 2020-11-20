@@ -46,6 +46,7 @@ export default class EggHuntMinigame {
             if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
                 // Check if basket emoji or frying pan emoji
                 this.collect(reaction, user);
+                
                 // TODO: Implement frying functionality.
                 // SHARE OR STEAL
             }
@@ -67,28 +68,50 @@ export default class EggHuntMinigame {
 
     static async collect(reaction, user) {    
         try {
-            if (user.id !== STATE.CLIENT.user.id) {               
+            if (user.id !== STATE.CLIENT.user.id) {     
+                const rand = new Chance;
+                
                 const rarity = this.calculateRarityFromMessage(reaction.message);
                 const reward = EGG_DATA[rarity].points;
                 const emoji = EGG_DATA[rarity].emoji;
+                const channelName = reaction.message.channel.name;
 
-                // Store points and egg collection data in database.
-                const updated = await PointsHelper.addPointsByID(user.id, reward);
+                let acknowledgementMsgText = '';
+                let activityFeedMsgText = '';
 
-                // Add/update egg item to user
-                await ItemsHelper.add(user.id, rarity, 1);
+                if (rand.bool({ likelihood: 85 })) {
+                    // Store points and egg collection data in database.
+                    const updated = await PointsHelper.addPointsByID(user.id, reward);
 
-                const acknowledgementMsg = await reaction.message.say(
-                    `<${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})`
-                );
+                    // Add/update egg item to user
+                    await ItemsHelper.add(user.id, rarity, 1);
+
+                    acknowledgementMsgText = `
+                        <${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})
+                    `.trim();
+
+                    activityFeedMsgText = `
+                        ${user.username} collected an egg in "${channelName}" channel! <${emoji}>
+                    `.trim();
+                } else {
+                    acknowledgementMsgText = `
+                        <${emoji}>🧺 Egg Hunt! ${user.username} clumsily broke the egg, 0 points!
+                    `.trim();
+
+                    activityFeedMsgText = `
+                        ${user.username} broke an egg in "${channelName}" channel! :( <${emoji}>
+                    `.trim();
+                }
+
+
+                const acknowledgementMsg = await reaction.message.say(acknowledgementMsgText);
                 
                 // Remove acknowledgement message after 30 seconds.
                 setTimeout(async () => { await acknowledgementMsg.delete(); }, 30000)
                 
-                const channelName = reaction.message.channel.name;
-                ChannelsHelper._postToFeed(
-                    `${user.username} collected an egg in "${channelName}" channel! <${emoji}>`
-                )
+                ChannelsHelper._postToFeed(activityFeedMsgText)
+
+                // Delete the egg.
                 await reaction.message.delete();
             }
         } catch(e) {

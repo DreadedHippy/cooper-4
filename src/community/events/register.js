@@ -32,9 +32,7 @@ export default function registerCommunityEventsHandlers(client) {
 
   // Every 6 hours 25% chance of offering someone for sacrifice.
   setInterval(() => {
-    if (chanceInstance.bool({ likelihood: 25 })) {
-      SacrificeHelper.random();
-    }
+    if (chanceInstance.bool({ likelihood: 75 })) SacrificeHelper.random();
   }, ((60 * 60) * 6) * 1000);
 
   const crateDropInterval = 60 * 60 * 1000;

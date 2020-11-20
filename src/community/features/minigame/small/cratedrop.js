@@ -239,7 +239,8 @@ export default class CratedropMinigame {
             await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress.`);
 
             // Drop the crate!
-            await dropChannel.send(MessagesHelper.emojifyID(EMOJIS[rarity]));
+            const crateMSG = await dropChannel.send(MessagesHelper.emojifyID(EMOJIS[rarity]));
+            setTimeout(() => { crateMSG.react('🪓'); }, 333);
             
         } catch(e) {
             console.error(e);

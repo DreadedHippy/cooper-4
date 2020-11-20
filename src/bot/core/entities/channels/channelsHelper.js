@@ -40,7 +40,7 @@ export default class ChannelsHelper {
 
         // Prevent egg and crate drops in unverified channels.
         const filteredKeys = Object.keys(CHANNELS)
-            .filter(key => !['ENTRY', 'INTRO', 'ROLES'].includes(key));
+            .filter(key => !['ENTRY', 'INTRO', 'ROLES', 'LEADERS'].includes(key));
 
         const channelKey = rand.pickone(filteredKeys);
 

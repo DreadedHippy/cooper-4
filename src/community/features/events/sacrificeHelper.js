@@ -130,17 +130,12 @@ export default class SacrificeHelper {
             }
         });
 
-        console.log('process back dagger');
-        console.log(sacrificeVotes, reqSacrificeVotes);
-
         if (sacrificeVotes >= reqSacrificeVotes) {
             const targetID = reaction.message.author.id;
             const targetMember = await UsersHelper.fetchMemberByID(guild, targetID);
 
-            // TODO: Add self-destructing USER got backstabbed message.
             // TODO: Award points to bakcstabbers
             // TODO: Award points for successfully removing a backstabbed member.
-
             // TODO: Also reward points for approving/rejecting an incoming member (reward more for rejection)
 
             await this.offer(targetMember.user);
@@ -161,9 +156,6 @@ export default class SacrificeHelper {
                 const backstabMsg = await reaction.message.say(
                     `${targetMember.user.username} got backstabbed! ${EMOJIS.DAGGER.repeat(updatedNumVotes)}`
                 );
-                // setTimeout(async () => {
-                //     await backstabMsg.delete();
-                // }, 3500)
             }, 3000)
         }
     }
@@ -177,6 +169,7 @@ export default class SacrificeHelper {
             description: `To sacrifice <@${user.id}> press dagger, to protect the user press the shield.`,
             thumbnail: UsersHelper.avatar(user)
         }) };
+
         const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
         const sacrificeLink = MessagesHelper.link(sacrificeMsg);
 
@@ -184,6 +177,11 @@ export default class SacrificeHelper {
         setTimeout(() => {
             const sacrificeMsgText = `<@${user.id}> is being considered for sacrifice! Vote now! :O ` + sacrificeLink;
             ChannelsHelper._postToFeed(sacrificeMsgText);
+
+            setTimeout(() => {
+                const begPromptMsgText = `<@${user.id}> you may beg to be spared from sacrifice here.`;
+                ChannelsHelper._postToChannelCode('TALK', begPromptMsgText);
+            }, 1500);
         }, 1500);
 
         // Add reactions for voting
