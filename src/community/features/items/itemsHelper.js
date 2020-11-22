@@ -13,13 +13,18 @@ export default class ItemsHelper {
         // TODO: Let bombs stack and amplify the damage.
         if (reaction.emoji.name === '💣') {
             try {
+                console.log('someone attempted to bomb someone');
                 const didUse = await this.use(user.id, 'BOMB', 1);
+                console.log('did bomb', didUse);
                 if (!didUse) return await reaction.users.remove(user.id);
                 else {
-                    const messageAuthor = reaction.message.author;
-                    console.log('Someone attempted to bomb someone.');
-    
                     const updatedPoints = await PointsHelper.addPointsByID(messageAuthor.id, -5);
+                    console.log('updated points after bombing', updatedPoints);
+
+                    // TODO: Add visual animation
+
+                    const messageAuthor = reaction.message.author;
+                    console.log('Someone attempted to bomb someone.');    
     
                     await ChannelsHelper._postToFeed(
                         `${user.username} bombed ${messageAuthor.username}: -5 points (${updatedPoints}).`
@@ -125,10 +130,10 @@ export default class ItemsHelper {
     static async use(userID, itemCode, useQty) {
         const userItem = await this.getUserItem(userID, itemCode);
         const ownedQty = userItem.quantity || 0;
-        if (ownedQty - useQty <= 0) return false;
+        if (ownedQty - useQty < 0) return false;
         else {
             await this.subtract(userID, itemCode, useQty);
-            return false;
+            return true;
         }
     }
 
