@@ -18,12 +18,13 @@ export default class ItemsHelper {
                 console.log('did bomb', didUse);
                 if (!didUse) return await reaction.users.remove(user.id);
                 else {
+                    const messageAuthor = reaction.message.author;
+                    
                     const updatedPoints = await PointsHelper.addPointsByID(messageAuthor.id, -5);
                     console.log('updated points after bombing', updatedPoints);
 
                     // TODO: Add visual animation
 
-                    const messageAuthor = reaction.message.author;
                     console.log('Someone attempted to bomb someone.');    
     
                     await ChannelsHelper._postToFeed(
