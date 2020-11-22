@@ -16,6 +16,9 @@
     "AVERAGE_CRATE": ":average_crate:766749242047070278",
     "AVERAGE_CRATE_OPEN": ":average_crate_open:766749241698942997",
 
+    "DAGGER": "🗡",
+
+    
     "LAXATIVE": ":chocolate_bar:",
     "BOMB": ":bomb:",
     "PICK_AXE": ":pick:",
@@ -25,7 +28,6 @@
     "ROPE": ":twisty_rope:739153442341388421",
 
     "SHIELD": "🛡️",
-    "DAGGER": "🗡",
 
     "MINE": ":curling_stone:",
     "DEFUSE_KIT": ":toolbox:",

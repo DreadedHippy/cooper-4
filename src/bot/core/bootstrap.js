@@ -20,11 +20,6 @@ export default async function bootstrap() {
     // Login to Discord with the bot.
     await botClient.login(process.env.DISCORD_TOKEN);
 
-    botClient.on('guildMemberAdd', (member) => {
-        console.log('member added')
-        console.log(member);
-    });
-
     // Register community events.
     registerCommunityEvents(botClient);
 
@@ -35,5 +30,5 @@ export default async function bootstrap() {
     await CDNManager.start();
 
     // Set activity.
-    botClient.user.setActivity('myself... Hmm.', { type: 'WATCHING' });
+    botClient.user.setActivity('castles being planned.', { type: 'WATCHING' });
 }

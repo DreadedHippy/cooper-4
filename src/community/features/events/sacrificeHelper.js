@@ -145,11 +145,11 @@ export default class SacrificeHelper {
                 let updatedNumVotes = sacrificeVotes;
                 const backstabbers = [];
                 reaction.message.reactions.cache.map(reactionType => {
-                    console.log('attempt to log reactor so we can provide a list of the backstabbers');
-                    console.log(reactionType);
                     const emoji = reactionType.emoji.name;
                     if (this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER)) {
                         updatedNumVotes = reactionType.count;
+
+                        // TODO: Implement backstabbers list.
                     }
                 });
 

@@ -5,6 +5,7 @@ import CratedropMinigame from "../../features/minigame/small/cratedrop";
 import SacrificeHelper from "../../features/events/sacrificeHelper";
 import STATE from "../../../bot/state";
 import ItemsHelper from "../../features/items/itemsHelper";
+import MiningMinigame from "../../features/minigame/small/mining";
 
 export default async function reactAddedHandler(reaction, user) {
     const isUser = STATE.CLIENT.user.id !== user.id;
@@ -20,7 +21,8 @@ export default async function reactAddedHandler(reaction, user) {
         // Reaction based minigame react processors.
         EggHuntMinigame.onReaction(reaction, user);
         CratedropMinigame.onReaction(reaction, user);
-    
+        MiningMinigame.onReaction(reaction, user);
+
         // Check for reaction on intro message.
         RedemptionHelper.onReaction(reaction, user);
 

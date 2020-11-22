@@ -43,8 +43,6 @@ export default class ItemsHelper {
             if (updatedQty <= 0) await this.delete(userID, itemCode);
         }
 
-        console.log(updateResult);
-
         return updateResult;
     }
 
@@ -106,7 +104,6 @@ export default class ItemsHelper {
 
     static async use(userID, itemCode, useQty) {
         const userItem = await this.getUserItem(userID, itemCode);
-        console.log(userItem);
         const ownedQty = userItem.quantity || 0;
         if (ownedQty - useQty < 0) return false;
         else {
@@ -118,5 +115,33 @@ export default class ItemsHelper {
     static dropItem() {}
     
     static dropItems() {}
-   
+ 
+    static getUsableItems() {
+        const unusable = this.NON_USABLE_EMOJIS;
+
+        console.log(unusable);
+
+        const codeFilter = itemCode => !unusable.includes(itemCode);
+        return Object.keys(EMOJIS).filter(codeFilter);
+    }
+
+    static NON_USABLE_EMOJIS = [
+        "COOP",
+        "VOTE_FOR",
+        "VOTE_AGAINST",
+        "LEGENDARY_EGG",
+        "RARE_EGG",
+        "AVERAGE_EGG",
+        "LEGENDARY_CRATE",
+        "LEGENDARY_CRATE_OPEN",
+        "RARE_CRATE",
+        "RARE_CRATE_OPEN",
+        "AVERAGE_CRATE",
+        "AVERAGE_CRATE_OPEN",
+        "DAGGER",
+        
+        // This may actually be usable... somehow?
+        "TOXIC_EGG"
+    ];
+
 }
