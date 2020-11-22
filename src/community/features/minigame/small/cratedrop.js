@@ -230,15 +230,15 @@ export default class CratedropMinigame {
 
     static async drop() {
         try {
-            const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-            const dropChannel = ChannelsHelper.fetchRandomTextChannel(server);
-
             const rarity = this.selectRandomRarity();
             const rarityWord = MessagesHelper.titleCase(rarity.split('_')[0]);
             await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress.`);
 
             // Drop the crate!
-            const crateMSG = await dropChannel.send(MessagesHelper.emojifyID(EMOJIS[rarity]));
+            const crateMSG = await ChannelsHelper
+                ._randomText()
+                .send(MessagesHelper.emojifyID(EMOJIS[rarity]));
+
             setTimeout(() => { crateMSG.react('🪓'); }, 333);
             
         } catch(e) {

@@ -3,38 +3,14 @@ import Database from "../../../bot/core/setup/database";
 
 import EMOJIS from '../../../bot/core/config/emojis.json';
 import DatabaseHelper from "../../../bot/core/classes/databaseHelper";
-import ChannelsHelper from "../../../bot/core/entities/channels/channelsHelper";
-import PointsHelper from "../points/pointsHelper";
+import BombHandler from "./handlers/bombHandler";
+
+
 
 export default class ItemsHelper {
 
     static async onReaction(reaction, user) {
-        // TODO: Pass the bomb needs to be implemented somehow from here.
-        // TODO: Let bombs stack and amplify the damage.
-        if (reaction.emoji.name === '💣') {
-            try {
-                console.log('someone attempted to bomb someone');
-                const didUse = await this.use(user.id, 'BOMB', 1);
-                console.log('did bomb', didUse);
-                if (!didUse) return await reaction.users.remove(user.id);
-                else {
-                    const messageAuthor = reaction.message.author;
-                    
-                    const updatedPoints = await PointsHelper.addPointsByID(messageAuthor.id, -5);
-                    console.log('updated points after bombing', updatedPoints);
-
-                    // TODO: Add visual animation
-
-                    console.log('Someone attempted to bomb someone.');    
-    
-                    await ChannelsHelper._postToFeed(
-                        `${user.username} bombed ${messageAuthor.username}: -5 points (${updatedPoints}).`
-                    );
-                }
-            } catch(e) {
-                console.error(e);
-            }
-        }   
+        BombHandler.onReaction(reaction, user);
     }
 
     static async add(userID, item_code, quantity) {
@@ -130,6 +106,7 @@ export default class ItemsHelper {
 
     static async use(userID, itemCode, useQty) {
         const userItem = await this.getUserItem(userID, itemCode);
+        console.log(userItem);
         const ownedQty = userItem.quantity || 0;
         if (ownedQty - useQty < 0) return false;
         else {

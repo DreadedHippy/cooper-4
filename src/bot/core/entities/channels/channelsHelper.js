@@ -50,4 +50,8 @@ export default class ChannelsHelper {
         
         return channel;
     }
+    static _randomText() {
+        const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+        return ChannelsHelper.fetchRandomTextChannel(server);
+    }
 }

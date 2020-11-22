@@ -10,6 +10,7 @@ import reactAddedHandler from "./reaction/reactionAdded";
 import ChannelsHelper from "../../bot/core/entities/channels/channelsHelper";
 import SacrificeHelper from "../features/events/sacrificeHelper";
 import PointsHelper from "../features/points/pointsHelper";
+import MiningMinigame from "../features/minigame/small/mining";
 
 export default function registerCommunityEventsHandlers(client) {
 
@@ -44,8 +45,8 @@ export default function registerCommunityEventsHandlers(client) {
 
   const crateDropInterval = 60 * 60 * 1000;
   setInterval(() => { CratedropMinigame.run(crateDropInterval); }, crateDropInterval);
-
-  setInterval(() => { EggHuntMinigame.run(); }, 60 * 15 * 1000);
+  setInterval(() => { MiningMinigame.run(); }, crateDropInterval / 4);
+  setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 4);
 
 // Miscellaneous features.
   setInterval(() => {
