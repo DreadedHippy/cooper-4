@@ -11,7 +11,7 @@ export default class LaxativeHandler {
         // Respond to usage result.
         if (didUseLax) {
             // Run the egghunt dropper (20% or so chance of doing something).
-            EggHuntMinigame.run();
+            setTimeout(() => { EggHuntMinigame.run(); }, 333);
 
             const feedbackText = `${user.username} used laxative and potentially triggered egg drops!`;
             const feedbackMsg = await commandMsg.say(feedbackText);
