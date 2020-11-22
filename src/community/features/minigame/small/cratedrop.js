@@ -68,6 +68,7 @@ const CRATE_DATA = {
 
 // Rarity likelihood base number.
 const likelihood = 15;
+const rand = new Chance;
 
 export default class CratedropMinigame {
     
@@ -95,8 +96,6 @@ export default class CratedropMinigame {
     // If enough reactions to open reward all 'reactors' with random selection of rewards.
     static async axeHit(reaction, user) {
         try {
-            const rand = new Chance;
-    
             const msg = reaction.message;
 
             const rarity = this.calculateRarityFromMessage(msg);
@@ -106,77 +105,8 @@ export default class CratedropMinigame {
             const hitCount = msg.reactions.cache.find(react => react.emoji.name === '🪓').count || 0;
     
             // Check if there are enough hits to open the crate.
-            if (hitCount >= reqHits) {
-                // Edit the crate to visually show it opening.
-                await msg.edit(MessagesHelper.emojifyID(EMOJIS[rarity + '_OPEN']));
-
-                // A short time after, to avoid rate-limits... award items.
-                setTimeout(async () => {
-                    const crate = CRATE_DATA[rarity];
-                    const rewardedUsersNum = rand.natural({ min: 0, max: crate.maxReward });
-                    const hitters = reaction.users.cache.map(user => user);
-                    
-                    if (rewardedUsersNum > 0) {
-                        // Pick the amount of rewarded users.
-                        rand.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
-                            // Calculate a random amount of rewards to give to the user.
-                            const rewardItemsNum = rand.natural({ min: 0, max: crate.maxReward });
-                            const rewardsKeys = rand.pickset(crate.rewards, rewardItemsNum);
-    
-                            if (rewardItemsNum > 0) {
-                                // Grant rewards to users with a random quantity.
-                                rewardsKeys.forEach(async (reward, rewardIndex) => {
-                                    const rewardItemQuantity = rand.natural({ min: 1, max: crate.maxReward });
-                                    // Use rewardeeIndex + rewardIndex for delays (rate limiting).
-                                    const rateLimitBypassDelay = (rewardeeIndex * 666) + (333 * rewardIndex);
-        
-                                    try {
-                                        // Add the items to the user.
-                                        await ItemsHelper.add(user.id, reward, rewardItemQuantity);
-        
-                                        // TODO: If toxic egg item, subtract points from the user.
-        
-                                        setTimeout(async () => {
-                                            const rewardMessageText = `${user.username} took ${reward}x${rewardItemQuantity} from the crate!`;
-                                            
-                                            setTimeout(async () => {
-                                                await ChannelsHelper._postToFeed(rewardMessageText);
-                                            }, 666);
-        
-                                            // If the channel isn't feed, then give feedback in crate channel.
-                                            if (msg.channel.id !== CHANNELS.FEED.id) {
-                                                const rewardMsg = await msg.say(rewardMessageText);
-                                                setTimeout(async () => {
-                                                    // Remove the reward message because it was placed in a random channel.
-                                                    await rewardMsg.delete();
-                                                }, 30000);
-                                            }
-                                        }, rateLimitBypassDelay);
-        
-                                    } catch(e) {
-                                        console.error(e);
-                                    }
-                                });
-                            }
-    
-                        })
-    
-                        setTimeout(async () => {
-                            // Remove the opened crate.
-                            await msg.delete();
-                        }, 15000);                
-                    } else {
-                        const noRewardMsg = await msg.say('No items were inside this crate! >:D');
-                        setTimeout(async () => {
-                            // Remove the reward message because it was placed in a random channel.
-                            await noRewardMsg.delete();
-                        }, 30000);
-                    }
-
-                }, 666);
-
-    
-            } else {
+            if (hitCount >= reqHits) await this.open(reaction, user);
+            else {
                 const hitsLeft = reqHits - hitCount;
                 const openingUpdateMsg = await msg.say(
                     `${user.username} tried opening the crate! ${hitsLeft} more hits to break!`
@@ -211,21 +141,93 @@ export default class CratedropMinigame {
         return crateRarity;
     }
 
-    static selectRandomRarity() {
-        const rand = new Chance;
+    static async open(reaction, user) {
+        const msg = reaction.message;
+        const rarity = this.calculateRarityFromMessage(msg);
 
+        // Edit the crate to visually show it opening.
+        await msg.edit(MessagesHelper.emojifyID(EMOJIS[rarity + '_OPEN']));
+
+        // A short time after, to avoid rate-limits... award items.
+        setTimeout(async () => {
+            const crate = CRATE_DATA[rarity];
+            const rewardedUsersNum = rand.natural({ min: 0, max: crate.maxReward });
+            const hitters = reaction.users.cache.map(user => user);
+            
+            if (rewardedUsersNum > 0) {
+                // Pick the amount of rewarded users.
+                rand.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
+                    // Calculate a random amount of rewards to give to the user.
+                    const rewardItemsNum = rand.natural({ min: 0, max: crate.maxReward });
+                    const rewardsKeys = rand.pickset(crate.rewards, rewardItemsNum);
+
+                    if (rewardItemsNum > 0) {
+                        // Grant rewards to users with a random quantity.
+                        rewardsKeys.forEach(async (reward, rewardIndex) => {
+                            const rewardItemQuantity = rand.natural({ min: 1, max: crate.maxReward });
+                            // Use rewardeeIndex + rewardIndex for delays (rate limiting).
+                            const rateLimitBypassDelay = (rewardeeIndex * 666) + (333 * rewardIndex);
+
+                            try {
+                                // Add the items to the user.
+                                await ItemsHelper.add(user.id, reward, rewardItemQuantity);
+
+                                // TODO: If toxic egg item, subtract points from the user.
+
+                                setTimeout(async () => {
+                                    const rewardMessageText = `${user.username} took ${reward}x${rewardItemQuantity} from the crate!`;
+                                    
+                                    setTimeout(async () => {
+                                        await ChannelsHelper._postToFeed(rewardMessageText);
+                                    }, 666);
+
+                                    // If the channel isn't feed, then give feedback in crate channel.
+                                    if (msg.channel.id !== CHANNELS.FEED.id) {
+                                        const rewardMsg = await msg.say(rewardMessageText);
+                                        setTimeout(async () => {
+                                            // Remove the reward message because it was placed in a random channel.
+                                            await rewardMsg.delete();
+                                        }, 30000);
+                                    }
+                                }, rateLimitBypassDelay);
+
+                            } catch(e) {
+                                console.error(e);
+                            }
+                        });
+                    }
+
+                })
+
+                // Remove the opened crate.
+                setTimeout(() => { msg.delete(); }, 15000);                
+            } else {
+                const noRewardMsg = await msg.say('No items were inside this crate! >:D');
+                // Remove the reward message because it was placed in a random channel.
+                setTimeout(() => { noRewardMsg.delete(); }, 30000);
+            }
+        }, 666);
+    }
+
+
+    // TODO: Implement explosive/toxic crate from Robyn (steals your items)
+    // Small chance of it exploding all explosive items you own.
+    static selectRandomRarity() {
         let rarity = 'AVERAGE_CRATE';
 
-        if (rand.bool({ likelihood: likelihood / 3 }))
-            rarity = 'RARE_CRATE';
+        if (rand.bool({ likelihood: likelihood / 3 })) rarity = 'RARE_CRATE';
 
-        if (rand.bool({ likelihood: likelihood / 5 }))
-            rarity = 'LEGENDARY_CRATE';
-
-        // TODO: Implement explosive/toxic crate from Robyn (steals your items)
-        // Small chance of it exploding all explosive items you own.
+        if (rand.bool({ likelihood: likelihood / 5 })) rarity = 'LEGENDARY_CRATE';
 
         return rarity;
+    }
+
+    static async explode(reaction, user) {
+        // Check user actually has a bomb to use
+        // Potentially require 2 bombs.
+        // ItemsHelper.use(user.id, 'BOMB', 2);
+        // Edit message to explosion emoji, THEN open.
+        // this.open(reaction, user);
     }
 
     static async drop() {
