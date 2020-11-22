@@ -22,7 +22,20 @@ export default class ItemsHelper {
         return await Database.query(query);
     }
 
-    static async getUserItem(userID, itemCode) {}
+    static async getUserItem(userID, itemCode) {
+        let item = null;
+
+        const query = {
+            name: "get-user-item",
+            text: `SELECT * FROM "items" WHERE owner_id = $1 AND item_code = $2`,
+            values: [userID, itemCode]
+        };
+        const result = await Database.query(query);  
+
+        console.log(result);
+
+        return item;
+    }
     
     static async getUserItems(userID) {
         const query = {
@@ -78,7 +91,6 @@ export default class ItemsHelper {
         };
         return await Database.query(query);
     }
-
     
     static formItemDropText(user, items) {
         let itemDisplayMsg = `${user.username}'s items:`;
@@ -90,6 +102,9 @@ export default class ItemsHelper {
         return itemDisplayMsg
     }
 
+    static async use(user, itemCode) {
+        
+    }
     static dropItem() {}
     static dropItems() {}
    

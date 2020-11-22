@@ -43,21 +43,18 @@ export default class EggHuntMinigame {
             const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
             const isEgghuntDrop = eggEmojiNames.includes(emojiIdentifier);
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
+            const isEggCollectible = isCooperMessage && isEgghuntDrop && hasEggRarity;
+            
+            const isBombEmoji = reaction.emoji.name === '💣';
+            const isBasketEmoji = reaction.emoji.name === '🧺';
 
-            console.log(reaction.emoji.name);
-            console.log(reaction.emoji.name === '🧺');
-            console.log(reaction.emoji.name === '💣');
+            // TODO: Implement frying.
+            // const isFryingPanEmoji
 
-            // TODO: Implement bomb on egg
 
-            // TODO: Add basket check
-            if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
-                // Check if basket emoji or frying pan emoji
-                this.collect(reaction, user);
-                
-                // TODO: Implement frying functionality.
-                // SHARE OR STEAL
-            }
+            if (isEggCollectible && isBasketEmoji) this.collect(reaction, user);
+            if (isEggCollectible && isBombEmoji) this.explode(reaction, user);
+
         } catch(e) {
             console.error(e);
         }
@@ -74,7 +71,65 @@ export default class EggHuntMinigame {
         return eggRarity;
     }
 
-    static async collect(reaction, user) {    
+    static async explode(reaction, user) {
+
+        // Check if user has a bomb to use
+        const userBombs = ItemsHelper.getUserItem(user.id, 'BOMB');
+        console.log(userBombs);
+
+        // try {
+        //     if (user.id !== STATE.CLIENT.user.id) {     
+        //         const rand = new Chance;
+                
+        //         const rarity = this.calculateRarityFromMessage(reaction.message);
+        //         const reward = EGG_DATA[rarity].points;
+        //         const emoji = EGG_DATA[rarity].emoji;
+        //         const channelName = reaction.message.channel.name;
+
+        //         let acknowledgementMsgText = '';
+        //         let activityFeedMsgText = '';
+
+        //         if (rand.bool({ likelihood: 85 })) {
+        //             // Store points and egg collection data in database.
+        //             const updated = await PointsHelper.addPointsByID(user.id, reward);
+
+        //             // Add/update egg item to user
+        //             await ItemsHelper.add(user.id, rarity, 1);
+
+        //             acknowledgementMsgText = `
+        //                 <${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})
+        //             `.trim();
+
+        //             activityFeedMsgText = `
+        //                 ${user.username} collected an egg in "${channelName}" channel! <${emoji}>
+        //             `.trim();
+        //         } else {
+        //             acknowledgementMsgText = `
+        //                 <${emoji}>🧺 Egg Hunt! ${user.username} clumsily broke the egg, 0 points!
+        //             `.trim();
+
+        //             activityFeedMsgText = `
+        //                 ${user.username} broke an egg in "${channelName}" channel! :( <${emoji}>
+        //             `.trim();
+        //         }
+
+
+        //         const acknowledgementMsg = await reaction.message.say(acknowledgementMsgText);
+                
+        //         // Remove acknowledgement message after 30 seconds.
+        //         setTimeout(async () => { await acknowledgementMsg.delete(); }, 30000)
+                
+        //         ChannelsHelper._postToFeed(activityFeedMsgText)
+
+        //         // Delete the egg.
+        //         await reaction.message.delete();
+        //     }
+        // } catch(e) {
+        //     console.error(e);
+        // }
+    }
+
+    static async collect(reaction, user) {
         try {
             if (user.id !== STATE.CLIENT.user.id) {     
                 const rand = new Chance;
