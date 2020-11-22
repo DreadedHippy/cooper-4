@@ -50,7 +50,6 @@ const CRATE_DATA = {
             'SHIELD',
             'MINE',
             'DEFUSE_KIT',
-            'DAGGER' // Used for sacrificing members
         ]
     },
     LEGENDARY_CRATE: {
