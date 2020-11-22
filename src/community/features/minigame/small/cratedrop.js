@@ -217,10 +217,10 @@ export default class CratedropMinigame {
 
         let rarity = 'AVERAGE_CRATE';
 
-        if (rand.bool({ likelihood: (likelihood / 2) / 3 }))
+        if (rand.bool({ likelihood: likelihood / 3 }))
             rarity = 'RARE_CRATE';
 
-        if (rand.bool({ likelihood: ((likelihood / 2) / 3) / 6 })) 
+        if (rand.bool({ likelihood: likelihood / 5 }))
             rarity = 'LEGENDARY_CRATE';
 
         // TODO: Implement explosive/toxic crate from Robyn (steals your items)
