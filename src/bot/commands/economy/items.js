@@ -8,7 +8,7 @@ export default class ItemsCommand extends CoopCommand {
 			name: 'items',
 			group: 'economy',
 			memberName: 'items',
-			aliases: [],
+			aliases: ['eggs'],
 			description: 'polls will always be stolen at The Coop by those who demand them.',
 			details: `Details of the items command`,
 			examples: ['items', 'an example of how coop-econmics functions, trickle down, sunny side up Egg & Reagonmics. Supply and demand.'],

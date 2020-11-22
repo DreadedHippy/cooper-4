@@ -28,7 +28,7 @@ const EGG_DATA = {
         emoji: EMOJIS.RARE_EGG
     },
     LEGENDARY_EGG: {
-        points: 75,
+        points: 20,
         emoji: EMOJIS.LEGENDARY_EGG
     },
 };
@@ -71,62 +71,64 @@ export default class EggHuntMinigame {
         return eggRarity;
     }
 
+    // TODO: Add a small chance of bomb exploding on you.
     static async explode(reaction, user) {
 
         // Check if user has a bomb to use
-        const userBombs = ItemsHelper.getUserItem(user.id, 'BOMB');
-        console.log(userBombs);
+        try {
+            const userBombs = await ItemsHelper.getUserItem(user.id, 'BOMB');
+            const bombQuantity = userBombs.quantity || 0;
 
-        // try {
-        //     if (user.id !== STATE.CLIENT.user.id) {     
-        //         const rand = new Chance;
-                
-        //         const rarity = this.calculateRarityFromMessage(reaction.message);
-        //         const reward = EGG_DATA[rarity].points;
-        //         const emoji = EGG_DATA[rarity].emoji;
-        //         const channelName = reaction.message.channel.name;
+            const rarity = this.calculateRarityFromMessage(reaction.message);
+            const reward = EGG_DATA[rarity].points;
+            const emoji = EGG_DATA[rarity].emoji;
+            const channelName = reaction.message.channel.name;
 
-        //         let acknowledgementMsgText = '';
-        //         let activityFeedMsgText = '';
+            // Remove reaction by user without a bomb and prevent usage.
+            if (bombQuantity <= 0) return await reaction.users.remove(user.id);
 
-        //         if (rand.bool({ likelihood: 85 })) {
-        //             // Store points and egg collection data in database.
-        //             const updated = await PointsHelper.addPointsByID(user.id, reward);
+            // Remove bomb from user.
+            await ItemsHelper.subtract(user.id, 'BOMB', 1);
 
-        //             // Add/update egg item to user
-        //             await ItemsHelper.add(user.id, rarity, 1);
+            // User has enough eggs, blow egg up.
+            const blownupEggMsg = await reaction.message.edit('💥');
+            setTimeout(() => { blownupEggMsg.delete(); }, 3333);
 
-        //             acknowledgementMsgText = `
-        //                 <${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})
-        //             `.trim();
+            // Share points with nearest 5 message authors.
+            const channelMessages = reaction.message.channel.messages;
+            const surroundingMsgs = await channelMessages.fetch({ around: reaction.message.id, limit: 5 });
+            const aroundUsers = surroundingMsgs.reduce((acc, msg) => {
+                const notIncluded = typeof acc[msg.author.id] === 'undefined';
+                const notCooper = msg.author.id !== STATE.CLIENT.user.id;
+                if (notIncluded && notCooper) acc[msg.author.id] = msg.author;
+                return acc;
+            }, {});
 
-        //             activityFeedMsgText = `
-        //                 ${user.username} collected an egg in "${channelName}" channel! <${emoji}>
-        //             `.trim();
-        //         } else {
-        //             acknowledgementMsgText = `
-        //                 <${emoji}>🧺 Egg Hunt! ${user.username} clumsily broke the egg, 0 points!
-        //             `.trim();
+            // Store points and egg collection data in database.
+            const awardedUserIDs = Object.keys(aroundUsers);
+            await Promise.all(awardedUserIDs.map(userID => {
+                return PointsHelper.addPointsByID(userID, reward);
+            }));
 
-        //             activityFeedMsgText = `
-        //                 ${user.username} broke an egg in "${channelName}" channel! :( <${emoji}>
-        //             `.trim();
-        //         }
+            // Add/update egg item to user
+            await ItemsHelper.add(user.id, rarity, 1);
 
+            // Create feedback text from list of users.
+            const usersRewardedText = awardedUserIDs.map(userID => aroundUsers[userID].username).join(', ');
+            const feedbackMsg = `
+                ${usersRewardedText} gained ${reward} points by being splashed by exploding egg ${emoji}
+            `.trim();
 
-        //         const acknowledgementMsg = await reaction.message.say(acknowledgementMsgText);
-                
-        //         // Remove acknowledgement message after 30 seconds.
-        //         setTimeout(async () => { await acknowledgementMsg.delete(); }, 30000)
-                
-        //         ChannelsHelper._postToFeed(activityFeedMsgText)
+            // Add self-destructing message in channel.
+            const instantFeedbackMsg = await reaction.message.say(feedbackMsg);
+            setTimeout(() => { instantFeedbackMsg.delete(); }, 30000);
 
-        //         // Delete the egg.
-        //         await reaction.message.delete();
-        //     }
-        // } catch(e) {
-        //     console.error(e);
-        // }
+            // Add server notification in feed.
+            await ChannelsHelper._postToFeed(feedbackMsg + ' in ' + channelName);
+
+        } catch(e) {
+            console.error(e);
+        }
     }
 
     static async collect(reaction, user) {
@@ -181,9 +183,8 @@ export default class EggHuntMinigame {
             console.error(e);
         }
     }
-    
 
-    static async drop(rarity, dropText = null) {        
+    static async drop(rarity, dropText = null) {
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const dropChannel = ChannelsHelper.fetchRandomTextChannel(server);
         const rand = new Chance;
@@ -219,8 +220,8 @@ export default class EggHuntMinigame {
                 if (rand.bool({ likelihood: likelihood / 1.5 })) {
                     this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
     
-                    if (rand.bool({ likelihood: likelihood / 1.25 })) {
-                        ChannelsHelper._postToFeed('<@here>, a legendary egg was dropped! Find and grab it before others can!');
+                    if (rand.bool({ likelihood: likelihood / 2.25 })) {
+                        ChannelsHelper._postToFeed('@here, a legendary egg was dropped! Find and grab it before others can!');
                         this.drop('LEGENDARY_EGG');
                     }
                 }

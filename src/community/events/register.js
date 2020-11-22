@@ -9,6 +9,7 @@ import messageAddedHandler from "./message/messageAdded";
 import reactAddedHandler from "./reaction/reactionAdded";
 import ChannelsHelper from "../../bot/core/entities/channels/channelsHelper";
 import SacrificeHelper from "../features/events/sacrificeHelper";
+import PointsHelper from "../features/points/pointsHelper";
 
 export default function registerCommunityEventsHandlers(client) {
 
@@ -29,6 +30,12 @@ export default function registerCommunityEventsHandlers(client) {
 
   
   const chanceInstance = new Chance;
+
+
+  // Hourly actions
+  setInterval(() => {
+    PointsHelper.updateCurrentWinner();
+  }, 60 * 60 * 1000);
 
   // Every 6 hours 25% chance of offering someone for sacrifice.
   setInterval(() => {

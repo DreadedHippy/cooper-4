@@ -11,12 +11,16 @@ import introPosted from "../members/welcome/introPosted";
 const rand = new Chance;
 
 export default function messageAddedHandler(msg) {
-    
+    // TODO: Refacotr this into messageHelper
+    const isUserMsg = msg.author.id !== STATE.CLIENT.user.id;
+
+    const twentyPercRoll = rand.bool({ likelihood: 20 });
+
     // Prevent the bruhs
-    if (msg.content.indexOf('bruh') > -1 && msg.author.id !== STATE.CLIENT.user.id) {
-        msg.say('bruh');
-        // TODO: Subtract points
-    }
+    // TODO: Subtract points
+    if (msg.content.indexOf('bruh') > -1 && isUserMsg && twentyPercRoll) msg.say('bruh');
+    if (msg.content === 'I-' && isUserMsg && twentyPercRoll) msg.say('U-? Finish your sentence!');
+
 
     // Encourage posters in show work channel.
     if (msg.channel.id === CHANNELS.SHOWWORK.id) workPostHandler(msg);
