@@ -33,7 +33,7 @@ export default class UseCommand extends CoopCommand {
 
 		// Item is usable, therefore use it.
 
-		if (itemCode === 'LAXATIVE') LaxativeHandler.use();
+		if (itemCode === 'LAXATIVE') LaxativeHandler.use(msg, msg.author);
     }
     
 };
