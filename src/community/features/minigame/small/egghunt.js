@@ -148,11 +148,13 @@ export default class EggHuntMinigame {
                     // Store points and egg collection data in database.
                     const updated = await PointsHelper.addPointsByID(user.id, reward);
 
+                    const rewardPolarity = reward > 0 ? '+' : '-';
+
                     // Add/update egg item to user
                     await ItemsHelper.add(user.id, rarity, 1);
 
                     acknowledgementMsgText = `
-                        <${emoji}>🧺 Egg Hunt! ${user.username} +${reward} points! (${updated})
+                        <${emoji}>🧺 Egg Hunt! ${user.username} ${rewardPolarity}${reward} points! (${updated})
                     `.trim();
 
                     activityFeedMsgText = `
