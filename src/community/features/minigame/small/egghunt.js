@@ -43,6 +43,14 @@ export default class EggHuntMinigame {
             const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
             const isEgghuntDrop = eggEmojiNames.includes(emojiIdentifier);
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
+
+            console.log(reaction.emoji.name);
+            console.log(reaction.emoji.name === '🧺');
+            console.log(reaction.emoji.name === '💣');
+
+            // TODO: Implement bomb on egg
+
+            // TODO: Add basket check
             if (isCooperMessage && isEgghuntDrop && hasEggRarity) {
                 // Check if basket emoji or frying pan emoji
                 this.collect(reaction, user);
@@ -150,18 +158,19 @@ export default class EggHuntMinigame {
         if (rand.bool({ likelihood })) {
             this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg, but where...?');
 
-            if (rand.bool({ likelihood: likelihood / 2 })) {
+            if (rand.bool({ likelihood: likelihood / 1.75 })) {
                 this.drop('TOXIC_EGG', 'I dropped an egg, but where...? Tsk.');
-            }
 
-            if (rand.bool({ likelihood: likelihood / 2.5 })) {
-                this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
-
-                if (rand.bool({ likelihood: likelihood / 3 })) {
-                    ChannelsHelper._postToFeed('<@here>, a legendary egg was dropped! Find and grab it before others can!');
-                    this.drop('LEGENDARY_EGG');
+                if (rand.bool({ likelihood: likelihood / 1.5 })) {
+                    this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
+    
+                    if (rand.bool({ likelihood: likelihood / 1.25 })) {
+                        ChannelsHelper._postToFeed('<@here>, a legendary egg was dropped! Find and grab it before others can!');
+                        this.drop('LEGENDARY_EGG');
+                    }
                 }
             }
+
 
             // Bonus eggs            
             if (rand.bool({ likelihood: likelihood / 2 })) {

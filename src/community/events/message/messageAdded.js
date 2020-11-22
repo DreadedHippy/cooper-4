@@ -14,7 +14,6 @@ export default function messageAddedHandler(msg) {
     
     // Prevent the bruhs
     if (msg.content.indexOf('bruh') > -1 && msg.author.id !== STATE.CLIENT.user.id) {
-        console.log(msg.author.id, STATE.CLIENT.id);
         msg.say('bruh');
         // TODO: Subtract points
     }
