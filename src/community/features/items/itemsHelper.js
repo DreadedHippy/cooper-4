@@ -118,9 +118,6 @@ export default class ItemsHelper {
  
     static getUsableItems() {
         const unusable = this.NON_USABLE_EMOJIS;
-
-        console.log(unusable);
-
         const codeFilter = itemCode => !unusable.includes(itemCode);
         return Object.keys(EMOJIS).filter(codeFilter);
     }

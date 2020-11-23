@@ -32,7 +32,6 @@ export default class UseCommand extends CoopCommand {
 		if (!usableItems.includes(itemCode)) return msg.reply(noMatchErrText);
 
 		// Item is usable, therefore use it.
-
 		if (itemCode === 'LAXATIVE') LaxativeHandler.use(msg, msg.author);
     }
     

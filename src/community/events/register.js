@@ -43,10 +43,10 @@ export default function registerCommunityEventsHandlers(client) {
     if (chanceInstance.bool({ likelihood: 75 })) SacrificeHelper.random();
   }, ((60 * 60) * 6) * 1000);
 
-  const crateDropInterval = 60 * 60 * 1000;
+  const crateDropInterval = 60 * 45 * 1000;
   setInterval(() => { CratedropMinigame.run(crateDropInterval); }, crateDropInterval);
-  setInterval(() => { MiningMinigame.run(); }, crateDropInterval / 4);
-  setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 4);
+  setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 2.5);
+  // setInterval(() => { MiningMinigame.run(); }, crateDropInterval / 1.5);
 
 // Miscellaneous features.
   setInterval(() => {
