@@ -12,6 +12,8 @@ import MessagesHelper from '../../../../bot/core/entities/messages/messagesHelpe
 import ServerHelper from '../../../../bot/core/entities/server/serverHelper';
 import VotingHelper from '../../../events/voting/votingHelper';
 import ItemsHelper from '../../items/itemsHelper';
+import PointsHelper from '../../points/pointsHelper';
+import UsersHelper from '../../../../bot/core/entities/users/usersHelper';
 
 
 // TODO: Check every 5 minutes for cratedrop etc, just don't ping every time.
@@ -31,7 +33,8 @@ import ItemsHelper from '../../items/itemsHelper';
 const CRATE_DATA = {
     AVERAGE_CRATE: {
         emoji: EMOJIS.AVERAGE_CRATE,
-        maxReward: 2,
+        maxReward: 3,
+        openingPoints: 1,
         rewards: [
             'BOMB',
             'LAXATIVE',
@@ -44,17 +47,20 @@ const CRATE_DATA = {
     },
     RARE_CRATE: {
         emoji: EMOJIS.RARE_CRATE,
-        maxReward: 1,
+        maxReward: 2,
+        openingPoints: 2,
         rewards: [
             'ROPE',
             'SHIELD',
             'MINE',
             'DEFUSE_KIT',
+            'FLARE'
         ]
     },
     LEGENDARY_CRATE: {
         emoji: EMOJIS.LEGENDARY_CRATE,
-        maxReward: 1,
+        maxReward: 2,
+        openingPoints: 3,
         rewards: [
             'IED',
             'RPG',
@@ -75,6 +81,7 @@ export default class CratedropMinigame {
     // Reaction interceptor to check if user is attempting to play Crate Drop
     static onReaction(reaction, user) {
         try {
+            if (user.id === STATE.CLIENT.user.id) return false;
             if (reaction.message.author.id !== STATE.CLIENT.user.id) return false;
             if (!this.calculateRarityFromMessage(reaction.message)) return false;
             if (this.isCrateOpen(reaction.message)) return false;
@@ -123,7 +130,7 @@ export default class CratedropMinigame {
     // TODO: Implement number of hits required based on rarity.
     static calculateHitsRequired(crateType) {
         const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-        return VotingHelper.getNumRequired(guild, .025);
+        return VotingHelper.getNumRequired(guild, .015);
     }
 
     static isCrateOpen(msg) {
@@ -151,9 +158,26 @@ export default class CratedropMinigame {
         // A short time after, to avoid rate-limits... award items.
         setTimeout(async () => {
             const crate = CRATE_DATA[rarity];
-            const rewardedUsersNum = rand.natural({ min: 0, max: crate.maxReward });
-            const hitters = reaction.users.cache.map(user => user);
+            const hitters = reaction.users.cache
+                .map(user => user)
+                .filter(user => !UsersHelper.isCooper(user.id));
+                
+            const rewardedUsersNum = rand.natural({ min: 0, max: Math.ceil(hitters.length * .75) });
             
+            const pointsRewardString = hitters.join(', ') +
+                ` were rewarded ${crate.openingPoints} for attempting to open the crate!`;
+
+            await Promise.all(hitters.map(user => {
+                return PointsHelper.addPointsByID(user.id, crate.openingPoints);
+            }));
+
+            // Post and delete the points reward message feedback.
+            setTimeout(async () => {
+                const pointsRewardMsg = await msg.say(pointsRewardString);
+                setTimeout(() => { ChannelsHelper._postToFeed(pointsRewardString); }, 5000);
+                setTimeout(() => { pointsRewardMsg.delete(); }, 7500);
+            }, 5000);
+
             if (rewardedUsersNum > 0) {
                 // Pick the amount of rewarded users.
                 rand.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
@@ -196,16 +220,17 @@ export default class CratedropMinigame {
                             }
                         });
                     }
-
-                })
-
-                // Remove the opened crate.
-                setTimeout(() => { msg.delete(); }, 15000);                
+                });
+        
             } else {
                 const noRewardMsg = await msg.say('No items were inside this crate! >:D');
+
                 // Remove the reward message because it was placed in a random channel.
                 setTimeout(() => { noRewardMsg.delete(); }, 30000);
             }
+
+            // Remove the opened crate.
+            setTimeout(() => { msg.delete(); }, 15000);
         }, 666);
     }
 

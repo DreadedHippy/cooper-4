@@ -10,7 +10,7 @@ import reactAddedHandler from "./reaction/reactionAdded";
 import ChannelsHelper from "../../bot/core/entities/channels/channelsHelper";
 import SacrificeHelper from "../features/events/sacrificeHelper";
 import PointsHelper from "../features/points/pointsHelper";
-import MiningMinigame from "../features/minigame/small/mining";
+// import MiningMinigame from "../features/minigame/small/mining";
 
 export default function registerCommunityEventsHandlers(client) {
 
@@ -43,9 +43,9 @@ export default function registerCommunityEventsHandlers(client) {
     if (chanceInstance.bool({ likelihood: 75 })) SacrificeHelper.random();
   }, ((60 * 60) * 6) * 1000);
 
-  const crateDropInterval = 60 * 45 * 1000;
+  const crateDropInterval = 60 * 25 * 1000;
   setInterval(() => { CratedropMinigame.run(crateDropInterval); }, crateDropInterval);
-  setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 2.5);
+  setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 3);
   // setInterval(() => { MiningMinigame.run(); }, crateDropInterval / 1.5);
 
 // Miscellaneous features.

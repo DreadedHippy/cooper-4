@@ -107,7 +107,7 @@ export default class SacrificeHelper {
                 
             // Intercept latest vote granted protection to user.
             } else if (rawKeepVotes === 0 && reaction.emoji.name === EMOJIS.SHIELD) {
-                await ChannelsHelper._postToFeed(`<@${targetMember.id}>'s was protected from sacrifice by votes!`);
+                await ChannelsHelper._postToFeed(`<@${targetMember.id}> was protected from sacrifice by votes!`);
             } 
 
         } catch(e) {

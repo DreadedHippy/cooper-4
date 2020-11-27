@@ -14,9 +14,12 @@ export default class LaxativeHandler {
             setTimeout(() => { EggHuntMinigame.run(); }, 333);
 
             const feedbackText = `${user.username} used laxative and potentially triggered egg drops!`;
-            const feedbackMsg = await commandMsg.say(feedbackText);
-            setTimeout(() => { feedbackMsg.react('🍫'); }, 1333);
-            setTimeout(() => { feedbackMsg.delete(); }, 10000);
+
+            if (!ChannelsHelper.checkIsByCode(commandMsg.channel.id, 'FEED')) {
+                const feedbackMsg = await commandMsg.say(feedbackText);
+                setTimeout(() => { feedbackMsg.react('🍫'); }, 1333);
+                setTimeout(() => { feedbackMsg.delete(); }, 10000);
+            }
 
             setTimeout(() => { ChannelsHelper._postToFeed(feedbackText); }, 666);
         }

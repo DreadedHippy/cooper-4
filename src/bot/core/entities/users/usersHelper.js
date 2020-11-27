@@ -1,3 +1,4 @@
+import STATE from "../../../state";
 import Database from "../../setup/database";
 
 export default class UsersHelper {
@@ -76,6 +77,10 @@ export default class UsersHelper {
             text: "SELECT * FROM users"
         };
         return await Database.query(query);        
+    }
+
+    static isCooper(id) {
+        return STATE.CLIENT.user.id === id;
     }
 
     static async getIntro(member) {

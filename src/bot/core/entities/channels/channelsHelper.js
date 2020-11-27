@@ -54,4 +54,7 @@ export default class ChannelsHelper {
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         return ChannelsHelper.fetchRandomTextChannel(server);
     }
+    static checkIsByCode(id, code) {
+        return CHANNELS[code].id === id;
+    }
 }
