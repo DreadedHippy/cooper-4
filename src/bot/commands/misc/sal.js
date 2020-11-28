@@ -1,5 +1,5 @@
-import { Chance } from 'chance';
 import CoopCommand from '../../core/classes/coopCommand';
+import STATE from '../../state';
 
 export default class SalCommand extends CoopCommand {
 
@@ -16,11 +16,8 @@ export default class SalCommand extends CoopCommand {
 	}
 
 	async run(msg) {
-        const chanceInstance = new Chance;
-
         setTimeout(() => {
             super.run(msg);
-
             msg.say('Saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaal... Ru.')
         }, 250);
     }

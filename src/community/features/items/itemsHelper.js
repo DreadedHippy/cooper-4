@@ -3,14 +3,17 @@ import Database from "../../../bot/core/setup/database";
 
 import EMOJIS from '../../../bot/core/config/emojis.json';
 import DatabaseHelper from "../../../bot/core/classes/databaseHelper";
-import BombHandler from "./handlers/bombHandler";
 
+// Items with reaction usages.
+import BombHandler from "./handlers/bombHandler";
+import ToxicEggHandler from "./handlers/toxicEggHandler";
 
 
 export default class ItemsHelper {
 
     static async onReaction(reaction, user) {
         BombHandler.onReaction(reaction, user);
+        ToxicEggHandler.onReaction(reaction, user);
     }
 
     static async add(userID, item_code, quantity) {

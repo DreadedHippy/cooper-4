@@ -7,9 +7,8 @@ import VotingHelper from '../../events/voting/votingHelper';
 import STATE from '../../../bot/state';
 import MessagesHelper from '../../../bot/core/entities/messages/messagesHelper';
 import embedHelper from '../../../ui/embed/embedHelper';
-import Chance from 'chance';
 
-const chanceInstance = new Chance;
+
 
 export default class SacrificeHelper {
    
@@ -196,7 +195,7 @@ export default class SacrificeHelper {
         const rowCount = usersQuery.rowCount || 0;
         const users = usersQuery.rows || [];
         if (rowCount > 0) {
-            const randomIndex = chanceInstance.natural({ min: 0, max: rowCount });
+            const randomIndex = STATE.CHANCE.natural({ min: 0, max: rowCount });
             const randomUser = users[randomIndex];
 
             const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');

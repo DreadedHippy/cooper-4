@@ -1,4 +1,3 @@
-import Chance from 'chance';
 import _ from 'lodash';
 
 import EMOJIS from '../../../../bot/core/config/emojis.json';
@@ -134,7 +133,7 @@ export default class EggHuntMinigame {
     static async collect(reaction, user) {
         try {
             if (user.id !== STATE.CLIENT.user.id) {     
-                const rand = new Chance;
+                
                 
                 const rarity = this.calculateRarityFromMessage(reaction.message);
                 const reward = EGG_DATA[rarity].points;
@@ -144,7 +143,7 @@ export default class EggHuntMinigame {
                 let acknowledgementMsgText = '';
                 let activityFeedMsgText = '';
 
-                if (rand.bool({ likelihood: 85 })) {
+                if (STATE.CHANCE.bool({ likelihood: 85 })) {
                     // Store points and egg collection data in database.
                     const updated = await PointsHelper.addPointsByID(user.id, reward);
 
@@ -189,7 +188,7 @@ export default class EggHuntMinigame {
     static async drop(rarity, dropText = null) {
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const dropChannel = ChannelsHelper.fetchRandomTextChannel(server);
-        const rand = new Chance;
+        
 
         if (dropChannel) {
             const randomDelayBaseMs = 30000;
@@ -207,22 +206,22 @@ export default class EggHuntMinigame {
                 } catch(e) {
                     console.error(e);
                 }
-            }, rand.natural({ min: randomDelayBaseMs, max: randomDelayBaseMs * 4 }));
+            }, STATE.CHANCE.natural({ min: randomDelayBaseMs, max: randomDelayBaseMs * 4 }));
         }
     }
 
     static run() {
-        const rand = new Chance;
-        if (rand.bool({ likelihood })) {
+        
+        if (STATE.CHANCE.bool({ likelihood })) {
             this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg, but where...?');
 
-            if (rand.bool({ likelihood: likelihood / 1.75 })) {
+            if (STATE.CHANCE.bool({ likelihood: likelihood / 1.75 })) {
                 this.drop('TOXIC_EGG', 'I dropped an egg, but where...? Tsk.');
 
-                if (rand.bool({ likelihood: likelihood / 1.5 })) {
+                if (STATE.CHANCE.bool({ likelihood: likelihood / 1.5 })) {
                     this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
     
-                    if (rand.bool({ likelihood: likelihood / 2.25 })) {
+                    if (STATE.CHANCE.bool({ likelihood: likelihood / 2.25 })) {
                         ChannelsHelper._postToFeed('@here, a legendary egg was dropped! Find and grab it before others can!');
                         this.drop('LEGENDARY_EGG');
                     }
@@ -231,13 +230,13 @@ export default class EggHuntMinigame {
 
 
             // Bonus eggs            
-            if (rand.bool({ likelihood: likelihood / 1.75 })) {
+            if (STATE.CHANCE.bool({ likelihood: likelihood / 1.75 })) {
                 ChannelsHelper._postToFeed('Bonus eggs rolling!');
                 
-                const bonusEggsNum = rand.natural({ min: 2, max: 8 });
+                const bonusEggsNum = STATE.CHANCE.natural({ min: 2, max: 8 });
                 for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE_EGG', null);
 
-                const toxicEggsMixupNum = rand.natural({ min: 1, max: Math.ceil(bonusEggsNum / 3) });
+                const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 1, max: Math.ceil(bonusEggsNum / 3) });
                 for (let i = 0; i < toxicEggsMixupNum; i++) this.drop('TOXIC_EGG', null)
             }
         }

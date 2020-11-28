@@ -1,4 +1,3 @@
-import Chance from 'chance';
 import _ from 'lodash';
 
 import EMOJIS from '../../../../bot/core/config/emojis.json';
@@ -77,7 +76,6 @@ const CRATE_DATA = {
 
 // Rarity likelihood base number.
 const likelihood = 25;
-const rand = new Chance;
 
 export default class CratedropMinigame {
     
@@ -182,18 +180,18 @@ export default class CratedropMinigame {
             }, 5000);
 
             // Reward amount of users based on luck/chance.
-            const rewardedUsersNum = rand.natural({ min: 0, max: Math.ceil(hitters.length * .75) });
+            const rewardedUsersNum = STATE.CHANCE.natural({ min: 0, max: Math.ceil(hitters.length * .75) });
             if (rewardedUsersNum > 0) {
                 // Pick the amount of rewarded users.
-                rand.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
+                STATE.CHANCE.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
                     // Calculate a random amount of rewards to give to the user.
-                    const rewardItemsNum = rand.natural({ min: 0, max: crate.maxReward });
-                    const rewardsKeys = rand.pickset(crate.rewards, rewardItemsNum);
+                    const rewardItemsNum = STATE.CHANCE.natural({ min: 0, max: crate.maxReward });
+                    const rewardsKeys = STATE.CHANCE.pickset(crate.rewards, rewardItemsNum);
 
                     if (rewardItemsNum > 0) {
                         // Grant rewards to users with a random quantity.
                         rewardsKeys.forEach(async (reward, rewardIndex) => {
-                            const rewardItemQuantity = rand.natural({ min: 1, max: crate.maxReward });
+                            const rewardItemQuantity = STATE.CHANCE.natural({ min: 1, max: crate.maxReward });
                             // Use rewardeeIndex + rewardIndex for delays (rate limiting).
                             const rateLimitBypassDelay = (rewardeeIndex * 666) + (333 * rewardIndex);
 
@@ -239,9 +237,9 @@ export default class CratedropMinigame {
     static selectRandomRarity() {
         let rarity = 'AVERAGE_CRATE';
 
-        if (rand.bool({ likelihood: likelihood / 3 })) rarity = 'RARE_CRATE';
+        if (STATE.CHANCE.bool({ likelihood: likelihood / 3 })) rarity = 'RARE_CRATE';
 
-        if (rand.bool({ likelihood: likelihood / 5 })) rarity = 'LEGENDARY_CRATE';
+        if (STATE.CHANCE.bool({ likelihood: likelihood / 5 })) rarity = 'LEGENDARY_CRATE';
 
         return rarity;
     }

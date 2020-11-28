@@ -1,5 +1,6 @@
-import { Chance } from 'chance';
 import CoopCommand from '../../core/classes/coopCommand';
+import STATE from '../../state';
+
 
 export default class InklingboiCommand extends CoopCommand {
 
@@ -16,13 +17,12 @@ export default class InklingboiCommand extends CoopCommand {
 	}
 
 	async run(msg) {
-        const chanceInstance = new Chance;
 
         setTimeout(() => {
             super.run(msg);
 
             setTimeout(async () => {
-                const repeatNum = chanceInstance.natural({ min: 1, max: 20 });
+                const repeatNum = STATE.CHANCE.natural({ min: 1, max: 20 });
                 const first = `Inklingboiiiiii?!?!??!!?!?!?! 🌋🌋🌋`;
                 const second = 'Ruuuuuu' + 'u'.repeat(repeatNum) + '!!!';
                 const third = ('🦑' + '🇩🇪').repeat(repeatNum);

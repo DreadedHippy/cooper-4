@@ -1,16 +1,18 @@
-import CratedropMinigame from "../features/minigame/small/cratedrop";
-import EggHuntMinigame from "../features/minigame/small/egghunt";
-import Chance from 'chance';
-
-import joined from "./members/welcome/joined";
-import left from "./members/welcome/left";
-
-import messageAddedHandler from "./message/messageAdded";
-import reactAddedHandler from "./reaction/reactionAdded";
 import ChannelsHelper from "../../bot/core/entities/channels/channelsHelper";
 import SacrificeHelper from "../features/events/sacrificeHelper";
 import PointsHelper from "../features/points/pointsHelper";
+
+import STATE from "../../bot/state";
+
+import joined from "./members/welcome/joined";
+import left from "./members/welcome/left";
+import messageAddedHandler from "./message/messageAdded";
+import reactAddedHandler from "./reaction/reactionAdded";
+
+import CratedropMinigame from "../features/minigame/small/cratedrop";
+import EggHuntMinigame from "../features/minigame/small/egghunt";
 // import MiningMinigame from "../features/minigame/small/mining";
+
 
 export default function registerCommunityEventsHandlers(client) {
 
@@ -29,9 +31,6 @@ export default function registerCommunityEventsHandlers(client) {
 
   /** ___--___ EVENT/FEATURE RELATED SCHEDULING ___--___ */
 
-  
-  const chanceInstance = new Chance;
-
 
   // Hourly actions
   setInterval(() => {
@@ -40,7 +39,7 @@ export default function registerCommunityEventsHandlers(client) {
 
   // Every 6 hours 25% chance of offering someone for sacrifice.
   setInterval(() => {
-    if (chanceInstance.bool({ likelihood: 75 })) SacrificeHelper.random();
+    if (STATE.CHANCE.bool({ likelihood: 75 })) SacrificeHelper.random();
   }, ((60 * 60) * 6) * 1000);
 
   const crateDropInterval = 60 * 25 * 1000;
@@ -50,16 +49,16 @@ export default function registerCommunityEventsHandlers(client) {
 
 // Miscellaneous features.
   setInterval(() => {
-    if (chanceInstance.bool({ likelihood: 4 })) ChannelsHelper._postToFeed(';-;');
+    if (STATE.CHANCE.bool({ likelihood: 4 })) ChannelsHelper._postToFeed(';-;');
   }, 60 * 45 * 1000);
 
   setInterval(() => {
-    const extraUs = 'u'.repeat(chanceInstance.natural({ min: 1, max: 20 }));
-    if (chanceInstance.bool({ likelihood: 2.5 })) ChannelsHelper._postToFeed('Ruuuuuu' + extraUs);
+    const extraUs = 'u'.repeat(STATE.CHANCE.natural({ min: 1, max: 20 }));
+    if (STATE.CHANCE.bool({ likelihood: 2.5 })) ChannelsHelper._postToFeed('Ruuuuuu' + extraUs);
   }, ((60 * 60) * 3) * 1000);
 
   setInterval(() => {
-    if (chanceInstance.bool({ likelihood: 5 })) ChannelsHelper._postToFeed('._.');
+    if (STATE.CHANCE.bool({ likelihood: 5 })) ChannelsHelper._postToFeed('._.');
   }, 60 * 120 * 1000);
 
 }

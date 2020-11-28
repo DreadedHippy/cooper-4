@@ -3,8 +3,6 @@ import CHANNELS from '../../config/channels.json';
 import STATE from '../../../state';
 import ServerHelper from '../server/serverHelper';
 
-import Chance from 'chance';
-
 export default class ChannelsHelper {
     static getByID(guild, id) {
         return guild.channels.cache.get(id);
@@ -35,14 +33,12 @@ export default class ChannelsHelper {
             .filterByCodes(guild, codes)
             .map(async channel => await channel.send(message));
     }
-    static fetchRandomTextChannel(guild) {
-        const rand = new Chance;
-
+    static fetchRandomTextChannel(guild) {       
         // Prevent egg and crate drops in unverified channels.
         const filteredKeys = Object.keys(CHANNELS)
             .filter(key => !['ENTRY', 'INTRO', 'ROLES', 'LEADERS'].includes(key));
 
-        const channelKey = rand.pickone(filteredKeys);
+        const channelKey = STATE.CHANCE.pickone(filteredKeys);
 
         const channelID = CHANNELS[channelKey].id;
 

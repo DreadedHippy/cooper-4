@@ -1,8 +1,7 @@
 import ChannelsHelper from "../../../../bot/core/entities/channels/channelsHelper";
 import EMOJIS from "../../../../bot/core/config/emojis.json";
-import Chance from 'chance';
+import STATE from "../../../../bot/state";
 
-const rand = new Chance;
 
 export default class MiningMinigame {
     
@@ -27,7 +26,7 @@ export default class MiningMinigame {
     }
 
     static async run() {
-        const magnitude = rand.natural({ min: 1, max: 10 });
+        const magnitude = STATE.CHANCE.natural({ min: 1, max: 30 });
         const rockString = EMOJIS.ROCK.repeat(magnitude);
         const rockMsg = await ChannelsHelper._randomText().send(rockString);
 

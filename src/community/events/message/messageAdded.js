@@ -1,5 +1,4 @@
 import Axios from "axios";
-import { Chance } from "chance";
 import CHANNELS from "../../../bot/core/config/channels.json";
 import ChannelsHelper from "../../../bot/core/entities/channels/channelsHelper";
 import STATE from "../../../bot/state";
@@ -8,13 +7,12 @@ import achievementPostedHandler from "../../features/encouragement/achievementPo
 import workPostHandler from "../../features/encouragement/workPosted";
 import introPosted from "../members/welcome/introPosted";
 
-const rand = new Chance;
 
 export default function messageAddedHandler(msg) {
     // TODO: Refacotr this into messageHelper
     const isUserMsg = msg.author.id !== STATE.CLIENT.user.id;
 
-    const twentyPercRoll = rand.bool({ likelihood: 20 });
+    const twentyPercRoll = STATE.CHANCE.bool({ likelihood: 20 });
 
     // Prevent the bruhs
     // TODO: Subtract points
