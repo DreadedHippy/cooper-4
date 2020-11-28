@@ -37,10 +37,11 @@ export default class ToxigEggHandler {
                     const damageInfoText = ` -${damage} points (${updatedPoints})`;
                     let actionInfoText = `${user.username} used a toxic egg on ${author.username}`;
                     if (backFired) actionInfoText = `${user.username} tried to use a toxic egg on ${author.username}, but it backfired`;
+                    
                     const feedbackMsgText = `${actionInfoText}: ${damageInfoText}.`;
 
                     if (!ChannelsHelper.checkIsByCode(reaction.message.channel.id, 'FEED')) {
-                        const feedbackMsg = await commandMsg.say(feedbackMsgText);
+                        const feedbackMsg = await reaction.message.say(feedbackMsgText);
                         setTimeout(() => { feedbackMsg.react('☢️'); }, 1333);
                         setTimeout(() => { feedbackMsg.delete(); }, 10000);
                     }
