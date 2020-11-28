@@ -24,8 +24,9 @@ export default class LaxativeHandler {
             setTimeout(() => { ChannelsHelper._postToFeed(feedbackText); }, 666);
         }
         else {
-            // Wtf does this even mean?!?!?!?!?
-            console.log('!didUseLax');
+            const unableMsg = await commandMsg.say('Unable to use LAXATIVE, you own none. :/');
+            setTimeout(() => { unableMsg.react('🍫'); }, 1333);
+            setTimeout(() => { unableMsg.delete(); }, 10000);
         }
     }
    

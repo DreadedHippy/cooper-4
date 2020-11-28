@@ -37,6 +37,8 @@ export default class EggHuntMinigame {
     
     static onReaction(reaction, user) {
         try {
+            console.log(reaction.emoji.name);
+
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
             const eggEmojiNames = _.map(_.values(EGG_DATA), "emoji");
             const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
@@ -46,11 +48,9 @@ export default class EggHuntMinigame {
             
             const isBombEmoji = reaction.emoji.name === '💣';
             const isBasketEmoji = reaction.emoji.name === '🧺';
+            const isPanEmoji = reaction.emoji.name === '🍳';
 
-            // TODO: Implement frying.
-            // const isFryingPanEmoji
-
-
+            if (isEggCollectible && isPanEmoji) this.fry(reaction, user);
             if (isEggCollectible && isBasketEmoji) this.collect(reaction, user);
             if (isEggCollectible && isBombEmoji) this.explode(reaction, user);
 
@@ -130,11 +130,44 @@ export default class EggHuntMinigame {
         }
     }
 
+    static async fry(reaction, user) {
+        // Attempt to use the laxative item
+        const didUsePan = await ItemsHelper.use(user.id, 'FRYING_PAN', 1);
+
+        // Respond to usage result.
+        if (didUsePan) {
+            const rarity = this.calculateRarityFromMessage(reaction.message);
+            const { points, emoji } = EGG_DATA[rarity];
+
+            // Invert rewards, good egg cooked is wasting, bad egg cooked is rewarding.
+            const actionReward = -points;   
+
+            // Process the points change.
+            const updatedPoints = await PointsHelper.addPointsByID(user.id, actionReward);
+
+            // TODO: Create omelette item after being cooked.
+
+            // Generate feedback test based on the changes.
+            const feedbackText = `${user.username} fried ${emoji}!` +
+                `Resulting in ${actionReward} point(s) change. (${updatedPoints})`;
+
+            if (!ChannelsHelper.checkIsByCode(commandMsg.channel.id, 'FEED')) {
+                const feedbackMsg = await commandMsg.say(feedbackText);
+                setTimeout(() => { feedbackMsg.react('🍳'); }, 1333);
+                setTimeout(() => { feedbackMsg.delete(); }, 10000);
+            }
+            setTimeout(() => { ChannelsHelper._postToFeed(feedbackText); }, 666);
+        }
+        else {
+            const unableMsg = await commandMsg.say('Unable to use LAXATIVE, you own none. :/');
+            setTimeout(() => { unableMsg.react('🍫'); }, 1333);
+            setTimeout(() => { unableMsg.delete(); }, 10000);
+        }
+    }
+
     static async collect(reaction, user) {
         try {
             if (user.id !== STATE.CLIENT.user.id) {     
-                
-                
                 const rarity = this.calculateRarityFromMessage(reaction.message);
                 const reward = EGG_DATA[rarity].points;
                 const emoji = EGG_DATA[rarity].emoji;
