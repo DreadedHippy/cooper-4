@@ -30,15 +30,16 @@ export default class NukeCommand extends CoopCommand {
 		if (!STATE.NUKING) {
 			let counter = 0;
 			STATE.NUKING = setInterval(async () => {
-				const messages = await msg.channel.messages.fetch({ limit: 5 });
+				const messages = await msg.channel.messages.fetch({ limit: 50 });
 				if (Array.from(messages.keys()).length === 0) endNuking(msg);
 				else messages.map((fetchedMsg) => {
 					setTimeout(() => { 
-						fetchedMsg.delete(); 
-						counter++;
-					}, 777 * counter);
+						fetchedMsg.delete()
+							.catch(e => {});
+					 }, 1250 * counter);
+					counter++;
 				});
-			}, 2500)
+			}, 15000);
 
 			await msg.reply('☢☢☢☢☢☢☢ing channel:: ' + msg.channel.name);
 

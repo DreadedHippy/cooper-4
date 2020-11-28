@@ -12,7 +12,7 @@ import STATE from '../../../../bot/state';
 import MessagesHelper from '../../../../bot/core/entities/messages/messagesHelper';
 
 
-const likelihood = 20;
+const likelihood = 35;
 
 const EGG_DATA = {
     TOXIC_EGG: {
@@ -231,7 +231,7 @@ export default class EggHuntMinigame {
 
 
             // Bonus eggs            
-            if (rand.bool({ likelihood: likelihood / 2 })) {
+            if (rand.bool({ likelihood: likelihood / 1.75 })) {
                 ChannelsHelper._postToFeed('Bonus eggs rolling!');
                 
                 const bonusEggsNum = rand.natural({ min: 2, max: 8 });
