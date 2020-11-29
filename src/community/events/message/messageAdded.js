@@ -51,7 +51,7 @@ export default async function messageAddedHandler(msg) {
 
     // Bruh-roulette.
     const twentyPercRoll = STATE.CHANCE.bool({ likelihood: 20 });
-    if (msg.content.toLowerCase().indexOf('bruh') > -1 && UsersHelper.isCooperMsg(msg)) {
+    if (msg.content.toLowerCase().indexOf('bruh') > -1 && !UsersHelper.isCooperMsg(msg)) {
         const updatedPoints = await PointsHelper.addPointsByID(msg.author.id, twentyPercRoll ? 1 : -1);
         setTimeout(() => {
             msg.say(
