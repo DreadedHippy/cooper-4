@@ -18,10 +18,10 @@ export default class ChannelsHelper {
         const filter = channel => ids.includes(channel.id);
         return ChannelsHelper.filter(guild, filter);
     }
-    static _postToFeed(message) {
+    static _postToFeed(message, delay = 666) {
         const prodServer = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const feedChannel = this.getByCode(prodServer, 'FEED');
-        return feedChannel.send(message);
+        setTimeout(() => { feedChannel.send(message); }, delay);
     }
     static _postToChannelCode(name, message) {
         const prodServer = ServerHelper.getByCode(STATE.CLIENT, 'PROD');

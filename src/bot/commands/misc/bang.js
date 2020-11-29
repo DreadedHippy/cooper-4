@@ -18,21 +18,14 @@ export default class BangCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 		
-		msg.say('🧨').then((msg) => { 
-			setTimeout(() => {
-				msg.edit('🔥').then((msg) => { 
-					setTimeout(() => {
-						msg.edit('💥').then((msg) => { 
-							setTimeout(() => {
-								msg.edit('💨').then(msg => {
-									setTimeout(() => { msg.delete() }, 200);
-								})
-							}, 200);
-						});
-					}, 200)	
-				}, 200);
-			}, 200);
-		})
+		const placedMsg = await msg.say('🧨');
+
+		MessagesHelper.delayEdit(placedMsg, '🔥', 333);
+		MessagesHelper.delayEdit(placedMsg, '💥', 666);
+		MessagesHelper.delayEdit(placedMsg, '💨', 999);
+
+		// Clear the message, animation completed.
+		MessagesHelper.delayDelete(placedMsg, 1666);
     }
     
 };

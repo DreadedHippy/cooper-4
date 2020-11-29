@@ -23,8 +23,8 @@ export default class PollCommand extends CoopCommand {
 			const pollAcknowledgement = await msg.reply(msg.content);
 
 			// Add reactions for people to use.
-			setTimeout(async () => { await pollAcknowledgement.react('🟢'); }, 333);
-			setTimeout(async () => { await pollAcknowledgement.react('🔴'); }, 666);
+			MessagesHelper.delayReact(pollAcknowledgement, '🟢', 333);
+			MessagesHelper.delayReact(pollAcknowledgement, '🔴', 666);
 		
 			// Send poll tracking link.
 			await msg.direct(

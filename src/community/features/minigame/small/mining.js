@@ -5,6 +5,7 @@ import STATE from "../../../../bot/state";
 import MessagesHelper from "../../../../bot/core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../bot/core/entities/users/usersHelper";
 import ItemsHelper from "../../items/itemsHelper";
+import { Message } from "discord.js";
 
 
 export default class MiningMinigame {
@@ -38,17 +39,17 @@ export default class MiningMinigame {
 
         // Calculate magnitude from message: more rocks, greater reward.
         const textMagnitude = Math.floor(msg.content.length / 2);
-        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 3 });
+        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude });
 
         // Check if has a pickaxe
         const userPickaxesNum = (await ItemsHelper.getUserItem(user.id, 'PICK_AXE')).quantity || 0;
         if (userPickaxesNum <= 0) {
             const warningMsg = await msg.say(`${user.username} tried to mine the rocks, but doesn't have a pickaxe.`);
-            return setTimeout(() => { warningMsg.delete(); }, 10000);
+            return MessagesHelper.delayDelete(warningMsg, 10000);
         }
 
         // Handle chance of pickaxe breaking
-        const pickaxeBreakPerc = Math.min(45, rewardRemaining);
+        const pickaxeBreakPerc = Math.min(30, rewardRemaining);
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
         if (didBreak) {
             const pickaxeUpdate = await ItemsHelper.use(user.id, 'PICK_AXE', 1);
@@ -63,7 +64,8 @@ export default class MiningMinigame {
             // console.log('addMetalOre', addMetalOre);
 
             // Reduce the number of rocks in the message.
-            await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
+            if (textMagnitude > 1) await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
+            else await msg.delete();
             
             ChannelsHelper._propogate(
                 msg, 
@@ -75,10 +77,9 @@ export default class MiningMinigame {
     static async run() {
         const magnitude = STATE.CHANCE.natural({ min: 1, max: 30 });
         const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.ROCK.repeat(magnitude));
-        setTimeout(() => { rockMsg.react('⛏️'); }, 666);
 
-        setTimeout(() => { 
-            ChannelsHelper._postToFeed('Hungry? Something to pick at appears!'); 
-        }, 1222);
+        MessagesHelper.delayReact(rockMsg, '⛏️');
+
+        ChannelsHelper._postToFeed('Hungry? Something to pick at appears!', 1222);
     }
 }

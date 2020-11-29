@@ -6,9 +6,6 @@ export default class MessagesHelper {
             `${msg.id}`;
         return link;
     }
-    static selfDestruct(msg, delay = 3000) {
-        setTimeout(() => { msg.delete() }, delay);
-    }
     static noWhiteSpace(strings, ...placeholders) {
         // Build the string as normal, combining all the strings and placeholders:
         let withSpace = strings.reduce((result, string, i) => (result + placeholders[i - 1] + string));
@@ -30,6 +27,24 @@ export default class MessagesHelper {
 
     static emojiToUni(emoji) {
         return emoji.codePointAt(0).toString(16);
+    }
+
+    static delayReact(msg, emoji, delay = 666) {
+        setTimeout(() => { msg.react(emoji); }, delay);
+    }
+
+    static delayDelete(msg, delay = 666) {
+        setTimeout(() => { 
+            msg.delete()
+                .catch(e => { console.log('Delete message failed.') });
+        }, delay);
+    }
+
+    static delayEdit(msg, newContent, delay = 666) {
+        setTimeout(() => { 
+            msg.edit(newContent)
+                .catch(e => { console.log('Edit message failed.') });
+        }, delay);
     }
 
     // Convert emojiID into Discord format, but not if its merely an unicode emoji.

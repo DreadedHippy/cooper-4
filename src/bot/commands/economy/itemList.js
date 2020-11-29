@@ -1,5 +1,6 @@
 import ItemsHelper from '../../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
+import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 export default class ItemListCommand extends CoopCommand {
 
@@ -20,9 +21,9 @@ export default class ItemListCommand extends CoopCommand {
 
 		const usableItems = ItemsHelper.getUsableItems().join('\n');
 		const usableItemsMsgText = `Usable Items: \n ${usableItems}`;
-		const listMsg = await msg.say(usableItems);
+		const listMsg = await msg.say(usableItemsMsgText);
 
-		setTimeout(() => { listMsg.delete(); }, 10000);
+		MessagesHelper.delayDelete(listMsg, 10000);
     }
     
 };

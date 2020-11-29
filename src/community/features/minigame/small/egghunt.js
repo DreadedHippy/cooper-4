@@ -90,7 +90,7 @@ export default class EggHuntMinigame {
 
             // User has enough eggs, blow egg up.
             const blownupEggMsg = await reaction.message.edit('💥');
-            setTimeout(() => { blownupEggMsg.delete(); }, 3333);
+            MessagesHelper.delayDelete(blownupEggMsg, 3333);
 
             // Share points with nearest 5 message authors.
             const channelMessages = reaction.message.channel.messages;
@@ -119,7 +119,7 @@ export default class EggHuntMinigame {
 
             // Add self-destructing message in channel.
             const instantFeedbackMsg = await reaction.message.say(feedbackMsg);
-            setTimeout(() => { instantFeedbackMsg.delete(); }, 30000);
+            MessagesHelper.delayDelete(instantFeedbackMsg, 30000);
 
             // Add server notification in feed.
             await ChannelsHelper._postToFeed(feedbackMsg + ' in ' + channelName);

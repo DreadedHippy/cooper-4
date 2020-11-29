@@ -122,6 +122,7 @@ export default class CratedropMinigame {
 
                 // Remove message after it was visible by the contact.
                 setTimeout(() => { openingUpdateMsg.delete(); }, 30000);
+                
             }
         } catch(e) {
             console.error(e);

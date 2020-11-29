@@ -1,5 +1,6 @@
 import SacrificeHelper from '../../../community/features/events/sacrificeHelper';
 import CoopCommand from '../../core/classes/coopCommand';
+import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 export default class SacrificeCommand extends CoopCommand {
 
@@ -35,7 +36,7 @@ export default class SacrificeCommand extends CoopCommand {
 			const errorMsg = await msg.say(e.message);
 
 			// Delete error message when no longer necessary.
-			if (errorMsg) setTimeout(() => { errorMsg.delete(); }, 3000);
+			if (errorMsg) MessagesHelper.delayDelete(errorMsg, 3000);
 		}
     }
     
