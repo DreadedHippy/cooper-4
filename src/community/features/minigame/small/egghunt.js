@@ -131,37 +131,46 @@ export default class EggHuntMinigame {
     }
 
     static async fry(reaction, user) {
-        // Attempt to use the laxative item
-        const didUsePan = await ItemsHelper.use(user.id, 'FRYING_PAN', 1);
+        try {
+            // Attempt to use the laxative item
+            const didUsePan = await ItemsHelper.use(user.id, 'FRYING_PAN', 1);
+    
+            // Respond to usage result.
+            if (didUsePan) {
+                const rarity = this.calculateRarityFromMessage(reaction.message);
+                const { points, emoji } = EGG_DATA[rarity];
+    
+                // Invert rewards, good egg cooked is wasting, bad egg cooked is rewarding.
+                const actionReward = -points;   
+    
+                // Process the points change.
+                const updatedPoints = await PointsHelper.addPointsByID(user.id, actionReward);
+    
+                // TODO: Create omelette item after being cooked.
+    
+                // Generate feedback test based on the changes.
+                const feedbackText = `${user.username} fried <${emoji}>! ` +
+                    `Resulting in ${actionReward} point(s) change. (${updatedPoints})`;
+                
+                // Delete the original egg, now it has been fried.
+                await reaction.message.delete();
 
-        // Respond to usage result.
-        if (didUsePan) {
-            const rarity = this.calculateRarityFromMessage(reaction.message);
-            const { points, emoji } = EGG_DATA[rarity];
-
-            // Invert rewards, good egg cooked is wasting, bad egg cooked is rewarding.
-            const actionReward = -points;   
-
-            // Process the points change.
-            const updatedPoints = await PointsHelper.addPointsByID(user.id, actionReward);
-
-            // TODO: Create omelette item after being cooked.
-
-            // Generate feedback test based on the changes.
-            const feedbackText = `${user.username} fried ${emoji}!` +
-                `Resulting in ${actionReward} point(s) change. (${updatedPoints})`;
-
-            if (!ChannelsHelper.checkIsByCode(reaction.message.channel.id, 'FEED')) {
-                const feedbackMsg = await reaction.message.say(feedbackText);
-                setTimeout(() => { feedbackMsg.react('🍳'); }, 1333);
-                setTimeout(() => { feedbackMsg.delete(); }, 10000);
+                setTimeout(async () => {
+                    if (!ChannelsHelper.checkIsByCode(reaction.message.channel.id, 'FEED')) {
+                        const feedbackMsg = await reaction.message.say(feedbackText);
+                        setTimeout(() => { feedbackMsg.react('🍳'); }, 1333);
+                        setTimeout(() => { feedbackMsg.delete(); }, 10000);
+                    }
+                    setTimeout(() => { ChannelsHelper._postToFeed(feedbackText); }, 666);
+                }, 333)
+            } else {
+                const unableMsg = await reaction.message.say('Unable to use FRYING_PAN, you own none. :/');
+                setTimeout(() => { unableMsg.react('🍳'); }, 1333);
+                setTimeout(() => { unableMsg.delete(); }, 10000);
             }
-            setTimeout(() => { ChannelsHelper._postToFeed(feedbackText); }, 666);
-        }
-        else {
-            const unableMsg = await reaction.message.say('Unable to use FRYING_PAN, you own none. :/');
-            setTimeout(() => { unableMsg.react('🍳'); }, 1333);
-            setTimeout(() => { unableMsg.delete(); }, 10000);
+        } catch(e) {
+            console.log('Frying egg failed...');
+            console.error(e);
         }
     }
 
