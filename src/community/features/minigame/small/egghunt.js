@@ -165,6 +165,7 @@ export default class EggHuntMinigame {
                 }, 333)
             } else {
                 const unableMsg = await reaction.message.say('Unable to use FRYING_PAN, you own none. :/');
+                setTimeout(() => { reaction.users.remove(user.id); }, 666);
                 setTimeout(() => { unableMsg.react('🍳'); }, 1333);
                 setTimeout(() => { unableMsg.delete(); }, 10000);
             }
