@@ -171,7 +171,7 @@ export default class CratedropMinigame {
 
             // Post and delete the points reward message feedback.
             const pointsRewardString = hitters.join(', ') +
-                ` were rewarded ${crate.openingPoints} points(s) for attempting to open the ${rarity.replace('_', '').toLowerCase()}!`;
+                ` were rewarded ${crate.openingPoints} points(s) for attempting to open the ${rarity.replace('_', ' ').toLowerCase()}!`;
 
             setTimeout(async () => {
                 const pointsRewardMsg = await msg.say(pointsRewardString);

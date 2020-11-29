@@ -37,8 +37,6 @@ export default class EggHuntMinigame {
     
     static onReaction(reaction, user) {
         try {
-            console.log(reaction.emoji.name);
-
             const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
             const eggEmojiNames = _.map(_.values(EGG_DATA), "emoji");
             const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
