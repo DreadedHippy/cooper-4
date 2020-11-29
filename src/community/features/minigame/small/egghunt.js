@@ -151,16 +151,16 @@ export default class EggHuntMinigame {
             const feedbackText = `${user.username} fried ${emoji}!` +
                 `Resulting in ${actionReward} point(s) change. (${updatedPoints})`;
 
-            if (!ChannelsHelper.checkIsByCode(commandMsg.channel.id, 'FEED')) {
-                const feedbackMsg = await commandMsg.say(feedbackText);
+            if (!ChannelsHelper.checkIsByCode(reaction.message.channel.id, 'FEED')) {
+                const feedbackMsg = await reaction.message.say(feedbackText);
                 setTimeout(() => { feedbackMsg.react('🍳'); }, 1333);
                 setTimeout(() => { feedbackMsg.delete(); }, 10000);
             }
             setTimeout(() => { ChannelsHelper._postToFeed(feedbackText); }, 666);
         }
         else {
-            const unableMsg = await commandMsg.say('Unable to use LAXATIVE, you own none. :/');
-            setTimeout(() => { unableMsg.react('🍫'); }, 1333);
+            const unableMsg = await reaction.message.say('Unable to use FRYING_PAN, you own none. :/');
+            setTimeout(() => { unableMsg.react('🍳'); }, 1333);
             setTimeout(() => { unableMsg.delete(); }, 10000);
         }
     }
