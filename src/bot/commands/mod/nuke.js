@@ -26,27 +26,16 @@ export default class NukeCommand extends CoopCommand {
 
 	async run(msg) {
 		super.run(msg);
+			
+		await msg.reply('☢☢☢☢☢☢☢ing channel:: ' + msg.channel.name);
+		
+		setTimeout(async () => {
+			const messages = await msg.channel.messages.fetch({ limit: 50 });
+			if (Array.from(messages.keys()).length === 0) endNuking(msg);
 
-		if (!STATE.NUKING) {
-			let counter = 0;
-			STATE.NUKING = setInterval(async () => {
-				const messages = await msg.channel.messages.fetch({ limit: 50 });
-				if (Array.from(messages.keys()).length === 0) endNuking(msg);
-				else messages.map((fetchedMsg) => {
-					setTimeout(() => { 
-						fetchedMsg.delete()
-							.catch(e => {});
-					 }, 1250 * counter);
-					counter++;
-				});
-			}, 15000);
-
-			await msg.reply('☢☢☢☢☢☢☢ing channel:: ' + msg.channel.name);
-
-		} else {
-			endNuking(msg)
-		}
-
+			// Bulk delete the messages.
+			await msg.channel.bulkDelete(messages);
+		}, 5000);
     }
     
 };
