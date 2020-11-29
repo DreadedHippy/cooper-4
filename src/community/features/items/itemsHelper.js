@@ -106,8 +106,13 @@ export default class ItemsHelper {
     }
 
     static async use(userID, itemCode, useQty) {
+        let ownedQty = 0;
+
+        // Attempt to load item ownership.
         const userItem = await this.getUserItem(userID, itemCode);
-        const ownedQty = userItem.quantity || 0;
+        if (userItem) ownedQty = userItem.quantity || 0;
+
+        // Check if enough qty of item is owned.
         if (ownedQty - useQty < 0) return false;
         else {
             await this.subtract(userID, itemCode, useQty);
