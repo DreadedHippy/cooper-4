@@ -60,7 +60,7 @@ export default async function messageAddedHandler(msg) {
             );
         }, 666);
     }
-    if (msg.content.toLowerCase() === 'i-' && UsersHelper.isCooperMsg(msg) && twentyPercRoll) msg.say('U-? Finish your sentence!');
+    if (msg.content.toLowerCase() === 'i-' && !UsersHelper.isCooperMsg(msg) && twentyPercRoll) msg.say('U-? Finish your sentence!');
 
 
     // If sefy facepalm's add recursive facepalm.
