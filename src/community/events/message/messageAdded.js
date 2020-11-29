@@ -51,12 +51,17 @@ export default async function messageAddedHandler(msg) {
 
     // Bruh-roulette.
     const twentyPercRoll = STATE.CHANCE.bool({ likelihood: 20 });
-    if (msg.content.toLowerCase().indexOf('bruh') > -1 && !UsersHelper.isCooperMsg(msg)) {
+    const isBruh = msg.content.toLowerCase().indexOf('bruh') > -1;
+    const isBreh = msg.content.toLowerCase().indexOf('breh') > -1;
+    // TODO: Account for bruuuh
+    if ((isBreh || isBruh) && !UsersHelper.isCooperMsg(msg)) {
+        let type = 'bruh';
+        if (isBreh) type = 'breh';
         const updatedPoints = await PointsHelper.addPointsByID(msg.author.id, twentyPercRoll ? 1 : -1);
         setTimeout(() => {
             msg.say(
-                `${twentyPercRoll ? '+1' : '-1'} point, bruh. ` +
-                `${msg.author.username} ${twentyPercRoll ? 'won' : 'lost'} bruh-roulette. (${updatedPoints})!`
+                `${twentyPercRoll ? '+1' : '-1'} point, ${type}. ` +
+                `${msg.author.username} ${twentyPercRoll ? 'won' : 'lost'} ${type}-roulette. (${updatedPoints})!`
             );
         }, 666);
     }
@@ -102,12 +107,20 @@ export default async function messageAddedHandler(msg) {
         }
     }
 
-    // Intercept inklingboi
-    if (msg.author.id === '687280609558528000') {
-        if (msg.content === ':0') msg.react('😉');
-        if (msg.content === ':-:') msg.react('😉');
-        if (msg.content === ';-;') msg.react('😉');
-        if (msg.content === ';--;') msg.react('😉');
+    if (twentyPercRoll) {
+        if (msg.content.toLowerCase().indexOf('marx') > -1) msg.react('☭');
+        if (msg.content.toLowerCase().indexOf('socialism') > -1) msg.react('☭');
+        if (msg.content.toLowerCase().indexOf('redistribute') > -1) msg.react('☭');
+        if (msg.content.toLowerCase().indexOf('taxes') > -1) msg.react('☭');
+        if (msg.content.toLowerCase().indexOf('capitalism') > -1) msg.react('💰');
+        if (msg.content.toLowerCase().indexOf('bread') > -1) msg.react('🍞');
+
+        // Intercept inklingboi
+        if (msg.author.id === '687280609558528000') {
+            const inklingboiSmileys = [':0', ':-:', ';-;', ';--;', '._.'];
+            if (inklingboiSmileys.includes(msg.content)) msg.react('😉');
+        }
     }
+
 
 }

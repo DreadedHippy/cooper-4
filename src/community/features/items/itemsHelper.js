@@ -23,7 +23,8 @@ export default class ItemsHelper {
                 VALUES($1, $2, $3) 
                 ON CONFLICT (owner_id, item_code)
                 DO 
-                UPDATE SET quantity = items.quantity + EXCLUDED.quantity`,
+                UPDATE SET quantity = items.quantity + EXCLUDED.quantity
+                RETURNING quantity`,
             values: [userID, item_code, quantity]
         };
         return await Database.query(query);

@@ -4,6 +4,7 @@ import STATE from "../../../../bot/state";
 
 import MessagesHelper from "../../../../bot/core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../bot/core/entities/users/usersHelper";
+import ItemsHelper from "../../items/itemsHelper";
 
 
 export default class MiningMinigame {
@@ -31,17 +32,44 @@ export default class MiningMinigame {
         this.chip(reaction, user);
     }
 
+    // TODO: Bomb skips a few places at random
     static async chip(reaction, user) {
-        reaction.message.say('This is a mining minigame message you reacted to!');
+        const msg = reaction.message;
 
-        // Reward is based on number of rocks left in message,
-        // More rocks, greater reward
+        // Calculate magnitude from message: more rocks, greater reward.
+        const textMagnitude = Math.floor(msg.content.length / 2);
+        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 3 });
 
-        // Rocks reduced every time hit
+        // Check if has a pickaxe
+        const userPickaxesNum = (await ItemsHelper.getUserItem(user.id, 'PICK_AXE')).quantity || 0;
+        if (userPickaxesNum <= 0) {
+            const warningMsg = await msg.say(`${user.username} tried to mine the rocks, but doesn't have a pickaxe.`);
+            return setTimeout(() => { warningMsg.delete(); }, 10000);
+        }
 
-        // Chance of pickaxe breaking
+        // Handle chance of pickaxe breaking
+        const pickaxeBreakPerc = Math.min(45, rewardRemaining);
+        const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
+        if (didBreak) {
+            const pickaxeUpdate = await ItemsHelper.use(user.id, 'PICK_AXE', 1);
+            // console.log(pickaxeUpdate);
+            ChannelsHelper._propogate(
+                msg,
+                `${user.username} broke a pickaxe trying to mine.`
+            );
+        } else {
+            // See if updating the item returns the item and quantity.
+            const addMetalOre = await ItemsHelper.add(user.id, 'METAL_ORE', rewardRemaining);
+            // console.log('addMetalOre', addMetalOre);
 
-        // TODO: Bomb skips a few places at random
+            // Reduce the number of rocks in the message.
+            await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
+            
+            ChannelsHelper._propogate(
+                msg, 
+                `${user.username} successfully mined a rock. +1 point, +${rewardRemaining} metal ore!`
+            );
+        }
     }
 
     static async run() {

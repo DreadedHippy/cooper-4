@@ -174,9 +174,12 @@ export default class CratedropMinigame {
                 ` were rewarded ${crate.openingPoints} points(s) for attempting to open the ${rarity.replace('_', ' ').toLowerCase()}!`;
 
             setTimeout(async () => {
-                const pointsRewardMsg = await msg.say(pointsRewardString);
                 setTimeout(() => { ChannelsHelper._postToFeed(pointsRewardString); }, 5000);
-                setTimeout(() => { pointsRewardMsg.delete(); }, 7500);
+
+                if (!ChannelsHelper.checkIsByCode(msg.channel.id, 'FEED')) {
+                    const pointsRewardMsg = await msg.say(pointsRewardString);
+                    setTimeout(() => { pointsRewardMsg.delete(); }, 7500);
+                }
             }, 5000);
 
             // Reward amount of users based on luck/chance.

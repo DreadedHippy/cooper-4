@@ -275,10 +275,10 @@ export default class EggHuntMinigame {
             if (STATE.CHANCE.bool({ likelihood: likelihood / 1.75 })) {
                 ChannelsHelper._postToFeed('Bonus eggs rolling!');
                 
-                const bonusEggsNum = STATE.CHANCE.natural({ min: 2, max: 8 });
+                const bonusEggsNum = STATE.CHANCE.natural({ min: 3, max: 15 });
                 for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE_EGG', null);
 
-                const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 1, max: Math.ceil(bonusEggsNum / 3) });
+                const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 1, max: Math.ceil(bonusEggsNum / 2.5) });
                 for (let i = 0; i < toxicEggsMixupNum; i++) this.drop('TOXIC_EGG', null)
             }
         }

@@ -53,4 +53,8 @@ export default class ChannelsHelper {
     static checkIsByCode(id, code) {
         return CHANNELS[code].id === id;
     }
+    static _propogate(msgRef, text) {
+        if (!this.checkIsByCode(msgRef.channel.id, 'FEED')) msgRef.say(text);
+        setTimeout(() => { this._postToFeed(text); }, 666);
+    }
 }
