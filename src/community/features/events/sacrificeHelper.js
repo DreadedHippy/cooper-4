@@ -25,15 +25,13 @@ export default class SacrificeHelper {
         return true;
     }
 
-    static emojiToUni(emoji) {
-        return emoji.codePointAt(0).toString(16);
-    }
+
 
     static isBackDagger(reaction, user) {
         const emoji = reaction.emoji.name;
         const channelID = reaction.message.channel.id;
         const isSacrificeChannel = channelID === CHANNELS.SACRIFICE.id;
-        const isDagger = this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER);
+        const isDagger = MessagesHelper.emojiToUni(emoji) === MessagesHelper.emojiToUni(EMOJIS.DAGGER);
 
         if (isSacrificeChannel) return false;
         if (user.bot) return false;

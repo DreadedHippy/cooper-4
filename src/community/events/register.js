@@ -11,6 +11,7 @@ import reactAddedHandler from "./reaction/reactionAdded";
 
 import CratedropMinigame from "../features/minigame/small/cratedrop";
 import EggHuntMinigame from "../features/minigame/small/egghunt";
+import SuggestionsHelper from "../features/suggestions/suggestionsHelper";
 // import MiningMinigame from "../features/minigame/small/mining";
 
 
@@ -40,6 +41,8 @@ export default function registerCommunityEventsHandlers(client) {
   // Every 6 hours 25% chance of offering someone for sacrifice.
   setInterval(() => {
     if (STATE.CHANCE.bool({ likelihood: 75 })) SacrificeHelper.random();
+
+    SuggestionsHelper.checkSuggestionsPassed();
   }, ((60 * 60) * 6) * 1000);
 
   const crateDropInterval = 60 * 25 * 1000;

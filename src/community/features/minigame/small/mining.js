@@ -2,18 +2,37 @@ import ChannelsHelper from "../../../../bot/core/entities/channels/channelsHelpe
 import EMOJIS from "../../../../bot/core/config/emojis.json";
 import STATE from "../../../../bot/state";
 
+import MessagesHelper from "../../../../bot/core/entities/messages/messagesHelper";
+import UsersHelper from "../../../../bot/core/entities/users/usersHelper";
+
 
 export default class MiningMinigame {
     
     // Reaction interceptor to check if user is attempting to interact.
     static async onReaction(reaction, user) {
-        const isPickaxe = reaction.emoji.name === '⛏️';
-        // const isMiningMessage =
-        if (isPickaxe) {
-            const jokeTempMsg = await reaction.message.say('Do you min-?');
-            setTimeout(() => { jokeTempMsg.delete(); }, 5000);
-        }
-        // A rock rolled away.
+        const isOnlyEmojis = MessagesHelper.isOnlyEmojis(reaction.message.content);
+        const isPickaxeReact = reaction.emoji.name === '⛏️';
+        const isCooperMsg = UsersHelper.isCooperMsg(reaction.message);
+        const isUserReact = !UsersHelper.isCooper(user.id);
+        
+        const msgContent = reaction.message.content;
+        const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
+        const firstEmojiUni = MessagesHelper.emojiToUni(firstEmojiString);
+        const rockEmojiUni = MessagesHelper.emojiToUni(EMOJIS.ROCK);
+        const isRocksMsg = firstEmojiUni === rockEmojiUni;
+
+        // Mining minigame guards.
+        if (!isUserReact) return false;
+        if (!isCooperMsg) return false;
+        if (!isPickaxeReact) return false;
+        if (!isOnlyEmojis) return false;
+        if (!isRocksMsg) return false;
+
+        this.chip(reaction, user);
+    }
+
+    static async chip(reaction, user) {
+        reaction.message.say('This is a mining minigame message you reacted to!');
 
         // Reward is based on number of rocks left in message,
         // More rocks, greater reward
@@ -27,9 +46,11 @@ export default class MiningMinigame {
 
     static async run() {
         const magnitude = STATE.CHANCE.natural({ min: 1, max: 30 });
-        const rockString = EMOJIS.ROCK.repeat(magnitude);
-        const rockMsg = await ChannelsHelper._randomText().send(rockString);
-
+        const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.ROCK.repeat(magnitude));
         setTimeout(() => { rockMsg.react('⛏️'); }, 666);
+
+        setTimeout(() => { 
+            ChannelsHelper._postToFeed('Hungry? Something to pick at appears!'); 
+        }, 1222);
     }
 }

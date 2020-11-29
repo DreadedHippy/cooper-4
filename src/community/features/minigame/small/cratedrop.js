@@ -82,8 +82,8 @@ export default class CratedropMinigame {
     // Reaction interceptor to check if user is attempting to play Crate Drop
     static onReaction(reaction, user) {
         try {
-            if (user.id === STATE.CLIENT.user.id) return false;
-            if (reaction.message.author.id !== STATE.CLIENT.user.id) return false;
+            if (UsersHelper.isCooper(user.id)) return false;
+            if (!UsersHelper.isCooperMsg(reaction.message)) return false;
             if (!this.calculateRarityFromMessage(reaction.message)) return false;
             if (this.isCrateOpen(reaction.message)) return false;
             if (reaction.emoji.name !== '🪓')  return false;
@@ -288,7 +288,8 @@ export default class CratedropMinigame {
             } else {
                 // Calculate time until next crate drop.
                 const remainingSecs = Math.max(0, (lastOccurred + dropDuration) - currUnixSecs);
-                const readableRemaining = EventsHelper.msToReadableHours(remainingSecs * 1000);
+                let readableRemaining = EventsHelper.msToReadableHours(remainingSecs * 1000);
+                if (readableRemaining === 'now') readableRemaining = 'soon';
                 let countdownText = `Time remaining until crate drop: ${readableRemaining}!`;
     
                 // TODO: Integrate shooting down chopper here

@@ -83,6 +83,10 @@ export default class UsersHelper {
         return STATE.CLIENT.user.id === id;
     }
 
+    static isCooperMsg(msg) {
+        return this.isCooper(msg.author.id);
+    }
+
     static async getIntro(member) {
         const query = {
             name: "get-user-intro",

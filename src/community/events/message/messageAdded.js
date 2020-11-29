@@ -1,24 +1,17 @@
 import Axios from "axios";
 import CHANNELS from "../../../bot/core/config/channels.json";
 import ChannelsHelper from "../../../bot/core/entities/channels/channelsHelper";
+import MessagesHelper from "../../../bot/core/entities/messages/messagesHelper";
+import UsersHelper from "../../../bot/core/entities/users/usersHelper";
 import STATE from "../../../bot/state";
 
 import achievementPostedHandler from "../../features/encouragement/achievementPosted";
 import workPostHandler from "../../features/encouragement/workPosted";
+import PointsHelper from "../../features/points/pointsHelper";
 import introPosted from "../members/welcome/introPosted";
 
 
-export default function messageAddedHandler(msg) {
-    // TODO: Refacotr this into messageHelper
-    const isUserMsg = msg.author.id !== STATE.CLIENT.user.id;
-
-    const twentyPercRoll = STATE.CHANCE.bool({ likelihood: 20 });
-
-    // Prevent the bruhs
-    // TODO: Subtract points
-    if (msg.content.indexOf('bruh') > -1 && isUserMsg && twentyPercRoll) msg.say('bruh');
-    if (msg.content === 'I-' && isUserMsg && twentyPercRoll) msg.say('U-? Finish your sentence!');
-
+export default async function messageAddedHandler(msg) {  
 
     // Encourage posters in show work channel.
     if (msg.channel.id === CHANNELS.SHOWWORK.id) workPostHandler(msg);
@@ -35,17 +28,49 @@ export default function messageAddedHandler(msg) {
 
     // TODO: When help message posted, post in feed
 
-    // If sefy facepalm's add recursive facepalm.
-    if (msg.content.indexOf('🤦‍♂️') > -1 && msg.author.id === '208938112720568320') {
-        msg.react('🤦‍♂️');
+
+
+    // TODO: Filter out DM commands
+    if (msg.channel.type === "dm") {
+        // TODO: Add response capability
+        // https://discordjs.guide/popular-topics/collectors.html#await-messages
+        const annotatedMsgText = `DM message from ${msg.author.username}: ${msg.content}`;
+        ChannelsHelper._postToChannelCode('LEADERS', annotatedMsgText);
     }
 
+
+
+    /* --- MISCELLANEOUS FEATURES BELOW --- */
+
+    // If message added by Ktrn that is only emojis, react to it.
+    // TODO: Does not respond to messages contain server emojis.
+    if (msg.author.id === '652820176726917130' && MessagesHelper.isOnlyEmojis(msg.content)) {
+        setTimeout(() => { msg.react('🐇'); }, 666);
+        setTimeout(() => { msg.react('🐰'); }, 666);
+    }
+
+    // Bruh-roulette.
+    const twentyPercRoll = STATE.CHANCE.bool({ likelihood: 20 });
+    if (msg.content.toLowerCase().indexOf('bruh') > -1 && UsersHelper.isCooperMsg(msg)) {
+        const updatedPoints = await PointsHelper.addPointsByID(msg.author.id, twentyPercRoll ? 1 : -1);
+        setTimeout(() => {
+            await msg.say(
+                `${twentyPercRoll ? '+1' : '-1'} point, bruh. ` +
+                `${msg.author.username} ${twentyPercRoll ? 'won' : 'lost'} bruh-roulette. (${updatedPoints})!`
+            );
+        }, 666);
+    }
+    if (msg.content.toLowerCase() === 'i-' && UsersHelper.isCooperMsg(msg) && twentyPercRoll) msg.say('U-? Finish your sentence!');
+
+
+    // If sefy facepalm's add recursive facepalm.
+    if (msg.content.indexOf('🤦‍♂️') > -1 && msg.author.id === '208938112720568320') msg.react('🤦‍♂️');
 
     const target = msg.mentions.users.first();
     if (target) {
 
         // If targetting Cooper.
-        if (target.id === STATE.CLIENT.user.id) {
+        if (UsersHelper.isCooper(target.id)) {
             if (msg.content.indexOf(';-;') > -1) msg.say(';-;');
             if (msg.content.indexOf('._.') > -1) msg.say('._.');
             if (msg.content.indexOf(':]') > -1) msg.say(':]');
@@ -78,7 +103,11 @@ export default function messageAddedHandler(msg) {
     }
 
     // Intercept inklingboi
-    if (msg.author.id === '723652650389733557' && msg.content === ';-;') msg.react('😉');
-    if (msg.author.id === '723652650389733557' && msg.content === ';--;') msg.react('😉');
+    if (msg.author.id === '687280609558528000') {
+        if (msg.content === ':0') msg.react('😉');
+        if (msg.content === ':-:') msg.react('😉');
+        if (msg.content === ';-;') msg.react('😉');
+        if (msg.content === ';--;') msg.react('😉');
+    }
 
 }

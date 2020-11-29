@@ -6,9 +6,8 @@ export default class MessagesHelper {
             `${msg.id}`;
         return link;
     }
-    static selfDestruct(msg) {
-        setTimeout(() => { msg.delete() }, 3000);
-        setTimeout(() => { msg.delete() }, 4000);
+    static selfDestruct(msg, delay = 3000) {
+        setTimeout(() => { msg.delete() }, delay);
     }
     static noWhiteSpace(strings, ...placeholders) {
         // Build the string as normal, combining all the strings and placeholders:
@@ -21,6 +20,16 @@ export default class MessagesHelper {
     }
     static getEmojiIdentifier(msg) {
         return this.removeSymbols(msg.content.trim());
+    }
+
+    static isOnlyEmojis(text) {
+        const onlyEmojis = text.replace(new RegExp('[\u0000-\u1eeff]', 'g'), '')
+        const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '')
+        return onlyEmojis.length === visibleChars.length
+    }
+
+    static emojiToUni(emoji) {
+        return emoji.codePointAt(0).toString(16);
     }
 
     // Convert emojiID into Discord format, but not if its merely an unicode emoji.

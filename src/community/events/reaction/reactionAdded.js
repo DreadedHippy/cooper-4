@@ -1,14 +1,16 @@
-import EggHuntMinigame from "../../features/minigame/small/egghunt";
-import RedemptionHelper from "../../redemption/redemptionHelper";
 import EMOJIS from '../../../bot/core/config/emojis.json';
+
+import EggHuntMinigame from "../../features/minigame/small/egghunt";
 import CratedropMinigame from "../../features/minigame/small/cratedrop";
-import SacrificeHelper from "../../features/events/sacrificeHelper";
-import STATE from "../../../bot/state";
-import ItemsHelper from "../../features/items/itemsHelper";
 import MiningMinigame from "../../features/minigame/small/mining";
 
+import RedemptionHelper from "../../redemption/redemptionHelper";
+import SacrificeHelper from "../../features/events/sacrificeHelper";
+import ItemsHelper from "../../features/items/itemsHelper";
+import UsersHelper from "../../../bot/core/entities/users/usersHelper";
+
 export default async function reactAddedHandler(reaction, user) {
-    const isUser = STATE.CLIENT.user.id !== user.id;
+    const isUser = !UsersHelper.isCooper(user.id);
 
     try {   
         // If coop emoji ever added, double down on it... just because.

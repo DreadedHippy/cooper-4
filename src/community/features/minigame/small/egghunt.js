@@ -9,6 +9,7 @@ import ItemsHelper from '../../items/itemsHelper';
 
 import STATE from '../../../../bot/state';
 import MessagesHelper from '../../../../bot/core/entities/messages/messagesHelper';
+import UsersHelper from '../../../../bot/core/entities/users/usersHelper';
 
 
 const likelihood = 35;
@@ -37,7 +38,7 @@ export default class EggHuntMinigame {
     
     static onReaction(reaction, user) {
         try {
-            const isCooperMessage = reaction.message.author.id === STATE.CLIENT.user.id;
+            const isCooperMessage = UsersHelper.isCooperMsg(reaction.message);
             const eggEmojiNames = _.map(_.values(EGG_DATA), "emoji");
             const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
             const isEgghuntDrop = eggEmojiNames.includes(emojiIdentifier);
@@ -96,7 +97,7 @@ export default class EggHuntMinigame {
             const surroundingMsgs = await channelMessages.fetch({ around: reaction.message.id, limit: 5 });
             const aroundUsers = surroundingMsgs.reduce((acc, msg) => {
                 const notIncluded = typeof acc[msg.author.id] === 'undefined';
-                const notCooper = msg.author.id !== STATE.CLIENT.user.id;
+                const notCooper = !UsersHelper.isCooperMsg(msg);
                 if (notIncluded && notCooper) acc[msg.author.id] = msg.author;
                 return acc;
             }, {});
@@ -175,7 +176,7 @@ export default class EggHuntMinigame {
 
     static async collect(reaction, user) {
         try {
-            if (user.id !== STATE.CLIENT.user.id) {     
+            if (!UsersHelper.isCooper(user.id)) {
                 const rarity = this.calculateRarityFromMessage(reaction.message);
                 const reward = EGG_DATA[rarity].points;
                 const emoji = EGG_DATA[rarity].emoji;
