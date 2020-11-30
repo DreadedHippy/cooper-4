@@ -17,17 +17,26 @@ export default class MiningMinigame {
         const isCooperMsg = UsersHelper.isCooperMsg(reaction.message);
         const isUserReact = !UsersHelper.isCooper(user.id);
         
-        const msgContent = reaction.message.content;
-        const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
-        const firstEmojiUni = MessagesHelper.emojiToUni(firstEmojiString);
-        const rockEmojiUni = MessagesHelper.emojiToUni(EMOJIS.ROCK);
-        const isRocksMsg = firstEmojiUni === rockEmojiUni;
-
+        
         // Mining minigame guards.
         if (!isUserReact) return false;
         if (!isCooperMsg) return false;
         if (!isPickaxeReact) return false;
         if (!isOnlyEmojis) return false;
+
+
+        console.log(reaction.emoji.name);
+
+
+        const msgContent = reaction.message.content;
+
+        console.log(msgContent);
+
+        const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
+        const firstEmojiUni = MessagesHelper.emojiToUni(firstEmojiString);
+        const rockEmojiUni = MessagesHelper.emojiToUni(EMOJIS.ROCK);
+        const isRocksMsg = firstEmojiUni === rockEmojiUni;
+
         if (!isRocksMsg) return false;
 
         this.chip(reaction, user);
