@@ -1,5 +1,6 @@
 import ItemsHelper from '../../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
+import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import ServerHelper from '../../core/entities/server/serverHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';
@@ -36,31 +37,31 @@ export default class DropCommand extends CoopCommand {
 	async run(msg, { itemCode, target }) {
 		super.run(msg);
 
-		console.log(itemCode, target);
-
-		// Check if this item code can be given.
-		if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
-			return MessagesHelper.selfDestruct(msg, 'Please provide a valid item name.', 10000);
-
-		// Attempt to load target just to check it can be given.
-		const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-		const targetUser = await UsersHelper.getUserByID(guild, target.id);
-		if (!target || !targetUser)
-			return MessagesHelper.selfDestruct(msg, `Gift target is invalid.`, 10000);
-
-		// Check if this user owns that item.
-		const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
-		if (itemQty <= 0) 
-			return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}.`, 10000);
-
-		// Attempt to use item and only grant once returned successful, avoid double gift glitching.
-		if (await ItemsHelper.use(target.id, itemCode, 1)) {
-
+		try {
+			// Check if this item code can be given.
+			if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
+				return MessagesHelper.selfDestruct(msg, 'Please provide a valid item name.', 10000);
+	
+			// Attempt to load target just to check it can be given.
+			const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+			const targetUser = await UsersHelper.getUserByID(guild, target.id);
+			if (!target || !targetUser)
+				return MessagesHelper.selfDestruct(msg, `Gift target is invalid.`, 10000);
+	
+			// Check if this user owns that item.
+			const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
+			if (itemQty <= 0) 
+				return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}.`, 10000);
+	
+			// Attempt to use item and only grant once returned successful, avoid double gift glitching.
+			if (await ItemsHelper.use(target.id, itemCode, 1)) {
+				await ItemsHelper.add(target.id, itemCode, 1);
+				ChannelsHelper._propogate(msg, `${msg.author.username} gave ${target.username} ${itemCode}.`, true);
+			}
+		} catch(e) {
+			console.log('Failed to give item.');
+			console.error(e);
 		}
-		console.log(itemCode);
-
-		// Check user owns it, nvm... let ItemsHelper do that.
-		// ItemsHelper.dropItem(msg.author.id, itemCode);
     }
     
 };
