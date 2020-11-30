@@ -5,7 +5,7 @@ import STATE from "../../../../bot/state";
 import MessagesHelper from "../../../../bot/core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../bot/core/entities/users/usersHelper";
 import ItemsHelper from "../../items/itemsHelper";
-import { Message } from "discord.js";
+import PointsHelper from "../../points/pointsHelper";
 
 
 export default class MiningMinigame {
@@ -50,6 +50,7 @@ export default class MiningMinigame {
 
         // Handle chance of pickaxe breaking
         const pickaxeBreakPerc = Math.min(30, rewardRemaining);
+        const extractedOreNum = Math.ceil(rewardRemaining / 3);
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
         if (didBreak) {
             const pickaxeUpdate = await ItemsHelper.use(user.id, 'PICK_AXE', 1);
@@ -60,8 +61,9 @@ export default class MiningMinigame {
             );
         } else {
             // See if updating the item returns the item and quantity.
-            const addMetalOre = await ItemsHelper.add(user.id, 'METAL_ORE', rewardRemaining);
-            // console.log('addMetalOre', addMetalOre);
+            const addMetalOre = await ItemsHelper.add(user.id, 'METAL_ORE', extractedOreNum);
+            const addPoints = await PointsHelper.addPointsByID(user.id, 1);
+            // console.log(addPoints, addMetalOre);
 
             // Reduce the number of rocks in the message.
             if (textMagnitude > 1) await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
@@ -69,7 +71,7 @@ export default class MiningMinigame {
             
             ChannelsHelper._propogate(
                 msg, 
-                `${user.username} successfully mined a rock. +1 point, +${rewardRemaining} metal ore!`
+                `${user.username} successfully mined a rock. +1 point, +${extractedOreNum} metal ore!`
             );
         }
     }

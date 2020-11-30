@@ -2,6 +2,7 @@ import CHANNELS from '../../config/channels.json';
 
 import STATE from '../../../state';
 import ServerHelper from '../server/serverHelper';
+import MessagesHelper from '../messages/messagesHelper';
 
 export default class ChannelsHelper {
     static getByID(guild, id) {
@@ -53,8 +54,11 @@ export default class ChannelsHelper {
     static checkIsByCode(id, code) {
         return CHANNELS[code].id === id;
     }
-    static _propogate(msgRef, text) {
-        if (!this.checkIsByCode(msgRef.channel.id, 'FEED')) msgRef.say(text);
+    static async _propogate(msgRef, text, selfDestruct = true) {
+        if (!this.checkIsByCode(msgRef.channel.id, 'FEED')) {
+            const feedbackMsg = await msgRef.say(text);
+            if (selfDestruct) MessagesHelper.delayDelete(feedbackMsg, 15000);
+        }
         setTimeout(() => { this._postToFeed(text); }, 666);
     }
 }
