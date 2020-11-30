@@ -122,7 +122,7 @@ export default class SacrificeHelper {
         let sacrificeVotes = 0;
         reaction.message.reactions.cache.map(reactionType => {
             const emoji = reactionType.emoji.name;
-            if (this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER)) {
+            if (MessagesHelper.emojiToUni(emoji) === MessagesHelper.emojiToUni(EMOJIS.DAGGER)) {
                 sacrificeVotes = reactionType.count;
             }
         });
