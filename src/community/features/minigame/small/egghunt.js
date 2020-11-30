@@ -74,8 +74,7 @@ export default class EggHuntMinigame {
 
         // Check if user has a bomb to use
         try {
-            const userBombs = await ItemsHelper.getUserItem(user.id, 'BOMB');
-            const bombQuantity = userBombs.quantity || 0;
+            const bombQuantity = await ItemsHelper.getUserItemQty(user.id, 'BOMB');
 
             const rarity = this.calculateRarityFromMessage(reaction.message);
             const reward = EGG_DATA[rarity].points;

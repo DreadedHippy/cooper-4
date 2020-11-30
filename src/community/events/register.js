@@ -48,7 +48,7 @@ export default function registerCommunityEventsHandlers(client) {
   const crateDropInterval = 60 * 25 * 1000;
   setInterval(() => { CratedropMinigame.run(crateDropInterval); }, crateDropInterval);
   setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 3);
-  setInterval(() => { MiningMinigame.run(); }, crateDropInterval / 1.5);
+  setInterval(() => { MiningMinigame.run(); }, crateDropInterval * .75);
 
 // Miscellaneous features.
   setInterval(() => {

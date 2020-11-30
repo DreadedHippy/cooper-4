@@ -58,6 +58,13 @@ export default class ItemsHelper {
         };
         return await DatabaseHelper.single(await Database.query(query));
     }
+
+    static async getUserItemQty(userID, itemCode) {
+        let qty = 0;
+        const userItem = await this.getUserItem(userID, itemCode);
+        if (userItem) qty = userItem.quantity || 0;
+        return qty;
+    }
     
     static async getUserItems(userID) {
         const query = {
@@ -107,11 +114,8 @@ export default class ItemsHelper {
     }
 
     static async use(userID, itemCode, useQty) {
-        let ownedQty = 0;
-
         // Attempt to load item ownership.
-        const userItem = await this.getUserItem(userID, itemCode);
-        if (userItem) ownedQty = userItem.quantity || 0;
+        const ownedQty = await this.getUserItemQty(userID, itemCode);
 
         // Check if enough qty of item is owned.
         if (ownedQty - useQty < 0) return false;
@@ -125,6 +129,10 @@ export default class ItemsHelper {
     
     static dropItems() {}
  
+    static isUsable(itemCode) {
+		return this.getUsableItems().includes(itemCode) ;
+    }
+
     static getUsableItems() {
         const unusable = this.NON_USABLE_EMOJIS;
         const codeFilter = itemCode => !unusable.includes(itemCode);

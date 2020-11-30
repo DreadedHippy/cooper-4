@@ -47,6 +47,11 @@ export default class MessagesHelper {
         }, delay);
     }
 
+    static async selfDestruct(msgRef, content, delay = 5000) {
+        const createdMsg = await msgRef.say(content);
+        this.delayDelete(createdMsg, delay);
+    }
+
     // Convert emojiID into Discord format, but not if its merely an unicode emoji.
     static emojifyID = emojiID => emojiID.split(':')[2].length > 1 ? `<${emojiID}>` : emojiID;
 

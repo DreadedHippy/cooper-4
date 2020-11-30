@@ -12,11 +12,13 @@ export default class MiningMinigame {
     
     // Reaction interceptor to check if user is attempting to interact.
     static async onReaction(reaction, user) {
+        // High chance of preventing any mining at all.
+        if (STATE.CHANCE.bool({ likelihood: 65 })) return false;
+
         const isOnlyEmojis = MessagesHelper.isOnlyEmojis(reaction.message.content);
         const isPickaxeReact = reaction.emoji.name === '⛏️';
         const isCooperMsg = UsersHelper.isCooperMsg(reaction.message);
         const isUserReact = !UsersHelper.isCooper(user.id);
-        
         
         // Mining minigame guards.
         if (!isUserReact) return false;
@@ -24,13 +26,7 @@ export default class MiningMinigame {
         if (!isPickaxeReact) return false;
         if (!isOnlyEmojis) return false;
 
-
-        console.log(reaction.emoji.name);
-
-
         const msgContent = reaction.message.content;
-
-        console.log(msgContent);
 
         const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
         const firstEmojiUni = MessagesHelper.emojiToUni(firstEmojiString);
@@ -51,7 +47,7 @@ export default class MiningMinigame {
         const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude });
 
         // Check if has a pickaxe
-        const userPickaxesNum = (await ItemsHelper.getUserItem(user.id, 'PICK_AXE')).quantity || 0;
+        const userPickaxesNum = await ItemsHelper.getUserItemQty(user.id, 'PICK_AXE');
         if (userPickaxesNum <= 0) {
             const warningMsg = await msg.say(`${user.username} tried to mine the rocks, but doesn't have a pickaxe.`);
             return MessagesHelper.delayDelete(warningMsg, 10000);
