@@ -40,7 +40,7 @@ export default class GiveCommand extends CoopCommand {
 		});
 	}
 
-	async run(msg, { itemCode, target }) {
+	async run(msg, { itemCode, target, qty }) {
 		super.run(msg);
 
 		try {
@@ -57,11 +57,11 @@ export default class GiveCommand extends CoopCommand {
 			// Check if this user owns that item.
 			const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
 			if (itemQty <= 0) 
-				return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}.`, 10000);
+				return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}. ${itemCode}/${qty}`, 10000);
 	
 			// Attempt to use item and only grant once returned successful, avoid double gift glitching.
-			if (await ItemsHelper.use(msg.author.id, itemCode, 1)) {
-				await ItemsHelper.add(target.id, itemCode, 1);
+			if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
+				await ItemsHelper.add(target.id, itemCode, qty);
 				ChannelsHelper._propogate(msg, `${msg.author.username} gave ${target.username} ${itemCode}.`, true);
 			}
 		} catch(e) {
