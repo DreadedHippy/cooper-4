@@ -56,10 +56,8 @@ export default class GiveCommand extends CoopCommand {
 	
 			// Check if this user owns that item.
 			const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
-			if (itemQty <= 0) 
+			if (itemQty <= 0 || itemQty - qty <= 0) 
 				return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}. ${itemCode}/${qty}`, 10000);
-			
-			console.log(qty);
 			
 			// Attempt to use item and only grant once returned successful, avoid double gift glitching.
 			if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
