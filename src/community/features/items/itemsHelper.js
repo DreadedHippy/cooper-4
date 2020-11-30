@@ -118,11 +118,11 @@ export default class ItemsHelper {
         const ownedQty = await this.getUserItemQty(userID, itemCode);
 
         // Check if enough qty of item is owned.
-        if (ownedQty - useQty < 0) return false;
-        else {
+        console.log(ownedQty, useQty);
+        if (ownedQty - useQty >= 0) {
             await this.subtract(userID, itemCode, useQty);
             return true;
-        }
+        } else return false;
     }
 
     static dropItem() {}
