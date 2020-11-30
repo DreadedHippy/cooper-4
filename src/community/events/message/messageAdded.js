@@ -28,10 +28,8 @@ export default async function messageAddedHandler(msg) {
 
     // TODO: When help message posted, post in feed
 
-
-
-    // TODO: Filter out DM commands
-    if (msg.channel.type === "dm") {
+    if (msg.channel.type === "dm" && !UsersHelper.isCooperMsg(msg)) {
+        // TODO: Filter out DM commands
         // TODO: Add response capability
         // https://discordjs.guide/popular-topics/collectors.html#await-messages
         const annotatedMsgText = `DM message from ${msg.author.username}: ${msg.content}`;
