@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import EMOJIS from '../../../../bot/core/config/emojis.json';
-import CHANNELS from '../../../../bot/core/config/channels.json';
 
 import STATE from '../../../../bot/state';
 
@@ -32,7 +31,7 @@ import UsersHelper from '../../../../bot/core/entities/users/usersHelper';
 const CRATE_DATA = {
     AVERAGE_CRATE: {
         emoji: EMOJIS.AVERAGE_CRATE,
-        maxReward: 3,
+        maxReward: 7,
         openingPoints: 1,
         percHitsReq: .01,
         rewards: [
@@ -47,7 +46,7 @@ const CRATE_DATA = {
     },
     RARE_CRATE: {
         emoji: EMOJIS.RARE_CRATE,
-        maxReward: 2,
+        maxReward: 5,
         openingPoints: 2,
         percHitsReq: .015,
         rewards: [
@@ -60,7 +59,7 @@ const CRATE_DATA = {
     },
     LEGENDARY_CRATE: {
         emoji: EMOJIS.LEGENDARY_CRATE,
-        maxReward: 2,
+        maxReward: 4,
         openingPoints: 3,
         percHitsReq: .03,
         rewards: [
@@ -75,7 +74,7 @@ const CRATE_DATA = {
 };
 
 // Rarity likelihood base number.
-const likelihood = 25;
+const likelihood = 33;
 
 export default class CratedropMinigame {
     
@@ -93,9 +92,6 @@ export default class CratedropMinigame {
             if (!crateEmojiNames.includes(emojiIdentifier)) return false;
             
             this.axeHit(reaction, user);
-
-            // TODO: Implement using bomb on crate.
-
         } catch(e) {
             console.error(e);
         }
@@ -122,7 +118,6 @@ export default class CratedropMinigame {
 
                 // Remove message after it was visible by the contact.
                 setTimeout(() => { openingUpdateMsg.delete(); }, 30000);
-                
             }
         } catch(e) {
             console.error(e);
@@ -164,24 +159,14 @@ export default class CratedropMinigame {
             const hitters = reaction.users.cache
                 .map(user => user)
                 .filter(user => !UsersHelper.isCooper(user.id));
-                
             
-            await Promise.all(hitters.map(user => {
-                return PointsHelper.addPointsByID(user.id, crate.openingPoints);
-            }));
+            // Add points to all hitters.
+            await Promise.all(hitters.map(user => PointsHelper.addPointsByID(user.id, crate.openingPoints)));
 
             // Post and delete the points reward message feedback.
             const pointsRewardString = hitters.join(', ') +
                 ` were rewarded ${crate.openingPoints} points(s) for attempting to open the ${rarity.replace('_', ' ').toLowerCase()}!`;
-
-            setTimeout(async () => {
-                setTimeout(() => { ChannelsHelper._postToFeed(pointsRewardString); }, 5000);
-
-                if (!ChannelsHelper.checkIsByCode(msg.channel.id, 'FEED')) {
-                    const pointsRewardMsg = await msg.say(pointsRewardString);
-                    setTimeout(() => { pointsRewardMsg.delete(); }, 7500);
-                }
-            }, 5000);
+            ChannelsHelper._propogate(msg, pointsRewardString, true);
 
             // Reward amount of users based on luck/chance.
             const rewardedUsersNum = STATE.CHANCE.natural({ min: 0, max: Math.ceil(hitters.length * .75) });
@@ -196,42 +181,25 @@ export default class CratedropMinigame {
                         // Grant rewards to users with a random quantity.
                         rewardsKeys.forEach(async (reward, rewardIndex) => {
                             const rewardItemQuantity = STATE.CHANCE.natural({ min: 1, max: crate.maxReward });
-                            // Use rewardeeIndex + rewardIndex for delays (rate limiting).
                             const rateLimitBypassDelay = (rewardeeIndex * 666) + (333 * rewardIndex);
 
-                            try {
-                                // Add the items to the user.
-                                await ItemsHelper.add(user.id, reward, rewardItemQuantity);
+                            await ItemsHelper.add(user.id, reward, rewardItemQuantity);
 
-                                setTimeout(async () => {
-                                    const rewardMessageText = `${user.username} took ${reward}x${rewardItemQuantity} from the crate!`;
-                                    
-                                    setTimeout(() => { ChannelsHelper._postToFeed(rewardMessageText); }, 666);
-
-                                    // If the channel isn't feed, then give feedback in crate channel.
-                                    if (msg.channel.id !== CHANNELS.FEED.id) {
-                                        const rewardMsg = await msg.say(rewardMessageText);
-                                        // Remove the reward message because it was placed in a random channel.
-                                        setTimeout(() => { rewardMsg.delete(); }, 30000);
-                                    }
-                                }, rateLimitBypassDelay);
-
-                            } catch(e) {
-                                console.error(e);
-                            }
+                            setTimeout(async () => {
+                                const rewardMessageText = `${user.username} took ${reward}x${rewardItemQuantity} from the crate!`;
+                                ChannelsHelper._propogate(msg, rewardMessageText, true);
+                            }, rateLimitBypassDelay);
                         });
                     }
                 });
         
             } else {
-                const noRewardMsg = await msg.say('No items were inside this crate! >:D');
-
                 // Remove the reward message because it was placed in a random channel.
-                setTimeout(() => { noRewardMsg.delete(); }, 30000);
+                MessagesHelper.selfDestruct(msg, 'No items were inside this crate! >:D', 30000);
             }
 
             // Remove the opened crate.
-            setTimeout(() => { msg.delete(); }, 15000);
+            MessagesHelper.delayDelete(msg, 15000);
         }, 666);
     }
 
@@ -240,14 +208,12 @@ export default class CratedropMinigame {
     // Small chance of it exploding all explosive items you own.
     static selectRandomRarity() {
         let rarity = 'AVERAGE_CRATE';
-
         if (STATE.CHANCE.bool({ likelihood: likelihood / 3 })) rarity = 'RARE_CRATE';
-
         if (STATE.CHANCE.bool({ likelihood: likelihood / 5 })) rarity = 'LEGENDARY_CRATE';
-
         return rarity;
     }
-
+    
+    // TODO: Implement using bomb on crate.
     static async explode(reaction, user) {
         // Check user actually has a bomb to use
         // Potentially require 2 bombs.
@@ -260,15 +226,15 @@ export default class CratedropMinigame {
         try {
             const rarity = this.selectRandomRarity();
             const rarityWord = MessagesHelper.titleCase(rarity.split('_')[0]);
-            await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress.`);
+            const feedMsg = await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress.`);
 
             // Drop the crate!
-            const crateMSG = await ChannelsHelper
+            const crateMsg = await ChannelsHelper
                 ._randomText()
                 .send(MessagesHelper.emojifyID(EMOJIS[rarity]));
 
-            setTimeout(() => { crateMSG.react('🪓'); }, 333);
-            
+            MessagesHelper.delayReact(crateMsg, '🪓', 333);
+            MessagesHelper.delayReact(feedMsg, '🪓', 666);
         } catch(e) {
             console.error(e);
         }

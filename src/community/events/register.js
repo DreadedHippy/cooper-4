@@ -13,7 +13,9 @@ import CratedropMinigame from "../features/minigame/small/cratedrop";
 import EggHuntMinigame from "../features/minigame/small/egghunt";
 import SuggestionsHelper from "../features/suggestions/suggestionsHelper";
 import MiningMinigame from "../features/minigame/small/mining";
+import EventsHelper from "../features/events/eventsHelper";
 
+const feedSay = ChannelsHelper._postToFeed;
 
 export default function registerCommunityEventsHandlers(client) {
 
@@ -32,6 +34,7 @@ export default function registerCommunityEventsHandlers(client) {
 
   /** ___--___ EVENT/FEATURE RELATED SCHEDULING ___--___ */
 
+  // TODO: Convert rest to helper chanceRunInterval method
 
   // Hourly actions
   setInterval(() => {
@@ -47,21 +50,16 @@ export default function registerCommunityEventsHandlers(client) {
 
   const crateDropInterval = 60 * 25 * 1000;
   setInterval(() => { CratedropMinigame.run(crateDropInterval); }, crateDropInterval);
-  setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 3);
-  setInterval(() => { MiningMinigame.run(); }, crateDropInterval * .75);
+  setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 2);
+  setInterval(() => { MiningMinigame.run(); }, crateDropInterval * 2);
 
-// Miscellaneous features.
-  setInterval(() => {
-    if (STATE.CHANCE.bool({ likelihood: 4 })) ChannelsHelper._postToFeed(';-;');
-  }, 60 * 45 * 1000);
+  // Miscellaneous features.
+  EventsHelper.chanceRunInterval(() => { feedSay(';-;') }, 4, 60 * 45 * 1000);
 
-  setInterval(() => {
-    const extraUs = 'u'.repeat(STATE.CHANCE.natural({ min: 1, max: 20 }));
-    if (STATE.CHANCE.bool({ likelihood: 2.5 })) ChannelsHelper._postToFeed('Ruuuuuu' + extraUs);
-  }, ((60 * 60) * 3) * 1000);
+  EventsHelper.chanceRunInterval(() => {
+    feedSay('Ruuuuuu' + 'u'.repeat(STATE.CHANCE.natural({ min: 1, max: 20 })));
+  }, 2.5, ((60 * 60) * 3) * 1000);
 
-  setInterval(() => {
-    if (STATE.CHANCE.bool({ likelihood: 5 })) ChannelsHelper._postToFeed('._.');
-  }, 60 * 120 * 1000);
+  EventsHelper.chanceRunInterval(() => { feedSay('._.') }, 7, 60 * 120 * 1000);
 
 }

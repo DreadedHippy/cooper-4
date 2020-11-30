@@ -60,4 +60,14 @@ export default class EventsHelper {
         return 'less than a second';
     }
 
+    static chanceRun(command, likelihood) {
+        if (STATE.CHANCE.bool({ likelihood })) command();
+    }
+
+    static chanceRunInterval(command, likelihood, interval) {
+        return setInterval(() => {
+            this.chanceRun(command, likelihood);
+        }, interval);
+    }
+
 }
