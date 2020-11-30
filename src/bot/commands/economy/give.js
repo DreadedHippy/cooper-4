@@ -6,7 +6,7 @@ import ServerHelper from '../../core/entities/server/serverHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';
 import STATE from '../../state';
 
-export default class DropCommand extends CoopCommand {
+export default class GiveCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
@@ -30,6 +30,12 @@ export default class DropCommand extends CoopCommand {
 					type: 'user',
 					default: null
 				},
+				{
+					key: 'qty',
+					prompt: 'How many of this item do you want to give?',
+					type: 'integer',
+					default: 1
+				},
 			],
 		});
 	}
@@ -44,8 +50,8 @@ export default class DropCommand extends CoopCommand {
 	
 			// Attempt to load target just to check it can be given.
 			const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-			const targetUser = await UsersHelper.getUserByID(guild, target.id);
-			if (!target || !targetUser)
+			const targetMember = UsersHelper.getMemberByID(guild, target.id);
+			if (!target || !targetMember)
 				return MessagesHelper.selfDestruct(msg, `Gift target is invalid.`, 10000);
 	
 			// Check if this user owns that item.

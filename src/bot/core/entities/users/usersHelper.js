@@ -11,8 +11,6 @@ export default class UsersHelper {
 
     static fetchMemberByID = (guild, id) => guild.members.fetch(id);
 
-    static getUserByID = (guild, id) => guild.users.cache.get(id);
-
     static hasRoleID = (member, id) => {
         return member.roles.cache.get(id);
     }
