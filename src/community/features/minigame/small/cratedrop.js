@@ -163,12 +163,8 @@ export default class CratedropMinigame {
             // Add points to all hitters.
             await Promise.all(hitters.map(user => PointsHelper.addPointsByID(user.id, crate.openingPoints)));
 
-            // Post and delete the points reward message feedback.
-            const pointsRewardString = hitters.join(', ') +
-                ` were rewarded ${crate.openingPoints} points(s) for attempting to open the ${rarity.replace('_', ' ').toLowerCase()}!`;
-            ChannelsHelper._propogate(msg, pointsRewardString, true);
-
             // Reward amount of users based on luck/chance.
+            let anyRewardGiven = false;
             const rewardedUsersNum = STATE.CHANCE.natural({ min: 0, max: Math.ceil(hitters.length * .75) });
             if (rewardedUsersNum > 0) {
                 // Pick the amount of rewarded users.
@@ -183,6 +179,7 @@ export default class CratedropMinigame {
                             const rewardItemQuantity = STATE.CHANCE.natural({ min: 1, max: crate.maxReward });
                             const rateLimitBypassDelay = (rewardeeIndex * 666) + (333 * rewardIndex);
 
+                            anyRewardGiven = true;
                             await ItemsHelper.add(user.id, reward, rewardItemQuantity);
 
                             setTimeout(async () => {
@@ -193,10 +190,16 @@ export default class CratedropMinigame {
                     }
                 });
         
-            } else {
-                // Remove the reward message because it was placed in a random channel.
-                MessagesHelper.selfDestruct(msg, 'No items were inside this crate! >:D', 30000);
             }
+
+            // Remove the reward message because it was placed in a random channel.
+            if (!anyRewardGiven) MessagesHelper.selfDestruct(msg, 'No items were inside this crate! >:D', 30000);
+
+            // Post and delete the points reward message feedback.
+            const usersRewardedText = hitters.join(', ') + ` were rewarded ${crate.openingPoints} points(s) `;
+            const rewardTypeText = `${!anyRewardGiven ? 'empty' : ''} the ${rarity.replace('_', ' ').toLowerCase()}`;
+            const pointsRewardString = `${usersRewardedText} for attempting to open ${rewardTypeText}!`;
+            ChannelsHelper._propogate(msg, pointsRewardString, true);
 
             // Remove the opened crate.
             MessagesHelper.delayDelete(msg, 15000);
