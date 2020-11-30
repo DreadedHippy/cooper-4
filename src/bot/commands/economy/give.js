@@ -62,7 +62,7 @@ export default class GiveCommand extends CoopCommand {
 			// Attempt to use item and only grant once returned successful, avoid double gift glitching.
 			if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
 				await ItemsHelper.add(target.id, itemCode, qty);
-				ChannelsHelper._propogate(msg, `${msg.author.username} gave ${target.username} ${itemCode}.`, true);
+				ChannelsHelper._propogate(msg, `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`, true);
 			}
 		} catch(e) {
 			console.log('Failed to give item.');

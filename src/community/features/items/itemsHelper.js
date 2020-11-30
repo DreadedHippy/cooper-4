@@ -143,19 +143,16 @@ export default class ItemsHelper {
         "COOP",
         "VOTE_FOR",
         "VOTE_AGAINST",
-        "LEGENDARY_EGG",
-        "RARE_EGG",
-        "AVERAGE_EGG",
+
         "LEGENDARY_CRATE",
         "LEGENDARY_CRATE_OPEN",
         "RARE_CRATE",
         "RARE_CRATE_OPEN",
         "AVERAGE_CRATE",
         "AVERAGE_CRATE_OPEN",
+
+        // Maybe usable.
         "DAGGER",
-        
-        // This may actually be usable... somehow?
-        "TOXIC_EGG"
     ];
 
 }
