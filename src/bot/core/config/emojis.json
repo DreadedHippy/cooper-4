@@ -27,7 +27,7 @@
 
     "ROPE": ":twisty_rope:739153442341388421",
 
-    "SHIELD": "🛡️",
+    "SHIELD": ":shield:",
 
     "MINE": ":curling_stone:",
     "DEFUSE_KIT": ":toolbox:",
@@ -42,5 +42,8 @@
     "DIAMOND": ":diamond:772571588666458142",
 
     "WOOD": ":wood:",
-    "ROCK": "🪨"
+    "ROCK": "🪨",
+
+    "FLARE": ":coop:725006245999935610"
+
 }

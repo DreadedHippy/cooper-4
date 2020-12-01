@@ -47,6 +47,22 @@ export default class PointsHelper {
         return result;
     }
 
+    static async getNegLeaderboard(pos = 0) {
+        const query = {
+            name: 'get-leaderboard',
+            text: `
+                SELECT points, discord_id 
+                FROM users 
+                ORDER BY points ASC
+                OFFSET $1
+                LIMIT 15
+            `.trim(),
+            values: [pos]
+        };
+        const result = await Database.query(query);
+        return result;
+    }
+
     static async getHighest() {
         const query = {
             name: 'get-highest-points-user',
