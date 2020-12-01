@@ -49,7 +49,7 @@ export default class PointsHelper {
 
     static async getNegLeaderboard(pos = 0) {
         const query = {
-            name: 'get-leaderboard',
+            name: 'get-negative-leaderboard',
             text: `
                 SELECT points, discord_id 
                 FROM users 

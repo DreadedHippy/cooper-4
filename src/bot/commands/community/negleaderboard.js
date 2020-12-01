@@ -57,7 +57,7 @@ export default class NegativeLeaderboardCommand extends CoopCommand {
 				}
 			}));
 
-			let leaderboardMsgText = '```\n\n ~ LEADERBOARD ~ \n\n' + 
+			let leaderboardMsgText = '```\n\n ~ NEGATIVE LEADERBOARD ~ \n\n' + 
 				rowUsers.map(user => `${user.rank + 1}. ${user.username} ${user.points}`).join('\n') +
 				'```';
 
