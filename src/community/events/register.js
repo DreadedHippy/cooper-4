@@ -4,11 +4,6 @@ import PointsHelper from "../features/points/pointsHelper";
 
 import STATE from "../../bot/state";
 
-import joined from "./members/welcome/joined";
-import left from "./members/welcome/left";
-import messageAddedHandler from "./message/messageAdded";
-import reactAddedHandler from "./reaction/reactionAdded";
-
 import CratedropMinigame from "../features/minigame/small/cratedrop";
 import EggHuntMinigame from "../features/minigame/small/egghunt";
 import SuggestionsHelper from "../features/suggestions/suggestionsHelper";
@@ -17,20 +12,7 @@ import EventsHelper from "../features/events/eventsHelper";
 
 const feedSay = ChannelsHelper._postToFeed;
 
-export default function registerCommunityEventsHandlers(client) {
-
-  // Add handler for reaction added
-  client.on('messageReactionAdd', reactAddedHandler);
-
-  // Handler for a new member has joined
-  client.on("guildMemberAdd", joined);
-
-  // Member left handler.
-  client.on('guildMemberRemove', left);
-
-  // Message interceptors.
-  client.on("message", messageAddedHandler);
-
+export default function registerCommunityEventsHandlers() {
 
   /** ___--___ EVENT/FEATURE RELATED SCHEDULING ___--___ */
 
@@ -43,8 +25,7 @@ export default function registerCommunityEventsHandlers(client) {
 
   // Every 6 hours 25% chance of offering someone for sacrifice.
   setInterval(() => {
-    if (STATE.CHANCE.bool({ likelihood: 75 })) SacrificeHelper.random();
-
+    EventsHelper.chanceRun(() => { SacrificeHelper.random(); }, 75);
     SuggestionsHelper.checkSuggestionsPassed();
   }, ((60 * 60) * 6) * 1000);
 

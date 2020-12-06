@@ -94,7 +94,7 @@ export default async function messageAddedHandler(msg) {
                 setTimeout(async () => {
     
                     // Implement chance-based to rate limit and make easter egg not every time/ubiquitous.
-                    if (rand.bool({ likelihood: 22.5 })) {
+                    if (STATE.CHANCE.bool({ likelihood: 22.5 })) {
                         const endpoint = 'https://api.fungenerators.com/taunt/generate?category=shakespeare&limit=1';
                         const result = (await Axios.get(endpoint)).data || null;
                         const insults = (result.contents || null).taunts || null;

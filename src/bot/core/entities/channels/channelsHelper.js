@@ -61,4 +61,12 @@ export default class ChannelsHelper {
         }
         setTimeout(() => { this._postToFeed(text); }, 666);
     }
+    static async _delete(id) {
+        const guild = ServerHelper._coop();
+        const channel = guild.channels.cache.get(id);
+        return channel.delete();
+    }
+    static async _create(name, options) {
+        return ServerHelper._coop().channels.create(name, options);
+    }
 }
