@@ -25,7 +25,13 @@ export default function registerCommunityEventsHandlers() {
 
   // Every 6 hours 25% chance of offering someone for sacrifice.
   setInterval(() => {
-    EventsHelper.chanceRun(() => { SacrificeHelper.random(); }, 75);
+    EventsHelper.chanceRun(() => { 
+      ChannelsHelper._postToFeed('Sacrifice should run...');
+      SacrificeHelper.random(); 
+    }, 25);
+  }, 60 * 1000 * 30);
+
+  setInterval(() => {
     SuggestionsHelper.checkSuggestionsPassed();
   }, ((60 * 60) * 6) * 1000);
 

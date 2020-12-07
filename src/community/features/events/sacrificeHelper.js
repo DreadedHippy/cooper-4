@@ -14,7 +14,7 @@ export default class SacrificeHelper {
    
     static isReactionSacrificeVote(reaction, user) {
         const emoji = reaction.emoji.name;
-        const isVoteEmoji = [EMOJIS.DAGGER, EMOJIS.SHIELD].indexOf(emoji) > -1;
+        const isVoteEmoji = [EMOJIS.DAGGER, EMOJIS.SACRIFICE_SHIELD].indexOf(emoji) > -1;
         const channelID = reaction.message.channel.id;
 
         if (user.bot) return false;
@@ -75,7 +75,7 @@ export default class SacrificeHelper {
             let keepVotes = 0;
             reaction.message.reactions.cache.map(reactionType => {
                 if (reactionType.emoji.name === EMOJIS.DAGGER) sacrificeVotes = Math.max(0, reactionType.count - 1);
-                if (reactionType.emoji.name === EMOJIS.SHIELD) keepVotes = Math.max(0, reactionType.count - 1);
+                if (reactionType.emoji.name === EMOJIS.SACRIFICE_SHIELD) keepVotes = Math.max(0, reactionType.count - 1);
             });
 
 
@@ -96,14 +96,14 @@ export default class SacrificeHelper {
                     await ChannelsHelper._postToFeed(
                         `<@${targetMember.id}>'s sacrifice was voted upon!` +
                         `\n\n**Remaining Votes:**` +
-                        `\nTo Protect: ${EMOJIS.SHIELD}: ${remainingProtectVotes}` +
+                        `\nTo Protect: ${EMOJIS.SACRIFICE_SHIELD}: ${remainingProtectVotes}` +
                         `\nTo Sacrifice: ${EMOJIS.DAGGER}: ${remainingSacrificeVotes}`
                     );
                 }
 
                 
             // Intercept latest vote granted protection to user.
-            } else if (rawKeepVotes === 0 && reaction.emoji.name === EMOJIS.SHIELD) {
+            } else if (rawKeepVotes === 0 && reaction.emoji.name === EMOJIS.SACRIFICE_SHIELD) {
                 await ChannelsHelper._postToFeed(`<@${targetMember.id}> was protected from sacrifice by votes!`);
             } 
 
@@ -183,12 +183,14 @@ export default class SacrificeHelper {
 
         // Add reactions for voting
         setTimeout(async () => { await sacrificeMsg.react(EMOJIS.DAGGER); }, 1500);
-        setTimeout(async () => { await sacrificeMsg.react(EMOJIS.SHIELD); }, 2000);
+        setTimeout(async () => { await sacrificeMsg.react(EMOJIS.SACRIFICE_SHIELD); }, 2000);
 
         return true;
     }
 
     static async random() {
+        ChannelsHelper._postToFeed('Sacrifice should run.');
+        
         const usersQuery = await UsersHelper.load();
         const rowCount = usersQuery.rowCount || 0;
         const users = usersQuery.rows || [];
