@@ -82,7 +82,7 @@ export default class MiningMinigame {
     }
 
     static async run() {
-        const magnitude = STATE.CHANCE.natural({ min: 1, max: 30 });
+        const magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
         const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.ROCK.repeat(magnitude));
 
         MessagesHelper.delayReact(rockMsg, '⛏️');
