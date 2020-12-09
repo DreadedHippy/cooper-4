@@ -7,6 +7,7 @@ import STATE from "../../../bot/state";
 
 import achievementPostedHandler from "../../features/encouragement/achievementPosted";
 import workPostHandler from "../../features/encouragement/workPosted";
+import ConfessionHandler from "../../features/messages/confessionHandler";
 import PointsHelper from "../../features/points/pointsHelper";
 import introPosted from "../members/welcome/introPosted";
 
@@ -28,14 +29,7 @@ export default async function messageAddedHandler(msg) {
 
     // TODO: When help message posted, post in feed
 
-    if (msg.channel.type === "dm" && !UsersHelper.isCooperMsg(msg)) {
-        // TODO: Filter out DM commands
-        // TODO: Add response capability
-        // https://discordjs.guide/popular-topics/collectors.html#await-messages
-        const annotatedMsgText = `DM message from ${msg.author.username}: ${msg.content}`;
-        ChannelsHelper._postToChannelCode('LEADERS', annotatedMsgText);
-    }
-
+    ConfessionHandler.onMessage(msg);
 
 
     /* --- MISCELLANEOUS FEATURES BELOW --- */
@@ -43,6 +37,7 @@ export default async function messageAddedHandler(msg) {
     // If message added by Ktrn that is only emojis, react to it.
     // TODO: Does not respond to messages contain server emojis.
     if (msg.author.id === '652820176726917130' && MessagesHelper.isOnlyEmojis(msg.content)) {
+
         setTimeout(() => { msg.react('🐇'); }, 666);
         setTimeout(() => { msg.react('🐰'); }, 666);
     }
@@ -61,6 +56,14 @@ export default async function messageAddedHandler(msg) {
                 `${twentyPercRoll ? '+1' : '-1'} point, ${type}. ` +
                 `${msg.author.username} ${twentyPercRoll ? 'won' : 'lost'} ${type}-roulette. (${updatedPoints})!`
             );
+
+            setTimeout(() => {
+                if (STATE.CHANCE.bool({ likelihood: 1.5 })) {
+                    ChannelsHelper._postToFeed(`Well, that's unfortunate... ${msg.author.username} was kicked for saying ${type}.`);
+                    UsersHelper._dm(msg.author.id, `You hit the 1.5% chance of being kicked for saying ${type}.`);
+                    msg.member.kick();
+                }
+            }, 1222);
         }, 666);
     }
     if (msg.content.toLowerCase() === 'i-' && !UsersHelper.isCooperMsg(msg) && twentyPercRoll) msg.say('U-? Finish your sentence!');

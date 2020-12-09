@@ -1,5 +1,6 @@
 import STATE from "../../../state";
 import Database from "../../setup/database";
+import ServerHelper from "../server/serverHelper";
 
 export default class UsersHelper {
     static avatar(user) {
@@ -27,6 +28,11 @@ export default class UsersHelper {
     }
 
     static directMSG = (guild, userID, msg) => UsersHelper.getMemberByID(guild, userID).send(msg);
+
+    static _dm(userID, msg) {
+        const guild = ServerHelper._coop();
+        this.directMSG(guild, userID, msg);
+    }
     
     static getOnlineMembers = (guild) => guild.members.cache.filter(member => member.presence.status === 'online');
     
