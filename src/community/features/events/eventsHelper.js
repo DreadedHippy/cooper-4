@@ -1,4 +1,5 @@
 import Database from "../../../bot/core/setup/database";
+import STATE from "../../../bot/state";
 
 const numberEnding = number => (number > 1) ? 's' : '';
 

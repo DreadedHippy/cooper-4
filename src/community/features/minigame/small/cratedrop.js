@@ -12,7 +12,7 @@ import VotingHelper from '../../../events/voting/votingHelper';
 import ItemsHelper from '../../items/itemsHelper';
 import PointsHelper from '../../points/pointsHelper';
 import UsersHelper from '../../../../bot/core/entities/users/usersHelper';
-
+import { baseTickDur } from '../../../events/register';
 
 // TODO: Check every 5 minutes for cratedrop etc, just don't ping every time.
 // Make message "within next few minutes, not now"
@@ -31,7 +31,7 @@ import UsersHelper from '../../../../bot/core/entities/users/usersHelper';
 const CRATE_DATA = {
     AVERAGE_CRATE: {
         emoji: EMOJIS.AVERAGE_CRATE,
-        maxReward: 7,
+        maxReward: 5,
         openingPoints: 1,
         percHitsReq: .01,
         rewards: [
@@ -243,12 +243,12 @@ export default class CratedropMinigame {
         }
     }
     
-    static async run(dropIntervalTick) {
+    static async run() {
         // Check next cratedrop time
         const crateDropData = await EventsHelper.read('CRATE_DROP');
         const lastOccurred = parseInt(crateDropData.last_occurred);
         const currUnixSecs = Math.floor(+new Date() / 1000);
-        const dropDuration = dropIntervalTick * 3 / 1000;
+        const dropDuration = baseTickDur * 3 / 1000;
         const nextOccurring = Math.floor((+new Date() / 1000) + dropDuration);
 
         try {

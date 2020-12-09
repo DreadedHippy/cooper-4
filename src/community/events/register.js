@@ -12,41 +12,29 @@ import EventsHelper from "../features/events/eventsHelper";
 
 const feedSay = ChannelsHelper._postToFeed;
 
+export const baseTickDur = 60 * 25 * 1000;
+
 export default function registerCommunityEventsHandlers() {
 
-  /** ___--___ EVENT/FEATURE RELATED SCHEDULING ___--___ */
 
-  // TODO: Convert rest to helper chanceRunInterval method
+  EventsHelper.chanceRunInterval(PointsHelper.updateCurrentWinner, 100, baseTickDur * 2);
 
-  // Hourly actions
-  setInterval(() => {
-    PointsHelper.updateCurrentWinner();
-  }, 60 * 60 * 1000);
 
-  // Every 6 hours 25% chance of offering someone for sacrifice.
-  setInterval(() => {
-    EventsHelper.chanceRun(() => { 
-      ChannelsHelper._postToFeed('Sacrifice should run...');
-      SacrificeHelper.random(); 
-    }, 25);
-  }, 60 * 1000 * 30);
+  EventsHelper.chanceRunInterval(SacrificeHelper.random, 15, baseTickDur * 1.5);
 
-  setInterval(() => {
-    SuggestionsHelper.checkSuggestionsPassed();
-  }, ((60 * 60) * 6) * 1000);
+  EventsHelper.chanceRunInterval(SuggestionsHelper.checkSuggestionsPassed, 100, baseTickDur * 4);
 
-  const crateDropInterval = 60 * 25 * 1000;
-  setInterval(() => { CratedropMinigame.run(crateDropInterval); }, crateDropInterval);
-  setInterval(() => { EggHuntMinigame.run(); }, crateDropInterval / 2);
-  setInterval(() => { MiningMinigame.run(); }, crateDropInterval * 2);
+
+  EventsHelper.chanceRunInterval(CratedropMinigame.run, 80, baseTickDur);
+  EventsHelper.chanceRunInterval(EggHuntMinigame.run, 80, baseTickDur / 2);
+  EventsHelper.chanceRunInterval(MiningMinigame.run, 80, baseTickDur * 2);
+
 
   // Miscellaneous features.
-  EventsHelper.chanceRunInterval(() => { feedSay(';-;') }, 4, 60 * 45 * 1000);
-
   EventsHelper.chanceRunInterval(() => {
     feedSay('Ruuuuuu' + 'u'.repeat(STATE.CHANCE.natural({ min: 1, max: 20 })));
-  }, 2.5, ((60 * 60) * 3) * 1000);
+  }, 2.5, baseTickDur * 5);
 
-  EventsHelper.chanceRunInterval(() => { feedSay('._.') }, 7, 60 * 120 * 1000);
+  EventsHelper.chanceRunInterval(() => { feedSay('._.') }, 7, baseTickDur * 3.5);
 
 }
