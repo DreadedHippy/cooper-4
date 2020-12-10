@@ -14,6 +14,8 @@ export default class ItemsHelper {
     static async onReaction(reaction, user) {
         BombHandler.onReaction(reaction, user);
         ToxicEggHandler.onReaction(reaction, user);
+
+        // TODO: Add average, rare, legendary eggs abilities
     }
 
     static async add(userID, item_code, quantity) {

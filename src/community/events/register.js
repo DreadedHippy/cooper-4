@@ -20,7 +20,7 @@ export default function registerCommunityEventsHandlers() {
   EventsHelper.chanceRunInterval(PointsHelper.updateCurrentWinner, 100, baseTickDur * 2);
 
 
-  EventsHelper.chanceRunInterval(SacrificeHelper.random, 15, baseTickDur * 1.5);
+  EventsHelper.chanceRunInterval(SacrificeHelper.random, 20, baseTickDur * 1.25);
 
   EventsHelper.chanceRunInterval(SuggestionsHelper.checkSuggestionsPassed, 100, baseTickDur * 4);
 

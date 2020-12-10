@@ -189,8 +189,6 @@ export default class SacrificeHelper {
     }
 
     static async random() {
-        ChannelsHelper._postToFeed('Sacrifice should run.');
-        
         const usersQuery = await UsersHelper.load();
         const rowCount = usersQuery.rowCount || 0;
         const users = usersQuery.rows || [];
