@@ -7,7 +7,7 @@ import messageAddedHandler from "../../../community/events/message/messageAdded"
 import reactAddedHandler from "../../../community/events/reaction/reactionAdded";
 
 export default () => {
-    const client = new Client({ owner: '723652650389733557' });
+    const client = new Client({ owner: '786671654721683517' });
 
     client.registry
         .registerGroups([ 

@@ -51,11 +51,13 @@ export default async function messageAddedHandler(msg) {
         let type = 'bruh';
         if (isBreh) type = 'breh';
         const updatedPoints = await PointsHelper.addPointsByID(msg.author.id, twentyPercRoll ? 1 : -1);
-        setTimeout(() => {
-            msg.say(
+        setTimeout(async () => {
+            const feedbackMsg = msg.say(
                 `${twentyPercRoll ? '+1' : '-1'} point, ${type}. ` +
                 `${msg.author.username} ${twentyPercRoll ? 'won' : 'lost'} ${type}-roulette. (${updatedPoints})!`
             );
+
+            MessagesHelper.delayDelete(feedbackMsg, 15000);
 
             setTimeout(() => {
                 if (STATE.CHANCE.bool({ likelihood: 1.5 })) {
