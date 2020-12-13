@@ -27,7 +27,10 @@ Redis.connection.on('ready', () => {
     });
     
     const server = app.listen(process.env.PORT);
-    const socketio = socket(server, { cors: corsConfig });
+    const socketio = socket(server, { 
+        cors: corsConfig,
+        path: '/'
+    });
 
     let lastRedisUpdate;
     setInterval(() => {
