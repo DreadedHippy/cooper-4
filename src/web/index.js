@@ -14,6 +14,10 @@ const corsConfig = {
 };
 app.use(cors(corsConfig));
 
+
+const server = app.listen(process.env.PORT);
+console.log(`Listening on ${process.env.PORT}`);
+
 Redis.connect();
 Redis.connection.on('ready', () => {
     console.log('Redis ready');
@@ -26,7 +30,7 @@ Redis.connection.on('ready', () => {
         // Post job into server from website.
     });
     
-    const server = app.listen(process.env.PORT);
+
     const socketio = socket(server, { 
         cors: corsConfig,
         path: '/'
@@ -43,5 +47,4 @@ Redis.connection.on('ready', () => {
         socket.emit('TEST', 'FUCK YOU ARMADO');
     });
 
-    console.log(`Listening on ${process.env.PORT}`);
 });
