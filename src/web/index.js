@@ -18,33 +18,36 @@ app.use(cors(corsConfig));
 const server = app.listen(process.env.PORT);
 console.log(`Listening on ${process.env.PORT}`);
 
-Redis.connect();
-Redis.connection.on('ready', () => {
-    console.log('Redis ready');
+const socketio = socket(server, { 
+    cors: corsConfig,
+    path: '/'
+});
 
-    app.get('/', (req, res) => {
-        res.send('Coop Web API');
-    });
+socketio.on('connection', (socket) => {
+    console.log('a user connected');
 
-    app.post('job', (req, res) => {
-        // Post job into server from website.
-    });
+    socket.emit('TEST', 'FUCK YOU ARMADO');
+});
+
+
+app.get('/', (req, res) => {
+    res.send('Coop Web API');
+});
+
+
+// Redis.connect();
+// Redis.connection.on('ready', () => {
+//     console.log('Redis ready');
+
+
+//     app.post('job', (req, res) => {
+//         // Post job into server from website.
+//     });
     
 
-    const socketio = socket(server, { 
-        cors: corsConfig,
-        path: '/'
-    });
+//     let lastRedisUpdate;
+//     setInterval(() => {
+//         // Use certain redis values as a queue to update websockets connected to the coop.
+//     }, 60 * 1 * 1000);
 
-    let lastRedisUpdate;
-    setInterval(() => {
-        // Use certain redis values as a queue to update websockets connected to the coop.
-    }, 60 * 1 * 1000);
-
-    socketio.on('connection', (socket) => {
-        console.log('a user connected');
-
-        socket.emit('TEST', 'FUCK YOU ARMADO');
-    });
-
-});
+// });
