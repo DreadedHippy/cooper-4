@@ -35,19 +35,19 @@ app.get('/', (req, res) => {
 });
 
 
-// Redis.connect();
-// Redis.connection.on('ready', () => {
-//     console.log('Redis ready');
+Redis.connect();
+Redis.connection.on('ready', () => {
+    console.log('Redis ready');
 
 
-//     app.post('job', (req, res) => {
-//         // Post job into server from website.
-//     });
+    // app.post('job', (req, res) => {
+    //     // Post job into server from website.
+    // });
     
 
-//     let lastRedisUpdate;
-//     setInterval(() => {
-//         // Use certain redis values as a queue to update websockets connected to the coop.
-//     }, 60 * 1 * 1000);
+    // let lastRedisUpdate;
+    // setInterval(() => {
+    //     // Use certain redis values as a queue to update websockets connected to the coop.
+    // }, 60 * 1 * 1000);
 
-// });
+});
