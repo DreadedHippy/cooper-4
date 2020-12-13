@@ -2,13 +2,13 @@ import client from './setup/client';
 import registerLogging from './setup/logging';
 import Database from './setup/database';
 import CDNManager from './setup/cdn';
+import Redis from './setup/redis';
 
 // Feature/abstract usage.
-import registerCommunityEvents from '../../community/events/register';
+import registerCommunityEvents from '../../bot/community/events/register';
 
 // Singleton state accessor
 import STATE from '../state';
-
 
 export default async function bootstrap() {
     // Globalise the created client (extended Discordjs).
@@ -16,6 +16,9 @@ export default async function bootstrap() {
 
     // Connect to PostGres Database
     await Database.connect();
+
+    // Connect to redis
+    Redis.connect();
 
     // Login to Discord with the bot.
     await botClient.login(process.env.DISCORD_TOKEN);

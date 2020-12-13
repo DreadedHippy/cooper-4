@@ -1,8 +1,5 @@
-import { Command } from 'discord.js-commando';
-import PointsHelper from '../../../community/features/points/pointsHelper';
+import PointsHelper from '../../../bot/community/features/points/pointsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
-
-
 
 export default class PointsCommand extends CoopCommand {
 

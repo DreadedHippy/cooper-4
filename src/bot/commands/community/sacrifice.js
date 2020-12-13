@@ -1,4 +1,4 @@
-import SacrificeHelper from '../../../community/features/events/sacrificeHelper';
+import SacrificeHelper from '../../../bot/community/features/events/sacrificeHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 

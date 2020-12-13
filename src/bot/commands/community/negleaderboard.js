@@ -1,4 +1,4 @@
-import PointsHelper from '../../../community/features/points/pointsHelper';
+import PointsHelper from '../../../bot/community/features/points/pointsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 import ServerHelper from '../../core/entities/server/serverHelper';
 import STATE from '../../state';

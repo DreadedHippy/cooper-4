@@ -1,4 +1,4 @@
-import ItemsHelper from '../../../community/features/items/itemsHelper';
+import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 

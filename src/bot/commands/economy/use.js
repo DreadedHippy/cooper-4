@@ -1,6 +1,6 @@
-import FlareHandler from '../../../community/features/items/handlers/flareHandler';
-import LaxativeHandler from '../../../community/features/items/handlers/laxativeHandler';
-import ItemsHelper from '../../../community/features/items/itemsHelper';
+import FlareHandler from '../../../bot/community/features/items/handlers/flareHandler';
+import LaxativeHandler from '../../../bot/community/features/items/handlers/laxativeHandler';
+import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 
 
