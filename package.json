@@ -19,6 +19,7 @@
     "axios": "^0.20.0",
     "better-sqlite3": "^5.4.3",
     "chance": "^1.1.7",
+    "cors": "^2.8.5",
     "discord.js": "^12.3.1",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
     "esm": "^3.2.25",
