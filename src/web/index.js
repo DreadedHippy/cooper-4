@@ -13,7 +13,7 @@ Redis.connection.on('ready', () => {
     });
     
     const server = app.listen(process.env.PORT);
-    const socketio = socket.listen(server);
+    const socketio = socket(server);
 
     socketio.on('connection', (socket) => {
         console.log('a user connected');
