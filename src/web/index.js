@@ -40,8 +40,8 @@ Redis.connection.on('ready', () => {
     console.log('Redis ready');
 
 
-    client.set("key", "value", console.log);
-    client.get("key", console.log);
+    Redis.connection.set("key", "value", console.log);
+    Redis.connection.get("key", console.log);
 
     // app.post('job', (req, res) => {
     //     // Post job into server from website.
