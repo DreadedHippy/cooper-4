@@ -17,9 +17,6 @@ export default async function bootstrap() {
     // Connect to PostGres Database
     await Database.connect();
 
-    // Connect to redis
-    Redis.connect();
-
     // Login to Discord with the bot.
     await botClient.login(process.env.DISCORD_TOKEN);
 

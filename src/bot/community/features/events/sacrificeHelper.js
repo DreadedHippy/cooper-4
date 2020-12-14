@@ -189,16 +189,20 @@ export default class SacrificeHelper {
     }
 
     static async random() {
-        const usersQuery = await UsersHelper.load();
-        const rowCount = usersQuery.rowCount || 0;
-        const users = usersQuery.rows || [];
-        if (rowCount > 0) {
-            const randomIndex = STATE.CHANCE.natural({ min: 0, max: rowCount });
-            const randomUser = users[randomIndex];
-
-            const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-            const member = await guild.members.fetch(randomUser.discord_id);
-            if (member) this.offer(member.user);
+        try {
+            const usersQuery = await UsersHelper.load();
+            const rowCount = usersQuery.rowCount || 0;
+            const users = usersQuery.rows || [];
+            if (rowCount > 0) {
+                const randomIndex = STATE.CHANCE.natural({ min: 0, max: rowCount });
+                const randomUser = users[randomIndex];
+                
+                const member = await ServerHelper._coop().members.fetch(randomUser.discord_id);
+                if (member) this.offer(member.user);
+            }
+        } catch(e) {
+            console.log('Error sacrificing random member.');
+            console.error(e);
         }
     }
 }

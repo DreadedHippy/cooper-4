@@ -1,6 +1,9 @@
 import ServerHelper from "../entities/server/serverHelper";
+import Crossover from "./crossover";
+import Redis from "./redis";
 
 export default (discordClient) => {
+
     discordClient
         .on('error', console.error)
         .on('warn', console.warn)
@@ -9,6 +12,9 @@ export default (discordClient) => {
             try {
                 console.log(`Logged in as ${discordClient.user.username}`); 
     
+                // Connect to redis and preload crossover data.
+                Redis.connect().on('ready', Crossover.load);
+
                 // Prepare cache (avoid partials)!
                 const guild = ServerHelper.getByCode(discordClient, 'PROD');
                 let reqNum = 0;
@@ -21,7 +27,6 @@ export default (discordClient) => {
                     }
                 });
 
-                // ChannelsHelper._postToFeed('⏰ Ding, ding, ding! You can take me out of the oven now. I\'m ready!');
             } catch(e) {
                 console.error(e);
             }
