@@ -20,12 +20,23 @@ export default class Crossover {
         const guild = ServerHelper._coop();
         return {
             commander: UsersHelper.getMembersByRoleID(guild, ROLES.COMMANDER.id).first(),
-            leaders: UsersHelper.getMembersByRoleID(guild, ROLES.LEADER.id)
+            leaders: UsersHelper.getMembersByRoleID(guild, ROLES.LEADER.id),
+            memberCount: guild.memberCount
         };
     }
 
     static async setHierarchy(hierarchy) {
         return Promise.all([
+            new Promise((resolve, reject) => {
+                Redis.connection.set(
+                    `memberCount`, 
+                    hierarchy.memberCount, 
+                    (err, reply) => {
+                        if(err) reject(err);
+                        else resolve(reply);
+                    }
+                );
+            }),
             new Promise((resolve, reject) => {
                 const entryData = {
                     username: hierarchy.commander.user.username,
@@ -79,6 +90,18 @@ export default class Crossover {
             });
         });
 
-        return { commander, leaders };
+        const memberCount = await new Promise((resolve, reject) => {
+            Redis.connection.get('memberCount', (err, result) => {
+                console.log(err, result);
+                if (err) reject(err);
+                else resolve(result);
+            });
+        });
+
+        return { 
+            commander, 
+            leaders,
+            memberCount
+        };
     }
 }
