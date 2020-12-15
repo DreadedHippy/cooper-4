@@ -4,10 +4,12 @@
         "name": "member 💛‍"
     },
     "COMMANDER": {
-        "name": "👑.  commander"
+        "name": "👑.  commander",
+        "id": "727311131705868299"
     },
     "LEADER": {
-        "name": "⚔️.  leader"
+        "name": "⚔️.  leader",
+        "id": "723676356818239773"
     },
     "BEGINNER": {
         "name": "beginner 🥚"
@@ -23,5 +25,8 @@
     },
     "MOSTPOINTS": {
         "id": "780116637197926420"
+    },
+    "MEMBEROFWEEK": {
+        "id": "725406725615779922"
     }
 }

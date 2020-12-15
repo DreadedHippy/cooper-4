@@ -13,7 +13,8 @@ export default (discordClient) => {
                 console.log(`Logged in as ${discordClient.user.username}`); 
     
                 // Connect to redis and preload crossover data.
-                Redis.connect().on('ready', Crossover.load);
+                Redis.connect();
+                Redis.connection.on('connect', () => Crossover.load());
 
                 // Prepare cache (avoid partials)!
                 const guild = ServerHelper.getByCode(discordClient, 'PROD');

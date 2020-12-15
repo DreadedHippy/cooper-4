@@ -2,6 +2,7 @@ import express from 'express';
 import Redis from '../bot/core/setup/redis';
 import socket from 'socket.io';
 import cors from 'cors';
+import Crossover from '../bot/core/setup/crossover';
 
 const app = express();
 
@@ -20,7 +21,7 @@ console.log(`Listening on ${process.env.PORT}`);
 
 const socketio = socket(server, { 
     cors: corsConfig,
-    path: '/'
+    path: '/ws'
 });
 
 socketio.on('connection', (socket) => {
@@ -34,19 +35,31 @@ app.get('/', (req, res) => {
     res.send('Coop Web API');
 });
 
+app.get('/data/home', async (req, res) => {
+    try {
+        const hierarchyRedisResult = await Crossover.loadHiearchy();
+        let hierarchy = {
+            leaders: [],
+            commander: JSON.parse(hierarchyRedisResult.commander)
+        };
+        console.log(hierarchyRedisResult.leaders);
+        Object.keys(hierarchyRedisResult.leaders).map(leaderID => {
+            hierarchy.leaders.push(JSON.parse(hierarchyRedisResult.leaders[leaderID]));
+        });
+
+        res.json({
+            hierarchy
+        });
+    } catch(e) {
+        console.log('Error loading home data:');
+        console.error(e);
+    }
+});
+
 
 Redis.connect();
 Redis.connection.on('ready', () => {
     console.log('Redis ready');
-
-
-    Redis.connection.set("key", "value", console.log);
-    Redis.connection.get("key", console.log);
-
-    // app.post('job', (req, res) => {
-    //     // Post job into server from website.
-    // });
-    
 
     // let lastRedisUpdate;
     // setInterval(() => {

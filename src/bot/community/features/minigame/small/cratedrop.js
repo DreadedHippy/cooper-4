@@ -12,7 +12,7 @@ import VotingHelper from '../../../events/voting/votingHelper';
 import ItemsHelper from '../../items/itemsHelper';
 import PointsHelper from '../../points/pointsHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
-import { baseTickDur } from '../../../events/register';
+import { baseTickDur } from '../../../events/manifest';
 
 // TODO: Check every 5 minutes for cratedrop etc, just don't ping every time.
 // Make message "within next few minutes, not now"
@@ -196,7 +196,7 @@ export default class CratedropMinigame {
             if (!anyRewardGiven) MessagesHelper.selfDestruct(msg, 'No items were inside this crate! >:D', 30000);
 
             // Post and delete the points reward message feedback.
-            const usersRewardedText = hitters.join(', ') + ` were rewarded ${crate.openingPoints} points(s) `;
+            const usersRewardedText = hitters.join(', ') + ` were rewarded ${crate.openingPoints} point(s)`;
             const rewardTypeText = `the ${!anyRewardGiven ? 'empty' : ''} ${rarity.replace('_', ' ').toLowerCase()}`;
             const pointsRewardString = `${usersRewardedText} for attempting to open ${rewardTypeText}!`;
             ChannelsHelper._propogate(msg, pointsRewardString, true);

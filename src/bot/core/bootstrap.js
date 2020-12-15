@@ -2,10 +2,9 @@ import client from './setup/client';
 import registerLogging from './setup/logging';
 import Database from './setup/database';
 import CDNManager from './setup/cdn';
-import Redis from './setup/redis';
 
 // Feature/abstract usage.
-import registerCommunityEvents from '../../bot/community/events/register';
+import registerCommunityEvents from '../../bot/community/events/manifest';
 
 // Singleton state accessor
 import STATE from '../state';

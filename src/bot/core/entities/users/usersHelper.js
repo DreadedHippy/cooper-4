@@ -48,6 +48,10 @@ export default class UsersHelper {
         });
     }
 
+    static getMembersByRoleID(guild, roleID) {
+        return guild.members.cache.filter(member => !!member.roles.cache.get(roleID));
+    }
+
     static async removeFromDatabase(member) {
         const query = {
             name: "remove-user",
