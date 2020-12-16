@@ -40,6 +40,7 @@ export default class MessagesHelper {
             if (typeof msg.delete === 'function') 
                 msg.delete()
                     .catch(e => { console.log('Delete message failed.') });
+            else console.log(msg);
         }, delay);
     }
 
