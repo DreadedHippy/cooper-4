@@ -30,25 +30,35 @@ export default class MessagesHelper {
     }
 
     static delayReact(msg, emoji, delay = 666) {
-        if (msg) setTimeout(() => { 
-            if (typeof msg.react === 'function') 
-                msg.react(emoji); }, delay);
+        if (msg) setTimeout(async () => { 
+            try {
+                await msg.react(emoji); 
+            } catch(e) {
+                console.log('Delay react error.');
+                console.error(e);
+            }
+        }, delay);
     }
 
     static delayDelete(msg, delay = 666) {
-        if (msg) setTimeout(() => { 
-            if (typeof msg.delete === 'function') 
-                msg.delete()
-                    .catch(e => { console.log('Delete message failed.') });
-            else console.log(msg);
+        if (msg) setTimeout(async () => { 
+            try {
+                await msg.delete()
+            } catch(e) {
+                console.log('Delay delete error.');
+                console.error(e);
+            }
         }, delay);
     }
 
     static delayEdit(msg, newContent, delay = 666) {
-        if (msg) setTimeout(() => { 
-            if (typeof msg.edit === 'function') 
-                msg.edit(newContent)
-                    .catch(e => { console.log('Edit message failed.') });
+        if (msg) setTimeout(async () => { 
+            try {
+                await msg.edit(newContent);
+            } catch(e) {
+                console.log('Delay edit error.');
+                console.error(e);
+            }
         }, delay);
     }
 
