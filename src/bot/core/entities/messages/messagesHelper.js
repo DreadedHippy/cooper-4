@@ -30,19 +30,24 @@ export default class MessagesHelper {
     }
 
     static delayReact(msg, emoji, delay = 666) {
-        if (msg) setTimeout(() => { msg.react(emoji); }, delay);
+        if (msg) setTimeout(() => { 
+            if (typeof msg.react === 'function') 
+                msg.react(emoji); }, delay);
     }
 
     static delayDelete(msg, delay = 666) {
         if (msg) setTimeout(() => { 
-            msg.delete().catch(e => { console.log('Delete message failed.') });
+            if (typeof msg.delete === 'function') 
+                msg.delete()
+                    .catch(e => { console.log('Delete message failed.') });
         }, delay);
     }
 
     static delayEdit(msg, newContent, delay = 666) {
         if (msg) setTimeout(() => { 
-            msg.edit(newContent)
-                .catch(e => { console.log('Edit message failed.') });
+            if (typeof msg.edit === 'function') 
+                msg.edit(newContent)
+                    .catch(e => { console.log('Edit message failed.') });
         }, delay);
     }
 

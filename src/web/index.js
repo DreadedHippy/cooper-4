@@ -58,7 +58,7 @@ app.get('/data/home', async (req, res) => {
 
 
 Redis.connect();
-Redis.connection.on('ready', () => {
+Redis.connection.on('connection', () => {
     console.log('Redis ready');
 
     // let lastRedisUpdate;
