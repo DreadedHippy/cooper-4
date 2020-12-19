@@ -12,7 +12,7 @@ export default class MiningMinigame {
     
     // Reaction interceptor to check if user is attempting to interact.
     static async onReaction(reaction, user) {
-        // High chance of preventing any mining at all.
+        // High chance of preventing any mining at all to deal with rate limiting.
         if (STATE.CHANCE.bool({ likelihood: 55 })) return false;
 
         const isOnlyEmojis = MessagesHelper.isOnlyEmojis(reaction.message.content);
@@ -48,10 +48,10 @@ export default class MiningMinigame {
 
         // Check if has a pickaxe
         const userPickaxesNum = await ItemsHelper.getUserItemQty(user.id, 'PICK_AXE');
-        if (userPickaxesNum <= 0) {
-            const warningMsg = await msg.say(`${user.username} tried to mine the rocks, but doesn't have a pickaxe.`);
-            return MessagesHelper.delayDelete(warningMsg, 10000);
-        }
+        const noPickText = `${user.username} tried to mine the rocks, but doesn't have a pickaxe.`;
+        // Remove reaction and warn.
+        // if (userPickaxesNum <= 0) DELETE REACTION
+        if (userPickaxesNum <= 0) return MessagesHelper.selfDestruct(msg, noPickText, 10000);
 
         // Handle chance of pickaxe breaking
         const pickaxeBreakPerc = Math.min(30, rewardRemaining);

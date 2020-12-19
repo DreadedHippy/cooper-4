@@ -51,7 +51,8 @@ export default class MessagesHelper {
     static delayDelete(msg, delay = 666) {
         if (msg) setTimeout(async () => { 
             try {
-                await msg.delete()
+                if (typeof msg.delete === 'function') await msg.delete();
+                else console.log('Logging msg.delete not function', msg);
             } catch(e) {
                 console.log('Delay delete error.');
                 console.error(e);
@@ -84,10 +85,7 @@ export default class MessagesHelper {
 
     static titleCase = (str) => {
         str = str.toLowerCase().split(' ');
-        for (let i = 0; i < str.length; i++) {
-            str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
-        }
+        for (let i = 0; i < str.length; i++) str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
         return str.join(' ');
-        
     }
 }

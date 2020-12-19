@@ -14,7 +14,10 @@ export default class ConfessionHandler {
         setTimeout(async () => {
             const replyableMsg = await ChannelsHelper._postToChannelCode('COOPERTESTS', annotatedMsgText);
             replyableMsg.channel.awaitMessages(
-                () => true,
+                (msg) => {
+                    // Filter out Cooper messages.
+                    return !UsersHelper.isCooperMsg(msg);
+                },
                 { max: 1, time: 30000, errors: ['time'] }
             )
             .then(responses => {
@@ -23,9 +26,7 @@ export default class ConfessionHandler {
                 });
             })
             .catch(console.error);
-
         }, 1333);
-
     }
 
 }
