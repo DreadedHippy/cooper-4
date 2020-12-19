@@ -29,7 +29,10 @@ export default class ItemsHelper {
                 RETURNING quantity`,
             values: [userID, item_code, quantity]
         };
-        return await Database.query(query);
+        
+        const result = await Database.query(query);
+        const newQty = (result.rows[0] || { quantity: 0 }).quantity;
+        return newQty;
     }
 
     static async subtract(userID, itemCode, subQuantity) {

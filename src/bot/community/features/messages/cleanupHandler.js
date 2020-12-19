@@ -4,9 +4,9 @@ import UsersHelper from "../../../core/entities/users/usersHelper";
 export default class CleanupHandler {
 
     static async onReaction(msg) {
-        if (msg.channel.type !== "dm") return false;
-        if (UsersHelper.isCooperMsg(msg)) return false;
-        if (msg.command !== null) return false;
+        // if (msg.channel.type !== "dm") return false;
+        // if (UsersHelper.isCooperMsg(msg)) return false;
+        // if (msg.command !== null) return false;
 
         console.log('TRYING TO CLEAN UP COOPER MESSAGE!!!!');
 

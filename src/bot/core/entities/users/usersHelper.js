@@ -87,6 +87,21 @@ export default class UsersHelper {
         return await Database.query(query);        
     }
 
+    // TODO: Can refactor this to a more optimised db query.
+    static async _random() {
+        let member = null;
+        const usersQuery = await this.load();
+        const rowCount = usersQuery.rowCount || 0;
+        const users = usersQuery.rows || [];
+        if (rowCount > 0) {
+            const randomIndex = STATE.CHANCE.natural({ min: 0, max: rowCount });
+            const randomUser = users[randomIndex];
+            
+            member = await ServerHelper._coop().members.fetch(randomUser.discord_id);
+        }
+        return member;
+    }
+
     static isCooper(id) {
         return STATE.CLIENT.user.id === id;
     }

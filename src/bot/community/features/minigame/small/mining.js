@@ -55,7 +55,7 @@ export default class MiningMinigame {
 
         // Handle chance of pickaxe breaking
         const pickaxeBreakPerc = Math.min(30, rewardRemaining);
-        const extractedOreNum = Math.ceil(rewardRemaining / 3);
+        const extractedOreNum = Math.ceil(rewardRemaining / 2.25);
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
         if (didBreak) {
             const pickaxeUpdate = await ItemsHelper.use(user.id, 'PICK_AXE', 1);
@@ -73,7 +73,7 @@ export default class MiningMinigame {
             const addPoints = await PointsHelper.addPointsByID(user.id, 1);
 
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
-                const addMetalOre = await ItemsHelper.add(user.id, 'DIAMOND', 1);
+                const addDiamond = await ItemsHelper.add(user.id, 'DIAMOND', 1);
                 ChannelsHelper._propogate(msg, `${user.username} found a diamond whilst mining!`);    
             }
 
@@ -87,6 +87,7 @@ export default class MiningMinigame {
             if (textMagnitude > 1) await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
             else await msg.delete();
             
+            // Provide feedback.
             const actionText = `${user.username} successfully mined a rock.`;
             const rewardText = `+1 point (${addPoints}), +${extractedOreNum} metal ore (${addMetalOre})!`;
             ChannelsHelper._propogate(msg, `${actionText} ${rewardText}`);

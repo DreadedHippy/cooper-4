@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { map as _map, values as _values } from 'lodash';
 
 import EMOJIS from '../../../../core/config/emojis.json';
 
@@ -37,7 +37,7 @@ export default class EggHuntMinigame {
     static onReaction(reaction, user) {
         try {
             const isCooperMessage = UsersHelper.isCooperMsg(reaction.message);
-            const eggEmojiNames = _.map(_.values(EGG_DATA), "emoji");
+            const eggEmojiNames = _map(_values(EGG_DATA), "emoji");
             const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
             const isEgghuntDrop = eggEmojiNames.includes(emojiIdentifier);
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
@@ -91,7 +91,7 @@ export default class EggHuntMinigame {
 
             // Share points with nearest 5 message authors.
             const channelMessages = reaction.message.channel.messages;
-            const surroundingMsgs = await channelMessages.fetch({ around: reaction.message.id, limit: 5 });
+            const surroundingMsgs = await channelMessages.fetch({ around: reaction.message.id, limit: 20 });
             const aroundUsers = surroundingMsgs.reduce((acc, msg) => {
                 const notIncluded = typeof acc[msg.author.id] === 'undefined';
                 const notCooper = !UsersHelper.isCooperMsg(msg);
@@ -101,18 +101,15 @@ export default class EggHuntMinigame {
 
             // Store points and egg collection data in database.
             const awardedUserIDs = Object.keys(aroundUsers);
-            await Promise.all(awardedUserIDs.map(userID => {
-                return PointsHelper.addPointsByID(userID, reward);
-            }));
+            await Promise.all(awardedUserIDs.map(userID => PointsHelper.addPointsByID(userID, reward)));
 
             // Add/update egg item to user
             await ItemsHelper.add(user.id, rarity, 1);
 
             // Create feedback text from list of users.
             const usersRewardedText = awardedUserIDs.map(userID => aroundUsers[userID].username).join(', ');
-            const feedbackMsg = `
-                ${usersRewardedText} gained ${reward} points by being splashed by exploding egg ${emoji}
-            `.trim();
+            const emojiText = MessagesHelper.emojiText(emoji);
+            const feedbackMsg = `${usersRewardedText} gained ${reward} points by being splashed by exploding egg ${emojiText}`.trim();
 
             // Add self-destructing message in channel.
             const instantFeedbackMsg = await reaction.message.say(feedbackMsg);
@@ -176,48 +173,37 @@ export default class EggHuntMinigame {
             if (!UsersHelper.isCooper(user.id)) {
                 const rarity = this.calculateRarityFromMessage(reaction.message);
                 const reward = EGG_DATA[rarity].points;
+                const rewardPolarity = reward > 0 ? '+' : '';
                 const emoji = EGG_DATA[rarity].emoji;
-                const channelName = reaction.message.channel.name;
 
-                let acknowledgementMsgText = '';
-                let activityFeedMsgText = '';
+                // Check the channel type or location of the action.
+                let location = null;
+                if (reaction.message.channel.type === 'dm') location = 'direct message'
+                else location = `"${reaction.message.channel.name}" channel`;
+
+                // Setup the text for feedback messages.
+                const actionText = `<${emoji}>🧺 Egg Hunt! ${user.username}`;
+                let acknowledgementMsgText =`${actionText} ${rewardPolarity}${reward} points!`.trim();
+                let activityFeedMsgText = `${user.username} collected an egg in ${location}! <${emoji}>`.trim();
 
                 if (STATE.CHANCE.bool({ likelihood: 85 })) {
                     // Store points and egg collection data in database.
                     const updated = await PointsHelper.addPointsByID(user.id, reward);
-
-                    const rewardPolarity = reward > 0 ? '+' : '';
-
+                    acknowledgementMsgText += ` (${updated})`;
                     // Add/update egg item to user
                     await ItemsHelper.add(user.id, rarity, 1);
-
-                    acknowledgementMsgText = `
-                        <${emoji}>🧺 Egg Hunt! ${user.username} ${rewardPolarity}${reward} points! (${updated})
-                    `.trim();
-
-                    activityFeedMsgText = `
-                        ${user.username} collected an egg in "${channelName}" channel! <${emoji}>
-                    `.trim();
                 } else {
-                    acknowledgementMsgText = `
-                        <${emoji}>🧺 Egg Hunt! ${user.username} clumsily broke the egg, 0 points!
-                    `.trim();
-
-                    activityFeedMsgText = `
-                        ${user.username} broke an egg in "${channelName}" channel! :( <${emoji}>
-                    `.trim();
+                    acknowledgementMsgText = `${actionText} clumsily broke the egg, 0 points!`.trim();
+                    activityFeedMsgText = `${user.username} broke an egg in ${location}! :( <${emoji}>`.trim();
                 }
 
-
-                const acknowledgementMsg = await reaction.message.say(acknowledgementMsgText);
-                
-                // Remove acknowledgement message after 30 seconds.
-                setTimeout(async () => { await acknowledgementMsg.delete(); }, 30000)
-                
+                // Provide feedback.
+                const acknowledgementMsg = await reaction.message.say(acknowledgementMsgText);        
                 ChannelsHelper._postToFeed(activityFeedMsgText)
-
-                // Delete the egg.
-                await reaction.message.delete();
+                
+                // Delete the egg and channel feedback message when collected.
+                MessagesHelper.delayDelete(acknowledgementMsg, 30000);
+                MessagesHelper.delayDelete(reaction.message, 1500);
             }
         } catch(e) {
             console.error(e);
@@ -228,7 +214,6 @@ export default class EggHuntMinigame {
         const server = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const dropChannel = ChannelsHelper.fetchRandomTextChannel(server);
         
-
         if (dropChannel) {
             const randomDelayBaseMs = 30000;
             setTimeout(async () => {
@@ -236,16 +221,36 @@ export default class EggHuntMinigame {
                     const eggMsg = await dropChannel.send(`<${EGG_DATA[rarity].emoji}>`);
                     await eggMsg.react('🧺');
 
-                    // Remove toxic egg after 5 minutes so people aren't forced to take it.
-                    if (rarity === 'TOXIC_EGG') {
-                        setTimeout(async () => { await eggMsg.delete(); }, 60 * 5 * 1000);
-                    }
+                    // Remove toxic egg after few minutes so people aren't forced to take it.
+                    if (rarity === 'TOXIC_EGG') MessagesHelper.delayDelete(eggMsg, 200000);
 
                     if (dropText) ChannelsHelper._postToFeed(dropText);
                 } catch(e) {
                     console.error(e);
                 }
             }, STATE.CHANCE.natural({ min: randomDelayBaseMs, max: randomDelayBaseMs * 4 }));
+        }
+    }
+
+    static async dmDrop(rarity) {
+        try {
+            const randomMember = await UsersHelper._random();
+            const name = randomMember.user.username;
+            const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
+
+            // Send via DM.
+            const eggMsg = await randomMember.send(emojiText);
+            MessagesHelper.delayReact(eggMsg, '🧺', 333);
+
+            // Remove toxic egg after 5 minutes so people aren't forced to take it.
+            if (rarity === 'TOXIC_EGG') MessagesHelper.delayDelete(eggMsg, 300000);
+
+            // Provide feedback.
+            let dropText = `${name} was sent an egg via DM! ${emojiText}`;
+            if (rarity === 'LEGENDARY_EGG') dropText = 'OooOoOoOoooo... ' + dropText;
+            ChannelsHelper._postToFeed(dropText);
+        } catch(e) {
+            console.error(e);
         }
     }
 
@@ -264,6 +269,11 @@ export default class EggHuntMinigame {
                 }
             }
         }
+
+        // Handle DM dropping
+        if (STATE.CHANCE.bool({ likelihood: 22.5 })) this.dmDrop('TOXIC_EGG');
+        if (STATE.CHANCE.bool({ likelihood: 15 })) this.dmDrop('RARE_EGG');
+        if (STATE.CHANCE.bool({ likelihood: 3.5 })) this.dmDrop('LEGENDARY_EGG');
 
         // Bonus eggs            
         if (STATE.CHANCE.bool({ likelihood: 25 })) {

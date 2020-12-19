@@ -29,6 +29,10 @@ export default class MessagesHelper {
         return emoji.codePointAt(0).toString(16);
     }
 
+    static emojiText(emoji) {
+        return `<${emoji}>`;
+    }
+
     static delayReactionRemove(reaction, delay) {
         if (reaction) setTimeout(() => { reaction.remove(); }, delay);
     }

@@ -197,7 +197,7 @@ export default class CratedropMinigame {
 
             // Post and delete the points reward message feedback.
             const usersRewardedText = hitters.join(', ') + ` were rewarded ${crate.openingPoints} point(s)`;
-            const rewardTypeText = `the ${!anyRewardGiven ? 'empty' : ''} ${rarity.replace('_', ' ').toLowerCase()}`;
+            const rewardTypeText = `the ${!anyRewardGiven ? 'empty ' : ' '}${rarity.replace('_', ' ').toLowerCase()}`;
             const pointsRewardString = `${usersRewardedText} for attempting to open ${rewardTypeText}!`;
             ChannelsHelper._propogate(msg, pointsRewardString, true);
 
