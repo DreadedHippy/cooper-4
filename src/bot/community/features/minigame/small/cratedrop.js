@@ -12,7 +12,7 @@ import VotingHelper from '../../../events/voting/votingHelper';
 import ItemsHelper from '../../items/itemsHelper';
 import PointsHelper from '../../points/pointsHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
-import { baseTickDur } from '../../../events/manifest';
+import { baseTickDur } from '../../../events/eventsManifest';
 
 // TODO: Check every 5 minutes for cratedrop etc, just don't ping every time.
 // Make message "within next few minutes, not now"
@@ -113,7 +113,7 @@ export default class CratedropMinigame {
             else {
                 const hitsLeft = reqHits - hitCount;
                 const openingUpdateMsg = await msg.say(
-                    `${user.username} tried opening the crate! ${hitsLeft} more hits to break!`
+                    `${user.username} tried opening the crate! ${hitsLeft}/${reqHits} more hits to break!`
                 );
 
                 // Remove message after it was visible by the contact.

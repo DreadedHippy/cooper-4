@@ -13,7 +13,7 @@ export default class MiningMinigame {
     // Reaction interceptor to check if user is attempting to interact.
     static async onReaction(reaction, user) {
         // High chance of preventing any mining at all.
-        if (STATE.CHANCE.bool({ likelihood: 65 })) return false;
+        if (STATE.CHANCE.bool({ likelihood: 55 })) return false;
 
         const isOnlyEmojis = MessagesHelper.isOnlyEmojis(reaction.message.content);
         const isPickaxeReact = reaction.emoji.name === '⛏️';
@@ -59,25 +59,37 @@ export default class MiningMinigame {
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
         if (didBreak) {
             const pickaxeUpdate = await ItemsHelper.use(user.id, 'PICK_AXE', 1);
-            // console.log(pickaxeUpdate);
-            ChannelsHelper._propogate(
-                msg,
-                `${user.username} broke a pickaxe trying to mine.`
-            );
+            if (pickaxeUpdate) {
+                const brokenPickDamage = -2;
+                const pointsDamageResult = await PointsHelper.addPointsByID(user.id, brokenPickDamage);
+    
+                const actionText = `${user.username} broke a pickaxe trying to mine, ${userPickaxesNum - 1} remaining!`;
+                const damageText = `${brokenPickDamage} points (${pointsDamageResult}).`;
+                ChannelsHelper._propogate(msg, `${actionText} ${damageText}`);
+            }
         } else {
             // See if updating the item returns the item and quantity.
             const addMetalOre = await ItemsHelper.add(user.id, 'METAL_ORE', extractedOreNum);
             const addPoints = await PointsHelper.addPointsByID(user.id, 1);
-            // console.log(addPoints, addMetalOre);
+
+            if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
+                const addMetalOre = await ItemsHelper.add(user.id, 'DIAMOND', 1);
+                ChannelsHelper._propogate(msg, `${user.username} found a diamond whilst mining!`);    
+            }
+
+            if (STATE.CHANCE.bool({ likelihood: .25 })) {
+                const diamondVeinQty = STATE.CHANCE.natural({ min: 5, max: 25 });
+                await ItemsHelper.add(user.id, 'DIAMOND', diamondVeinQty);
+                ChannelsHelper._propogate(msg, `${user.username} hit a major diamond vein, ${diamondVeinQty} found!`);
+            }
 
             // Reduce the number of rocks in the message.
             if (textMagnitude > 1) await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));
             else await msg.delete();
             
-            ChannelsHelper._propogate(
-                msg, 
-                `${user.username} successfully mined a rock. +1 point, +${extractedOreNum} metal ore!`
-            );
+            const actionText = `${user.username} successfully mined a rock.`;
+            const rewardText = `+1 point (${addPoints}), +${extractedOreNum} metal ore (${addMetalOre})!`;
+            ChannelsHelper._propogate(msg, `${actionText} ${rewardText}`);
         }
     }
 
@@ -87,6 +99,6 @@ export default class MiningMinigame {
 
         MessagesHelper.delayReact(rockMsg, '⛏️');
 
-        ChannelsHelper._postToFeed('Hungry? Something to pick at appears!', 1222);
+        ChannelsHelper._postToFeed(`Rockslide! Magnitude ${magnitude}!`, 1222);
     }
 }

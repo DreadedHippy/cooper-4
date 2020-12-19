@@ -8,6 +8,12 @@ export default class ChannelsHelper {
     static getByID(guild, id) {
         return guild.channels.cache.get(id);
     }
+    static _get(id) {
+        return this.getByID(ServerHelper._coop(), id);
+    }
+    static _getCode(code) {
+        return this.getByCode(ServerHelper._coop(), code);
+    }
     static getByCode(guild, code) {
         return this.getByID(guild, CHANNELS[code].id);
     }
@@ -37,7 +43,7 @@ export default class ChannelsHelper {
     static fetchRandomTextChannel(guild) {       
         // Prevent egg and crate drops in unverified channels.
         const filteredKeys = Object.keys(CHANNELS)
-            .filter(key => !['ENTRY', 'INTRO', 'ROLES', 'LEADERS'].includes(key));
+            .filter(key => !['ENTRY', 'INTRO', 'ROLES', 'LEADERS', 'COOPERTESTS'].includes(key));
 
         const channelKey = STATE.CHANCE.pickone(filteredKeys);
 

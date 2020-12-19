@@ -1,6 +1,7 @@
 import FlareHandler from '../../../bot/community/features/items/handlers/flareHandler';
 import LaxativeHandler from '../../../bot/community/features/items/handlers/laxativeHandler';
 import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
+import GiftboxHandler from '../../community/features/items/handlers/giftboxHandler';
 import CoopCommand from '../../core/classes/coopCommand';
 
 
@@ -35,6 +36,7 @@ export default class UseCommand extends CoopCommand {
 		// Item is usable, therefore use it.
 		if (itemCode === 'LAXATIVE') LaxativeHandler.use(msg, msg.author);
 		if (itemCode === 'FLARE') FlareHandler.use(msg, msg.author);
+		if (itemCode === 'EMPTY_GIFTBOX') GiftboxHandler.use(msg);
     }
     
 };

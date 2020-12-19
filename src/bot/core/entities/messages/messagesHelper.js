@@ -29,6 +29,10 @@ export default class MessagesHelper {
         return emoji.codePointAt(0).toString(16);
     }
 
+    static delayReactionRemove(reaction, delay) {
+        if (reaction) setTimeout(() => { reaction.remove(); }, delay);
+    }
+
     static delayReact(msg, emoji, delay = 666) {
         if (msg) setTimeout(async () => { 
             try {

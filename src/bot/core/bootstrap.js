@@ -4,7 +4,7 @@ import Database from './setup/database';
 import CDNManager from './setup/cdn';
 
 // Feature/abstract usage.
-import registerCommunityEvents from '../../bot/community/events/manifest';
+import registerCommunityEvents from '../../bot/community/events/eventsManifest';
 
 // Singleton state accessor
 import STATE from '../state';

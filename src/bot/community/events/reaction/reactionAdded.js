@@ -8,6 +8,7 @@ import RedemptionHelper from "../../redemption/redemptionHelper";
 import SacrificeHelper from "../../features/events/sacrificeHelper";
 import ItemsHelper from "../../features/items/itemsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
+import CleanupHandler from '../../features/messages/cleanupHandler';
 
 export default async function reactAddedHandler(reaction, user) {
     const isUser = !UsersHelper.isCooper(user.id);
@@ -30,6 +31,9 @@ export default async function reactAddedHandler(reaction, user) {
 
         // Check for reaction on sacrifice message.
         SacrificeHelper.onReaction(reaction, user);
+
+        // Allow elected people to cleanup Cooper messages.
+        CleanupHandler.onReaction(reaction, user);
 
     } catch(e) {
         console.error(e);

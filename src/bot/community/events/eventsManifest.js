@@ -14,16 +14,21 @@ const feedSay = ChannelsHelper._postToFeed;
 
 export const baseTickDur = 60 * 25 * 1000;
 
-export default function registerCommunityEventsHandlers() {
+export default function eventsManifest() {
 
   EventsHelper.runInterval(() => SuggestionsHelper.checkSuggestionsPassed(), baseTickDur * 4);
+  EventsHelper.runInterval(() => {
+    ChannelsHelper._postToFeed('Should update about messages with new statistics!');
+  }, baseTickDur * 5);
+
   EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur);
 
 
-  EventsHelper.chanceRunInterval(() => SacrificeHelper.random(), 20, baseTickDur * 1.25);
+  EventsHelper.chanceRunInterval(() => SacrificeHelper.random(), 20, baseTickDur * 2.5);
   
   
   EventsHelper.chanceRunInterval(() => PointsHelper.updateCurrentWinner(), 100, baseTickDur * 2);
+  // TODO: Update and create most items role
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 80, baseTickDur / 2);
   EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 80, baseTickDur * 2);
   

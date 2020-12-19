@@ -1,4 +1,5 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
+import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import PointsHelper from "../../points/pointsHelper";
 import ItemsHelper from "../itemsHelper";
 
@@ -15,20 +16,20 @@ export default class BombHandler {
                     const messageAuthor = reaction.message.author;
 
                     // Let bombs stack and amplify the damage.
-                    const damage = -5 * reaction.count;
+                    const damage = -4 * reaction.count;
 
                     // Apply the damage to the target's points.
                     const updatedPoints = await PointsHelper.addPointsByID(messageAuthor.id, damage);
 
                     // Add visuals animation
-                    setTimeout(() => { reaction.remove(); }, 333);
-                    setTimeout(() => { reaction.message.react('💥'); }, 666);
-    
-                    let doubledInfo = null;
+                    MessagesHelper.delayReactionRemove(reaction, 333);
+                    MessagesHelper.delayReact(reaction.message, '💥', 666);
+
+                    let doubledInfo = '';
                     if (reaction.count > 1) doubledInfo = `(x${reaction.count})`;
-                    await ChannelsHelper._postToFeed(
-                        `${user.username} bombed ${messageAuthor.username}: -${damage}${doubledInfo} points (${updatedPoints}).`
-                    );
+                    const subjectsInvolved = `${user.username} bombed ${messageAuthor.username}`;
+                    const changesOccurred = `-${damage}${doubledInfo} points (${updatedPoints}).`;
+                    await ChannelsHelper._postToFeed(`${subjectsInvolved}: ${changesOccurred}`);
                 }
             } catch(e) {
                 console.error(e);
