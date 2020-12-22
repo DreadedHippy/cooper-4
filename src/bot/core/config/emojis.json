@@ -4,6 +4,9 @@
     "VOTE_FOR": "🕊️",
     "VOTE_AGAINST": "⚔️",
 
+    "POLL_FOR": "🟢",
+    "POLL_AGAINST": "🔴",
+
     "LEGENDARY_EGG": ":legendary_egg:764511545991626783",
     "RARE_EGG": ":rare_egg:764511545739968544",
     "AVERAGE_EGG": ":average_egg:764511545522257932",

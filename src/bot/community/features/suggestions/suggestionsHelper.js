@@ -1,25 +1,75 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
-
+import EMOJIS from "../../../core/config/emojis.json"
 
 export default class SuggestionsHelper {
 
+    static async onReaction(reaction, user) {
+        console.log('Suggestion reaction');
+    }
+
     static async check() {
-        // ChannelsHelper._postToFeed('I should be checking if suggestions have passed, but not implemented.');
+        // Get last 25 suggestions to check through.
+        const candidates = await ChannelsHelper._getCode('SUGGESTIONS').messages.fetch({ limit: 25 });
 
+        candidates.map((suggestion, index) => {
+            console.log(suggestion.createdTimestamp);
 
+            console.log(suggestion);
+            
+            const votes = this.parseVotes(suggestion);
+            console.log(votes);
 
+            if (votes.rejected) {
+                // Add to talk and feed
+            }
 
-        // Load last 50 suggestion messages
+            if (votes.passed) {
+                // Add to roadmap
+            }
 
-        // Check the votes on each
+            if (votes.invalid) {
+                // Remove and message the text to the user.
+            }
+
+            // If the message is removed
+            // setTimeout(() => {
+                // console.log(suggestion.mentions.first());
+            // }, 5000 * index);
+        });
 
         // If any have passed WITHOUT check mark... notify that they succeeded
 
         // Check at least 24 hours have passed.
     }
 
-    static async pass() {}
-    static async reject() {}
+    static parseVotes(msg) {
+        const votes = {
+            for: 0,
+            against: 0,
+            passed: false,
+            rejected: false,
+            invalid: false
+        };
+
+        msg.reactions.cache.map(reaction => {
+            // Check if votes are by coopah.
+
+            console.log(reaction);
+
+            if (reaction.emoji.name === EMOJIS.POLL_FOR) votes.for = reaction.count;
+            if (reaction.emoji.name === EMOJIS.POLL_AGAINST) votes.against = reaction.count;
+        });
+
+        return votes;
+    }
+
+    static async pass() {
+        // Reward the person who posted the suggestion for contributing to the community
+    }
+
+    static async reject() {
+        // 
+    }
 
     // static async processVote(reaction, user) {
     //     const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');

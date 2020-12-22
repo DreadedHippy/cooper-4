@@ -271,9 +271,10 @@ export default class EggHuntMinigame {
         }
 
         // Handle DM dropping
-        if (STATE.CHANCE.bool({ likelihood: 22.5 })) this.dmDrop('TOXIC_EGG');
-        if (STATE.CHANCE.bool({ likelihood: 15 })) this.dmDrop('RARE_EGG');
-        if (STATE.CHANCE.bool({ likelihood: 3.5 })) this.dmDrop('LEGENDARY_EGG');
+        if (STATE.CHANCE.bool({ likelihood: .35 })) this.dmDrop('TOXIC_EGG');
+        if (STATE.CHANCE.bool({ likelihood: .85 })) this.dmDrop('AVERAGE_EGG');
+        if (STATE.CHANCE.bool({ likelihood: .45 })) this.dmDrop('RARE_EGG');
+        if (STATE.CHANCE.bool({ likelihood: .025 })) this.dmDrop('LEGENDARY_EGG');
 
         // Bonus eggs            
         if (STATE.CHANCE.bool({ likelihood: 25 })) {

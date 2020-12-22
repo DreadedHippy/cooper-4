@@ -12,7 +12,7 @@ export default class MessageNotifications {
         // Filter out Cooper's messages.
         if (UsersHelper.isCooperMsg(msg)) return false;
         // Filter out direct message and testing.
-        if (channelID === CHANNELS.COOPERTESTS) return false;
+        if (channelID === CHANNELS.COOPERTESTS.id) return false;
 
         // If not already tracking, create the key on the object.
         if (typeof STATE.MESSAGE_HISTORY[channelID] === 'undefined') {
