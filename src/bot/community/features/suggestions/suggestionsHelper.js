@@ -4,7 +4,11 @@ import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 export default class SuggestionsHelper {
 
     static async check() {
-        ChannelsHelper._postToFeed('I should be checking if suggestions have passed, but not implemented.');
+        // ChannelsHelper._postToFeed('I should be checking if suggestions have passed, but not implemented.');
+
+
+
+
         // Load last 50 suggestion messages
 
         // Check the votes on each
@@ -13,6 +17,9 @@ export default class SuggestionsHelper {
 
         // Check at least 24 hours have passed.
     }
+
+    static async pass() {}
+    static async reject() {}
 
     // static async processVote(reaction, user) {
     //     const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');

@@ -19,8 +19,9 @@ export const baseTickDur = 60 * 25 * 1000;
 export default function eventsManifest() {
 
   // Server related house keeping items.
-  EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);
   EventsHelper.runInterval(() => StatisticsHelper.update(), baseTickDur * 5);
+  // Above is unfinished
+  EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);
   EventsHelper.runInterval(() => MessageNotifications.post(), baseTickDur / 2);
   EventsHelper.runInterval(() => SacrificeHelper.random(), baseTickDur * 12);
   

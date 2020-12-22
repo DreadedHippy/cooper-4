@@ -52,7 +52,7 @@ export default class MessageNotifications {
 
                 // Add formatted string for posting as notification.
                 const label = notificationData.count > 1 ? 'messages' : 'message';
-                notificationString += `<${channelID}> ${notificationData.count} ${label}! \n` +
+                notificationString += `<#${channelID}> ${notificationData.count} ${label}! \n` +
                     `From: ${Object.keys(notificationData.authors).map(authorKey => {
                         const { username, count } = notificationData.authors[authorKey];
                         return `${username} (${count})`;
