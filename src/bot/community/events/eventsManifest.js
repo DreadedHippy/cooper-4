@@ -9,6 +9,8 @@ import EggHuntMinigame from "../features/minigame/small/egghunt";
 import SuggestionsHelper from "../features/suggestions/suggestionsHelper";
 import MiningMinigame from "../features/minigame/small/mining";
 import EventsHelper from "../features/events/eventsHelper";
+import MessageNotifications from "./message/messageNotifications";
+import StatisticsHelper from "../features/server/statisticsHelper";
 
 const feedSay = ChannelsHelper._postToFeed;
 
@@ -16,21 +18,19 @@ export const baseTickDur = 60 * 25 * 1000;
 
 export default function eventsManifest() {
 
-  EventsHelper.runInterval(() => SuggestionsHelper.checkSuggestionsPassed(), baseTickDur * 4);
-  EventsHelper.runInterval(() => {
-    ChannelsHelper._postToFeed('Should update about messages with new statistics!');
-  }, baseTickDur * 5);
+  // Server related house keeping items.
+  EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);
+  EventsHelper.runInterval(() => StatisticsHelper.update(), baseTickDur * 5);
+  EventsHelper.runInterval(() => MessageNotifications.post(), baseTickDur / 2);
+  EventsHelper.runInterval(() => SacrificeHelper.random(), baseTickDur * 12);
+  
 
+  // Minig game related items
   EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur);
-
-
-  EventsHelper.chanceRunInterval(() => SacrificeHelper.random(), 20, baseTickDur * 2.5);
-  
-  
   EventsHelper.chanceRunInterval(() => PointsHelper.updateCurrentWinner(), 100, baseTickDur * 2);
-  // TODO: Update and create most items role
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 80, baseTickDur / 2);
   EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 80, baseTickDur * 2);
+  // TODO: Update and create most items role
   
 
 

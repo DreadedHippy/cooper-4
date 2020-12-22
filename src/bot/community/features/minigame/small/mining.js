@@ -74,10 +74,10 @@ export default class MiningMinigame {
 
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
                 const addDiamond = await ItemsHelper.add(user.id, 'DIAMOND', 1);
-                ChannelsHelper._propogate(msg, `${user.username} found a diamond whilst mining!`);    
+                ChannelsHelper._propogate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`);
             }
-
-            if (STATE.CHANCE.bool({ likelihood: .25 })) {
+            
+            if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 const diamondVeinQty = STATE.CHANCE.natural({ min: 5, max: 25 });
                 await ItemsHelper.add(user.id, 'DIAMOND', diamondVeinQty);
                 ChannelsHelper._propogate(msg, `${user.username} hit a major diamond vein, ${diamondVeinQty} found!`);

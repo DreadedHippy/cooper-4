@@ -3,7 +3,7 @@ import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 
 export default class SuggestionsHelper {
 
-    static async checkSuggestionsPassed() {
+    static async check() {
         ChannelsHelper._postToFeed('I should be checking if suggestions have passed, but not implemented.');
         // Load last 50 suggestion messages
 

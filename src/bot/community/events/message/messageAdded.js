@@ -10,6 +10,7 @@ import workPostHandler from "../../features/encouragement/workPosted";
 import ConfessionHandler from "../../features/messages/confessionHandler";
 import PointsHelper from "../../features/points/pointsHelper";
 import introPosted from "../members/welcome/introPosted";
+import MessageNotifications from "./messageNotifications";
 
 
 export default async function messageAddedHandler(msg) {  
@@ -26,6 +27,10 @@ export default async function messageAddedHandler(msg) {
     // Inform feed that a suggestion was posted
     if (msg.channel.id === CHANNELS.SUGGESTIONS.id && !msg.author.bot) 
         ChannelsHelper._postToFeed(`New suggestion: <#${CHANNELS.SUGGESTIONS.id}>`);
+
+    // Add to message notification tracking for keeping people updated on where things are said.
+    MessageNotifications.add(msg);
+
 
     // TODO: When help message posted, post in feed
 
