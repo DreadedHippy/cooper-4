@@ -1,4 +1,5 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
+import UsersHelper from "../../../core/entities/users/usersHelper";
 import STATE from "../../../state";
 
 export default class MessageNotifications {
@@ -6,6 +7,9 @@ export default class MessageNotifications {
     static add(msg) {
         const channelID = msg.channel.id;
         const authorID = msg.author.id;
+
+        // Filter out Cooper's messages.
+        if (UsersHelper.isCooperMsg(msg)) return false;
 
         // If not already tracking, create the key on the object.
         if (typeof STATE.MESSAGE_HISTORY[channelID] === 'undefined') {
