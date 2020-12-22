@@ -1,6 +1,7 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
 import STATE from "../../../state";
+import CHANNELS from '../../../core/config/channels.json';
 
 export default class MessageNotifications {
 
@@ -10,6 +11,8 @@ export default class MessageNotifications {
 
         // Filter out Cooper's messages.
         if (UsersHelper.isCooperMsg(msg)) return false;
+        // Filter out direct message and testing.
+        if (channelID === CHANNELS.COOPERTESTS) return false;
 
         // If not already tracking, create the key on the object.
         if (typeof STATE.MESSAGE_HISTORY[channelID] === 'undefined') {
