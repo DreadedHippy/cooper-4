@@ -26,9 +26,6 @@ export default class MessageNotifications {
         // Add count on channel and author to list.
         STATE.MESSAGE_HISTORY[channelID].count++;
         STATE.MESSAGE_HISTORY[channelID].authors[authorID].count++;
-
-        // Run post just as an example DEVELOPMENT ONLY.
-        this.post();
     }
 
     static post() {

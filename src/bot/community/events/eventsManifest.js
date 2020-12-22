@@ -25,12 +25,12 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => SacrificeHelper.random(), baseTickDur * 12);
   
 
-  // Minig game related items
+  // Minigame related items.
   EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur);
-  EventsHelper.chanceRunInterval(() => PointsHelper.updateCurrentWinner(), 100, baseTickDur * 2);
+  EventsHelper.runInterval(() => PointsHelper.updateCurrentWinner(), baseTickDur * 2);
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 80, baseTickDur / 2);
   EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 80, baseTickDur * 2);
-  // TODO: Update and create most items role
+    // TODO: Update and create most items role
   
 
 
