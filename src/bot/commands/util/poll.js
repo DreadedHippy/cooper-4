@@ -1,5 +1,8 @@
 import CoopCommand from '../../core/classes/coopCommand';
+import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
+
+import EMOJIS from '../../core/config/emojis.json';
 
 export default class PollCommand extends CoopCommand {
 
@@ -20,11 +23,17 @@ export default class PollCommand extends CoopCommand {
 		super.run(msg);
 
         try {
-			const pollAcknowledgement = await msg.reply(msg.content);
+			// Post in suggestions.
+			const pollAcknowledgement = await ChannelsHelper._postToChannelCode('SUGGESTIONS', msg.content);
 
 			// Add reactions for people to use.
-			MessagesHelper.delayReact(pollAcknowledgement, '🟢', 333);
-			MessagesHelper.delayReact(pollAcknowledgement, '🔴', 666);
+			MessagesHelper.delayReact(pollAcknowledgement, EMOJIS.POLL_FOR, 333);
+			MessagesHelper.delayReact(pollAcknowledgement, EMOJIS.POLL_AGAINST, 666);
+
+			// Add intended for roadmap, add roadmap reaction for adding to roadmap.
+			if (msg.content.toLowerCase().indexOf('roadmap') > -1) {
+				MessagesHelper.delayReact(pollAcknowledgement, EMOJIS.ROADMAP, 999);
+			}
 		
 			// Send poll tracking link.
 			await msg.direct(

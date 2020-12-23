@@ -6,6 +6,8 @@
 
     "POLL_FOR": "🟢",
     "POLL_AGAINST": "🔴",
+    "DAGGER": "🗡",
+    "ROADMAP": "🗺️",
 
     "LEGENDARY_EGG": ":legendary_egg:764511545991626783",
     "RARE_EGG": ":rare_egg:764511545739968544",
@@ -19,7 +21,7 @@
     "AVERAGE_CRATE": ":average_crate:766749242047070278",
     "AVERAGE_CRATE_OPEN": ":average_crate_open:766749241698942997",
 
-    "DAGGER": "🗡",
+
     "SACRIFICE_SHIELD": "🛡️",
 
     "METAL_ORE": ":pick:",

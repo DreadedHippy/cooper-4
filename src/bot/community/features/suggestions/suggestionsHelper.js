@@ -1,45 +1,77 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import EMOJIS from "../../../core/config/emojis.json"
+import UsersHelper from "../../../core/entities/users/usersHelper";
+import MessagesHelper from "../../../core/entities/messages/messagesHelper";
+import ServerHelper from "../../../core/entities/server/serverHelper";
+import PointsHelper from "../points/pointsHelper";
 
+
+
+// TODO: Make sure when adding to roadmap, talk, and feed that the votes are displayed to indicate mandate!
 export default class SuggestionsHelper {
 
     static async onReaction(reaction, user) {
         console.log('Suggestion reaction');
     }
 
+    static async onAdd(msg) {
+        // Validate a suggestion when it is originally added, part of house cleaning.   
+    }
+
     static async check() {
         // Get last 25 suggestions to check through.
-        const candidates = await ChannelsHelper._getCode('SUGGESTIONS').messages.fetch({ limit: 25 });
-
+        const candidates = await ChannelsHelper._getCode('SUGGESTIONS').messages.fetch({ limit: 5 });
         candidates.map((suggestion, index) => {
-            console.log(suggestion.createdTimestamp);
-
-            console.log(suggestion);
-            
-            const votes = this.parseVotes(suggestion);
-            console.log(votes);
-
-            if (votes.rejected) {
-                // Add to talk and feed
+            // Check the suggestion has had 72 hours to be considered.
+            const dayMs = ((60 * 60) * 72) * 1000;
+            if (Date.now() - dayMs >= suggestion.createdAt.getTime()) {
+                const votes = this.parseVotes(suggestion);
+                if (votes.rejected) this.reject(suggestion, votes, index);
+                if (votes.passed) this.pass(suggestion, votes, index);
+                if (votes.invalid) this.invalidate(suggestion, index);
             }
-
-            if (votes.passed) {
-                // Add to roadmap
-            }
-
-            if (votes.invalid) {
-                // Remove and message the text to the user.
-            }
-
-            // If the message is removed
-            // setTimeout(() => {
-                // console.log(suggestion.mentions.first());
-            // }, 5000 * index);
         });
+    }
 
-        // If any have passed WITHOUT check mark... notify that they succeeded
+    // Post a link in feed and talk to try to break the deadlock.
+    static tied(suggestion, votes, index) {
+        setTimeout(() => {
+            try {
+                const link = MessagesHelper.link(suggestion);
+                const tiedText = `Tied suggestion detected, please break the deadlock: ${link}` +
+                    `${EMOJIS.POLL_FOR.repeat(votes.for)}${EMOJIS.POLL_AGAINST.repeat(votes.against)}`;
+    
+                ['TALK', 'FEED'].forEach((channelKey, channelIndex) => {
+                    setTimeout(
+                        () => ChannelsHelper._postToChannelCode(channelKey, tiedText), 
+                        channelIndex * 666
+                    );
+                });
+            } catch(e) {
+                console.log('Tied suggestion handling error');
+                console.error(e);
+            }
+        }, index * 5000);
+    }
 
-        // Check at least 24 hours have passed.
+    static invalidate(suggestion, index) {
+        setTimeout(async () => {
+            try {
+                // If not a cooper message, we know who to notify.
+                if (!UsersHelper.isCooperMsg(suggestion)) {
+                    const warningText = `Suggestion removed, please use !poll [text] to make suggestions. \n` +
+                        `Your suggestion was: ${suggestion.content}`;
+                    await UsersHelper.directMSG(ServerHelper._coop(), suggestion.author.id, warningText);
+                }
+
+                // Delete the message with a delay to avoid rate limiting.
+                MessagesHelper.delayDelete(suggestion, 3333 * index);
+
+            } catch(e) {
+                console.log('Error during invalidation of suggestion');
+                console.error(e);
+            } 
+        }, 5555 * index);
     }
 
     static parseVotes(msg) {
@@ -48,107 +80,79 @@ export default class SuggestionsHelper {
             against: 0,
             passed: false,
             rejected: false,
-            invalid: false
+            tied: false,
+            invalid: false,
+            roadmap: false
         };
 
-        msg.reactions.cache.map(reaction => {
-            // Check if votes are by coopah.
+        if (UsersHelper.isCooperMsg(msg)) {
+            msg.reactions.cache.map(reaction => {
+                if (reaction.emoji.name === EMOJIS.POLL_FOR) votes.for = reaction.count;
+                if (reaction.emoji.name === EMOJIS.POLL_AGAINST) votes.against = reaction.count;
+                if (reaction.emoji.name === EMOJIS.ROADMAP) votes.roadmap = true;
+            });
+        } else votes.invalid = true;
 
-            console.log(reaction);
-
-            if (reaction.emoji.name === EMOJIS.POLL_FOR) votes.for = reaction.count;
-            if (reaction.emoji.name === EMOJIS.POLL_AGAINST) votes.against = reaction.count;
-        });
+        if (!votes.invalid) {
+            if (votes.for > votes.against) votes.passed = true;
+            if (votes.for < votes.against) votes.rejected = true;
+            if (votes.for === votes.against) votes.tied = true;
+        }
 
         return votes;
     }
 
-    static async pass() {
-        // Reward the person who posted the suggestion for contributing to the community
+    static async pass(suggestion, votes, index) {
+        setTimeout(() => {
+            try {
+                // Reward the person who posted the suggestion for contributing to the community
+                // TODO: ^
+                // PointsHelper.addPointsByID
+                console.log(suggestion.mentions);
+
+                const rejectedText = `Suggestion passed, proposal: ${suggestion.content}\n` +
+                    `${EMOJIS.POLL_FOR.repeat(votes.for)}${EMOJIS.POLL_AGAINST.repeat(votes.against)}`;
+                
+                // Inform the server of rejected suggestion.
+                ['TALK', 'FEED'].forEach((channelKey, channelIndex) => {
+                    setTimeout(
+                        () => ChannelsHelper._postToChannelCode(channelKey, rejectedText), 
+                        channelIndex * 666
+                    );
+                });
+
+                // Post to roadmap if necessary
+                if (votes.roadmap) ChannelsHelper._postToChannelCode('ROADMAP', suggestion.content);
+
+                // Delete the message with a delay to avoid rate limiting.
+                MessagesHelper.delayDelete(suggestion, 3333 * index);
+            } catch(e) {
+                console.log('Reject suggestion handling error');
+                console.error(e);
+            }
+        }, index * 5000);
     }
 
-    static async reject() {
-        // 
+    static async reject(suggestion, votes, index) {
+        setTimeout(() => {
+            try {
+                const rejectedText = `Suggestion rejected, proposal: ${suggestion.content}\n` +
+                    `${EMOJIS.POLL_FOR.repeat(votes.for)}${EMOJIS.POLL_AGAINST.repeat(votes.against)}`;
+                
+                // Inform the server of rejected suggestion.
+                ['TALK', 'FEED'].forEach((channelKey, channelIndex) => {
+                    setTimeout(
+                        () => ChannelsHelper._postToChannelCode(channelKey, rejectedText), 
+                        channelIndex * 666
+                    );
+                });
+
+                // Delete the message with a delay to avoid rate limiting.
+                MessagesHelper.delayDelete(suggestion, 3333 * index);
+            } catch(e) {
+                console.log('Reject suggestion handling error');
+                console.error(e);
+            }
+        }, index * 5000);
     }
-
-    // static async processVote(reaction, user) {
-    //     const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-
-    //     const targetUser = reaction.message.author;
-
-    //     let forVotes = 0;
-    //     let againstVotes = 0;
-
-    //     try {
-    //         const voterMember = await UsersHelper.fetchMemberByID(guild, user.id);
-    //         const targetMember = await UsersHelper.fetchMemberByID(guild, targetUser.id);
-
-    //         // If member left, don't do anything.
-    //         if (!targetMember) return false;
-            
-    //         // If targetMember has "member" role, don't do anything.
-    //         if (UsersHelper.hasRoleID(targetMember, ROLES.MEMBER.id)) return false;
-            
-    //         // Calculate the number of required votes for the redemption poll.
-    //         const reqForVotes = VotingHelper.getNumRequired(guild, .025);
-    //         const reqAgainstVotes = VotingHelper.getNumRequired(guild, .015);
-            
-    //         // Remove invalid reactions.
-    //         if (!UsersHelper.hasRoleID(voterMember, ROLES.MEMBER.id)) {
-    //             return await reaction.users.remove(user.id)
-    //         }
-            
-    //         // Get existing reactions on message.
-    //         reaction.message.reactions.cache.map(reactionType => {
-    //             if (reactionType.emoji.name === EMOJIS.VOTE_FOR) forVotes = Math.max(0, reactionType.count - 1);
-    //             if (reactionType.emoji.name === EMOJIS.VOTE_AGAINST) againstVotes = Math.max(0, reactionType.count - 1);
-    //         });
-            
-    //         const votingStatusTitle = `<@${targetUser.id}>'s entry was voted upon!`;
-    //         const votingStatusText = votingStatusTitle +
-    //             `\nStill required: ` +
-    //             `Entry ${EMOJIS.VOTE_FOR}: ${Math.max(0, reqForVotes - forVotes)} | ` +
-    //             `Removal ${EMOJIS.VOTE_AGAINST}: ${Math.max(0, reqAgainstVotes - againstVotes)}`;
-            
-
-            
-    //         // Handle user approved.
-    //         if (forVotes >= reqForVotes) {
-    //             // Give intro roles
-    //             const { MEMBER, BEGINNER, SUBSCRIBER } = ROLES;
-
-    //             const introRolesNames = [MEMBER.name, BEGINNER.name, SUBSCRIBER.name];
-    //             const introRoles = RolesHelper.getRoles(guild, introRolesNames);
-                
-    //             // Add to database
-    //             await UsersHelper.addToDatabase(targetMember);
-
-    //             await targetMember.roles.add(introRoles);
-    //             await targetMember.send('You were voted into The Coop and now have full access!');
-    //             await this.notify(guild, 
-    //                 `${targetUser.username} approved based on votes!` +
-    //                 `${forVotes ? `\n\n${EMOJIS.VOTE_FOR.repeat(forVotes)}` : ''}` +
-    //                 `${againstVotes ? `\n\n${EMOJIS.VOTE_AGAINST.repeat(againstVotes)}` : ''}`
-    //             );
-
-    //         // Handle user rejected.
-    //         } else if (againstVotes >= reqAgainstVotes) {
-    //             await this.notify(guild, `${targetUser.username} was removed and banned (voted out)!`);
-    //             await targetMember.send('You were voted out of The Coop!');
-    //             await targetMember.ban();
-    //         } else {
-    //             // Notify the relevant channels (throttle based on last entry vote time).
-    //             const currentTime = +new Date();
-    //             const lastVotetime = STATE.LAST_ENTRY_VOTE_TIME;
-    //             const FiveSecondsAgo = currentTime - (5 * 1000);
-    //             if (!lastVotetime || lastVotetime < FiveSecondsAgo) {
-    //                 STATE.LAST_ENTRY_VOTE_TIME = currentTime;
-    //                 await this.notify(guild, votingStatusText);
-    //             }
-    //         }
-                
-    //     } catch(e) {
-    //         console.error(e);
-    //     }
-    // }
 }

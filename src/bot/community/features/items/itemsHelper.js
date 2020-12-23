@@ -155,6 +155,10 @@ export default class ItemsHelper {
         "AVERAGE_CRATE",
         "AVERAGE_CRATE_OPEN",
 
+        "POLL_FOR",
+        "POLL_AGAINST",
+        "ROADMAP",
+
         // Maybe usable.
         "DAGGER",
     ];
