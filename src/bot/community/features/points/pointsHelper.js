@@ -82,14 +82,26 @@ export default class PointsHelper {
         let alreadyHadRole = false;
 
         // Remove the role from previous winner.
+        // TODO: Get name of previous winner and commiserate in text.
+        const prevWinner = null;
         mostPointsRole.members.map(prevMostMember => {
             if (prevMostMember.user.id === highestRecord.discord_id) alreadyHadRole = true;
-            else prevMostMember.roles.remove(mostPointsRole);
+            else {
+                prevWinner = prevMostMember.user;
+                prevMostMember.roles.remove(mostPointsRole);
+            }
         });
 
         // If the new winner didn't already have the role, award it and notify server.
         if (!alreadyHadRole) {
-            ChannelsHelper._postToFeed(`<@${mostPointsMember.id}> is currently the member with the highest points. Given role.`);
+            const username = mostPointsMember.user.username;
+            let successText = `${username} is now the point leader.`;
+            if (prevWinner) successText = `${username} overtakes ${prevWinner.username} for most points!`;
+
+            const pointsAfter = await this.addPointsByID(highestRecord.discord_id, 5);
+            successText += ` Given MOST POINTS role and awarded 5 points (${pointsAfter})!`;
+
+            ChannelsHelper._postToFeed(successText);
             mostPointsMember.roles.add(mostPointsRole);
         }
     }

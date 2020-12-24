@@ -22,7 +22,6 @@ export default class CleanupRoadmapCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 		
-
 		// Delete all messages with check marks inside roadmap
 		const roadmap = ChannelsHelper._getCode('ROADMAP');
 

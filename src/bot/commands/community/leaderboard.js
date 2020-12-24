@@ -1,5 +1,6 @@
 import PointsHelper from '../../../bot/community/features/points/pointsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
+import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import ServerHelper from '../../core/entities/server/serverHelper';
 import STATE from '../../state';
 
@@ -61,7 +62,10 @@ export default class LeaderboardCommand extends CoopCommand {
 				rowUsers.map(user => `${user.rank + 1}. ${user.username} ${user.points}`).join('\n') +
 				'```';
 
-			await placeholderMsg.edit(leaderboardMsgText)
+			const leaderboardMsg = await placeholderMsg.edit(leaderboardMsgText)
+
+			// Delete after sixty seconds.
+			MessagesHelper.delayDelete(leaderboardMsg, 60000);
 
 		} catch(e) {
 			console.error(e);
