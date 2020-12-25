@@ -3,6 +3,7 @@ import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import PointsHelper from "../../points/pointsHelper";
 import ItemsHelper from "../itemsHelper";
 
+// TODO: Actually needs implementing.
 export default class GiftboxHandler {
 
     static async use(useMSG) {

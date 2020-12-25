@@ -15,21 +15,24 @@ export default class BombHandler {
                 else {
                     const messageAuthor = reaction.message.author;
 
-                    // Let bombs stack and amplify the damage.
-                    const damage = -4 * reaction.count;
-
-                    // Apply the damage to the target's points.
-                    const updatedPoints = await PointsHelper.addPointsByID(messageAuthor.id, damage);
-
-                    // Add visuals animation
-                    MessagesHelper.delayReactionRemove(reaction, 333);
-                    MessagesHelper.delayReact(reaction.message, '💥', 666);
-
-                    let doubledInfo = '';
-                    if (reaction.count > 1) doubledInfo = `(x${reaction.count})`;
-                    const subjectsInvolved = `${user.username} bombed ${messageAuthor.username}`;
-                    const changesOccurred = `-${damage}${doubledInfo} points (${updatedPoints}).`;
-                    await ChannelsHelper._postToFeed(`${subjectsInvolved}: ${changesOccurred}`);
+                    // Allow five seconds for people to stack bombs.
+                    setTimeout(async () => {
+                        // Let bombs stack and amplify the damage.
+                        const damage = -4 * reaction.count;
+    
+                        // Apply the damage to the target's points.
+                        const updatedPoints = await PointsHelper.addPointsByID(messageAuthor.id, damage);
+    
+                        // Add visuals animation
+                        MessagesHelper.delayReactionRemove(reaction, 333);
+                        MessagesHelper.delayReact(reaction.message, '💥', 666);
+    
+                        let doubledInfo = '';
+                        if (reaction.count > 1) doubledInfo = `(x${reaction.count})`;
+                        const subjectsInvolved = `${user.username} bombed ${messageAuthor.username}`;
+                        const changesOccurred = `-${damage}${doubledInfo} points (${updatedPoints}).`;
+                        await ChannelsHelper._postToFeed(`${subjectsInvolved}: ${changesOccurred}`);
+                    }, 5000);
                 }
             } catch(e) {
                 console.error(e);

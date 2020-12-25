@@ -14,10 +14,6 @@ export default class SayCommand extends CoopCommand {
 			description: 'Information say our fine community!',
 			details: `Details`,
 			examples: ['say', 'say example?'],
-			arguments: [
-				// channel
-				// message
-			],
 
 			// Stop us getting nuked
 			ownerOnly: true,

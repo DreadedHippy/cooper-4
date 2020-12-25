@@ -57,7 +57,7 @@ export default async function messageAddedHandler(msg) {
         if (isBreh) type = 'breh';
         const updatedPoints = await PointsHelper.addPointsByID(msg.author.id, twentyPercRoll ? 1 : -1);
         setTimeout(async () => {
-            const feedbackMsg = msg.say(
+            const feedbackMsg = await msg.say(
                 `${twentyPercRoll ? '+1' : '-1'} point, ${type}. ` +
                 `${msg.author.username} ${twentyPercRoll ? 'won' : 'lost'} ${type}-roulette. (${updatedPoints})!`
             );
@@ -131,4 +131,5 @@ export default async function messageAddedHandler(msg) {
     }
 
 
+    // TODO: Add chance of adding mountain snow to slatxyo message :mountain_snow:
 }

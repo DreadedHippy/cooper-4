@@ -16,6 +16,8 @@ export default class FlareHandler {
 
             const feedbackText = `${user.username} used a FLARE and potentially triggered crate drop!`;
 
+            // TODO: Needs to reduce crate time.
+
             if (!ChannelsHelper.checkIsByCode(commandMsg.channel.id, 'FEED')) {
                 const feedbackMsg = await commandMsg.say(feedbackText);
                 MessagesHelper.delayReact(feedbackMsg, '🪓', 1333);
