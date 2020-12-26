@@ -158,6 +158,8 @@ export default class ItemsHelper {
         "POLL_FOR",
         "POLL_AGAINST",
         "ROADMAP",
+        "SACRIFICE_SHIELD",
+        "ROCK",
 
         // Maybe usable.
         "DAGGER",

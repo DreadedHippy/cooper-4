@@ -16,21 +16,21 @@ export default class WoodcuttingMinigame {
         if (STATE.CHANCE.bool({ likelihood: 55 })) return false;
 
         const isOnlyEmojis = MessagesHelper.isOnlyEmojis(reaction.message.content);
-        const isPickaxeReact = reaction.emoji.name === EMOJIS.AXE;
+        const isAxeReact = reaction.emoji.name === EMOJIS.AXE;
         const isCooperMsg = UsersHelper.isCooperMsg(reaction.message);
         const isUserReact = !UsersHelper.isCooper(user.id);
         
         // Mining minigame guards.
         if (!isUserReact) return false;
         if (!isCooperMsg) return false;
-        if (!isPickaxeReact) return false;
+        if (!isAxeReact) return false;
         if (!isOnlyEmojis) return false;
 
         const msgContent = reaction.message.content;
 
         const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
         const firstEmojiUni = MessagesHelper.emojiToUni(firstEmojiString);
-        const rockEmojiUni = MessagesHelper.emojiToUni(EMOJIS.AXE);
+        const rockEmojiUni = MessagesHelper.emojiToUni(EMOJIS.WOOD);
         const isRocksMsg = firstEmojiUni === rockEmojiUni;
 
         if (!isRocksMsg) return false;
@@ -45,25 +45,25 @@ export default class WoodcuttingMinigame {
         const textMagnitude = Math.floor(msg.content.length / 2);
         const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude });
 
-        // Check if has a pickaxe
-        const userPickaxesNum = await ItemsHelper.getUserItemQty(user.id, 'AXE');
-        const noPickText = `${user.username} tried to cut wood, but doesn't have an axe.`;
+        // Check if has a axe
+        const userAxesNum = await ItemsHelper.getUserItemQty(user.id, 'AXE');
+        const noText = `${user.username} tried to cut wood, but doesn't have an axe.`;
         // Remove reaction and warn.
-        // if (userPickaxesNum <= 0) DELETE REACTION
-        if (userPickaxesNum <= 0) return MessagesHelper.selfDestruct(msg, noPickText, 10000);
+        // if (userAxesNum <= 0) DELETE REACTION
+        if (userAxesNum <= 0) return MessagesHelper.selfDestruct(msg, noText, 10000);
 
-        // Handle chance of pickaxe breaking
-        const pickaxeBreakPerc = Math.min(30, rewardRemaining);
+        // Handle chance of axe breaking
+        const axeBreakPerc = Math.min(30, rewardRemaining);
         const extractedOreNum = Math.ceil(rewardRemaining / 2.25);
-        const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
+        const didBreak = STATE.CHANCE.bool({ likelihood: axeBreakPerc });
         if (didBreak) {
-            const pickaxeUpdate = await ItemsHelper.use(user.id, 'AXE', 1);
-            if (pickaxeUpdate) {
-                const brokenPickDamage = -2;
-                const pointsDamageResult = await PointsHelper.addPointsByID(user.id, brokenPickDamage);
+            const axeUpdate = await ItemsHelper.use(user.id, 'AXE', 1);
+            if (axeUpdate) {
+                const brokenDamage = -2;
+                const pointsDamageResult = await PointsHelper.addPointsByID(user.id, brokenDamage);
     
-                const actionText = `${user.username} broke an axe trying to cut wood, ${userPickaxesNum - 1} remaining!`;
-                const damageText = `${brokenPickDamage} points (${pointsDamageResult}).`;
+                const actionText = `${user.username} broke an axe trying to cut wood, ${userAxesNum - 1} remaining!`;
+                const damageText = `${brokenDamage} points (${pointsDamageResult}).`;
                 ChannelsHelper._propogate(msg, `${actionText} ${damageText}`);
             }
         } else {
@@ -96,7 +96,7 @@ export default class WoodcuttingMinigame {
 
     static async run() {
         const magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
-        const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.AXE.repeat(magnitude));
+        const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.WOOD.repeat(magnitude));
 
         MessagesHelper.delayReact(rockMsg, EMOJIS.AXE);
 
