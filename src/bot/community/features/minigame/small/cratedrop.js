@@ -14,9 +14,6 @@ import PointsHelper from '../../points/pointsHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
 import { baseTickDur } from '../../../events/eventsManifest';
 
-// TODO: Check every 5 minutes for cratedrop etc, just don't ping every time.
-// Make message "within next few minutes, not now"
-
 
 /**
  * Laxative - Spawns an egg randomly
@@ -33,7 +30,7 @@ const CRATE_DATA = {
         emoji: EMOJIS.AVERAGE_CRATE,
         maxReward: 5,
         openingPoints: 1,
-        percHitsReq: .01,
+        percHitsReq: .0125,
         rewards: [
             'BOMB',
             'LAXATIVE',
@@ -41,7 +38,9 @@ const CRATE_DATA = {
             'PICK_AXE',
             'FRYING_PAN',
             'EMPTY_GIFTBOX',
-            'WOOD'
+            'WOOD',
+            'AXE',
+            'IRON_BAR'
         ]
     },
     RARE_CRATE: {
@@ -54,7 +53,8 @@ const CRATE_DATA = {
             'SHIELD',
             'MINE',
             'DEFUSE_KIT',
-            'FLARE'
+            'FLARE',
+            'STEEL_BAR'
         ]
     },
     LEGENDARY_CRATE: {
@@ -74,7 +74,7 @@ const CRATE_DATA = {
 };
 
 // Rarity likelihood base number.
-const likelihood = 33;
+const likelihood = 40;
 
 export default class CratedropMinigame {
     
@@ -117,7 +117,7 @@ export default class CratedropMinigame {
                 );
 
                 // Remove message after it was visible by the contact.
-                setTimeout(() => { openingUpdateMsg.delete(); }, 30000);
+                MessagesHelper.delayDelete(openingUpdateMsg, 30000);
             }
         } catch(e) {
             console.error(e);
@@ -159,6 +159,7 @@ export default class CratedropMinigame {
             const hitters = reaction.users.cache
                 .map(user => user)
                 .filter(user => !UsersHelper.isCooper(user.id));
+            const hitterNames = hitters.map(user => user.username);
             
             // Add points to all hitters.
             await Promise.all(hitters.map(user => PointsHelper.addPointsByID(user.id, crate.openingPoints)));
@@ -196,7 +197,7 @@ export default class CratedropMinigame {
             if (!anyRewardGiven) MessagesHelper.selfDestruct(msg, 'No items were inside this crate! >:D', 30000);
 
             // Post and delete the points reward message feedback.
-            const usersRewardedText = hitters.join(', ') + ` were rewarded ${crate.openingPoints} point(s)`;
+            const usersRewardedText = hitterNames.join(', ') + ` were rewarded ${crate.openingPoints} point(s)`;
             const rewardTypeText = `the ${!anyRewardGiven ? 'empty ' : ' '}${rarity.replace('_', ' ').toLowerCase()}`;
             const pointsRewardString = `${usersRewardedText} for attempting to open ${rewardTypeText}!`;
             ChannelsHelper._propogate(msg, pointsRewardString, true);
@@ -211,8 +212,8 @@ export default class CratedropMinigame {
     // Small chance of it exploding all explosive items you own.
     static selectRandomRarity() {
         let rarity = 'AVERAGE_CRATE';
-        if (STATE.CHANCE.bool({ likelihood: likelihood / 3 })) rarity = 'RARE_CRATE';
-        if (STATE.CHANCE.bool({ likelihood: likelihood / 5 })) rarity = 'LEGENDARY_CRATE';
+        if (STATE.CHANCE.bool({ likelihood: likelihood / 2 })) rarity = 'RARE_CRATE';
+        if (STATE.CHANCE.bool({ likelihood: likelihood / 6 })) rarity = 'LEGENDARY_CRATE';
         return rarity;
     }
     

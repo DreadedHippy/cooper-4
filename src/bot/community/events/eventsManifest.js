@@ -1,16 +1,20 @@
 import ChannelsHelper from "../../core/entities/channels/channelsHelper";
 import SacrificeHelper from "../features/events/sacrificeHelper";
 import PointsHelper from "../features/points/pointsHelper";
+import SuggestionsHelper from "../features/suggestions/suggestionsHelper";
+import EventsHelper from "../features/events/eventsHelper";
+import StatisticsHelper from "../features/server/statisticsHelper";
+
+import MessageNotifications from "./message/messageNotifications";
 
 import STATE from "../../state";
 
 import CratedropMinigame from "../features/minigame/small/cratedrop";
 import EggHuntMinigame from "../features/minigame/small/egghunt";
-import SuggestionsHelper from "../features/suggestions/suggestionsHelper";
 import MiningMinigame from "../features/minigame/small/mining";
-import EventsHelper from "../features/events/eventsHelper";
-import MessageNotifications from "./message/messageNotifications";
-import StatisticsHelper from "../features/server/statisticsHelper";
+import WoodcuttingMinigame from "../features/minigame/small/woodcutting";
+
+
 
 const feedSay = ChannelsHelper._postToFeed;
 
@@ -31,6 +35,7 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => PointsHelper.updateCurrentWinner(), baseTickDur * 2);
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 80, baseTickDur / 2);
   EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 80, baseTickDur * 2);
+  EventsHelper.chanceRunInterval(() => WoodcuttingMinigame.run(), 80, baseTickDur * 2.5);
     // TODO: Update and create most items role
   
 
