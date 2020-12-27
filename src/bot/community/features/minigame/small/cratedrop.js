@@ -28,7 +28,7 @@ import { baseTickDur } from '../../../events/eventsManifest';
 const CRATE_DATA = {
     AVERAGE_CRATE: {
         emoji: EMOJIS.AVERAGE_CRATE,
-        maxReward: 5,
+        maxReward: 2,
         openingPoints: 1,
         percHitsReq: .0125,
         rewards: [
@@ -45,7 +45,7 @@ const CRATE_DATA = {
     },
     RARE_CRATE: {
         emoji: EMOJIS.RARE_CRATE,
-        maxReward: 5,
+        maxReward: 4,
         openingPoints: 2,
         percHitsReq: .015,
         rewards: [
@@ -59,7 +59,7 @@ const CRATE_DATA = {
     },
     LEGENDARY_CRATE: {
         emoji: EMOJIS.LEGENDARY_CRATE,
-        maxReward: 4,
+        maxReward: 3,
         openingPoints: 3,
         percHitsReq: .03,
         rewards: [
@@ -166,9 +166,9 @@ export default class CratedropMinigame {
 
             // Reward amount of users based on luck/chance.
             let anyRewardGiven = false;
-            const rewardedUsersNum = STATE.CHANCE.natural({ min: 0, max: Math.ceil(hitters.length * .75) });
+            const rewardedUsersNum = STATE.CHANCE.natural({ min: 0, max: hitters.length });
             if (rewardedUsersNum > 0) {
-                // Pick the amount of rewarded users.
+                // Pick the amount of rewarded users.   
                 STATE.CHANCE.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
                     // Calculate a random amount of rewards to give to the user.
                     const rewardItemsNum = STATE.CHANCE.natural({ min: 0, max: crate.maxReward });
@@ -249,7 +249,7 @@ export default class CratedropMinigame {
         const crateDropData = await EventsHelper.read('CRATE_DROP');
         const lastOccurred = parseInt(crateDropData.last_occurred);
         const currUnixSecs = Math.floor(+new Date() / 1000);
-        const dropDuration = baseTickDur * 3 / 1000;
+        const dropDuration = baseTickDur * 2.25 / 1000;
         const nextOccurring = Math.floor((+new Date() / 1000) + dropDuration);
 
         try {

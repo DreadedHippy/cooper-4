@@ -91,7 +91,7 @@ export default class EggHuntMinigame {
 
             // Share points with nearest 5 message authors.
             const channelMessages = reaction.message.channel.messages;
-            const surroundingMsgs = await channelMessages.fetch({ around: reaction.message.id, limit: 20 });
+            const surroundingMsgs = await channelMessages.fetch({ around: reaction.message.id, limit: 30 });
             const aroundUsers = surroundingMsgs.reduce((acc, msg) => {
                 const notIncluded = typeof acc[msg.author.id] === 'undefined';
                 const notCooper = !UsersHelper.isCooperMsg(msg);
@@ -203,6 +203,8 @@ export default class EggHuntMinigame {
                 
                 // Delete the egg and channel feedback message when collected.
                 MessagesHelper.delayDelete(acknowledgementMsg, 30000);
+                // TODO: Fix egg delay to prevent corrupt collecting.
+                // MessagesHelper.delayDelete(reaction.message, 0);
                 MessagesHelper.delayDelete(reaction.message, 1500);
             }
         } catch(e) {
