@@ -166,7 +166,11 @@ export default class CratedropMinigame {
 
             // Reward amount of users based on luck/chance.
             let anyRewardGiven = false;
-            const rewardedUsersNum = STATE.CHANCE.natural({ min: 0, max: hitters.length });
+            let rewardedUsersNum = STATE.CHANCE.natural({ min: 1, max: hitters.length });
+
+            // Lower the rate of empty crates.
+            if (STATE.CHANCE.bool({ likelihood: 5 })) rewardedUsersNum = 0;
+
             if (rewardedUsersNum > 0) {
                 // Pick the amount of rewarded users.   
                 STATE.CHANCE.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
