@@ -203,9 +203,8 @@ export default class EggHuntMinigame {
                 
                 // Delete the egg and channel feedback message when collected.
                 MessagesHelper.delayDelete(acknowledgementMsg, 30000);
-                // TODO: Fix egg delay to prevent corrupt collecting.
-                // MessagesHelper.delayDelete(reaction.message, 0);
-                MessagesHelper.delayDelete(reaction.message, 1500);
+                // Fix egg delay to prevent corrupt collecting.
+                MessagesHelper.delayDelete(reaction.message, 0);
             }
         } catch(e) {
             console.error(e);

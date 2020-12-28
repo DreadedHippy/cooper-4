@@ -131,5 +131,10 @@ export default async function messageAddedHandler(msg) {
     }
 
 
+    // Randon for sal
+    if (msg.author.id === '443416818963578881') {
+        if (STATE.CHANCE.bool({ likelihood: 2.5 })) MessagesHelper.delayReact(msg, '💙', 333);
+    }
+
     // TODO: Add chance of adding mountain snow to slatxyo message :mountain_snow:
 }
