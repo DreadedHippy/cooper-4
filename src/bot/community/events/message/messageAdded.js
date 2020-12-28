@@ -137,4 +137,14 @@ export default async function messageAddedHandler(msg) {
     }
 
     // TODO: Add chance of adding mountain snow to slatxyo message :mountain_snow:
+
+
+    // Random encouragement for ZeePheesh
+    if (msg.author.id === '272479872792920065') {
+        if (STATE.CHANCE.bool({ likelihood: 2.5 }) && msg.channel.id === CHANNELS.DIFFRACTION.id)
+            MessagesHelper.delayReact(msg, '🛩️', 333);
+
+        if (STATE.CHANCE.bool({ likelihood: 2.5 }) && msg.channel.id === CHANNELS.SOLATWAR.id)
+            MessagesHelper.delayReact(msg, '🪐', 333);
+    }
 }
