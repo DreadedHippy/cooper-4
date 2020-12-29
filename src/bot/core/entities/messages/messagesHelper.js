@@ -20,9 +20,21 @@ export default class MessagesHelper {
     }
 
     static isOnlyEmojis(text) {
-        const onlyEmojis = text.replace(new RegExp('[\u0000-\u1eeff]', 'g'), '')
+        const onlyEmojis = text.replace(new RegExp('[\u0000-\u1eeff]', 'g'), '');
+        const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '');
+        return onlyEmojis.length === visibleChars.length;
+    }
+
+    static isOnlyEmojisOrIDs(text) {
+        const codeChars = text.replace(new RegExp(':\w+:', 'g'), '')
         const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '')
-        return onlyEmojis.length === visibleChars.length
+        const isOnlyIDCodes = codeChars.length === visibleChars.length;
+        return this.isOnlyEmojis(text) || isOnlyIDCodes;
+    }
+
+    static countAllEmojiCodes(text) {
+        const numCodes = text.match(/(:\w+:)/gm).length;
+        return numCodes;
     }
 
     static emojiToUni(emoji) {
@@ -78,9 +90,15 @@ export default class MessagesHelper {
 
     // Convert emojiID into Discord format, but not if its merely an unicode emoji.
     static emojifyID = emojiID => {
-        const idParts = emojiID.split(':');
-        if (idParts.length > 1) return idParts[2].length > 1 ? `<${emojiID}>` : emojiID;
-        return '?';
+        if (emojiID) {
+            const idParts = emojiID.split(':');
+            if (idParts.length > 1) return idParts[2].length > 1 ? `<${emojiID}>` : emojiID;
+        }
+        return '_' + emojiID;
+    }
+
+    static itemCodeFromMisc(miscString) {
+        
     }
 
     static titleCase = (str) => {

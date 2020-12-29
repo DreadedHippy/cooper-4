@@ -15,8 +15,8 @@ export default class WoodcuttingMinigame {
         // High chance of preventing any mining at all to deal with rate limiting.
         if (STATE.CHANCE.bool({ likelihood: 55 })) return false;
 
-        const isOnlyEmojis = MessagesHelper.isOnlyEmojis(reaction.message.content);
-        const isAxeReact = reaction.emoji.name === EMOJIS.AXE;
+        const isOnlyEmojis = MessagesHelper.isOnlyEmojisOrIDs(reaction.message.content);
+        const isAxeReact = reaction.emoji.name === '🪓';
         const isCooperMsg = UsersHelper.isCooperMsg(reaction.message);
         const isUserReact = !UsersHelper.isCooper(user.id);
         
@@ -42,7 +42,7 @@ export default class WoodcuttingMinigame {
         const msg = reaction.message;
 
         // Calculate magnitude from message: more rocks, greater reward.
-        const textMagnitude = Math.floor(msg.content.length / 2);
+        const textMagnitude = MessagesHelper.countAllEmojiCodes(msg.content);
         const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude });
 
         // Check if has a axe
@@ -98,7 +98,7 @@ export default class WoodcuttingMinigame {
         const magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
         const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.WOOD.repeat(magnitude));
 
-        MessagesHelper.delayReact(rockMsg, EMOJIS.AXE);
+        MessagesHelper.delayReact(rockMsg, '🪓');
 
         ChannelsHelper._postToFeed(`Ooo a tree to fell! Branches ${magnitude}!`, 1222);
     }

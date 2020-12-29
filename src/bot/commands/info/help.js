@@ -2,6 +2,8 @@ import CoopCommand from '../../core/classes/coopCommand';
 
 export default class HelpCommand extends CoopCommand {
 
+	commando = null
+
 	constructor(client) {
 		super(client, {
 			name: 'help',
@@ -12,19 +14,24 @@ export default class HelpCommand extends CoopCommand {
 			details: `Details`,
 			examples: ['help', 'help prefix'],
 		});
+
+		this.commando = client;
 	}
 
 	async run(msg) {
 		super.run(msg);
-		
+
+		console.log(this.commando);
+		console.log(this);
+		console.log(arguments);
+
         try {
 			// TODO: Implement properly.
-			await msg.direct(`
 
-				HELP, HELP, HELP!
-			
-			`);
-            if (msg.channel.type !== 'dm') await msg.reply('Sent you a DM with information.');
+
+
+			await msg.direct(``);
+
         } catch(err) {
             await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
         }
