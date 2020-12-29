@@ -1,3 +1,5 @@
+import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
+
 export default class StatisticsHelper {
 
     static async update() {

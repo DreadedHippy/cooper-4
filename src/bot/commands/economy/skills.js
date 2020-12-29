@@ -8,7 +8,7 @@ export default class SkillsCommand extends CoopCommand {
 			name: 'skills',
 			group: 'economy',
 			memberName: 'skills',
-			aliases: ['eggs'],
+			aliases: ['s'],
 			description: 'polls will always be stolen at The Coop by those who demand them.',
 			details: `Details of the skills command`,
 			examples: ['skills', 'an example of how coop-econmics functions, trickle down, sunny side up Egg & Reagonmics. Supply and demand.'],

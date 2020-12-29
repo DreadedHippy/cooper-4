@@ -31,9 +31,9 @@ export default class WoodcuttingMinigame {
         const firstEmojiString = (msgContent[0] || '') + (msgContent[1] || '');
         const firstEmojiUni = MessagesHelper.emojiToUni(firstEmojiString);
         const rockEmojiUni = MessagesHelper.emojiToUni(EMOJIS.WOOD);
-        const isRocksMsg = firstEmojiUni === rockEmojiUni;
+        const isWoodMsg = firstEmojiUni === rockEmojiUni;
 
-        if (!isRocksMsg) return false;
+        if (!isWoodMsg) return false;
 
         this.chip(reaction, user);
     }
