@@ -3,6 +3,8 @@ import EMOJIS from '../../../core/config/emojis.json';
 import EggHuntMinigame from "../../features/minigame/small/egghunt";
 import CratedropMinigame from "../../features/minigame/small/cratedrop";
 import MiningMinigame from "../../features/minigame/small/mining";
+import WoodcuttingMinigame from '../../features/minigame/small/woodcutting';
+
 
 import RedemptionHelper from "../../redemption/redemptionHelper";
 import SacrificeHelper from "../../features/events/sacrificeHelper";
@@ -25,6 +27,7 @@ export default async function reactAddedHandler(reaction, user) {
         EggHuntMinigame.onReaction(reaction, user);
         CratedropMinigame.onReaction(reaction, user);
         MiningMinigame.onReaction(reaction, user);
+        WoodcuttingMinigame.onReaction(reaction, user);
 
         // Check for reaction on intro message.
         RedemptionHelper.onReaction(reaction, user);

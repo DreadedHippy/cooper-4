@@ -8,6 +8,10 @@ export default class UsersHelper {
         return avatarURL;
     }
 
+    static _cache() {
+        return ServerHelper._coop().members.cache;
+    }
+
     static getMemberByID = (guild, id) => guild.members.cache.get(id);
 
     static fetchMemberByID = (guild, id) => guild.members.fetch(id);

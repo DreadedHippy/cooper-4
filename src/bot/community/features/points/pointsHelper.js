@@ -1,9 +1,9 @@
 import DatabaseHelper from "../../../core/classes/databaseHelper";
-import ServerHelper from "../../../core/entities/server/serverHelper";
 import Database from "../../../core/setup/database";
 import STATE from "../../../state";
 import ROLES from "../../../core/config/roles.json";
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
+import ServerHelper from "../../../core/entities/server/serverHelper";
 
 export default class PointsHelper {
     static async getPointsByID(id) {
@@ -45,6 +45,19 @@ export default class PointsHelper {
         };
         const result = await Database.query(query);
         return result;
+    }
+
+    static async getAllPositive() {
+        const query = {
+            name: 'get-all-positive',
+            text: `
+                SELECT points, discord_id 
+                FROM users 
+                WHERE points > 0
+            `.trim(),
+        };
+        const result = await Database.query(query);
+        return result;   
     }
 
     static async getNegLeaderboard(pos = 0) {
