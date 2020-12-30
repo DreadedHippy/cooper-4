@@ -54,3 +54,9 @@ CREATE TABLE events(
     event_code VARCHAR UNIQUE NOT NULL,
     last_occurred bigint
 );
+
+
+
+<!-- Useful forced actions -->
+ALTER TABLE users
+    ADD COLUMN email VARCHAR;

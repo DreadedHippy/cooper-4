@@ -4,11 +4,16 @@ import UsersHelper from "../../../core/entities/users/usersHelper";
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import ServerHelper from "../../../core/entities/server/serverHelper";
 import PointsHelper from "../points/pointsHelper";
-
+import CHANNELS from "../../../core/config/channels.json";
 
 
 // TODO: Make sure when adding to roadmap, talk, and feed that the votes are displayed to indicate mandate!
 export default class SuggestionsHelper {
+
+    static onMessage(msg) {
+        if (msg.channel.id === CHANNELS.SUGGESTIONS.id && !msg.author.bot) 
+            ChannelsHelper._postToFeed(`New suggestion: <#${CHANNELS.SUGGESTIONS.id}>`);
+    }
 
     static async onReaction(reaction, user) {
         console.log('Suggestion reaction');

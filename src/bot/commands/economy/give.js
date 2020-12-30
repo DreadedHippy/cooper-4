@@ -44,6 +44,19 @@ export default class GiveCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
+
+			// TODO:
+
+			// Target is first mention
+
+			// Item code is any string as long as valid
+
+			// Qty is 1 unless contains a number and is parsed
+
+
+
+
+
 			// Check if this item code can be given.
 			if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
 				return MessagesHelper.selfDestruct(msg, 'Please provide a valid item name.', 10000);

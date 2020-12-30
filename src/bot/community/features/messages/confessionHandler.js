@@ -1,5 +1,6 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
+import SubscriptionHelper from "../../newsletter/subscriptionHelper";
 
 export default class ConfessionHandler {
 
@@ -7,6 +8,9 @@ export default class ConfessionHandler {
         if (msg.channel.type !== "dm") return false;
         if (UsersHelper.isCooperMsg(msg)) return false;
         if (msg.command !== null) return false;
+
+        // Ensure an email address is not leaked to leaders etc.
+        if (SubscriptionHelper.getEmailFromMessage(msg)) return false;
 
         const annotatedMsgText = `DM message from ${msg.author.username}: ${msg.content}`;
         ChannelsHelper._postToChannelCode('LEADERS', annotatedMsgText);

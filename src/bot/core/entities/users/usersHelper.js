@@ -1,6 +1,8 @@
 import STATE from "../../../state";
+import DatabaseHelper from "../../classes/databaseHelper";
 import Database from "../../setup/database";
 import ServerHelper from "../server/serverHelper";
+import format from 'pg-format';
 
 export default class UsersHelper {
     static avatar(user) {
@@ -25,10 +27,9 @@ export default class UsersHelper {
             .filter(role => roleNames.includes(role.name))
             .some(role => member.roles.cache.has(role.id));
 
+    // TODO: Refactor since fragments were turned off, this becomes a bit weirder/easier.
     static count(guild, includeBots = false) {
         return guild.memberCount;
-        // if (includeBots) return guild.members.cache.size;
-        // else return this.filterMembers(guild, member => !member.user.bot).size; 
     }
 
     static directMSG = (guild, userID, msg) => UsersHelper.getMemberByID(guild, userID).send(msg);
@@ -89,6 +90,25 @@ export default class UsersHelper {
             text: "SELECT * FROM users"
         };
         return await Database.query(query);        
+    }
+
+    static async updateField(id, field, value) {
+        const query = {
+            text: `UPDATE users SET ${field} = $1 WHERE discord_id = $2`,
+            values: [value, id]
+        };
+        return await Database.query(query);
+    }
+    
+    static async loadSingle(id) {
+        const query = {
+            name: "get-user",
+            text: "SELECT * FROM users WHERE discord_id = $1",
+            values: [id]
+        };
+
+        const result = await Database.query(query);
+        return DatabaseHelper.single(result);
     }
 
     // TODO: Can refactor this to a more optimised db query.

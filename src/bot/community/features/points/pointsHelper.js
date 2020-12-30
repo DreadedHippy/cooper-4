@@ -91,12 +91,12 @@ export default class PointsHelper {
         const mostPointsRole = await guild.roles.fetch(ROLES.MOSTPOINTS.id);
 
         const mostPointsMember = await guild.members.fetch(highestRecord.discord_id);
-
+        const username = mostPointsMember.user.username;
+        
         let alreadyHadRole = false;
 
-        // Remove the role from previous winner.
-        // TODO: Get name of previous winner and commiserate in text.
-        const prevWinner = null;
+        // Remove the role from previous winner and commiserate.
+        let prevWinner = null;
         mostPointsRole.members.map(prevMostMember => {
             if (prevMostMember.user.id === highestRecord.discord_id) alreadyHadRole = true;
             else {
@@ -107,9 +107,9 @@ export default class PointsHelper {
 
         // If the new winner didn't already have the role, award it and notify server.
         if (!alreadyHadRole) {
-            const username = mostPointsMember.user.username;
+            
             let successText = `${username} is now the point leader.`;
-            if (prevWinner) successText = `${username} overtakes ${prevWinner.username} for most points!`;
+            if (prevWinner) successText = ` ${username} overtakes ${prevWinner.username} for most points!`;
 
             const pointsAfter = await this.addPointsByID(highestRecord.discord_id, 5);
             successText += ` Given MOST POINTS role and awarded 5 points (${pointsAfter})!`;
