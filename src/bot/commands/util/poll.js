@@ -11,7 +11,7 @@ export default class PollCommand extends CoopCommand {
 			name: 'poll',
 			group: 'util',
 			memberName: 'poll',
-			aliases: [],
+			aliases: ['suggest', 'vote', 'suggestion'],
 			description: 'polls will always be granted at The Coop to those who ask for them.',
 			details: `Details`,
 			examples: ['poll', 'poll prefix'],
