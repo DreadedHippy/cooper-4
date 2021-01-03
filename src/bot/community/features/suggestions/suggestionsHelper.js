@@ -25,7 +25,8 @@ export default class SuggestionsHelper {
 
     static async check() {
         // Get last 25 suggestions to check through.
-        const candidates = await ChannelsHelper._getCode('SUGGESTIONS').messages.fetch({ limit: 5 });
+        const candidates = await ChannelsHelper._getCode('SUGGESTIONS').messages.fetch({ limit: 50 });
+        let processedOne = false;
         candidates.map((suggestion, index) => {
             // Check the suggestion has had 72 hours to be considered.
             const dayMs = ((60 * 60) * 72) * 1000;
@@ -33,7 +34,13 @@ export default class SuggestionsHelper {
                 const votes = this.parseVotes(suggestion);
                 if (votes.rejected) this.reject(suggestion, votes, index);
                 if (votes.passed) this.pass(suggestion, votes, index);
+                if (votes.tied) this.tied(suggestion, votes, index);
+
+                // Invalidate votes do not count as a vote processed.
                 if (votes.invalid) this.invalidate(suggestion, index);
+
+                // Prevent processing more, one action per iteration is enough.
+                if (votes.tied || votes.passed || votes.rejected) processedOne = true;
             }
         });
     }

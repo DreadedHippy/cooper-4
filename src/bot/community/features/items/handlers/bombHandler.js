@@ -31,7 +31,11 @@ export default class BombHandler {
                         if (reaction.count > 1) doubledInfo = `(x${reaction.count})`;
                         const subjectsInvolved = `${user.username} bombed ${messageAuthor.username}`;
                         const changesOccurred = `-${damage}${doubledInfo} points (${updatedPoints}).`;
-                        await ChannelsHelper._postToFeed(`${subjectsInvolved}: ${changesOccurred}`);
+                        const feedbackText = `${subjectsInvolved}: ${changesOccurred}`;
+                        await ChannelsHelper._postToFeed(feedbackText);
+
+                        const feedbackMsg = await reaction.message.say(feedbackText);
+                        MessagesHelper.delayDelete(feedbackMsg, 15000);
                     }, 5000);
                 }
             } catch(e) {

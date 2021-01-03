@@ -106,9 +106,10 @@ export default class MiscMessageHandlers {
         }
 
         
-        // TODO: Add chance of adding mountain snow to slatxyo message :mountain_snow:
-
-
+        // Add chance of adding mountain snow to slatxyo message :mountain_snow:
+        if (msg.author.id === '498409882211581962')
+            if (STATE.CHANCE.bool({ likelihood: 2.5 }))
+                MessagesHelper.delayReact(msg, '🏔️', 333);
 
         // Random encouragement for ZeePheesh
         if (msg.author.id === '272479872792920065') {

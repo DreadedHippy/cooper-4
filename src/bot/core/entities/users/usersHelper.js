@@ -32,7 +32,10 @@ export default class UsersHelper {
         return guild.memberCount;
     }
 
-    static directMSG = (guild, userID, msg) => UsersHelper.getMemberByID(guild, userID).send(msg);
+    static directMSG = (guild, userID, msg) => {
+        const member = UsersHelper.getMemberByID(guild, userID);
+        if (member) member.send(msg);
+    };
 
     static _dm(userID, msg) {
         const guild = ServerHelper._coop();

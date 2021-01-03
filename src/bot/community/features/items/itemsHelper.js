@@ -80,6 +80,20 @@ export default class ItemsHelper {
         return await Database.query(query);
     }
 
+    static async count(itemCode) {
+        const query = {
+            name: "count-item",
+            text: "SELECT SUM(quantity) FROM items WHERE item_code = $1",
+            values: [itemCode]
+        };
+        const result = await Database.query(query);
+
+        let count = 0;
+        if (result.rows && result.rows[0].sum) count = parseInt(result.rows[0].sum);
+
+        return count;
+    }
+
     static async read(userID, itemCode) {
         const query = {
             name: "read-item",

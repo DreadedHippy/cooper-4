@@ -186,7 +186,7 @@ export default class EggHuntMinigame {
                 let acknowledgementMsgText =`${actionText} ${rewardPolarity}${reward} points!`.trim();
                 let activityFeedMsgText = `${user.username} collected an egg in ${location}! <${emoji}>`.trim();
 
-                if (STATE.CHANCE.bool({ likelihood: 85 })) {
+                if (STATE.CHANCE.bool({ likelihood: 90 })) {
                     // Store points and egg collection data in database.
                     const updated = await PointsHelper.addPointsByID(user.id, reward);
                     acknowledgementMsgText += ` (${updated})`;
@@ -258,34 +258,39 @@ export default class EggHuntMinigame {
     static run() {        
         this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg, but where...?');
 
-        if (STATE.CHANCE.bool({ likelihood: 50 })) {
+        if (STATE.CHANCE.bool({ likelihood: 40 })) {
             this.drop('TOXIC_EGG', 'I dropped an egg, but where...? Tsk.');
 
-            if (STATE.CHANCE.bool({ likelihood: 25 })) {
+            if (STATE.CHANCE.bool({ likelihood: 7.5 })) {
                 this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
 
-                if (STATE.CHANCE.bool({ likelihood: 10 })) {
-                    ChannelsHelper._postToFeed('@here, a legendary egg was dropped! Find and grab it before others can!');
+                if (STATE.CHANCE.bool({ likelihood: 2.5 })) {
+                    ChannelsHelper._postToFeed('A legendary egg was dropped! Find and grab it before others can!');
                     this.drop('LEGENDARY_EGG');
                 }
             }
         }
 
         // Handle DM dropping
-        if (STATE.CHANCE.bool({ likelihood: .35 })) this.dmDrop('TOXIC_EGG');
-        if (STATE.CHANCE.bool({ likelihood: .85 })) this.dmDrop('AVERAGE_EGG');
-        if (STATE.CHANCE.bool({ likelihood: .45 })) this.dmDrop('RARE_EGG');
-        if (STATE.CHANCE.bool({ likelihood: .025 })) this.dmDrop('LEGENDARY_EGG');
+        if (STATE.CHANCE.bool({ likelihood: 1.35 })) this.dmDrop('TOXIC_EGG');
+        if (STATE.CHANCE.bool({ likelihood: 3.85 })) this.dmDrop('AVERAGE_EGG');
+        if (STATE.CHANCE.bool({ likelihood: 2.45 })) this.dmDrop('RARE_EGG');
+        if (STATE.CHANCE.bool({ likelihood: 0.025 })) this.dmDrop('LEGENDARY_EGG');
 
         // Bonus eggs            
-        if (STATE.CHANCE.bool({ likelihood: 25 })) {
+        if (STATE.CHANCE.bool({ likelihood: 7.5 })) {
             ChannelsHelper._postToFeed('Bonus eggs rolling!');
             
-            const bonusEggsNum = STATE.CHANCE.natural({ min: 3, max: 15 });
+            let bonusEggsNum = STATE.CHANCE.natural({ min: 5, max: 25 });
+            if (STATE.CHANCE.bool({ likelihood: 5 })) {
+                bonusEggsNum = STATE.CHANCE.natural({ min: 10, max: 45 });
+                ChannelsHelper._postToFeed('Bonus eggs hurtling!');
+            } else 
+                ChannelsHelper._postToFeed('Bonus eggs rolling!');
             for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE_EGG', null);
 
-            const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 1, max: Math.ceil(bonusEggsNum / 2.5) });
-            for (let i = 0; i < toxicEggsMixupNum; i++) this.drop('TOXIC_EGG', null)
+            const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 1, max: Math.floor(bonusEggsNum / 2.5) });
+            for (let i = 0; i < toxicEggsMixupNum; i++) this.drop('TOXIC_EGG', null);
         }
     }
 }

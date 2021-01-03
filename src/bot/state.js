@@ -11,6 +11,7 @@ const STATE = {
     CHANCE: new Chance,
 
     // Message ephemeral state for tracking message updates/notifications
-    MESSAGE_HISTORY: {}
+    MESSAGE_HISTORY: {},
+    EVENTS_HISTORY: {}
 };
 export default STATE;

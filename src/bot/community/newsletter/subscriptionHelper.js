@@ -73,7 +73,6 @@ export default class SubscriptionHelper {
                             confirmMsg.reply('Confirmation fail. Try again by stating your email.')
                         });
                 }, 1333);
-
             }
         }
     }

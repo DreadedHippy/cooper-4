@@ -6,7 +6,8 @@
   "scripts": {
     "startBot": "node -r esm src/bot/index.js",
     "startWeb": "node -r esm src/web/index.js",
-    "db": "heroku pg:psql --app cooperchickenbot"
+    "db": "heroku pg:psql --app cooperchickenbot",
+    "shallowBot": "node -r esm src/bot/shallow.js"
   },
   "engines": {
     "node": "12.x",
@@ -22,6 +23,7 @@
     "cors": "^2.8.5",
     "discord.js": "^12.3.1",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
+    "dotenv": "^8.2.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "imgur": "^0.3.1",

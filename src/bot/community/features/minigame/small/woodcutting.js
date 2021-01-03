@@ -6,6 +6,7 @@ import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../core/entities/users/usersHelper";
 import ItemsHelper from "../../items/itemsHelper";
 import PointsHelper from "../../points/pointsHelper";
+import EventNotifications from "../eventNotifications";
 
 
 export default class WoodcuttingMinigame {
@@ -68,7 +69,7 @@ export default class WoodcuttingMinigame {
             }
         } else {
             // See if updating the item returns the item and quantity.
-            const addMetalOre = await ItemsHelper.add(user.id, 'WOOD', extractedOreNum);
+            const addedWood = await ItemsHelper.add(user.id, 'WOOD', extractedOreNum);
             const addPoints = await PointsHelper.addPointsByID(user.id, 1);
 
             // TODO: Implement something rare from cutting wood
@@ -89,8 +90,14 @@ export default class WoodcuttingMinigame {
             
             // Provide feedback.
             const actionText = `${user.username} successfully chopped wood.`;
-            const rewardText = `+1 point (${addPoints}), +${extractedOreNum} wood (${addMetalOre})!`;
+            const rewardText = `+1 point (${addPoints}), +${extractedOreNum} wood (${addedWood})!`;
             ChannelsHelper._propogate(msg, `${actionText} ${rewardText}`);
+
+            EventNotifications.add('WOODCUTTING', {
+                pointGain: addPoints,
+                recWood: addedWood,
+                playerID: user.id
+            });
         }
     }
 

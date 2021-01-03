@@ -20,7 +20,9 @@ export default class ConfessionHandler {
             replyableMsg.channel.awaitMessages(
                 (msg) => {
                     // Filter out Cooper messages.
-                    return !UsersHelper.isCooperMsg(msg);
+                    const notManualResponse = msg.content.indexOf('!direct') === -1;
+                    const notCooper = !UsersHelper.isCooperMsg(msg);
+                    return notManualResponse && notCooper;
                 },
                 { max: 1, time: 30000, errors: ['time'] }
             )

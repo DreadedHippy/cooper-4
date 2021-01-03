@@ -95,7 +95,16 @@ export default class MiningMinigame {
     }
 
     static async run() {
-        const magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
+        let magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
+
+        // TODO: Adjust points and diamond rewards if more rocks
+        // Add rare chances of a lot of rocks
+        if (STATE.CHANCE.bool({ likelihood: 20 }))
+            magnitude = STATE.CHANCE.natural({ min: 10, max: 20 });
+
+        if (STATE.CHANCE.bool({ likelihood: 2.5 }))
+            magnitude = STATE.CHANCE.natural({ min: 15, max: 35 });
+
         const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.ROCK.repeat(magnitude));
 
         MessagesHelper.delayReact(rockMsg, '⛏️');

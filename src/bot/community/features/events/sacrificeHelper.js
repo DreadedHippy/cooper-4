@@ -88,7 +88,7 @@ export default class SacrificeHelper {
                 // Check if enough votes to sacrifice.
                 if (remainingSacrificeVotes === 0) {
                     // Notify when user is voted out.
-                    await ChannelsHelper._postToFeed(`<@${targetMember.id}>'s was sacrificed!`);
+                    await ChannelsHelper._postToFeed(`<@${targetMember.id}> was sacrificed!`);
                     await targetMember.ban();
 
                 } else {
