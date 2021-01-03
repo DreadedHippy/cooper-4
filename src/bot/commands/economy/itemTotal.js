@@ -29,7 +29,7 @@ export default class ItemTotalCommand extends CoopCommand {
 		if (!ItemsHelper.getUsableItems().includes(itemCode))
 			return msg.reply(`${itemCode} does not exist, please provide a valid item code.`);
 
-		const total = ItemsHelper.count(itemCode);
+		const total = await ItemsHelper.count(itemCode);
 
 		const feedbackMsg = await msg.say(`Economic circulation: ${total}x${itemCode}.`);
 		MessagesHelper.delayDelete(feedbackMsg, 15000);
