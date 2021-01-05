@@ -56,6 +56,12 @@ CREATE TABLE events(
 );
 
 
+CREATE TABLE chicken(
+    id SERIAL PRIMARY KEY,
+    attribute VARCHAR UNIQUE NOT NULL,
+    value VARCHAR
+);
+
 
 <!-- Useful forced actions -->
 ALTER TABLE users

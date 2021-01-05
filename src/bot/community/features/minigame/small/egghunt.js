@@ -12,7 +12,7 @@ import MessagesHelper from '../../../../core/entities/messages/messagesHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
 
 
-const EGG_DATA = {
+export const EGG_DATA = {
     TOXIC_EGG: {
         points: -5,
         emoji: EMOJIS.TOXIC_EGG

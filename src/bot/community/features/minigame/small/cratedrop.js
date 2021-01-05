@@ -171,6 +171,9 @@ export default class CratedropMinigame {
             // Lower the rate of empty crates.
             if (STATE.CHANCE.bool({ likelihood: 5 })) rewardedUsersNum = 0;
 
+            // Raise reward rate.
+            if (STATE.CHANCE.bool({ likelihood: 40 })) rewardedUsersNum = hitters.length
+
             if (rewardedUsersNum > 0) {
                 // Pick the amount of rewarded users.   
                 STATE.CHANCE.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
@@ -202,7 +205,7 @@ export default class CratedropMinigame {
 
             // Post and delete the points reward message feedback.
             const usersRewardedText = hitterNames.join(', ') + ` were rewarded ${crate.openingPoints} point(s)`;
-            const rewardTypeText = `the ${!anyRewardGiven ? 'empty ' : ' '}${rarity.replace('_', ' ').toLowerCase()}`;
+            const rewardTypeText = `the ${!anyRewardGiven ? 'empty ' : ''}${rarity.replace('_', ' ').toLowerCase()}`;
             const pointsRewardString = `${usersRewardedText} for attempting to open ${rewardTypeText}!`;
             ChannelsHelper._propogate(msg, pointsRewardString, true);
 

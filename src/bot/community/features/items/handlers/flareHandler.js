@@ -12,7 +12,7 @@ export default class FlareHandler {
 
         // Respond to usage result.
         if (didUseFlare) {
-            if (STATE.CHANCE.bool({ likelihood: 25 })) setTimeout(() => CratedropMinigame.drop(), 333);
+            if (STATE.CHANCE.bool({ likelihood: 45 })) setTimeout(() => CratedropMinigame.drop(), 333);
 
             const feedbackText = `${user.username} used a FLARE and potentially triggered crate drop!`;
             if (!ChannelsHelper.checkIsByCode(commandMsg.channel.id, 'FEED')) {

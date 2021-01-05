@@ -7,15 +7,21 @@ import DatabaseHelper from "../../../core/classes/databaseHelper";
 // Items with reaction usages.
 import BombHandler from "./handlers/bombHandler";
 import ToxicEggHandler from "./handlers/toxicEggHandler";
+import AverageEggHandler from "./handlers/averageEggHandler";
+import RareEggHandler from "./handlers/rareEggHandler";
+import LegendaryEggHandler from "./handlers/legendaryEggHandler";
 
 
 export default class ItemsHelper {
 
     static async onReaction(reaction, user) {
         BombHandler.onReaction(reaction, user);
-        ToxicEggHandler.onReaction(reaction, user);
 
-        // TODO: Add average, rare, legendary eggs abilities
+        ToxicEggHandler.onReaction(reaction, user);
+        AverageEggHandler.onReaction(reaction, user);
+        RareEggHandler.onReaction(reaction, user);
+        LegendaryEggHandler.onReaction(reaction, user);
+        // TODO: Add --average--, rare, legendary eggs abilities
     }
 
     static async add(userID, item_code, quantity) {

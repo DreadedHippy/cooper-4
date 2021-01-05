@@ -4,6 +4,7 @@ import STATE from './state';
 import dotenv from 'dotenv';
 import ItemsHelper from './community/features/items/itemsHelper';
 import ServerHelper from './core/entities/server/serverHelper';
+import Chicken from './community/chicken';
 
 dotenv.config();
 
@@ -18,8 +19,8 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-        const count = await ItemsHelper.count('AVERAGE_EGG');
-        console.log(count);
+        Chicken.checkIfNewDay([() => console.log('TESTING')]);
+        Chicken.checkIfNewDay();
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
 

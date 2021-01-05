@@ -1,6 +1,8 @@
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/classes/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
+import ServerHelper from '../../core/entities/server/serverHelper';
+import UsersHelper from '../../core/entities/users/usersHelper';
 
 export default class ItemTotalCommand extends CoopCommand {
 
@@ -31,7 +33,11 @@ export default class ItemTotalCommand extends CoopCommand {
 
 		const total = await ItemsHelper.count(itemCode);
 
-		const feedbackMsg = await msg.say(`Economic circulation: ${total}x${itemCode}.`);
+		
+		const beaks = UsersHelper.count(ServerHelper._coop(), false)
+		const feedbackMsg = await msg.say(
+			`Economic circulation: ${total}x${itemCode} | ${total / beaks} per beak`
+		);
 		MessagesHelper.delayDelete(feedbackMsg, 15000);
     }
     
