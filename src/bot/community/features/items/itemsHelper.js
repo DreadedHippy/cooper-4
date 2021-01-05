@@ -157,6 +157,16 @@ export default class ItemsHelper {
 		return this.getUsableItems().includes(itemCode) ;
     }
 
+    static parseFromStr(str) {
+        let match = null;
+        const usables = this.getUsableItems();
+        const key = str.trim().replace(' ', '_').toUpperCase();
+        usables.map(usable => {
+            if (usable === key) match = usable;
+        });
+        return match;
+    }
+
     static getUsableItems() {
         const unusable = this.NON_USABLE_EMOJIS;
         const codeFilter = itemCode => !unusable.includes(itemCode);

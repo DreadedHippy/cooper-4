@@ -16,6 +16,11 @@ export default class StatisticsHelper {
         }
     }
 
+    static async addItemStats() {
+        // parseFloat("123.456").toFixed(2);
+        // for each usable item, get circulation, etc
+    }
+
     static async addAboutStats() {
         const configOpt = await Chicken.getConfig('about_leaderboard_msg');
         const leaderboard = await PointsHelper.getLeaderboard(0);

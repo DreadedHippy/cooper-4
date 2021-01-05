@@ -28,6 +28,9 @@ export default class ItemTotalCommand extends CoopCommand {
 	async run(msg, { itemCode }) {
 		super.run(msg);
 
+		// Tryto format.
+		itemCode = ItemsHelper.parseFromStr(itemCode);
+		// if ()
 		if (!ItemsHelper.getUsableItems().includes(itemCode))
 			return msg.reply(`${itemCode} does not exist, please provide a valid item code.`);
 
@@ -36,7 +39,7 @@ export default class ItemTotalCommand extends CoopCommand {
 		
 		const beaks = UsersHelper.count(ServerHelper._coop(), false)
 		const feedbackMsg = await msg.say(
-			`Economic circulation: ${total}x${itemCode} | ${total / beaks} per beak`
+			`Economic circulation: ${total}x${itemCode} | ${(total / beaks).toFixed(2)} per beak`
 		);
 		MessagesHelper.delayDelete(feedbackMsg, 15000);
     }

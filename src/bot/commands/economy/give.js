@@ -52,10 +52,8 @@ export default class GiveCommand extends CoopCommand {
 			// Item code is any string as long as valid
 
 			// Qty is 1 unless contains a number and is parsed
-
-
-
-
+			
+			itemCode = ItemsHelper.parseFromStr(itemCode);
 
 			// Check if this item code can be given.
 			if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 

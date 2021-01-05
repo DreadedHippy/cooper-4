@@ -29,6 +29,8 @@ export default class UseCommand extends CoopCommand {
 	async run(msg, { itemCode }) {
 		super.run(msg);
 
+		itemCode = ItemsHelper.parseFromStr(itemCode);
+
 		const usableItems = ItemsHelper.getUsableItems();
 		const noMatchErrText = 'Please provide a valid item name or check with !itemlist';
 		if (!usableItems.includes(itemCode)) return msg.reply(noMatchErrText);

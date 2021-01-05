@@ -25,10 +25,13 @@ export default class DropCommand extends CoopCommand {
 	async run(msg, { itemCode }) {
 		super.run(msg);
 
+		itemCode = ItemsHelper.parseFromStr(itemCode);
+
 		const usableItems = ItemsHelper.getUsableItems();
 		const noMatchErrText = 'Please provide a valid item name.';
 		if (!usableItems.includes(itemCode)) return msg.reply(noMatchErrText);
 
+		msg.reply('Should drop item but work in progress, remind remind remind!');
 		// Check user owns it, nvm... let ItemsHelper do that.
 		// ItemsHelper.dropItem(msg.author.id, itemCode);
     }
