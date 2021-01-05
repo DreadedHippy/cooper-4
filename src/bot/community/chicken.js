@@ -2,6 +2,8 @@ import Database from "../core/setup/database";
 
 // TODO: Consider adding observable for checkIfNewDay (provide events)
 
+import moment from 'moment';
+
 export default class Chicken {
 
     static async getConfig(key) {
@@ -40,17 +42,39 @@ export default class Chicken {
         return result;
     }
 
+    static async _nextdayis() {
+        const remainingMoment = await this._nextdayisMoment();
+        const remainingReadable = moment.utc(remainingMoment).format("HH:mm:ss");
+        return remainingReadable;
+    }
+
+    static async _nextdayisMoment() {
+        const latestSecs = await this.getCurrentDaySecs();
+        const presentSecs = Math.floor(+new Date() / 1000);
+        const dayDuration = (3600 * 24);
+
+        const latestMoment = moment.unix(latestSecs + dayDuration);
+        const currentMoment = moment.unix(presentSecs);
+        const remainingMoment = latestMoment.diff(currentMoment);
+
+        return remainingMoment;
+    }
+
+    static async getCurrentDaySecs() {
+        let secs = null;
+        const cooperUnixSecsResp = await this.getConfig('current_day');
+        if (cooperUnixSecsResp) secs = parseInt(cooperUnixSecsResp.value);
+        return secs;
+    }
 
     static async checkIfNewDay(...callbacks) {
         try {
             let isNewDay = false;
             const currentUnixSecs = Math.floor(+new Date() / 1000);
-            const cooperUnixSecsResp = await this.getConfig('current_day');
+            const cooperUnixSecs = await this.getCurrentDaySecs();
 
             // Check if any day value already exists.
-            if (cooperUnixSecsResp) {
-                const cooperUnixSecs = parseInt(cooperUnixSecsResp.value);
-
+            if (cooperUnixSecs) {
                 if (currentUnixSecs - (3600 * 24) >=  cooperUnixSecs) {
                     await this.setConfig('current_day', '' + currentUnixSecs);
                     isNewDay = true;                    

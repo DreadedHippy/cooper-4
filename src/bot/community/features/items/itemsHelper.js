@@ -154,7 +154,7 @@ export default class ItemsHelper {
     static dropItems() {}
  
     static isUsable(itemCode) {
-		return this.getUsableItems().includes(itemCode) ;
+		return this.getUsableItems().includes(itemCode);
     }
 
     static parseFromStr(str) {

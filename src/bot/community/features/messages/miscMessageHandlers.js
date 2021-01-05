@@ -92,6 +92,8 @@ export default class MiscMessageHandlers {
             if (msg.content.toLowerCase().indexOf('capitalism') > -1) msg.react('💰');
             if (msg.content.toLowerCase().indexOf('bread') > -1) msg.react('🍞');
 
+            if (msg.content.toLowerCase().indexOf('weed') > -1) msg.react('🌿');
+
             // Intercept inklingboi
             if (msg.author.id === '687280609558528000') {
                 const inklingboiSmileys = [':0', ':-:', ';-;', ';--;', '._.'];
