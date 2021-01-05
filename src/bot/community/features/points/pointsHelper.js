@@ -118,4 +118,31 @@ export default class PointsHelper {
             mostPointsMember.roles.add(mostPointsRole);
         }
     }
+
+
+    static async renderLeaderboard(leaderboardRows, position = 0) {
+        const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
+        const rowUsers = await Promise.all(leaderboardRows.map(async (row, index) => {
+            let username = '?';
+            try {
+                const member = await guild.members.fetch(row.discord_id);
+                username = member.user.username;
+
+            } catch(e) {
+                console.log('Error loading user via ID');
+                console.error(e);
+            }
+            return {
+                username,
+                rank: index + position,
+                points: row.points
+            }
+        }));
+
+        let leaderboardMsgText = '```\n\n ~ LEADERBOARD ~ \n\n' + 
+            rowUsers.map(user => `${user.rank + 1}. ${user.username} ${user.points}`).join('\n') +
+            '```';
+
+        return leaderboardMsgText
+    }
 }

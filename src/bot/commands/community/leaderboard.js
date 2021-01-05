@@ -36,32 +36,7 @@ export default class LeaderboardCommand extends CoopCommand {
 			// Number: show rank number and 5 either side
 			const leaderboard = await PointsHelper.getLeaderboard(position);
 			const placeholderMsg = await msg.say('Calculating leaderboard, please wait.');
-			const leaderboardRows = leaderboard.rows;
-
-			const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
-			
-			// TODO: Form leaderboard text and bring into points helper
-			const rowUsers = await Promise.all(leaderboardRows.map(async (row, index) => {
-				let username = '?';
-				try {
-					const member = await guild.members.fetch(row.discord_id);
-					username = member.user.username;
-
-				} catch(e) {
-					console.log('Error loading user via ID');
-					console.error(e);
-				}
-				return {
-					username,
-					rank: index + position,
-					points: row.points
-				}
-			}));
-
-			let leaderboardMsgText = '```\n\n ~ LEADERBOARD ~ \n\n' + 
-				rowUsers.map(user => `${user.rank + 1}. ${user.username} ${user.points}`).join('\n') +
-				'```';
-
+			const leaderboardMsgText = await PointsHelper.renderLeaderboard(leaderboard.rows);
 			const leaderboardMsg = await placeholderMsg.edit(leaderboardMsgText)
 
 			// Delete after sixty seconds.

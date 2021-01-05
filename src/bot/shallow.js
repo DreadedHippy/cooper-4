@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import ItemsHelper from './community/features/items/itemsHelper';
 import ServerHelper from './core/entities/server/serverHelper';
 import Chicken from './community/chicken';
+import StatisticsHelper from './community/features/server/statisticsHelper';
 
 dotenv.config();
 
@@ -19,11 +20,9 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-        Chicken.checkIfNewDay([() => console.log('TESTING')]);
-        Chicken.checkIfNewDay();
+        StatisticsHelper.addAboutStats();
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
-
 
 };
 
