@@ -6,7 +6,7 @@ import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../core/entities/users/usersHelper";
 import ItemsHelper from "../../items/itemsHelper";
 import PointsHelper from "../../points/pointsHelper";
-import EventNotifications from "../eventNotifications";
+import EconomyNotifications from "../economyNotifications";
 
 
 export default class WoodcuttingMinigame {
@@ -63,6 +63,13 @@ export default class WoodcuttingMinigame {
                 const brokenDamage = -2;
                 const pointsDamageResult = await PointsHelper.addPointsByID(user.id, brokenDamage);
     
+                EconomyNotifications.add('MINING', {
+                    playerID: user.id,
+                    username: user.username,
+                    brokenAxes: 1,
+                    pointGain: brokenDamage
+                });
+
                 const actionText = `${user.username} broke an axe trying to cut wood, ${userAxesNum - 1} remaining!`;
                 const damageText = `${brokenDamage} points (${pointsDamageResult}).`;
                 ChannelsHelper._propogate(msg, `${actionText} ${damageText}`);
@@ -93,10 +100,11 @@ export default class WoodcuttingMinigame {
             const rewardText = `+1 point (${addPoints}), +${extractedOreNum} wood (${addedWood})!`;
             ChannelsHelper._propogate(msg, `${actionText} ${rewardText}`);
 
-            EventNotifications.add('WOODCUTTING', {
+            EconomyNotifications.add('WOODCUTTING', {
                 pointGain: addPoints,
                 recWood: addedWood,
-                playerID: user.id
+                playerID: user.id,
+                username: user.username
             });
         }
     }

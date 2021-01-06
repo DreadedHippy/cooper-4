@@ -1,4 +1,4 @@
-import CoopCommand from '../../core/classes/coopCommand';
+import CoopCommand from '../../core/entities/coopCommand';
 import STATE from '../../state';
 
 export default class SalCommand extends CoopCommand {

@@ -75,4 +75,5 @@ export default class ChannelsHelper {
     static async _create(name, options) {
         return ServerHelper._coop().channels.create(name, options);
     }
+    static _all = () => ServerHelper._coop().channels.cache || [];
 }

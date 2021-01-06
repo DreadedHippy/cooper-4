@@ -27,6 +27,15 @@ export default class Chicken {
         return value;
     }
 
+    static async getConfigVal(key) {
+        let val = null;
+
+        const configEntry = await this.getConfig(key);
+        if (configEntry) val = configEntry.value;
+
+        return val;
+    }
+
     static async setConfig(key, value) {
         const query = {
             name: "set-chicken-config",

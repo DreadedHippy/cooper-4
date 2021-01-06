@@ -1,4 +1,4 @@
-import CoopCommand from '../../core/classes/coopCommand';
+import CoopCommand from '../../core/entities/coopCommand';
 import RolesHelper from '../../core/entities/roles/rolesHelper';
 import ServerHelper from '../../core/entities/server/serverHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';

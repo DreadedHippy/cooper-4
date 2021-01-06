@@ -1,4 +1,4 @@
-import DatabaseHelper from "../../../core/classes/databaseHelper";
+import DatabaseHelper from "../../../core/entities/databaseHelper";
 import Database from "../../../core/setup/database";
 import STATE from "../../../state";
 import ROLES from "../../../core/config/roles.json";

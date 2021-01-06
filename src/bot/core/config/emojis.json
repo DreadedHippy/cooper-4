@@ -29,7 +29,7 @@
     "LAXATIVE": ":chocolate_bar:",
     "BOMB": ":bomb:",
     "PICK_AXE": ":pick:",
-    "FRYING_PAN": ":cooking:",
+    "FRYING_PAN": ":frying_pan:796486324021887048",
     "EMPTY_GIFTBOX": ":gift:",
 
     "ROPE": ":twisty_rope:739153442341388421",
@@ -40,20 +40,18 @@
     "DEFUSE_KIT": ":toolbox:",
 
     "IED": ":fax:",
-    "RPG": ":rocket:",
-    "GOLD_COIN": ":coin:",
-    
-    "IRON_BAR": ":silver_bar:772572668259991633",
-    "STEEL_BAR": ":silver_bar:772572668259991633",
-    "SILVER_BAR": ":silver_bar:772572668259991633",
-    "GOLD_BAR": ":Gold:751968182356541450",
+    "RPG": ":rpg:772576367820013588",
+    "GOLD_COIN": ":gold_coin:796486327117807616",
+    "IRON_BAR": ":iron_bar:796486327792304149",
+    "STEEL_BAR": ":steel_bar:796486327620599878",
+    "SILVER_BAR": ":silver_bar:796486327491231774",
+    "GOLD_BAR": ":gold_bar:796486326617636884",
 
     "DIAMOND": ":large_blue_diamond:",
-
     "WOOD": ":wood:",
     "ROCK": "🪨",
-    "AXE": ":axe:",
 
-    "FLARE": ":coop:725006245999935610"
+    "AXE": ":axe:",
+    "FLARE": ":flare:796486324806352946"
 
 }

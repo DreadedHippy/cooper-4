@@ -4,6 +4,7 @@ const STATE = {
     CLIENT: null,
 
     // Last redemption update time.
+    // TODO: Bring into activity feed notifications
     LAST_ENTRY_VOTE_TIME: null,
     LAST_ACHIEVEMENT_NOTIFICATION: null,
 

@@ -6,6 +6,7 @@ import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../core/entities/users/usersHelper";
 import ItemsHelper from "../../items/itemsHelper";
 import PointsHelper from "../../points/pointsHelper";
+import EconomyNotifications from "../economyNotifications";
 
 
 export default class MiningMinigame {
@@ -63,6 +64,13 @@ export default class MiningMinigame {
                 const brokenPickDamage = -2;
                 const pointsDamageResult = await PointsHelper.addPointsByID(user.id, brokenPickDamage);
     
+                EconomyNotifications.add('MINING', {
+                    playerID: user.id,
+                    username: user.username,
+                    brokenPickaxes: 1,
+                    pointGain: brokenPickDamage
+                });    
+
                 const actionText = `${user.username} broke a pickaxe trying to mine, ${userPickaxesNum - 1} remaining!`;
                 const damageText = `${brokenPickDamage} points (${pointsDamageResult}).`;
                 ChannelsHelper._propogate(msg, `${actionText} ${damageText}`);
@@ -71,17 +79,27 @@ export default class MiningMinigame {
             // See if updating the item returns the item and quantity.
             const addMetalOre = await ItemsHelper.add(user.id, 'METAL_ORE', extractedOreNum);
             const addPoints = await PointsHelper.addPointsByID(user.id, 1);
+            let diamondsFound = 0;
 
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
-                const addDiamond = await ItemsHelper.add(user.id, 'DIAMOND', 1);
+                diamondsFound = 1;
+                const addDiamond = await ItemsHelper.add(user.id, 'DIAMOND', diamondsFound);
                 ChannelsHelper._propogate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`);
             }
             
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
-                const diamondVeinQty = STATE.CHANCE.natural({ min: 5, max: 25 });
-                await ItemsHelper.add(user.id, 'DIAMOND', diamondVeinQty);
-                ChannelsHelper._propogate(msg, `${user.username} hit a major diamond vein, ${diamondVeinQty} found!`);
+                diamondsFound = STATE.CHANCE.natural({ min: 5, max: 25 });
+                await ItemsHelper.add(user.id, 'DIAMOND', diamondsFound);
+                ChannelsHelper._propogate(msg, `${user.username} hit a major diamond vein, ${diamondsFound} found!`);
             }
+
+            EconomyNotifications.add('MINING', {
+                pointGain: 1,
+                recOre: extractedOreNum,
+                playerID: user.id,
+                username: user.username,
+                diamondsFound
+            });
 
             // Reduce the number of rocks in the message.
             if (textMagnitude > 1) await msg.edit(EMOJIS.ROCK.repeat(textMagnitude - 1));

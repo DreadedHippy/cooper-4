@@ -2,7 +2,7 @@ import FlareHandler from '../../../bot/community/features/items/handlers/flareHa
 import LaxativeHandler from '../../../bot/community/features/items/handlers/laxativeHandler';
 import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
 import GiftboxHandler from '../../community/features/items/handlers/giftboxHandler';
-import CoopCommand from '../../core/classes/coopCommand';
+import CoopCommand from '../../core/entities/coopCommand';
 
 
 export default class UseCommand extends CoopCommand {

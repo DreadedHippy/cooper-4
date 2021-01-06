@@ -1,5 +1,5 @@
 import PointsHelper from '../../../bot/community/features/points/pointsHelper';
-import CoopCommand from '../../core/classes/coopCommand';
+import CoopCommand from '../../core/entities/coopCommand';
 
 export default class PointsCommand extends CoopCommand {
 

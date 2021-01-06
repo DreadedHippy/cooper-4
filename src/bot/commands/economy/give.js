@@ -1,5 +1,5 @@
 import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
-import CoopCommand from '../../core/classes/coopCommand';
+import CoopCommand from '../../core/entities/coopCommand';
 import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import ServerHelper from '../../core/entities/server/serverHelper';

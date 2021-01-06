@@ -7,6 +7,7 @@ import EventsHelper from "../features/events/eventsHelper";
 import StatisticsHelper from "../features/server/statisticsHelper";
 
 import MessageNotifications from "./message/messageNotifications";
+import EconomyNotifications from "../features/minigame/economyNotifications";
 
 import STATE from "../../state";
 
@@ -15,6 +16,7 @@ import EggHuntMinigame from "../features/minigame/small/egghunt";
 import MiningMinigame from "../features/minigame/small/mining";
 import WoodcuttingMinigame from "../features/minigame/small/woodcutting";
 import Chicken from "../chicken";
+import CooperMorality from "../features/minigame/small/cooperMorality";
 
 
 export const baseTickDur = 60 * 25 * 1000;
@@ -32,15 +34,17 @@ export default function eventsManifest() {
   // Above is unfinished
   EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);
   EventsHelper.runInterval(() => MessageNotifications.post(), baseTickDur / 2);
+  EventsHelper.runInterval(() => EconomyNotifications.post(), baseTickDur / 1.5);
   EventsHelper.runInterval(() => SacrificeHelper.random(), baseTickDur * 12);
   
 
   // Minigame related items.
-  EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur);
+  EventsHelper.runInterval(() => CooperMorality.evaluate(), baseTickDur * 4.5);
   EventsHelper.runInterval(() => PointsHelper.updateCurrentWinner(), baseTickDur * 2);
-  EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 65, baseTickDur / 1.5);
-  EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 45, baseTickDur * 2);
   EventsHelper.chanceRunInterval(() => WoodcuttingMinigame.run(), 55, baseTickDur * 2.5);
+  EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 45, baseTickDur * 2);
+  EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur);
+  EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 65, baseTickDur / 1.5);
     // TODO: Update and create most items role
   
 

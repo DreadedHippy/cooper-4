@@ -1,4 +1,4 @@
-import CoopCommand from '../../core/classes/coopCommand';
+import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 export default class TimeCommand extends CoopCommand {

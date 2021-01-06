@@ -2,7 +2,7 @@ import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import Database from "../../../core/setup/database";
 
 import EMOJIS from '../../../core/config/emojis.json';
-import DatabaseHelper from "../../../core/classes/databaseHelper";
+import DatabaseHelper from "../../../core/entities/databaseHelper";
 
 // Items with reaction usages.
 import BombHandler from "./handlers/bombHandler";

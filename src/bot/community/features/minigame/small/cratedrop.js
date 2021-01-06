@@ -204,7 +204,9 @@ export default class CratedropMinigame {
             if (!anyRewardGiven) MessagesHelper.selfDestruct(msg, 'No items were inside this crate! >:D', 30000);
 
             // Post and delete the points reward message feedback.
-            const usersRewardedText = hitterNames.join(', ') + ` were rewarded ${crate.openingPoints} point(s)`;
+            const hitterNamesStr = hitterNames.join(', ');
+            const tenseStr = hitterNames.length > 1 ? 'were' : 'was';
+            const usersRewardedText =  + `${hitterNamesStr} ${tenseStr} rewarded ${crate.openingPoints} point(s)`;
             const rewardTypeText = `the ${!anyRewardGiven ? 'empty ' : ''}${rarity.replace('_', ' ').toLowerCase()}`;
             const pointsRewardString = `${usersRewardedText} for attempting to open ${rewardTypeText}!`;
             ChannelsHelper._propogate(msg, pointsRewardString, true);

@@ -1,5 +1,5 @@
 import STATE from "../../../state";
-import DatabaseHelper from "../../classes/databaseHelper";
+import DatabaseHelper from "../databaseHelper";
 import Database from "../../setup/database";
 import ServerHelper from "../server/serverHelper";
 import format from 'pg-format';

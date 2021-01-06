@@ -1,5 +1,5 @@
 import ItemsHelper from '../../community/features/items/itemsHelper';
-import CoopCommand from '../../core/classes/coopCommand';
+import CoopCommand from '../../core/entities/coopCommand';
 
 export default class SkillsCommand extends CoopCommand {
 
