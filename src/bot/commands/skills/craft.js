@@ -22,20 +22,21 @@ export default class CraftCommand extends CoopCommand {
 				{
 					key: 'qty',
 					prompt: 'How many do you want to craft?',
-					type: 'number',
+					type: 'integer',
 					default: 1
 				},
 			],
 		});
 	}
 
-	async run(msg, { itemCode }) {
+	async run(msg, { itemCode, qty }) {
 		super.run(msg);
 
 
 		// Check if emoji
 		itemCode = ItemsHelper.parseFromStr(itemCode);
 
+		msg.say(`You wanna craft ${qty}x${itemCode}, eyyyy?`);
     }
     
 };
