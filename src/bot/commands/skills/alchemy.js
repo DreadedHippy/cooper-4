@@ -49,9 +49,9 @@ export default class AlchemyCommand extends CoopCommand {
 
 		const drop = DropTable.getRandomTieredWithQty(rarity);
 
-		const testStr = `You wanna alchemise ${qty}x${itemCode}, eyyyy? `;
+		let testStr = `You wanna alchemise ${qty}x${itemCode}, eyyyy? `;
 		if (drop) testStr += `You may have won ${drop.qty}x${drop.item}`;
-		msg.say(testStr);
+		await msg.say(testStr);
 
 		// if (itemCode && rarity) {
 		// 	const ownedQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
