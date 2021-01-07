@@ -19,10 +19,10 @@ export default class AlchemyCommand extends CoopCommand {
 					key: 'qty',
 					prompt: 'How many eggs?',
 					type: 'integer',
-					default: 1
+					default: 100
 				},
 				{
-					key: 'rarity',
+					key: 'itemCode',
 					prompt: 'Which rarity? (item_code)',
 					type: 'string',
 					default: 'AVERAGE_EGG'
@@ -31,13 +31,13 @@ export default class AlchemyCommand extends CoopCommand {
 		});
 	}
 
-	async run(msg, { qty, rarity }) {
+	async run(msg, { qty, itemCode }) {
 		super.run(msg);
 
 		const alcQty = parseInt(qty);
 
 		// Check if emoji
-		const itemCode = ItemsHelper.parseFromStr(rarity);
+		const itemCode = ItemsHelper.parseFromStr(itemCode);
 
 		let rarity = null;
 		if (rarity === 'AVERAGE_EGG') rarity = 'AVERAGE';
