@@ -19,8 +19,10 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
+
+
         // DEV WORK AND TESTING ON THE LINES BELOW.
-        // ChannelsHelper._get('796516850702876702').setName('attacks―˻🩸˼');
+
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
 
