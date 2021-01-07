@@ -82,14 +82,28 @@ export default class EconomyNotifications {
         const eventStatusesKeys = Object.keys(STATE.EVENTS_HISTORY);
         if (eventStatusesKeys.length > 0) {
             let notificationString = 'Latest actions for you! ';
+            
+
+            if (STATE.EVENTS_HISTORY['WOODCUTTING']) {
+                notificationString += '\nHad woodcutting stats';
+            }
+
+            if (STATE.EVENTS_HISTORY['MINING']) {
+                notificationString += '\nHad mining stats';
+            }
 
             ChannelsHelper._postToChannelCode('ACTIONS', notificationString);
+
+            this.clear('WOODCUTTING');
+            this.clear('MINING');
+            this.clear('EGG_HUNT');
+            this.clear('CRATE_DROP');
         }
     }
     
-
     static clear(type) {
-        delete STATE.EVENTS_HISTORY[type];
+        if (typeof STATE.EVENTS_HISTORY[type] !== 'undefined');
+            delete STATE.EVENTS_HISTORY[type];
     }
 
 

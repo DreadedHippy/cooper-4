@@ -38,31 +38,53 @@ export default class HelpCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 
-		let helpString = `**Available Commands**:\n\n`;
+		let helpString = `**Available Commands**: \nTo find out more provide a command group or command name. !help {?CMD|GROUP?}\n\n`;
 		
+		// TODO: Add category support
+
+		let category = null;
+
+		// TODO: Improve hidden to filter by roles
+		const hidden = [
+			'nuke'
+		];
+
+		const hiddenGroups = [
+			'mod',
+			'misc'
+		];
+
         try {
 			// TODO: Implement properly.
 
-			this.commando.registry.groups.map(group => {
-				group.commands.map(cmd => {
-					console.log(cmd.memberName);
-					helpString += `!${cmd.memberName} ${`
-						${cmd.aliases.length > 0 ? 
-							`[${cmd.aliases.join(', !')}]`
-							:
-							''
-						}
-					`}\n`;
-					helpString += `__${cmd.examples[1]}`;
-					helpString += `-- ${cmd.description}\n\n`;
-					// console.log(cmd);
+			if (!category) {
+				this.commando.registry.groups.map(group => {
+					if (hiddenGroups.includes(group.id)) return false;
+					helpString += `**${group.id}: ${group.name}**\n`;
+
+					let count = 0;
+					const delimiter = group.commands.size > 1 ? ', ' : '.'; 
+					group.commands.map((cmd) => {
+						let finalSpacer = delimiter;
+
+						if (count === group.commands.size - 1) finalSpacer = '.';
+
+						if (hidden.includes(cmd.memberName)) return false;
+						helpString += `!${cmd.memberName}${finalSpacer}`;
+
+						count++;
+					});
+					helpString += '\n\n';
 				});
-			});
+	
+				textSplitter(helpString, 1500).map((helpSection, index) => {
+					// setTimeout(() => msg.direct(`\`\`\`\n${helpSection}\n\`\`\``), 1666 * index);
+					setTimeout(() => msg.direct(helpSection), 1666 * index);
+				});
 
+			} else {
 
-			textSplitter(helpString, 1500).map((helpSection, index) => {
-				setTimeout(() => msg.direct(helpSection), 1666 * index);
-			});
+			}
 
         } catch(err) {
             await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');

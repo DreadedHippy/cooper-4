@@ -32,7 +32,6 @@ export default class CraftCommand extends CoopCommand {
 	async run(msg, { itemCode, qty }) {
 		super.run(msg);
 
-
 		// Check if emoji
 		itemCode = ItemsHelper.parseFromStr(itemCode);
 

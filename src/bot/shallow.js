@@ -4,7 +4,7 @@ import STATE from './state';
 import dotenv from 'dotenv';
 
 // v DEV IMPORT AREA v
-
+import ChannelsHelper from './core/entities/channels/channelsHelper';
 // ^ DEV IMPORT AREA ^
 
 dotenv.config();
@@ -20,8 +20,7 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-
-
+        // ChannelsHelper._get('796516850702876702').setName('attacks―˻🩸˼');
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
 
