@@ -191,6 +191,13 @@ export default class ItemsHelper {
         return matches.map(x => x.replace(/\s/g, '_'));
     }
 
+    static BeautifyItemCode(Code) {
+        const LowerName = Code.replace("_", " ").toLowerCase();
+        const nameCapitalized = LowerName.charAt(0).toUpperCase() + LowerName.slice(1);
+        const emoji = MessagesHelper.emojifyID(EMOJIS[Code]);
+        return nameCapitalized + " " + emoji;
+    }
+
     static NON_USABLE_EMOJIS = [
         "COOP",
         "VOTE_FOR",
