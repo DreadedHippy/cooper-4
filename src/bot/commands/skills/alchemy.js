@@ -38,7 +38,7 @@ export default class AlchemyCommand extends CoopCommand {
 		const alcQty = parseInt(qty);
 
 		// Check if emoji
-		const itemCode = ItemsHelper.parseFromStr(itemCode);
+		itemCode = ItemsHelper.parseFromStr(itemCode);
 
 		let rarity = null;
 		if (rarity === 'AVERAGE_EGG') rarity = 'AVERAGE';
