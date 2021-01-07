@@ -41,9 +41,9 @@ export default class AlchemyCommand extends CoopCommand {
 		itemCode = ItemsHelper.parseFromStr(itemCode);
 
 		let rarity = null;
-		if (rarity === 'AVERAGE_EGG') rarity = 'AVERAGE';
-		if (rarity === 'RARE_EGG') rarity = 'RARE';
-		if (rarity === 'LEGENDARY_EGG') rarity = 'LEGENDARY';
+		if (itemCode === 'AVERAGE_EGG') rarity = 'AVERAGE';
+		if (itemCode === 'RARE_EGG') rarity = 'RARE';
+		if (itemCode === 'LEGENDARY_EGG') rarity = 'LEGENDARY';
 
 		console.log(alcQty, itemCode, rarity);
 
@@ -51,6 +51,7 @@ export default class AlchemyCommand extends CoopCommand {
 
 		const testStr = `You wanna alchemise ${qty}x${itemCode}, eyyyy? `;
 		if (drop) testStr += `You may have won ${drop.qty}x${drop.item}`;
+		msg.say(testStr);
 
 		// if (itemCode && rarity) {
 		// 	const ownedQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
