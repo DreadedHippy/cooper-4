@@ -34,12 +34,34 @@ export default class AlchemyCommand extends CoopCommand {
 	async run(msg, { qty, rarity }) {
 		super.run(msg);
 
+		const alcQty = parseInt(qty);
+
 		// Check if emoji
-		rarity = ItemsHelper.parseFromStr(rarity);
+		const itemCode = ItemsHelper.parseFromStr(rarity);
 
-		// Implement drop table: DropTable.getRandomWithQty()
+		let rarity = null;
+		if (rarity === 'AVERAGE_EGG') rarity = 'AVERAGE';
+		if (rarity === 'RARE_EGG') rarity = 'RARE';
+		if (rarity === 'LEGENDARY_EGG') rarity = 'LEGENDARY';
 
-		msg.say(`You wanna alchemise ${qty}x${rarity}, eyyyy?`);
+		console.log(alcQty, itemCode, rarity);
+		msg.say(`You wanna alchemise ${qty}x${rarity}, eyyyy? You may have won ${drop.qty}x${drop.item}`);
+
+		// if (itemCode && rarity) {
+		// 	const ownedQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
+		// 	if (ownedQty >= alcQty) {
+		// 		const didUse = await ItemsHelper.use(msg.author.id, itemCode);
+		// 		if (didUse) {
+		// 			const drop = DropTable.getRandomTieredWithQty(rarity);
+					
+
+		// 		} else {
+	
+		// 		}
+
+		// 		msg.say(`You wanna alchemise ${qty}x${rarity}, eyyyy? You may have won ${drop.qty}x${drop.item}`);
+		// 	}
+		// }
     }
     
 };
