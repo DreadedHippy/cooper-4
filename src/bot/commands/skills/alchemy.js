@@ -1,3 +1,4 @@
+import { drop } from 'lodash';
 import DropTable from '../../community/features/items/droptable';
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
@@ -45,7 +46,11 @@ export default class AlchemyCommand extends CoopCommand {
 		if (rarity === 'LEGENDARY_EGG') rarity = 'LEGENDARY';
 
 		console.log(alcQty, itemCode, rarity);
-		msg.say(`You wanna alchemise ${qty}x${rarity}, eyyyy? You may have won ${drop.qty}x${drop.item}`);
+
+		const drop = DropTable.getRandomTieredWithQty(rarity);
+
+		const testStr = `You wanna alchemise ${qty}x${itemCode}, eyyyy? `;
+		if (drop) testStr += `You may have won ${drop.qty}x${drop.item}`;
 
 		// if (itemCode && rarity) {
 		// 	const ownedQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
