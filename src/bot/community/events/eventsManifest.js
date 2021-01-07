@@ -19,6 +19,7 @@ import Chicken from "../chicken";
 import CooperMorality from "../features/minigame/small/cooperMorality";
 import TradingHelper from "../features/items/tradingHelper";
 import EconomyHelper from "../features/economy/economyHelper";
+import ElectionHelper from "../features/hierarchy/election/electionHelper";
 
 
 export const baseTickDur = 60 * 25 * 1000;
@@ -54,6 +55,7 @@ export default function eventsManifest() {
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 65, baseTickDur / 1.5);
     // TODO: Update and create most items role
   
+    EventsHelper.runInterval(() => ElectionHelper.checkProgress(), baseTickDur * 5);
 
 
   // Miscellaneous features.

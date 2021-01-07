@@ -13,6 +13,7 @@ export default () => {
         .registerGroups([ 
             ['util', 'Utility and assistance commands.'],
             ['community', 'Community related commands.'],
+            ['election', 'Election related commands.'],
             ['economy', 'Economy related commands.'],
             ['skills', 'Skills related commands.'],
             ['misc', 'Miscellaneous commands.'],

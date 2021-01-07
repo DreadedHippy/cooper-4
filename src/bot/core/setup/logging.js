@@ -1,3 +1,4 @@
+import ElectionHelper from "../../community/features/hierarchy/election/electionHelper";
 import ServerHelper from "../entities/server/serverHelper";
 import Crossover from "./crossover";
 import Redis from "./redis";
@@ -27,6 +28,9 @@ export default (discordClient) => {
                         reqNum++;
                     }
                 });
+
+                // Cache candidate messages.
+                ElectionHelper.onLoad();
 
             } catch(e) {
                 console.error(e);

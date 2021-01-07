@@ -83,9 +83,11 @@ export default class MessagesHelper {
         }, delay);
     }
 
-    static async selfDestruct(msgRef, content, delay = 5000) {
-        const createdMsg = await msgRef.say(content);
-        this.delayDelete(createdMsg, delay);
+    static async selfDestruct(msgRef, content, delay = 666, fuse = 30000) {
+        setTimeout(async () => {
+            const createdMsg = await msgRef.say(content);
+            this.delayDelete(createdMsg, fuse);
+        }, delay);
     }
 
     // Convert emojiID into Discord format, but not if its merely an unicode emoji.
@@ -105,5 +107,11 @@ export default class MessagesHelper {
         str = str.toLowerCase().split(' ');
         for (let i = 0; i < str.length; i++) str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
         return str.join(' ');
+    }
+
+
+
+    static delayedSelfDestructingReply(msgRef, delay, fuse) {
+        this.delay
     }
 }

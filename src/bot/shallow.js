@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 
 // v DEV IMPORT AREA v
 import ChannelsHelper from './core/entities/channels/channelsHelper';
+import ElectionHelper from './community/features/hierarchy/election/electionHelper';
+import Chicken from './community/chicken';
+
 // ^ DEV IMPORT AREA ^
 
 dotenv.config();
@@ -22,6 +25,7 @@ const shallowBot = async () => {
 
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
+
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });

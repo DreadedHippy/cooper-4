@@ -21,6 +21,46 @@ CREATE TABLE items(
         ON DELETE CASCADE
 );
 
+
+
+
+CREATE TABLE election_votes(
+    id SERIAL PRIMARY KEY,
+    candidate_id VARCHAR,
+    voter_id VARCHAR,
+    time int,
+    CONSTRAINT fk_voter_id
+        FOREIGN KEY(voter_id) 
+        REFERENCES users(discord_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_candidate_id
+        FOREIGN KEY(candidate_id) 
+        REFERENCES users(discord_id)
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE candidates(
+    id SERIAL PRIMARY KEY,
+    campaign_msg_link VARCHAR,
+    candidate_id VARCHAR,
+    CONSTRAINT fk_candidate_id
+        FOREIGN KEY(candidate_id) 
+        REFERENCES users(discord_id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE past_commanders(
+    id SERIAL PRIMARY KEY,
+    last_served int,
+    candidate_id VARCHAR,
+    CONSTRAINT fk_candidate_id
+        FOREIGN KEY(candidate_id) 
+        REFERENCES users(discord_id)
+        ON DELETE CASCADE
+);
+
+
 CREATE TABLE structures(
     id SERIAL PRIMARY KEY,
     structure_code VARCHAR,
