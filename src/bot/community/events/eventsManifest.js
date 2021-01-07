@@ -18,6 +18,7 @@ import WoodcuttingMinigame from "../features/minigame/small/woodcutting";
 import Chicken from "../chicken";
 import CooperMorality from "../features/minigame/small/cooperMorality";
 import TradingHelper from "../features/items/tradingHelper";
+import EconomyHelper from "../features/economy/economyHelper";
 
 
 export const baseTickDur = 60 * 25 * 1000;
@@ -41,7 +42,8 @@ export default function eventsManifest() {
 
   // Update trades channel message
   EventsHelper.runInterval(() => TradingHelper.updateChannel(), baseTickDur * 2);
-  
+  EventsHelper.runInterval(() => TradingHelper.updateChannel(), baseTickDur * 6);
+  EventsHelper.chanceRunInterval(() => EconomyHelper.circulation(), 45, baseTickDur * 5);
 
   // Minigame related items.
   EventsHelper.runInterval(() => CooperMorality.evaluate(), baseTickDur * 4.5);

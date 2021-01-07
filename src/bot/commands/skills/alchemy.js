@@ -10,9 +10,9 @@ export default class AlchemyCommand extends CoopCommand {
 			group: 'skills',
 			memberName: 'alchemy',
 			aliases: ['alc'],
-			description: 'This command lets you alchemy the items you want',
-			details: `Details of the alchemy command`,
-			examples: ['alchemy', '!alchemy laxative'],
+			description: 'Alchemise various eggs, we\'re not yolking.',
+			details: ``,
+			examples: ['alchemy', '!alchemy 100 RARE_EGG'],
 			args: [
 				{
 					key: 'qty',
@@ -34,7 +34,7 @@ export default class AlchemyCommand extends CoopCommand {
 		super.run(msg);
 
 		// Check if emoji
-		itemCode = ItemsHelper.parseFromStr(itemCode);
+		itemCode = ItemsHelper.parseFromStr(rarity);
 
 		msg.say(`You wanna alchemise ${qty}x${rarity}, eyyyy?`);
     }
