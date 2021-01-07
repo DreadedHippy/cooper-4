@@ -91,7 +91,7 @@ export default class Chicken {
             }
             
             // Set a datbase default.
-            if (!cooperUnixSecsResp) isNewDay = true;
+            if (!cooperUnixSecs) isNewDay = true;
 
             if (isNewDay) {
                 await this.setConfig('current_day', '' + currentUnixSecs);

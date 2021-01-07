@@ -13,6 +13,7 @@ import ItemsHelper from '../../items/itemsHelper';
 import PointsHelper from '../../points/pointsHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
 import { baseTickDur } from '../../../events/eventsManifest';
+import DropTable from '../../items/droptable';
 
 
 /**
@@ -25,51 +26,28 @@ import { baseTickDur } from '../../../events/eventsManifest';
  * Defuse kit - Defuse Bombs, IEDs, Mines
  * IED - Kicks member out of server
  */
+
 const CRATE_DATA = {
     AVERAGE_CRATE: {
         emoji: EMOJIS.AVERAGE_CRATE,
         maxReward: 2,
         openingPoints: 1,
         percHitsReq: .0125,
-        rewards: [
-            'BOMB',
-            'LAXATIVE',
-            'TOXIC_EGG',
-            'PICK_AXE',
-            'FRYING_PAN',
-            'EMPTY_GIFTBOX',
-            'WOOD',
-            'AXE',
-            'IRON_BAR'
-        ]
+        rewards: DropTable.TIERS.AVERAGE
     },
     RARE_CRATE: {
         emoji: EMOJIS.RARE_CRATE,
         maxReward: 4,
         openingPoints: 2,
         percHitsReq: .015,
-        rewards: [
-            'ROPE',
-            'SHIELD',
-            'MINE',
-            'DEFUSE_KIT',
-            'FLARE',
-            'STEEL_BAR'
-        ]
+        rewards: DropTable.TIERS.RARE
     },
     LEGENDARY_CRATE: {
         emoji: EMOJIS.LEGENDARY_CRATE,
         maxReward: 3,
         openingPoints: 3,
         percHitsReq: .03,
-        rewards: [
-            'IED',
-            'RPG',
-            'GOLD_BAR',
-            'GOLD_COIN',
-            'SILVER_BAR',
-            'DIAMOND'
-        ]
+        rewards: DropTable.TIERS.LEGENDARY
     },
 };
 
@@ -206,9 +184,9 @@ export default class CratedropMinigame {
             // Post and delete the points reward message feedback.
             const hitterNamesStr = hitterNames.join(', ');
             const tenseStr = hitterNames.length > 1 ? 'were' : 'was';
-            const usersRewardedText =  + `${hitterNamesStr} ${tenseStr} rewarded ${crate.openingPoints} point(s)`;
-            const rewardTypeText = `the ${!anyRewardGiven ? 'empty ' : ''}${rarity.replace('_', ' ').toLowerCase()}`;
-            const pointsRewardString = `${usersRewardedText} for attempting to open ${rewardTypeText}!`;
+            const usersRewardedText = `${hitterNamesStr} ${tenseStr} rewarded ${crate.openingPoints} point(s)`;
+            const rewardTypeText = `${!anyRewardGiven ? 'empty ' : ''}${rarity.replace('_', ' ').toLowerCase()}`;
+            const pointsRewardString = `${usersRewardedText} for attempting to open the ${rewardTypeText}!`;
             ChannelsHelper._propogate(msg, pointsRewardString, true);
 
             // Remove the opened crate.

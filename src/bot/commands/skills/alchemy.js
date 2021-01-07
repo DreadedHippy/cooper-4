@@ -1,3 +1,4 @@
+import DropTable from '../../community/features/items/droptable';
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 
@@ -34,7 +35,9 @@ export default class AlchemyCommand extends CoopCommand {
 		super.run(msg);
 
 		// Check if emoji
-		itemCode = ItemsHelper.parseFromStr(rarity);
+		rarity = ItemsHelper.parseFromStr(rarity);
+
+		// Implement drop table: DropTable.getRandomWithQty()
 
 		msg.say(`You wanna alchemise ${qty}x${rarity}, eyyyy?`);
     }
