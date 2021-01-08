@@ -13,14 +13,14 @@ export default class ConsiderCommand extends CoopCommand {
 			description: 'Consider an electoral candate, shows their campaign message and platform.',
 			details: ``,
 			examples: ['consider', '!consider {OPTIONAL:?@user OR "username"?}'],
-			args: [
-				{
-					key: 'candidate',
-					prompt: 'Please provide your written electoral campaign message.',
-					type: 'user',
-					default: null
-				},
-			],
+			//args: [
+			//	{
+			//		key: 'candidate',
+			//		prompt: 'Please provide your written electoral campaign message.',
+			//		type: 'user',
+			//		default: null
+			//	},
+			//],
 		});
 	}
 
