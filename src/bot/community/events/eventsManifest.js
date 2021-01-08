@@ -31,7 +31,10 @@ export default function eventsManifest() {
 
   // New day events/calendar events.
   EventsHelper.runInterval(() => Chicken.checkIfNewDay([
-    () => _channel._postToFeed('A new day?')
+    () => {
+      _channel._postToFeed('A new day?')
+      ElectionHelper.checkProgress()
+    }
   ]), baseTickDur / 2);
   
   // Above is unfinished
@@ -53,9 +56,11 @@ export default function eventsManifest() {
   EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 45, baseTickDur * 2);
   EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur);
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 65, baseTickDur / 1.5);
-    // TODO: Update and create most items role
-  
-    EventsHelper.runInterval(() => ElectionHelper.checkProgress(), baseTickDur * 5);
+
+  // TODO: Update and create most items role
+ 
+  // Processes announcements and election events.
+  EventsHelper.runInterval(() => ElectionHelper.checkProgress(), baseTickDur * 4);
 
 
   // Miscellaneous features.

@@ -1,4 +1,16 @@
 export default class MessagesHelper {
+    static parselink(link) {
+        const subjStr = link.replace('https://discordapp.com/channels/', '');
+        const msgPcs = subjStr.split('/');
+
+        const data = {
+            guild: msgPcs[0],
+            channel: msgPcs[1],
+            message: msgPcs[2]
+        };
+
+        return data;
+    }
     static link(msg) {
         const link = `https://discordapp.com/channels/` +
             `${msg.guild.id}/` +

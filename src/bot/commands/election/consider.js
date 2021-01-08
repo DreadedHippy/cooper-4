@@ -1,3 +1,4 @@
+import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 
 
@@ -17,6 +18,7 @@ export default class ConsiderCommand extends CoopCommand {
 					key: 'candidate',
 					prompt: 'Please provide your written electoral campaign message.',
 					type: 'user',
+					default: null
 				},
 			],
 		});
@@ -25,7 +27,14 @@ export default class ConsiderCommand extends CoopCommand {
 	async run(msg, { candidate }) {
 		super.run(msg);
 
-		// Retrieve the campaign message of candidate
+		if (candidate) {
+			// Retrieve the campaign message of candidate
+		} else {
+			// Otherwise show the list in a self-destruct msg.
+			const candidates = await ElectionHelper.getAllCandidates();
+			// const candidateNames = candidates.map(candidate => candidate.)
+			console.log(candidates);
+		}
 
     }
     

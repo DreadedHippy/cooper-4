@@ -61,7 +61,9 @@ export default class StandCommand extends CoopCommand {
 				MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for election, eyyy?`);
 	
 				// Save message link from election channel
-				const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', campaignText);
+				const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', 
+					`Campaign Ad - ${author.toString()}:\n\n${campaignText}`
+				);
 				const msgLink = MessagesHelper.link(electionMsg);
 
 				// Add candidate to election

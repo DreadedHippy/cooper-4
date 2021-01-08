@@ -11,6 +11,7 @@ import SacrificeHelper from "../../features/events/sacrificeHelper";
 import ItemsHelper from "../../features/items/itemsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
 import CleanupHandler from '../../features/messages/cleanupHandler';
+import ElectionHelper from '../../features/hierarchy/election/electionHelper';
 
 export default async function reactAddedHandler(reaction, user) {
     const isUser = !UsersHelper.isCooper(user.id);
@@ -34,6 +35,9 @@ export default async function reactAddedHandler(reaction, user) {
 
         // Check for reaction on sacrifice message.
         SacrificeHelper.onReaction(reaction, user);
+
+        // Check if reaction is an election vote.
+        ElectionHelper.onReaction(reaction, user);
 
         // Allow elected people to cleanup Cooper messages.
         CleanupHandler.onReaction(reaction, user);

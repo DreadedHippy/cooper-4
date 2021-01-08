@@ -1,5 +1,6 @@
 import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
+import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 export default class DropCommand extends CoopCommand {
 
@@ -31,9 +32,13 @@ export default class DropCommand extends CoopCommand {
 		const noMatchErrText = 'Please provide a valid item name.';
 		if (!usableItems.includes(itemCode)) return msg.reply(noMatchErrText);
 
-		msg.reply('Should drop item but work in progress, remind remind remind!');
 		// Check user owns it, nvm... let ItemsHelper do that.
 		// ItemsHelper.dropItem(msg.author.id, itemCode);
+
+		const dropMsg = await msg.reply(EMOJIS[itemCode]);
+		MessagesHelper.delayReact(dropMsg, EMOJIS.DROPPED, 666);
+
+		
     }
     
 };
