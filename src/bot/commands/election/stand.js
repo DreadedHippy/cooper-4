@@ -62,7 +62,7 @@ export default class StandCommand extends CoopCommand {
 	
 				// Save message link from election channel
 				const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', 
-					`Campaign Ad - ${author.toString()}:\n\n${campaignText}`
+					`Campaign Ad - ${msg.author.toString()}:\n\n${campaignText}`
 				);
 				const msgLink = MessagesHelper.link(electionMsg);
 

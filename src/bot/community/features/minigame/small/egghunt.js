@@ -278,15 +278,14 @@ export default class EggHuntMinigame {
         if (STATE.CHANCE.bool({ likelihood: 0.025 })) this.dmDrop('LEGENDARY_EGG');
 
         // Bonus eggs            
-        if (STATE.CHANCE.bool({ likelihood: 7.5 })) {
-            ChannelsHelper._postToFeed('Bonus eggs rolling!');
-            
+        if (STATE.CHANCE.bool({ likelihood: 6.5 })) {           
             let bonusEggsNum = STATE.CHANCE.natural({ min: 5, max: 25 });
-            if (STATE.CHANCE.bool({ likelihood: 5 })) {
+            if (STATE.CHANCE.bool({ likelihood: 3.5 })) {
                 bonusEggsNum = STATE.CHANCE.natural({ min: 10, max: 45 });
                 ChannelsHelper._postToFeed('Bonus eggs hurtling!');
             } else 
                 ChannelsHelper._postToFeed('Bonus eggs rolling!');
+
             for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE_EGG', null);
 
             const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 1, max: Math.floor(bonusEggsNum / 2.5) });

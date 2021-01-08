@@ -73,6 +73,12 @@ export default class ElectionHelper {
             // Time until next ellection?
             // TODO: Reuse formatting for consider here.
             ChannelsHelper._postToFeed('Should be outputting election progress.');
+
+            // Get and format all votes.
+            const allVotes = await this.fetchAllVotes();
+            console.log('all votes', allVotes);
+
+            // TODO: Output time remaining to vote!
             
         } else {
             // Time until next ellection?
@@ -83,7 +89,7 @@ export default class ElectionHelper {
         // Check if election has finished!
         if (wasOn) {
             const elecDoneSecs = 100;
-
+            // await this.declareElection()
         }
     }
 
@@ -99,14 +105,28 @@ export default class ElectionHelper {
 
     static async fetchAllVotes() {
         // Count all reactions.
+        return [];
+    }
+
+
+    static async declareElection() {
+
+    }
+
+    static async countVotes() {
+
     }
 
     static async getCandidate(userID) {
+        const query = {
+            name: "get-candidate",
+            text: `SELECT * FROM election_candidates WHERE candidate_id = $1`,
+            values: [userID]
+        };
 
+        const result = await Database.query(query);
+        return result;
     }
-    static async declareElection() {}
-
-    static async countVotes() {}
 
 
     // Preload campaign messages into cache so they are always reactable.
