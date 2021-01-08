@@ -200,9 +200,15 @@ export default class ElectionHelper {
         console.log(candidate);
     }
 
-    // Load all votes from db
-    static async loadAllVotes() {
+    static async countVotes() {
+        const query = {
+            name: "get-candidate",
+            text: `SELECT candidateID, COUNT(*) FROM votes GROUP BY candidateID`,
+            values: [userID]
+        };
 
+        const result = await Database.query(query);
+        return result;
     }
 
     static async endElection() {
