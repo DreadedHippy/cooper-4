@@ -114,7 +114,14 @@ export default class ElectionHelper {
     }
 
     static async countVotes() {
+        const query = {
+            name: "get-candidate",
+            text: `SELECT candidateID, COUNT(userID) FROM votes GROUP BY candidateID`,
+            values: [userID]
+        };
 
+        const result = await Database.query(query);
+        return result;
     }
 
     static async getCandidate(userID) {
