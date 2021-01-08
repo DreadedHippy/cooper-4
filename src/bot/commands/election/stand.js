@@ -34,8 +34,6 @@ export default class StandCommand extends CoopCommand {
 
 		const { id: userID, username } = msg.author;
 
-		console.log(userID, username);
-
 		try {
 			// Prevent bad campaign texts.
 			if (campaignText.length < 30) {

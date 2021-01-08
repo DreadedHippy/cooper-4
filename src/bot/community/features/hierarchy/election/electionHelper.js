@@ -3,9 +3,12 @@ import moment from 'moment';
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
 import MessagesHelper from '../../../../core/entities/messages/messagesHelper';
 import ServerHelper from '../../../../core/entities/server/serverHelper';
+import UsersHelper from '../../../../core/entities/users/usersHelper';
 import Database from '../../../../core/setup/database';
 import Chicken from "../../../chicken";
+import TimeHelper from '../../server/timeHelper';
 
+import CHANNELS from '../../../../core/config/channels.json';
 
 // MVP: Elections
 // Election Start -> Stand -> Consider -> Vote -> Election Declared
@@ -49,97 +52,175 @@ export default class ElectionHelper {
     static INTERVAL_SECS = 3600 * 24 * 25;
     static DURATION_SECS = 3600 * 24 * 7;
 
-    static candidateCampaigns = [];
-
-    static async clearCandidates() {
-        // Remove js local ref to messages
-        // Ensure all messages deleted, use bulk delete won't be outside of 14 days
-        // Clear database
-    }
-
-    static async checkProgress() {
-        // Are we in an election?
-        const wasOn = await this.isElectionOn();
-        let isOn = false;
-
-        // Detect the start of an election.
-        const isTime = await this.isElectionTime();
-        if (isTime && !wasOn) {
-            await Chicken.setConfig('election_on', true);
-            isOn = true;
-        }
-
-        if (isOn) {
-            // Time until next ellection?
-            // TODO: Reuse formatting for consider here.
-            ChannelsHelper._postToFeed('Should be outputting election progress.');
-
-            // Get and format all votes.
-            const allVotes = await this.fetchAllVotes();
-            console.log('all votes', allVotes);
-
-            // TODO: Output time remaining to vote!
-            
-        } else {
-            // Time until next ellection?
-            const nextElectionFmt = await this.nextElectionFmt();
-            ChannelsHelper._postToFeed(`Next Election: ${nextElectionFmt}`);
-        }
-
-        // Check if election has finished!
-        if (wasOn) {
-            const elecDoneSecs = 100;
-            // await this.declareElection()
-        }
-    }
-
-
-    // Check if this reaction applies to elections.
-    static async onReaction(reaction, user) {
-        console.log(reaction, user);
-        // Check if occurred in election channel
-        // Check if reaction is crown (indicates vote)
-        // Check if already voted
-        // Check if reaction message is a campaign message
-    }
-
-    static async fetchAllVotes() {
-        // Count all reactions.
-        return [];
-    }
-
-
-    static async declareElection() {
-
-    }
-
-    static async countVotes() {
-
-    }
-
-    static async getCandidate(userID) {
+    static async addVote(userID, candidateID) {
         const query = {
-            name: "get-candidate",
-            text: `SELECT * FROM election_candidates WHERE candidate_id = $1`,
-            values: [userID]
+            name: "add-vote",
+            text: `INSERT INTO election_votes(candidate_id, voter_id, time)
+                VALUES($1, $2, $3)`,
+            values: [userID, candidateID, (parseInt(Date.now() / 1000))]
         };
-
+        
         const result = await Database.query(query);
         return result;
     }
 
+    static async clearElection() {
+        // vv same as below but for votes.
+        await this.clearVotes();
+        await this.clearCandidates();
+    }
 
-    // Preload campaign messages into cache so they are always reactable.
-    static async onLoad() {
-        console.warn('should cache candidate messages here');
+    static async clearVotes() {
+        const query = {
+            name: "delete-votes",
+            text: `DELETE FROM election_votes`
+        };
+        
+        const result = await Database.query(query);
+        return result;
+    }
 
+    static async clearCandidates() {
+        const candidates = await this.getAllCandidates();
+        
+        // TODO: Ensure all messages deleted, use bulk delete won't be outside of 14 days
+        candidates.map((candidate, index) => {
+            console.log('please confirm index is integer index', index);
+            setTimeout(() => {
+                console.log('delete msg', candidate.content);
+            }, 1000 * index);
+        });
+
+        // Clear database
+        const query = {
+            name: "delete-candidates",
+            text: `DELETE FROM candidates`
+        };
+        const result = await Database.query(query);
+        return result;
+    }
+
+    static async isVotingPeriod(electionSecs) {
+        const nowSecs = parseInt(Date.now() / 1000);
+        const votingDurSecs = this.DURATION_SECS;
+        const isVotingPeriod = !!(nowSecs >= electionSecs && nowSecs <= electionSecs + votingDurSecs);
+        return isVotingPeriod;
+    }
+
+    static async startElection() {
+        console.log('Trying to start the election.');
+    }
+
+    static async checkProgress() {
+        try {
+            const nextElecSecs = await this.nextElecSecs();
+            const isVotingPeriod = await this.isVotingPeriod(nextElecSecs);
+            const isElecOn = await this.isElectionOn();
+    
+            console.log(isVotingPeriod, isElecOn);
+    
+            // Election needs to be started?
+            if (isVotingPeriod && !isElecOn) await this.startElection();
+    
+            // Election needs to be declared?
+            if (!isVotingPeriod && isElecOn) await this.endElection();
+    
+            // Election needs to announce update?
+            if (isVotingPeriod && isElecOn) {
+                // Provide updates and functionality for an ongoing election.
+                console.log('ongoing');
+                const votes = await this.fetchAllVotes();
+                console.log(votes);
+    
+                await ChannelsHelper._postToFeed('Election is ongoing! Should post updates.')
+    
+                // Save community reaction backed counts to database/ovewrite.
+            }
+
+        } catch(e) {
+            console.log('SOMETHING WENT WRONG WITH CHECKING ELECTION!');
+            console.error(e);
+        }
+    }
+
+    static async getVoteByVoterID(voterID) {
+        let voter = null;
+        const query = {
+            name: "get-voter",
+            text: `SELECT * FROM election_votes WHERE voter_id = $1`,
+            values: [voterID]
+        };
+        
+        const result = await Database.query(query);
+
+        if (result.rows) voter = result.rows[0];
+
+        return voter;
+    }
+
+    // Check if this reaction applies to elections.
+    static async onReaction(reaction, user) {
+        // Check if occurred in election channel
+        if (reaction.message.channel.id !== CHANNELS.ELECTION.id) return false;
+
+        // Ignore Cooper's prompt emoji.
+        if (UsersHelper.isCooper(user.id)) return false;
+
+        // Check if reaction is crown (indicates vote)
+        if (reaction.emoji.name !== '👑') return false;
+
+        // Check if reaction message is a campaign message and get author.
+        const msgLink = MessagesHelper.link(reaction.message);
+        const candidate = await this.getCandByMsgLink(msgLink); 
+
+        // If is candidate message and identified, allow them the vote.
+        if (candidate) {
+            // Check if already voted
+            const vote = await this.getVoteByVoterID(user.id);
+            console.log(vote);
+
+            if (vote) {
+                // self destruct message stating you've already voted.
+                console.log('existing vote');
+                console.log('you already voted for $1 this election, you cheeky fluck.');
+                return false;
+            }
+
+            if (!vote) {
+    
+                // Add vote to database
+                await this.addVote(user.id, candidate.candidate_id);
+
+                // Need ot load candidate via cache id, no access YET.
+                console.log('voted for candidate id ' + candidate.candidate_id);
+    
+                // Acknowledge vote in feed.
+            }
+        }
+        console.log(candidate);
+    }
+
+    // Load all votes from db
+    static async loadAllVotes() {
+
+    }
+
+    static async endElection() {
+        console.log('endElection');
+    }
+
+    static async calcHierarchy(votes) {
+
+    }
+
+    static async loadAllCampaigns() {
         const candidates = await this.getAllCandidates();
         const preloadMsgIDs = candidates.map(candidate => 
             MessagesHelper.parselink(candidate.campaign_msg_link)
         );
 
         // Preload each candidate message.
-        this.candidateCampaigns = await Promise.all(preloadMsgIDs.map((idSet, index) => {
+        const campaigns = await Promise.all(preloadMsgIDs.map((idSet, index) => {
             const guild = ServerHelper._coop();
             return new Promise((resolve, reject) => {
                 setTimeout(async () => {
@@ -152,6 +233,94 @@ export default class ElectionHelper {
             });
         }));
         console.log('Preloaded election messages');
+        return campaigns;
+    }
+
+    static async getCandByMsgLink(msgLink) {
+        const query = {
+            name: "get-candidate-by-msg",
+            text: `SELECT * FROM candidates WHERE campaign_msg_link = $1`,
+            values: [msgLink]
+        };
+
+        let candidate = null;
+        const result = await Database.query(query);
+
+        if (result.rows) candidate = result.rows[0];
+
+        return candidate;
+    }
+
+    static async fetchAllVotes() {
+        const votes = [];
+
+        // Candidates for access later.
+        const candidates = await this.getAllCandidates();
+        const campaignMsgs = await this.loadAllCampaigns();
+
+        // Calculate votes and map author data.
+        campaignMsgs.map(campaignMsg => {
+            // Calculate the author from storage.
+            const campaignAuthor = candidates.reduce((acc, cand) => {
+                const campLink = cand.campaign_msg_link;
+                const candLink = MessagesHelper.link(campaignMsg);
+                const user = UsersHelper._getMemberByID(cand.candidate_id).user || null;
+                const username = user.username || null;
+                cand.username = username;
+                if (campLink === candLink) return acc = cand;
+            }, null);        
+    
+            // TODO: could use this feature/data to direct message the candidates an update
+
+            // Add to the overall data.
+            votes.push({
+                username: campaignAuthor.username,
+                id: campaignAuthor.id,
+                // Count all crown reactions.
+                votes: campaignMsg.reactions.cache.reduce((acc, reaction) => {
+                    if (reaction.emoji.name === '👑') return reaction.count;
+                }, 0)
+            });
+        });
+
+        // Dev testing only.
+        // votes.push({
+        //     username: 'example',
+        //     id: 'tester',
+        //     votes: 15
+        // });
+
+        // Replaces this line: votes = votes.sort((a, b) => a.votes > b.votes);
+        // Ensure in highest order first.
+   
+        votes.sort((a, b) => {
+            if (a.votes < b.votes) return 1;
+            if (a.votes > b.votes) return -1;
+            return 0;
+        });
+
+        return votes;
+    }
+
+    static async getCandidate(userID) {
+        const query = {
+            name: "get-candidate",
+            text: `SELECT * FROM candidates WHERE candidate_id = $1`,
+            values: [userID]
+        };
+
+        const result = await Database.query(query);
+        return result;
+    }
+
+
+    // Preload campaign messages into cache so they are always reactable.
+    static async onLoad() {
+        console.warn('should cache candidate messages here');
+
+        const candidates = await this.loadAllCampaigns();
+
+        return candidates;
     }
 
     static async addCandidate(userID, msgLink) {

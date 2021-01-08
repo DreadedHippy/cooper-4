@@ -28,14 +28,10 @@ export default class Crossover {
     static async setHierarchy(hierarchy) {
         return Promise.all([
             new Promise((resolve, reject) => {
-                Redis.connection.set(
-                    `memberCount`, 
-                    hierarchy.memberCount, 
-                    (err, reply) => {
-                        if(err) reject(err);
-                        else resolve(reply);
-                    }
-                );
+                Redis.connection.set(`memberCount`, hierarchy.memberCount, (err, reply) => {
+                    if(err) reject(err);
+                    else resolve(reply);
+                });
             }),
             new Promise((resolve, reject) => {
                 const entryData = {
@@ -43,14 +39,9 @@ export default class Crossover {
                     id: hierarchy.commander.user.id
                 };
 
-                Redis.connection.set(
-                    `commander`, 
-                    JSON.stringify(entryData), 
-                    (err, reply) => {
-                        if(err) reject(err);
-                        else resolve(reply);
-                    }
-                );
+                Redis.connection.set(`commander`, JSON.stringify(entryData), (err, reply) => {
+                    if (err) reject(err); else resolve(reply);
+                });
             }), 
             ...hierarchy.leaders.map(leader => {
                 const entryData = {

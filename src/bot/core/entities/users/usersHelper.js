@@ -2,7 +2,6 @@ import STATE from "../../../state";
 import DatabaseHelper from "../databaseHelper";
 import Database from "../../setup/database";
 import ServerHelper from "../server/serverHelper";
-import format from 'pg-format';
 
 export default class UsersHelper {
     static avatar(user) {
@@ -13,6 +12,8 @@ export default class UsersHelper {
     static _cache() {
         return ServerHelper._coop().members.cache;
     }
+
+    static _getMemberByID = (id) => this._cache().get(id);
 
     static getMemberByID = (guild, id) => guild.members.cache.get(id);
 

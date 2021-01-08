@@ -25,31 +25,9 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        // TODO: Detect start of new election!
+        // Get stand working and test if someone can vote twice.
 
-
-        ElectionHelper.checkProgress()
-
-
-
-
-        // Get formatted next election and last election.
-        const lastElec = await ElectionHelper.lastElecFmt();
-        const lastElecSecs = await ElectionHelper.lastElecSecs();
-
-        const nextElec = await ElectionHelper.nextElecFmt();
-        const nextElecSecs = await ElectionHelper.nextElecSecs();
-
-        const nowMoment = moment.unix(Date.now() / 1000);
-
-
-
-        // Chicken.setConfig('last_election', lastElecSecs - (3600 * 18));
-        // console.log(lastElec);
-
-        // console.log(nowMoment.format('dddd, MMMM Do YYYY, h:mm:ss a'))
-
-        // console.log(nextElec);
+        // Consider turning election off and starting local bot.... (full)
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
