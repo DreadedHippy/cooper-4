@@ -116,7 +116,7 @@ export default class ElectionHelper {
     static async countVotes() {
         const query = {
             name: "get-candidate",
-            text: `SELECT candidateID, COUNT(userID) FROM votes GROUP BY candidateID`,
+            text: `SELECT candidateID, COUNT(*) FROM votes GROUP BY candidateID`,
             values: [userID]
         };
 
