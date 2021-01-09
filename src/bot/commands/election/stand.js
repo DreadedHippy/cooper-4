@@ -52,32 +52,36 @@ export default class StandCommand extends CoopCommand {
 				return MessagesHelper.selfDestruct(msg, noElecText);
 			}
 	
-	
-			// Check if user is not already a candidate.
-			const prevCandidtate = await ElectionHelper.getCandidate(msg.author.id);
-			if (!prevCandidtate) {
-				MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for election, eyyy?`);
-	
-				// Save message link from election channel
-				const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', 
-					`Campaign Ad - ${msg.author.toString()}:\n\n${campaignText}`
-				);
-				const msgLink = MessagesHelper.link(electionMsg);
+			
+			if (isElec) {
 
-				// Add candidate to election
-				await ElectionHelper.addCandidate(msg.author.id, msgLink);
-
-				// Post to feed
-				ChannelsHelper._postToFeed(`${msg.author.username} was put forward for <#${CHANNELS.ELECTION.id}>`);
-				
-				// Add coop emoji to campaign message and crown
-				MessagesHelper.delayReact(electionMsg, '👑', 666);
-			} else {
-				// If is already, ask them if they want to replace their campaign text if current message.
-				const wannaEditMsg = await msg.say(`${msg.author.username}, react to change your campaign message?`);
-				// TODO: create awaitReaction
-				MessagesHelper.delayReact(wannaEditMsg, '👑', 666);
-				MessagesHelper.delayDelete(wannaEditMsg, 30000);
+				// Check if user is not already a candidate.
+				const prevCandidate = await ElectionHelper.getCandidate(msg.author.id);
+				console.log(prevCandidate);
+				if (!prevCandidate) {
+					MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for election, eyyy?`);
+		
+					// Save message link from election channel
+					const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', 
+						`Campaign Ad - ${msg.author.toString()}:\n\n${campaignText}`
+					);
+					const msgLink = MessagesHelper.link(electionMsg);
+	
+					// Add candidate to election
+					await ElectionHelper.addCandidate(msg.author.id, msgLink);
+	
+					// Post to feed
+					ChannelsHelper._postToFeed(`${msg.author.username} was put forward for <#${CHANNELS.ELECTION.id}>`);
+					
+					// Add coop emoji to campaign message and crown
+					MessagesHelper.delayReact(electionMsg, '👑', 666);
+				} else {
+					// If is already, ask them if they want to replace their campaign text if current message.
+					const wannaEditMsg = await msg.say(`${msg.author.username}, react to change your campaign message?`);
+					// TODO: create awaitReaction
+					MessagesHelper.delayReact(wannaEditMsg, '👑', 666);
+					MessagesHelper.delayDelete(wannaEditMsg, 30000);
+				}
 			}
 
 		} catch(e) {

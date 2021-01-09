@@ -1,6 +1,7 @@
 import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
+import EMOJIS from '../../../bot/core/config/emojis.json';
 
 export default class DropCommand extends CoopCommand {
 

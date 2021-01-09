@@ -9,6 +9,7 @@ import Chicken from "../../../chicken";
 import TimeHelper from '../../server/timeHelper';
 
 import CHANNELS from '../../../../core/config/channels.json';
+import STATE from '../../../../state';
 
 // MVP: Elections
 // Election Start -> Stand -> Consider -> Vote -> Election Declared
@@ -109,6 +110,40 @@ export default class ElectionHelper {
 
     static async startElection() {
         console.log('Trying to start the election.');
+        ChannelsHelper._postToFeed('Starting the election...');
+    }
+
+    static async commentateElectionProgress() {
+        // Provide updates and functionality for an ongoing election.
+        console.log('ongoing');
+        const votes = await this.fetchAllVotes();
+        console.log(votes);
+
+        await ChannelsHelper._postToFeed('Election is ongoing! Should post updates.');
+
+        // Save community reaction backed counts to database/ovewrite.
+    }
+
+    static async endElection() {
+        try {
+            const votes = await this.fetchAllVotes();
+            
+            console.log('Ending the election!', votes);
+            
+            // Get winners hierarchy
+            // Slatxyo could convert that to an embed hopefully.
+            // ChannelsHelper._postToFeed('Ending the election...');
+
+            // Cleanup database records fresh for next run.
+            await this.clearElection();
+
+            // Set Cooper's config election_on to 'false' so he does not think election is ongoing.
+            await Chicken.setConfig('election_on', 'false');
+
+        } catch(e) {
+            console.log('Something went wrong ending the election...');
+            console.error(e);
+        }
     }
 
     static async checkProgress() {
@@ -116,9 +151,7 @@ export default class ElectionHelper {
             const nextElecSecs = await this.nextElecSecs();
             const isVotingPeriod = await this.isVotingPeriod(nextElecSecs);
             const isElecOn = await this.isElectionOn();
-    
-            console.log(isVotingPeriod, isElecOn);
-    
+   
             // Election needs to be started?
             if (isVotingPeriod && !isElecOn) await this.startElection();
     
@@ -126,16 +159,26 @@ export default class ElectionHelper {
             if (!isVotingPeriod && isElecOn) await this.endElection();
     
             // Election needs to announce update?
-            if (isVotingPeriod && isElecOn) {
-                // Provide updates and functionality for an ongoing election.
-                console.log('ongoing');
-                const votes = await this.fetchAllVotes();
-                console.log(votes);
-    
-                await ChannelsHelper._postToFeed('Election is ongoing! Should post updates.')
-    
-                // Save community reaction backed counts to database/ovewrite.
+            if (isVotingPeriod && isElecOn) await this.commentateElectionProgress();
+
+
+            // If election isn't running (sometimes) update about next election secs.
+            // if (!isElecOn && STATE.CHANCE.bool({ likelihood: 1 })) {
+            if (!isElecOn) { // dev only <--
+                const nextElecReadable = await this.nextElecFmt();
+                console.log(nextElecReadable);
+                console.log(nextElecSecs);
+                console.log(isVotingPeriod);
+                console.log(isElecOn);
+
+                const electionInfoMsgLink = await Chicken.getConfigVal('election_message_link');
+                console.log('election msg to update', electionInfoMsgLink);
+
+                // Load message and edit to:
+                // Election is not currently running, next is:
+                // Or if is on, edit to current hierarchy
             }
+
 
         } catch(e) {
             console.log('SOMETHING WENT WRONG WITH CHECKING ELECTION!');
@@ -211,9 +254,7 @@ export default class ElectionHelper {
         return result;
     }
 
-    static async endElection() {
-        console.log('endElection');
-    }
+
 
     static async calcHierarchy(votes) {
 

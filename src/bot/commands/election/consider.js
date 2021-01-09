@@ -38,6 +38,8 @@ export default class ConsiderCommand extends CoopCommand {
 
 		if (candidate) {
 			// Retrieve the campaign message of candidate
+			console.log('should try to access candidate');
+
 		} else {
 			// Otherwise show the list in a self-destruct msg.
 			const candidates = await ElectionHelper.getAllCandidates();

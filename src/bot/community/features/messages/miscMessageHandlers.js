@@ -107,7 +107,16 @@ export default class MiscMessageHandlers {
             if (STATE.CHANCE.bool({ likelihood: 2.5 })) MessagesHelper.delayReact(msg, '💙', 333);
         }
 
-        
+       
+        // Add chance of adding emojis to LF infrequently
+        if (msg.author.id === '697781570076934164')
+            if (STATE.CHANCE.bool({ likelihood: 2.5 })) {
+                MessagesHelper.delayReact(msg, '🐧', 333);
+
+                if (STATE.CHANCE.bool({ likelihood: 2.5 }))
+                    MessagesHelper.delayReact(msg, '🤍 ', 666);
+            }
+
         // Add chance of adding mountain snow to slatxyo message :mountain_snow:
         if (msg.author.id === '498409882211581962')
             if (STATE.CHANCE.bool({ likelihood: 2.5 }))
