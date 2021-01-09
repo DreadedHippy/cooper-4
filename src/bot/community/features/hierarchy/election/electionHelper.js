@@ -163,17 +163,17 @@ export default class ElectionHelper {
 
 
             // If election isn't running (sometimes) update about next election secs.
-            // if (!isElecOn && STATE.CHANCE.bool({ likelihood: 1 })) {
             if (!isElecOn) { // dev only <--
                 const nextElecReadable = await this.nextElecFmt();
-                console.log(nextElecReadable);
-                console.log(nextElecSecs);
-                console.log(isVotingPeriod);
-                console.log(isElecOn);
 
                 const electionInfoMsgLink = await Chicken.getConfigVal('election_message_link');
-                console.log('election msg to update', electionInfoMsgLink);
 
+                const msgData = MessagesHelper.parselink(electionInfoMsgLink);
+
+                const channel = ChannelsHelper._get(msgData.channel);
+                const msg = await channel.messages.fetch(msgData.message);
+
+                await msg.edit(nextElecReadable);
                 // Load message and edit to:
                 // Election is not currently running, next is:
                 // Or if is on, edit to current hierarchy
