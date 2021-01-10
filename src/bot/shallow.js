@@ -27,29 +27,16 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
+
         // Check if election is currently within the voting period... ERRR
 
-        await Chicken.setConfig('last_election', '1607998362');
-        await Chicken.setConfig('election_on', 'false');
-
-
-        const lastElec = await Chicken.getConfigVal('last_election');
-        const isOn = await Chicken.getConfigVal('election_on');
-
-        const isVotingPer = await ElectionHelper.isVotingPeriod();
-
-        console.log('lastElec', lastElec);
-        console.log('isOn', isOn);
-        console.log('isVotingPer', isVotingPer);
-
-        // Last value, set this as last_election and turn election off for a repeat try. ;)
         // 1607998362
-
+        // await Chicken.setConfig('last_election', '1907998362');
+        // await Chicken.setConfig('election_on', 'false');
 
         // Output time remaining to vote.
 
-
-        const progress = await ElectionHelper.checkProgress();
+        // const progress = await ElectionHelper.checkProgress();
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });

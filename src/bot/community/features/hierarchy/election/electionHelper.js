@@ -85,12 +85,12 @@ export default class ElectionHelper {
     static async clearCandidates() {
         const candidates = await this.getAllCandidates();
         
-        // TODO: Ensure all messages deleted, use bulk delete won't be outside of 14 days
+        // Bulk delete may be better here.
+        // Ensure all messages deleted, use bulk delete won't be outside of 14 days
         candidates.map((candidate, index) => {
-            console.log('please confirm index is integer index', index);
             setTimeout(() => {
-                console.log('delete msg', candidate.content);
-            }, 1000 * index);
+                MessagesHelper.deleteByLink(candidate.campaign_msg_link);
+            }, 1500 * index);
         });
 
         // Clear database
@@ -118,7 +118,8 @@ export default class ElectionHelper {
             await Chicken.setConfig('last_election', parseInt(Date.now() / 1000));
     
             // Update the election message
-            await this.editElectionInfoMsg('The election is currently ongoing! (TEST) Latest results:');
+            // TODO: Calculate and add time remaining here!!! :D :D :D READABLE SHIT.
+            await this.editElectionInfoMsg('The election is currently ongoing! Time remaining... who knows?');
 
         } catch(e) {
             console.log('Starting the election failed... :\'(');
@@ -154,6 +155,9 @@ export default class ElectionHelper {
             // Set Cooper's config election_on to 'false' so he does not think election is ongoing.
             await Chicken.setConfig('election_on', 'false');
 
+            // Set the election info message to next election data, previous winners.
+            await this.editElectionInfoMsg('Election ended... next will be?');
+
         } catch(e) {
             console.log('Something went wrong ending the election...');
             console.error(e);
@@ -166,6 +170,10 @@ export default class ElectionHelper {
             const isVotingPeriod = await this.isVotingPeriod(nextElecSecs);
             const isElecOn = await this.isElectionOn();
             let electionStarted = false;
+
+            console.log('checking pwooooogreesssssss');
+
+            // TODO: May need to clean up any non-info/candidates messages leftover.
 
             // Election needs to be started?
             if (isVotingPeriod && !isElecOn) {
@@ -184,8 +192,12 @@ export default class ElectionHelper {
 
                 // Can get time of last edit to see if it's worth doing...? Countdown every muhhhhhhhhh.
 
+                console.log('Editing election message with next elec time! :D');
+
+                const diff = await ElectionHelper.nextElecSecs() - parseInt(Date.now() / 1000)
+                const humanRemaining = moment.duration(diff).humanize();
                 const nextElecReadable = await this.nextElecFmt();
-                await this.editElectionInfoMsg(nextElecReadable);
+                await this.editElectionInfoMsg(`Next Election: ${nextElecReadable} (${humanRemaining})`);
 
                 // Load message and edit to:
                 // Election is not currently running, next is:
@@ -201,6 +213,9 @@ export default class ElectionHelper {
     static async editElectionInfoMsg(text) {
         const electionInfoMsgLink = await Chicken.getConfigVal('election_message_link');
         const msgData = MessagesHelper.parselink(electionInfoMsgLink);
+
+        console.log(msgData);
+
         const channel = ChannelsHelper._get(msgData.channel);
         const msg = await channel.messages.fetch(msgData.message);
         const editedMsg = await msg.edit(text);
@@ -298,7 +313,6 @@ export default class ElectionHelper {
                 }, 666 * index);
             });
         }));
-        console.log('Preloaded election messages');
         return campaigns;
     }
 
@@ -342,9 +356,10 @@ export default class ElectionHelper {
             votes.push({
                 username: campaignAuthor.username,
                 id: campaignAuthor.id,
-                // Count all crown reactions.
                 votes: campaignMsg.reactions.cache.reduce((acc, reaction) => {
-                    if (reaction.emoji.name === '👑') return reaction.count;
+                    // Count all crown reactions.
+                    if (reaction.emoji.name === '👑') return acc += (reaction.count - 1);
+                    else return 0;
                 }, 0)
             });
         });

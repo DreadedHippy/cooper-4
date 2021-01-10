@@ -48,16 +48,14 @@ export default class StandCommand extends CoopCommand {
 	
 			if (!isElec) {
 				const nextElecFmt = await ElectionHelper.nextElecFmt();
-				const noElecText = `There is no election currently ongoing. Next is ${nextElecFmt}`;
+				const noElecText = `There is no election currently ongoing. Next is ${nextElecFmt}!`;
 				return MessagesHelper.selfDestruct(msg, noElecText);
 			}
 	
 			
 			if (isElec) {
-
 				// Check if user is not already a candidate.
 				const prevCandidate = await ElectionHelper.getCandidate(msg.author.id);
-				console.log(prevCandidate);
 				if (!prevCandidate) {
 					MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for election, eyyy?`);
 		

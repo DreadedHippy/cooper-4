@@ -1,6 +1,12 @@
+import ServerHelper from "../server/serverHelper";
+
 export default class MessagesHelper {
+
     static parselink(link) {
-        const subjStr = link.replace('https://discordapp.com/channels/', '');
+        // Remove domains.
+        let subjStr = link.replace('https://discordapp.com/channels/', '');
+        subjStr = subjStr.replace('https://discord.com/channels/', '');
+
         const msgPcs = subjStr.split('/');
 
         const data = {
@@ -11,6 +17,7 @@ export default class MessagesHelper {
 
         return data;
     }
+    
     static link(msg) {
         const link = `https://discordapp.com/channels/` +
             `${msg.guild.id}/` +
@@ -18,6 +25,15 @@ export default class MessagesHelper {
             `${msg.id}`;
         return link;
     }
+
+    static async deleteByLink(link) {
+        const data = this.parselink(link);
+        const coop = ServerHelper._coop();
+        const chan = coop.channels.cache.get(data.channel);
+        const message = await chan.messages.fetch(data.message);
+        return message.delete();
+    }
+
     static noWhiteSpace(strings, ...placeholders) {
         // Build the string as normal, combining all the strings and placeholders:
         let withSpace = strings.reduce((result, string, i) => (result + placeholders[i - 1] + string));
