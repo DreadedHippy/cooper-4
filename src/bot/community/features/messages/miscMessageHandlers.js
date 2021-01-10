@@ -107,20 +107,32 @@ export default class MiscMessageHandlers {
             if (STATE.CHANCE.bool({ likelihood: 2.5 })) MessagesHelper.delayReact(msg, '💙', 333);
         }
 
-       
+        // Add easter egg for ghost
+        if (msg.author.id === '407913114818969611') {
+            if (STATE.CHANCE.bool({ likelihood: 2.5 })) {
+                MessagesHelper.delayReact(msg, '👀', 333);
+            }
+
+            if (STATE.CHANCE.bool({ likelihood: 0.5 })) {
+                MessagesHelper.delayReact(msg, '👻', 333);
+            }
+        }
+
         // Add chance of adding emojis to LF infrequently
-        if (msg.author.id === '697781570076934164')
+        if (msg.author.id === '697781570076934164') {
             if (STATE.CHANCE.bool({ likelihood: 2.5 })) {
                 MessagesHelper.delayReact(msg, '🐧', 333);
 
                 if (STATE.CHANCE.bool({ likelihood: 2.5 }))
                     MessagesHelper.delayReact(msg, '🤍 ', 666);
             }
-
+        }
+        
         // Add chance of adding mountain snow to slatxyo message :mountain_snow:
-        if (msg.author.id === '498409882211581962')
+        if (msg.author.id === '498409882211581962') {
             if (STATE.CHANCE.bool({ likelihood: 2.5 }))
                 MessagesHelper.delayReact(msg, '🏔️', 333);
+        }
 
         // Random encouragement for ZeePheesh
         if (msg.author.id === '272479872792920065') {

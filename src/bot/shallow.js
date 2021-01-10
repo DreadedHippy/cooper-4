@@ -11,6 +11,7 @@ import Chicken from './community/chicken';
 import moment from 'moment';
 import ServerHelper from './core/entities/server/serverHelper';
 import MessagesHelper from './core/entities/messages/messagesHelper';
+import UsersHelper from './core/entities/users/usersHelper';
 // ^ DEV IMPORT AREA ^
 
 dotenv.config();
@@ -26,35 +27,29 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-        // 1607897850 <- Dec 13th in seconds
+        // Check if election is currently within the voting period... ERRR
 
-        // Push election to end to see what happens
-        // const lastElecSecs = await ElectionHelper.lastElecSecs();
-        // console.log(lastElecSecs);
-        
-        // const prevVal = parseInt(await Chicken.getConfigVal('last_election'));
-        // const updateVal = prevVal - (ElectionHelper.INTERVAL_SECS / 2);
-        // await Chicken.setConfig('last_election', updateVal);
-        
-
-        // Create an election info message for cooper to maintain.
-        // ChannelsHelper._postToChannelCode('ELECTION', 'RESERVED INFO MESSAGE');
+        await Chicken.setConfig('last_election', '1607998362');
+        await Chicken.setConfig('election_on', 'false');
 
 
-        // https://discord.com/channels/723660447508725802/796823730483363860/796866755632037958
+        const lastElec = await Chicken.getConfigVal('last_election');
+        const isOn = await Chicken.getConfigVal('election_on');
 
-        // TODO: Remove all emojis from that election message lol.
+        const isVotingPer = await ElectionHelper.isVotingPeriod();
+
+        console.log('lastElec', lastElec);
+        console.log('isOn', isOn);
+        console.log('isVotingPer', isVotingPer);
+
+        // Last value, set this as last_election and turn election off for a repeat try. ;)
+        // 1607998362
 
 
-        
-        console.log(await ElectionHelper.lastElecFmt());
+        // Output time remaining to vote.
 
-        console.log(await ElectionHelper.nextElecFmt());
 
-        // Get stand working and test if someone can vote twice.
-
-        await ElectionHelper.checkProgress();
-
+        const progress = await ElectionHelper.checkProgress();
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });

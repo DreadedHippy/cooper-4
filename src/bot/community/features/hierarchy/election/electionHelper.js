@@ -10,6 +10,7 @@ import TimeHelper from '../../server/timeHelper';
 
 import CHANNELS from '../../../../core/config/channels.json';
 import STATE from '../../../../state';
+import DatabaseHelper from '../../../../core/entities/databaseHelper';
 
 // MVP: Elections
 // Election Start -> Stand -> Consider -> Vote -> Election Declared
@@ -109,8 +110,21 @@ export default class ElectionHelper {
     }
 
     static async startElection() {
-        console.log('Trying to start the election.');
-        ChannelsHelper._postToFeed('Starting the election...');
+        try {
+            ChannelsHelper._postToFeed('Starting the election...');
+    
+            // Turn election on and set latest election to now! :D
+            await Chicken.setConfig('election_on', 'true');
+            await Chicken.setConfig('last_election', parseInt(Date.now() / 1000));
+    
+            // Update the election message
+            await this.editElectionInfoMsg('The election is currently ongoing! (TEST) Latest results:');
+
+        } catch(e) {
+            console.log('Starting the election failed... :\'(');
+            console.error(e);
+        }
+
     }
 
     static async commentateElectionProgress() {
@@ -132,7 +146,7 @@ export default class ElectionHelper {
             
             // Get winners hierarchy
             // Slatxyo could convert that to an embed hopefully.
-            // ChannelsHelper._postToFeed('Ending the election...');
+            ChannelsHelper._postToFeed('Ending the election...');
 
             // Cleanup database records fresh for next run.
             await this.clearElection();
@@ -151,9 +165,13 @@ export default class ElectionHelper {
             const nextElecSecs = await this.nextElecSecs();
             const isVotingPeriod = await this.isVotingPeriod(nextElecSecs);
             const isElecOn = await this.isElectionOn();
-   
+            let electionStarted = false;
+
             // Election needs to be started?
-            if (isVotingPeriod && !isElecOn) await this.startElection();
+            if (isVotingPeriod && !isElecOn) {
+                await this.startElection();
+                electionStarted = true;
+            }
     
             // Election needs to be declared?
             if (!isVotingPeriod && isElecOn) await this.endElection();
@@ -161,29 +179,32 @@ export default class ElectionHelper {
             // Election needs to announce update?
             if (isVotingPeriod && isElecOn) await this.commentateElectionProgress();
 
-
             // If election isn't running (sometimes) update about next election secs.
-            if (!isElecOn) { // dev only <--
+            if (!isElecOn && !electionStarted) { // dev only <--
+
+                // Can get time of last edit to see if it's worth doing...? Countdown every muhhhhhhhhh.
+
                 const nextElecReadable = await this.nextElecFmt();
+                await this.editElectionInfoMsg(nextElecReadable);
 
-                const electionInfoMsgLink = await Chicken.getConfigVal('election_message_link');
-
-                const msgData = MessagesHelper.parselink(electionInfoMsgLink);
-
-                const channel = ChannelsHelper._get(msgData.channel);
-                const msg = await channel.messages.fetch(msgData.message);
-
-                await msg.edit(nextElecReadable);
                 // Load message and edit to:
                 // Election is not currently running, next is:
                 // Or if is on, edit to current hierarchy
             }
 
-
         } catch(e) {
             console.log('SOMETHING WENT WRONG WITH CHECKING ELECTION!');
             console.error(e);
         }
+    }
+
+    static async editElectionInfoMsg(text) {
+        const electionInfoMsgLink = await Chicken.getConfigVal('election_message_link');
+        const msgData = MessagesHelper.parselink(electionInfoMsgLink);
+        const channel = ChannelsHelper._get(msgData.channel);
+        const msg = await channel.messages.fetch(msgData.message);
+        const editedMsg = await msg.edit(text);
+        return editedMsg;
     }
 
     static async getVoteByVoterID(voterID) {
@@ -253,8 +274,6 @@ export default class ElectionHelper {
         const result = await Database.query(query);
         return result;
     }
-
-
 
     static async calcHierarchy(votes) {
 
@@ -355,9 +374,11 @@ export default class ElectionHelper {
             text: `SELECT * FROM candidates WHERE candidate_id = $1`,
             values: [userID]
         };
-
+        
         const result = await Database.query(query);
-        return result;
+        const candidate = DatabaseHelper.single(result);
+
+        return candidate;
     }
 
 
