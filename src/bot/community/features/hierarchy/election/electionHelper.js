@@ -260,14 +260,13 @@ export default class ElectionHelper {
         if (candidate) {
             // Check if already voted
             const vote = await this.getVoteByVoterID(user.id);
+            const candidateUser = (await UsersHelper._getMemberByID(candidate.candidate_id)).user;
             console.log(vote);
             
             if (vote) {
-                const prevVoteForCandidate = await UsersHelper._getMemberByID(vote.candidate_id);
-                console.log(prevVoteForCandidate);
-                const prevVoteFor = prevVoteForCandidate.user.username || '?';
-                console.log(prevVoteFor);
                 // self destruct message stating you've already voted.
+                const prevVoteForCandidate = await UsersHelper._getMemberByID(vote.candidate_id);
+                const prevVoteFor = prevVoteForCandidate.user.username || '?';
                 const warnText = `You already voted for ${prevVoteFor}, you cheeky fluck.`;
                 return MessagesHelper.selfDestruct(reaction.message, warnText);
             }
@@ -278,9 +277,10 @@ export default class ElectionHelper {
 
                 // Need ot load candidate via cache id, no access YET.
                 console.log('voted for candidate id ' + candidate.candidate_id);
+                console.log(vote);
     
                 // Acknowledge vote in feed.
-                ChannelsHelper._postToFeed(`${user.username} cast their vote for ${voteForCandidate}!`);
+                ChannelsHelper._postToFeed(`${user.username} cast their vote for ${candidateUser.username}!`);
             }
         }
         console.log(candidate);
