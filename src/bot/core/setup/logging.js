@@ -9,7 +9,7 @@ export default (discordClient) => {
         .on('error', console.error)
         .on('warn', console.warn)
         .on('debug', console.log)
-        .on('ready', () => { 
+        .on('ready', async () => { 
             try {
                 console.log(`Logged in as ${discordClient.user.username}`); 
     
@@ -22,15 +22,13 @@ export default (discordClient) => {
                 let reqNum = 0;
                 guild.channels.cache.each(channel => {
                     if (channel.type === 'text') {
-                        setTimeout(async () => {
-                            await channel.messages.fetch({ limit: 5 });
-                        }, 666 * reqNum);
+                        setTimeout(() => channel.messages.fetch({ limit: 5 }), 666 * reqNum);
                         reqNum++;
                     }
                 });
 
                 // Cache candidate messages.
-                ElectionHelper.onLoad();
+                await ElectionHelper.onLoad();
 
             } catch(e) {
                 console.error(e);

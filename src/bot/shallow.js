@@ -12,6 +12,7 @@ import moment from 'moment';
 import ServerHelper from './core/entities/server/serverHelper';
 import MessagesHelper from './core/entities/messages/messagesHelper';
 import UsersHelper from './core/entities/users/usersHelper';
+import CooperMorality from './community/features/minigame/small/cooperMorality';
 // ^ DEV IMPORT AREA ^
 
 dotenv.config();
@@ -28,12 +29,9 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        // Check if election is currently within the voting period... ERRR
 
-        // Calculate hierarchy for output/display etc.
-        const votes = await ElectionHelper.fetchAllVotes();
-        const hierarchy = ElectionHelper.calcHierarchy(votes);
-        console.log(votes, hierarchy);
+        const leftSecs = await ElectionHelper.votingPeriodLeftSecs();
+        console.log(leftSecs);
 
         // console.log(await ElectionHelper.isElectionOn());
 

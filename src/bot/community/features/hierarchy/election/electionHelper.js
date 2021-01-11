@@ -103,10 +103,27 @@ export default class ElectionHelper {
         return result;
     }
 
-    static async isVotingPeriod(electionSecs) {
+    static async votingPeriodLeftSecs() {
+        let leftSecs = 0;
+
+        const isVotingPeriod = await this.isVotingPeriod();
+        if (isVotingPeriod) {
+            const diff = await this.lastElecSecs() - parseInt(Date.now() / 1000)
+            const humanRemaining = moment.duration(diff).humanize();
+            const nextElecReadable = await this.nextElecFmt();
+
+            console.log(diff, humanRemaining, nextElecReadable);
+
+            if (diff) leftSecs = diff;
+        }
+
+        return leftSecs;
+    }
+
+    static async isVotingPeriod() {
         const nowSecs = parseInt(Date.now() / 1000);
-        const votingDurSecs = this.DURATION_SECS;
-        const isVotingPeriod = !!(nowSecs >= electionSecs && nowSecs <= electionSecs + votingDurSecs);
+        const electionSecs = await this.lastElecSecs();
+        const isVotingPeriod = !!(nowSecs >= electionSecs && nowSecs <= electionSecs + this.DURATION_SECS);
         return isVotingPeriod;
     }
 
@@ -129,15 +146,24 @@ export default class ElectionHelper {
 
     }
 
+    // Provide updates and functionality for an ongoing election.
     static async commentateElectionProgress() {
-        // Provide updates and functionality for an ongoing election.
-        console.log('ongoing');
         const votes = await this.fetchAllVotes();
-        console.log(votes);
 
-        await ChannelsHelper._postToFeed('Election is ongoing! Should post updates.');
+        const commentatingText = `<#${CHANNELS.ELECTION.id}> is running and has X time remaining!`;
+        await ChannelsHelper._postToFeed(commentatingText);
 
-        // Save community reaction backed counts to database/ovewrite.
+        const hierarchy = this.calcHierarchy(votes);
+        const electionProgressText = `Election is still running for (TIME_REMAINING?), here is current information:` +
+            `\n\n` +
+            `Commander: ${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)` +
+            `\n\n` +
+            `Leaders: \n ${hierarchy.leaders.map(leader => `${leader.username} (${leader.votes} Votes) \n`)}` +
+            `\n\n` +
+
+        await this.editElectionInfoMsg(electionProgressText)
+
+        // Votes aren't saved in the database... we rely solely on Discord counts.
     }
 
     static async endElection() {
@@ -166,11 +192,10 @@ export default class ElectionHelper {
     }
 
     static async checkProgress() {
+        let electionStarted = false;
         try {
-            const nextElecSecs = await this.nextElecSecs();
-            const isVotingPeriod = await this.isVotingPeriod(nextElecSecs);
+            const isVotingPeriod = await this.isVotingPeriod();
             const isElecOn = await this.isElectionOn();
-            let electionStarted = false;
 
             console.log('checking pwooooogreesssssss');
 
@@ -191,11 +216,11 @@ export default class ElectionHelper {
             // If election isn't running (sometimes) update about next election secs.
             if (!isElecOn && !electionStarted) {
                 console.log('Editing election message with next elec time! :D');
-                const elecMsg = await ElectionHelper.getElectionMsg();
+                const elecMsg = await this.getElectionMsg();
                 const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
                 const hour = 360000;
                 if (diff > hour * 8) {
-                    const diff = await ElectionHelper.nextElecSecs() - parseInt(Date.now() / 1000)
+                    const diff = await this.nextElecSecs() - parseInt(Date.now() / 1000)
                     const humanRemaining = moment.duration(diff).humanize();
                     const nextElecReadable = await this.nextElecFmt();
                     await this.editElectionInfoMsg(`**Election is over.**
@@ -352,45 +377,28 @@ export default class ElectionHelper {
         return candidate;
     }
 
+    // TODO: could use this feature/data to direct message the candidates an update
     static async fetchAllVotes() {
         const votes = [];
 
-        // Candidates for access later.
-        const candidates = await this.getAllCandidates();
-        const campaignMsgs = await this.loadAllCampaigns();
-
         // Calculate votes and map author data.
+        const campaignMsgs = await this.loadAllCampaigns();
         campaignMsgs.map(campaignMsg => {
-            console.log(campaignMsg.content);
-            
-            // Calculate the author from storage.
-            // console.log(candidates);
-            const campaignAuthor = candidates.reduce((acc, cand) => {
-                const campLink = cand.campaign_msg_link;
-                const candLink = MessagesHelper.link(campaignMsg);
-
-                const user = UsersHelper._getMemberByID(cand.candidate_id).user || null;
-                const username = user.username || null;
-                cand.username = username;c
-                if (campLink === candLink) return acc = cand;
-            }, null);        
-    
-            // TODO: could use this feature/data to direct message the candidates an update
-
-            // console.log(campaignMsg);
-            console.log(candidates);
-            console.log(campaignAuthor);
+            // Find the candidate for these reactions.
+            const candidate = campaignMsg.mentions.users.first();
 
             // Add to the overall data.
-            votes.push({
-                username: campaignAuthor.username,
-                id: campaignAuthor.id,
-                votes: campaignMsg.reactions.cache.reduce((acc, reaction) => {
-                    // Count all crown reactions.
-                    if (reaction.emoji.name === '👑') return acc += (reaction.count - 1);
-                    else return 0;
-                }, 0)
-            });
+            if (candidate) {
+                votes.push({
+                    username: candidate.username,
+                    id: candidate.id,
+                    votes: campaignMsg.reactions.cache.reduce((acc, reaction) => {
+                        // Count all crown reactions.
+                        if (reaction.emoji.name === '👑') return acc += (reaction.count - 1);
+                        else return 0;
+                    }, 0)
+                });
+            }
         });
    
         votes.sort((a, b) => {
@@ -418,10 +426,15 @@ export default class ElectionHelper {
 
     // Preload campaign messages into cache so they are always reactable.
     static async onLoad() {
-        const candidates = await this.loadAllCampaigns();
-        console.warn('cached candidates');
+        const isElectionOn = await this.isVotingPeriod();
 
-        return candidates;
+        console.log(isElectionOn);
+
+        if (isElectionOn) {
+            await this.loadAllCampaigns();
+            console.warn('Cached election candidates.');
+        }
+
     }
 
     static async addCandidate(userID, msgLink) {
@@ -451,10 +464,9 @@ export default class ElectionHelper {
 
     static async shouldTriggerStart() {
         console.log('shouldTriggerStart');
-        const nextElecSecs = await this.nextElecSecs();
-        const isVotingPeriod = await this.isVotingPeriod(nextElecSecs);
+        const isVotingPeriod = await this.isVotingPeriod();
         const isElecOn = await this.isElectionOn();
-        console.log(isElecOn, isVotingPeriod);
+
         if (isVotingPeriod && !isElecOn) this.checkProgress();
     }
 
