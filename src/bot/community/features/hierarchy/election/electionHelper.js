@@ -103,17 +103,16 @@ export default class ElectionHelper {
         return result;
     }
 
+    
+
     static async votingPeriodLeftSecs() {
         let leftSecs = 0;
 
         const isVotingPeriod = await this.isVotingPeriod();
         if (isVotingPeriod) {
-            const diff = await this.lastElecSecs() - parseInt(Date.now() / 1000)
-            const humanRemaining = moment.duration(diff).humanize();
-            const nextElecReadable = await this.nextElecFmt();
-
-            console.log(diff, humanRemaining, nextElecReadable);
-
+            const endOfVoting = (await this.lastElecSecs()) + this.DURATION_SECS;
+            const diff = Math.abs(endOfVoting - parseInt(Date.now() / 1000))
+            
             if (diff) leftSecs = diff;
         }
 
@@ -136,8 +135,9 @@ export default class ElectionHelper {
             await Chicken.setConfig('last_election', parseInt(Date.now() / 1000));
     
             // Update the election message
-            // TODO: Calculate and add time remaining here!!! :D :D :D READABLE SHIT.
-            await this.editElectionInfoMsg('The election is currently ongoing! Time remaining... who knows?');
+            const readableElecLeft = TimeHelper.humaniseSecs((await this.votingPeriodLeftSecs()));
+            const startElecText = `The election is currently ongoing! Time remaining: ${readableElecLeft}`;
+            await this.editElectionInfoMsg(startElecText);
 
         } catch(e) {
             console.log('Starting the election failed... :\'(');
@@ -150,7 +150,8 @@ export default class ElectionHelper {
     static async commentateElectionProgress() {
         const votes = await this.fetchAllVotes();
 
-        const commentatingText = `<#${CHANNELS.ELECTION.id}> is running and has X time remaining!`;
+        const readableElecLeft = TimeHelper.humaniseSecs((await this.votingPeriodLeftSecs()));
+        const commentatingText = `<#${CHANNELS.ELECTION.id}> is running and has ${readableElecLeft} remaining!`;
         await ChannelsHelper._postToFeed(commentatingText);
 
         const hierarchy = this.calcHierarchy(votes);
@@ -163,7 +164,7 @@ export default class ElectionHelper {
 
         await this.editElectionInfoMsg(electionProgressText)
 
-        // Votes aren't saved in the database... we rely solely on Discord counts.
+        // Note: Votes aren't saved in the database... we rely solely on Discord counts.
     }
 
     static async endElection() {
@@ -197,8 +198,6 @@ export default class ElectionHelper {
             const isVotingPeriod = await this.isVotingPeriod();
             const isElecOn = await this.isElectionOn();
 
-            console.log('checking pwooooogreesssssss');
-
             // TODO: May need to clean up any non-info/candidates messages leftover.
 
             // Election needs to be started?
@@ -215,7 +214,6 @@ export default class ElectionHelper {
 
             // If election isn't running (sometimes) update about next election secs.
             if (!isElecOn && !electionStarted) {
-                console.log('Editing election message with next elec time! :D');
                 const elecMsg = await this.getElectionMsg();
                 const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
                 const hour = 360000;
@@ -293,6 +291,14 @@ export default class ElectionHelper {
                     const prevVoteForCandidate = await UsersHelper._getMemberByID(vote.candidate_id);
                     const prevVoteFor = prevVoteForCandidate.user.username || '?';
                     const warnText = `You already voted for ${prevVoteFor}, you cheeky fluck.`;
+
+                    // Delay unreact... make sure their reaction isn't counted anyway.
+                    const userReactions = reaction.message.reactions.cache
+                        .filter(reaction => reaction.users.cache.has(user.id));
+
+                    for (const userReact of userReactions.values()) 
+                        await userReact.users.remove(userId);
+
                     return MessagesHelper.selfDestruct(reaction.message, warnText);
                 }
 

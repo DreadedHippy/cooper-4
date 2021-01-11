@@ -7,4 +7,8 @@ export default class TimeHelper {
         return secsMoment.format('dddd, MMMM Do YYYY, h:mm:ss a');
     }
 
+    static humaniseSecs(secs) {
+        const humanRemaining = moment.duration(secs * 1000).humanize();
+        return humanRemaining;
+    }
 }

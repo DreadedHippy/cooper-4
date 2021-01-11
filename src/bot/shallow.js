@@ -30,11 +30,6 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
 
-        const leftSecs = await ElectionHelper.votingPeriodLeftSecs();
-        console.log(leftSecs);
-
-        // console.log(await ElectionHelper.isElectionOn());
-
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
 
