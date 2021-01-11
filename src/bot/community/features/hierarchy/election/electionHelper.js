@@ -296,8 +296,10 @@ export default class ElectionHelper {
                     const userReactions = reaction.message.reactions.cache
                         .filter(reaction => reaction.users.cache.has(user.id));
 
+                    console.log('userReactions', userReactions);
+
                     for (const userReact of userReactions.values()) 
-                        await userReact.users.remove(userId);
+                        await userReact.users.remove(user.id);
 
                     return MessagesHelper.selfDestruct(reaction.message, warnText);
                 }
@@ -335,11 +337,7 @@ export default class ElectionHelper {
         const numLeaders = VotingHelper.getNumRequired(ServerHelper._coop(), 2.5);
         const leaders = votes.slice(1, numLeaders);
 
-        console.log(votes);
-
         const hierarchy = { commander, leaders}
-
-        console.log(hierarchy);
 
         return hierarchy;
     }
