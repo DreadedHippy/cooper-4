@@ -252,38 +252,40 @@ export default class ElectionHelper {
         // Check if reaction is crown (indicates vote)
         if (reaction.emoji.name !== '👑') return false;
 
-        // Check if reaction message is a campaign message and get author.
-        const msgLink = MessagesHelper.link(reaction.message);
-        const candidate = await this.getCandByMsgLink(msgLink); 
+        try {
+            // Check if reaction message is a campaign message and get author.
+            const msgLink = MessagesHelper.link(reaction.message);
+            const candidate = await this.getCandByMsgLink(msgLink); 
 
-        // If is candidate message and identified, allow them the vote.
-        if (candidate) {
-            // Check if already voted
-            const vote = await this.getVoteByVoterID(user.id);
-            const candidateUser = (await UsersHelper._getMemberByID(candidate.candidate_id)).user;
-            console.log(vote);
-            
-            if (vote) {
-                // self destruct message stating you've already voted.
-                const prevVoteForCandidate = await UsersHelper._getMemberByID(vote.candidate_id);
-                const prevVoteFor = prevVoteForCandidate.user.username || '?';
-                const warnText = `You already voted for ${prevVoteFor}, you cheeky fluck.`;
-                return MessagesHelper.selfDestruct(reaction.message, warnText);
+            // If is candidate message and identified, allow them the vote.
+            if (candidate) {
+                // Check if already voted
+                const vote = await this.getVoteByVoterID(user.id);
+                const candidateUser = (await UsersHelper._getMemberByID(candidate.candidate_id)).user;
+                
+                if (vote) {
+                    // self destruct message stating you've already voted.
+                    const prevVoteForCandidate = await UsersHelper._getMemberByID(vote.candidate_id);
+                    const prevVoteFor = prevVoteForCandidate.user.username || '?';
+                    const warnText = `You already voted for ${prevVoteFor}, you cheeky fluck.`;
+                    return MessagesHelper.selfDestruct(reaction.message, warnText);
+                }
+
+                if (!vote) {
+                    // Add vote to database
+                    await this.addVote(user.id, candidate.candidate_id);
+
+                    // Need to load candidate via cache id, no access YET.
+                    console.log('voted for candidate id ' + candidate.candidate_id);
+        
+                    // Acknowledge vote in feed.
+                    ChannelsHelper._postToFeed(`${user.username} cast their vote for ${candidateUser.username}!`);
+                }
             }
-
-            if (!vote) {
-                // Add vote to database
-                await this.addVote(user.id, candidate.candidate_id);
-
-                // Need ot load candidate via cache id, no access YET.
-                console.log('voted for candidate id ' + candidate.candidate_id);
-                console.log(vote);
-    
-                // Acknowledge vote in feed.
-                ChannelsHelper._postToFeed(`${user.username} cast their vote for ${candidateUser.username}!`);
-            }
+        } catch(e) {
+            console.log('Could not process election vote.');
+            console.error(e);
         }
-        console.log(candidate);
     }
 
     static async countVotes() {
