@@ -57,7 +57,7 @@ export default class StandCommand extends CoopCommand {
 				// Check if user is not already a candidate.
 				const prevCandidate = await ElectionHelper.getCandidate(msg.author.id);
 				if (!prevCandidate) {
-					MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for election, eyyy?`);
+					MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for <#${CHANNELS.ELECTION.id}>, eyyy?`);
 		
 					// Save message link from election channel
 					const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', 

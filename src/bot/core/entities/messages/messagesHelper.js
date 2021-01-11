@@ -137,9 +137,4 @@ export default class MessagesHelper {
         return str.join(' ');
     }
 
-
-
-    static delayedSelfDestructingReply(msgRef, delay, fuse) {
-        this.delay
-    }
 }

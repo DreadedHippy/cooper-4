@@ -30,18 +30,12 @@ const shallowBot = async () => {
 
         // Check if election is currently within the voting period... ERRR
 
-        // 1607998362
-        await Chicken.setConfig('last_election', '1607998362');
-        // await Chicken.setConfig('election_on', 'false');
+        // Calculate hierarchy for output/display etc.
+        const votes = await ElectionHelper.fetchAllVotes();
+        const hierarchy = ElectionHelper.calcHierarchy(votes);
+        console.log(votes, hierarchy);
 
-        const isOn = await ElectionHelper.isElectionOn();
-        console.log(isOn);
-
-        await ElectionHelper.shouldTriggerStart()
-
-        // Output time remaining to vote.
-
-        // const progress = await ElectionHelper.checkProgress();
+        // console.log(await ElectionHelper.isElectionOn());
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });

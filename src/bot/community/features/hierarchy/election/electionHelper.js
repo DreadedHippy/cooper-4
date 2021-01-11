@@ -11,6 +11,7 @@ import TimeHelper from '../../server/timeHelper';
 import CHANNELS from '../../../../core/config/channels.json';
 import STATE from '../../../../state';
 import DatabaseHelper from '../../../../core/entities/databaseHelper';
+import VotingHelper from '../../../events/voting/votingHelper';
 
 // MVP: Elections
 // Election Start -> Stand -> Consider -> Vote -> Election Declared
@@ -188,20 +189,21 @@ export default class ElectionHelper {
             if (isVotingPeriod && isElecOn) await this.commentateElectionProgress();
 
             // If election isn't running (sometimes) update about next election secs.
-            if (!isElecOn && !electionStarted) { // dev only <--
-
-                // Can get time of last edit to see if it's worth doing...? Countdown every muhhhhhhhhh.
-
+            if (!isElecOn && !electionStarted) {
                 console.log('Editing election message with next elec time! :D');
+                const elecMsg = await ElectionHelper.getElectionMsg();
+                const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
+                const hour = 360000;
+                if (diff > hour * 8) {
+                    const diff = await ElectionHelper.nextElecSecs() - parseInt(Date.now() / 1000)
+                    const humanRemaining = moment.duration(diff).humanize();
+                    const nextElecReadable = await this.nextElecFmt();
+                    await this.editElectionInfoMsg(`**Election is over.**
 
-                const diff = await ElectionHelper.nextElecSecs() - parseInt(Date.now() / 1000)
-                const humanRemaining = moment.duration(diff).humanize();
-                const nextElecReadable = await this.nextElecFmt();
-                await this.editElectionInfoMsg(`Next Election: ${nextElecReadable} (${humanRemaining})`);
+                        Your current elected members:
 
-                // Load message and edit to:
-                // Election is not currently running, next is:
-                // Or if is on, edit to current hierarchy
+                        Next Election: ${nextElecReadable} (${humanRemaining})`);
+                }
             }
 
         } catch(e) {
@@ -210,14 +212,16 @@ export default class ElectionHelper {
         }
     }
 
-    static async editElectionInfoMsg(text) {
+    static async getElectionMsg() {
         const electionInfoMsgLink = await Chicken.getConfigVal('election_message_link');
-        const msgData = MessagesHelper.parselink(electionInfoMsgLink);
-
-        console.log(msgData);
-
+        const msgData = MessagesHelper.parselink(electionInfoMsgLink);   
         const channel = ChannelsHelper._get(msgData.channel);
         const msg = await channel.messages.fetch(msgData.message);
+        return msg;
+    }
+
+    static async editElectionInfoMsg(text) {
+        const msg = await this.getElectionMsg();
         const editedMsg = await msg.edit(text);
         return editedMsg;
     }
@@ -257,16 +261,18 @@ export default class ElectionHelper {
             // Check if already voted
             const vote = await this.getVoteByVoterID(user.id);
             console.log(vote);
-
+            
             if (vote) {
+                const prevVoteForCandidate = await UsersHelper._getMemberByID(vote.candidate_id);
+                console.log(prevVoteForCandidate);
+                const prevVoteFor = prevVoteForCandidate.user.username || '?';
+                console.log(prevVoteFor);
                 // self destruct message stating you've already voted.
-                console.log('existing vote');
-                console.log('you already voted for $1 this election, you cheeky fluck.');
-                return false;
+                const warnText = `You already voted for ${prevVoteFor}, you cheeky fluck.`;
+                return MessagesHelper.selfDestruct(reaction.message, warnText);
             }
 
             if (!vote) {
-    
                 // Add vote to database
                 await this.addVote(user.id, candidate.candidate_id);
 
@@ -274,6 +280,7 @@ export default class ElectionHelper {
                 console.log('voted for candidate id ' + candidate.candidate_id);
     
                 // Acknowledge vote in feed.
+                ChannelsHelper._postToFeed(`${user.username} cast their vote for ${voteForCandidate}!`);
             }
         }
         console.log(candidate);
@@ -290,8 +297,18 @@ export default class ElectionHelper {
         return result;
     }
 
-    static async calcHierarchy(votes) {
+    static calcHierarchy(votes) {
+        const commander = votes[0];
+        const numLeaders = VotingHelper.getNumRequired(ServerHelper._coop(), 2.5);
+        const leaders = votes.slice(1, numLeaders);
 
+        console.log(votes);
+
+        const hierarchy = { commander, leaders}
+
+        console.log(hierarchy);
+
+        return hierarchy;
     }
 
     static async loadAllCampaigns() {
@@ -309,7 +326,9 @@ export default class ElectionHelper {
                     if (chan) {
                         const msg = await chan.messages.fetch(idSet.message);
                         resolve(msg);
-                    } 
+                    }
+
+                    resolve(null);
                 }, 666 * index);
             });
         }));
@@ -340,17 +359,25 @@ export default class ElectionHelper {
 
         // Calculate votes and map author data.
         campaignMsgs.map(campaignMsg => {
+            console.log(campaignMsg.content);
+            
             // Calculate the author from storage.
+            // console.log(candidates);
             const campaignAuthor = candidates.reduce((acc, cand) => {
                 const campLink = cand.campaign_msg_link;
                 const candLink = MessagesHelper.link(campaignMsg);
+
                 const user = UsersHelper._getMemberByID(cand.candidate_id).user || null;
                 const username = user.username || null;
-                cand.username = username;
+                cand.username = username;c
                 if (campLink === candLink) return acc = cand;
             }, null);        
     
             // TODO: could use this feature/data to direct message the candidates an update
+
+            // console.log(campaignMsg);
+            console.log(candidates);
+            console.log(campaignAuthor);
 
             // Add to the overall data.
             votes.push({
@@ -363,16 +390,6 @@ export default class ElectionHelper {
                 }, 0)
             });
         });
-
-        // Dev testing only.
-        // votes.push({
-        //     username: 'example',
-        //     id: 'tester',
-        //     votes: 15
-        // });
-
-        // Replaces this line: votes = votes.sort((a, b) => a.votes > b.votes);
-        // Ensure in highest order first.
    
         votes.sort((a, b) => {
             if (a.votes < b.votes) return 1;
@@ -399,9 +416,8 @@ export default class ElectionHelper {
 
     // Preload campaign messages into cache so they are always reactable.
     static async onLoad() {
-        console.warn('should cache candidate messages here');
-
         const candidates = await this.loadAllCampaigns();
+        console.warn('cached candidates');
 
         return candidates;
     }
