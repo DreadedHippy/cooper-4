@@ -32,10 +32,15 @@ export default function eventsManifest() {
   // New day events/calendar events.
   EventsHelper.runInterval(() => Chicken.checkIfNewDay([
     () => {
+      // Iso please double check this method is sound?
       _channel._postToFeed('A new day?')
       ElectionHelper.checkProgress()
     }
   ]), baseTickDur / 2);
+
+
+  // Check progess is left within new day due to significance, but add another runner.
+  EventsHelper.runInterval(() => ElectionHelper.shouldTriggerStart(), baseTickDur * 4);
   
   // Above is unfinished
   EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);

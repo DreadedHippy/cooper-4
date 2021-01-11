@@ -431,6 +431,15 @@ export default class ElectionHelper {
         return candidates;
     }
 
+    static async shouldTriggerStart() {
+        console.log('shouldTriggerStart');
+        const nextElecSecs = await this.nextElecSecs();
+        const isVotingPeriod = await this.isVotingPeriod(nextElecSecs);
+        const isElecOn = await this.isElectionOn();
+        console.log(isElecOn, isVotingPeriod);
+        if (isVotingPeriod && !isElecOn) this.checkProgress();
+    }
+
 
     static async lastElecSecs() {
         const lastElecSecsVal = await Chicken.getConfigVal('last_election');
