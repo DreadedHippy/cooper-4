@@ -17,37 +17,26 @@ import VotingHelper from '../../../events/voting/votingHelper';
 // Election Start -> Stand -> Consider -> Vote -> Election Declared
 
 // TODO:
-// Preload candidates messages. [DONE]
-// Create previous commanders table [DONE]
 // Tell the community once a day when the next election is [DONE]
-
-// Detect the start of an election.
-
-// Should be posted/maintain an election message in about channel?
-
-// Detect a vote
-// Count votes and announce until election over
-
 // Declare election over
 // Assign roles
 // Announce win
+// Inspect candidates list (tio 10)
+// track voting like US election
 
+// Preload candidates messages. [DONE]
+// Create previous commanders table [DONE]
+// Detect the start of an election.
+// Should be posted/maintain an election message in about channel?
+// Detect a vote
+// Count votes and announce until election over
 // Inspect candidate campaign
 // Stand for election
-
 // Create election results table
-
-
 // Vote _once_ for candidate.
-// Inspect candidates list
-// Last election attribute
 // Election over unix timestamp
-// latest winner
-// Previous winner
-// hasMostVotes
-// potentialLeaders
 
-// track voting like US election
+
 
 
 export default class ElectionHelper {
@@ -155,25 +144,34 @@ export default class ElectionHelper {
         await ChannelsHelper._postToFeed(commentatingText);
 
         const hierarchy = this.calcHierarchy(votes);
-        const electionProgressText = `Election is still running for (TIME_REMAINING?), here is current information:` +
+
+        const electionProgressText = `Election is still running for ${readableElecLeft}, latest vote results:` +
             `\n\n` +
             `Commander: ${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)` +
             `\n\n` +
-            `Leaders: \n ${hierarchy.leaders.map(leader => `${leader.username} (${leader.votes} Votes) \n`)}` +
-            `\n\n` +
+            `Leaders: (/${numLeaders})\n ${
+                hierarchy.leaders
+                    .map(leader => `${leader.username} (${leader.votes} Votes)`)
+                    .join('\n')
+            }` +
+            `\n\n`;
 
-        await this.editElectionInfoMsg(electionProgressText)
-
+        await this.editElectionInfoMsg(electionProgressText);
         // Note: Votes aren't saved in the database... we rely solely on Discord counts.
     }
 
     static async endElection() {
         try {
             const votes = await this.fetchAllVotes();
-            
+            const hierarchy = this.calcHierarchy(votes);
             console.log('Ending the election!', votes);
             
-            // Get winners hierarchy
+            // TODO: Add roles to the hierarchy
+            // Add commander role
+            // Add leader role to leaders
+
+            // Announce the winners!
+
             // Slatxyo could convert that to an embed hopefully.
             ChannelsHelper._postToFeed('Ending the election...');
 
@@ -296,10 +294,7 @@ export default class ElectionHelper {
                     const userReactions = reaction.message.reactions.cache
                         .filter(reaction => reaction.users.cache.has(user.id));
 
-                    console.log('userReactions', userReactions);
-
-                    for (const userReact of userReactions.values()) 
-                        await userReact.users.remove(user.id);
+                    for (const userReact of userReactions.values()) await userReact.users.remove(user.id);
 
                     return MessagesHelper.selfDestruct(reaction.message, warnText);
                 }
@@ -337,7 +332,7 @@ export default class ElectionHelper {
         const numLeaders = VotingHelper.getNumRequired(ServerHelper._coop(), 2.5);
         const leaders = votes.slice(1, numLeaders);
 
-        const hierarchy = { commander, leaders}
+        const hierarchy = { commander, leaders, numLeaders };
 
         return hierarchy;
     }

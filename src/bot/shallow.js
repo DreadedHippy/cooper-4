@@ -29,6 +29,7 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+        ElectionHelper.checkProgress();
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
