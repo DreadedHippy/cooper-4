@@ -3,8 +3,6 @@ import Redis from "./redis";
 import ServerHelper from "../entities/server/serverHelper";
 import UsersHelper from "../entities/users/usersHelper";
 
-import ROLES from "../config/roles.json";
-
 export default class Crossover {
 
     // Load important data into redis for website consumtion.
@@ -12,17 +10,8 @@ export default class Crossover {
         console.log('Redis connected, refreshing crossover data.');
         Redis.connection.flushall((err, success) => {            
             if (err) console.error(err);
-            if (success) this.setHierarchy(this.getHierarchy());
+            if (success) this.setHierarchy(UsersHelper.getHierarchy());
         });
-    }
-
-    static getHierarchy() {
-        const guild = ServerHelper._coop();
-        return {
-            commander: UsersHelper.getMembersByRoleID(guild, ROLES.COMMANDER.id).first(),
-            leaders: UsersHelper.getMembersByRoleID(guild, ROLES.LEADER.id),
-            memberCount: guild.memberCount
-        };
     }
 
     static async setHierarchy(hierarchy) {

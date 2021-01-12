@@ -1,3 +1,4 @@
+import ChannelsHelper from "../channels/channelsHelper";
 import ServerHelper from "../server/serverHelper";
 
 export default class MessagesHelper {
@@ -69,7 +70,13 @@ export default class MessagesHelper {
         return emoji.codePointAt(0).toString(16);
     }
 
+
+    // Handles :single: and :double:id emoji input
+    // Not sure about emoji direct unicode (image char)
     static emojiText(emoji) {
+        // const numColons = emoji.split(":").length - 1;
+        const truePieces = emoji.split(':').filter(piece => piece !== '');
+        if (truePieces.length === 1) return emoji;
         return `<${emoji}>`;
     }
 
@@ -135,6 +142,29 @@ export default class MessagesHelper {
         str = str.toLowerCase().split(' ');
         for (let i = 0; i < str.length; i++) str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
         return str.join(' ');
+    }
+
+    static async editByLink(link, content) {
+        try {
+            const msgData = this.parselink(link);
+            const channel = ChannelsHelper._get(msgData.channel);
+            const msg = await channel.messages.fetch(msgData.message);
+            const editedMsg = await msg.edit(content);
+            return editedMsg;
+        } catch(e) {
+            console.log('Error editing message by link');
+            console.error(e);
+        }
+    }
+
+    static randomChars(qty) {
+        const characters = 'abcdefghijklmnopqrstuvwxyz';
+        let result = '';
+        for ( let i = 0; i < qty; i++ ) {
+            const randIndex = Math.floor(Math.random() * characters.length);
+            result += characters.charAt(randIndex);
+        }
+        return result;
     }
 
 }

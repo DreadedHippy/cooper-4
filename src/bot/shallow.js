@@ -2,6 +2,13 @@ import { Client } from 'discord.js-commando';
 import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
+import UsersHelper from './core/entities/users/usersHelper';
+import Chicken from './community/chicken';
+import ChannelsHelper from './core/entities/channels/channelsHelper';
+import MessagesHelper from './core/entities/messages/messagesHelper';
+import ItemsHelper from './community/features/items/itemsHelper';
+import DropTable from './community/features/items/droptable';
+import EggHuntMinigame from './community/features/minigame/small/egghunt';
 
 // v DEV IMPORT AREA v
 
@@ -21,10 +28,11 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-
+        // TODO:
         // I should end and clean up current election and let the day slide into election...
+        // Knock 4 days off election
 
-
+        
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
 

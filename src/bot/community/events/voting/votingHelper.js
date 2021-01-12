@@ -4,7 +4,7 @@ import UsersHelper from "../../../core/entities/users/usersHelper";
 export default class VotingHelper {
 
   static getNumRequired(guild, rate) {
-    return Math.floor(UsersHelper.count(guild) * rate);
+    return Math.ceil(UsersHelper.count(guild) * rate);
   }
 
   static getResults(collected) {

@@ -13,6 +13,7 @@ import STATE from '../../../../state';
 import DatabaseHelper from '../../../../core/entities/databaseHelper';
 import VotingHelper from '../../../events/voting/votingHelper';
 import RolesHelper from '../../../../core/entities/roles/rolesHelper';
+import ItemsHelper from '../../items/itemsHelper';
 
 // MVP: Elections
 // Election Start -> Stand -> Consider -> Vote -> Election Declared
@@ -177,6 +178,16 @@ export default class ElectionHelper {
                 return true;
             }));
 
+            await this.resetHierarchyItems();
+
+            // Add the election items.
+            await ItemsHelper.add(hierarchy.commander.id, 'ELECTION_CROWN', 1);
+            await Promise.all(hierarchy.leaders.map(async (leader, index) => {
+                await new Promise(r => setTimeout(r, 777 * index));
+                await ItemsHelper.add(leader.id, 'LEADERS_SWORD', 1);
+                return true;
+            }));
+
             // Cleanup database records fresh for next run.
             await this.clearElection();
 
@@ -217,6 +228,17 @@ export default class ElectionHelper {
             return true;
         }));
         await RolesHelper._remove(exCommander.user.id, 'COMMANDER');
+    }
+
+    static async resetHierarchyItems() {
+        const exCommander = RolesHelper._getUsersWithRoleCodes(['COMMANDER']).first();
+        const exLeaders = RolesHelper._getUsersWithRoleCodes(['LEADER']);
+        await Promise.all(exLeaders.map(async (exLeader, index) => {
+            await new Promise(r => setTimeout(r, 777 * index));
+            await ItemsHelper.subtract(exLeader.user.id, 'LEADERS_SWORD');
+            return true;
+        }));
+        await ItemsHelper.subtract(exCommander.user.id, 'ELECTION_CROWN');
     }
 
     static async checkProgress() {

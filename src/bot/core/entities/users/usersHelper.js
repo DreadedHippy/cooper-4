@@ -1,7 +1,10 @@
 import STATE from "../../../state";
+
 import DatabaseHelper from "../databaseHelper";
 import Database from "../../setup/database";
 import ServerHelper from "../server/serverHelper";
+
+import ROLES from '../../config/roles.json';
 
 export default class UsersHelper {
     static avatar(user) {
@@ -13,7 +16,9 @@ export default class UsersHelper {
         return ServerHelper._coop().members.cache;
     }
 
-    static _getMemberByID = (id) => this._cache().get(id);
+    static _getMemberByID(id) {
+        return this._cache().get(id);
+    }
 
     static getMemberByID = (guild, id) => guild.members.cache.get(id);
 
@@ -94,11 +99,14 @@ export default class UsersHelper {
     }
 
     static async load() {
+        let users = [];
         const query = {
             name: "get-users",
             text: "SELECT * FROM users"
         };
-        return await Database.query(query);        
+        const result = await Database.query(query);        
+        if (result) users = result.rows;
+        return users;
     }
 
     static async updateField(id, field, value) {
@@ -152,4 +160,34 @@ export default class UsersHelper {
         return await Database.query(query);
     }
     
+    static async getLastUser() {
+        const query = {
+            name: "get-last-user",
+            text: "SELECT * FROM users WHERE id = (select max(id) from users)"
+        };
+        const result = await Database.query(query);
+        return DatabaseHelper.single(result);
+    }
+
+    static getHierarchy() {
+        const guild = ServerHelper._coop();
+        return {
+            commander: this.getMembersByRoleID(guild, ROLES.COMMANDER.id).first(),
+            leaders: this.getMembersByRoleID(guild, ROLES.LEADER.id),
+            memberCount: guild.memberCount
+        };
+    }
+
+    static async cleanupUsers() {
+        const allUsers = await this.load();
+        allUsers.map((user, index) => {
+            const member = this._getMemberByID(user.discord_id);
+            if (!member) setTimeout(() => this.removeFromDatabase({
+                user: {
+                    id: user.discord_id
+                }
+            }), 666 * index);
+        });
+    }
+
 }

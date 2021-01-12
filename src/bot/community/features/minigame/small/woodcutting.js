@@ -115,6 +115,8 @@ export default class WoodcuttingMinigame {
 
         MessagesHelper.delayReact(rockMsg, '🪓');
 
-        ChannelsHelper._postToFeed(`Ooo a tree to fell! Branches ${magnitude}!`, 1222);
+
+        const branchText = magnitude > 1 ? `${magnitude} branches` : `a branch`;
+        ChannelsHelper._postToFeed(`${'Ooo'.repeat(Math.floor(magnitude / 2))} a tree with ${branchText} to fell!`, 1222);
     }
 }

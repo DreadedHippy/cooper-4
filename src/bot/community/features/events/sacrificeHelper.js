@@ -1,12 +1,17 @@
 import EMOJIS from '../../../core/config/emojis.json';
 import CHANNELS from '../../../core/config/channels.json';
+
 import ChannelsHelper from '../../../core/entities/channels/channelsHelper';
 import ServerHelper from '../../../core/entities/server/serverHelper';
 import UsersHelper from '../../../core/entities/users/usersHelper';
 import VotingHelper from '../../events/voting/votingHelper';
-import STATE from '../../../state';
 import MessagesHelper from '../../../core/entities/messages/messagesHelper';
 import embedHelper from '../../../ui/embed/embedHelper';
+
+import STATE from '../../../state';
+
+import Chicken from '../../chicken';
+import CooperMorality from '../minigame/small/cooperMorality';
 
 
 
@@ -94,7 +99,7 @@ export default class SacrificeHelper {
                 } else {
                     // Provide feedback for user who is not currently protected or sacrificed.
                     await ChannelsHelper._postToFeed(
-                        `**Remaining votes to sacrifice <@${targetMember.id}>**` +
+                        `**Remaining votes to sacrifice ${targetMember.user.username}**` +
                         `\n\n` +
                         `Protect: ${EMOJIS.SACRIFICE_SHIELD} ${remainingProtectVotes} ${EMOJIS.SACRIFICE_SHIELD}` +
                         `| Sacrifice: ${EMOJIS.DAGGER} ${remainingSacrificeVotes} ${EMOJIS.DAGGER}`
@@ -127,7 +132,8 @@ export default class SacrificeHelper {
             }
         });
 
-        if (sacrificeVotes >= reqSacrificeVotes) {
+        // Limit this to only reaction to a certain count of emojis, fire once.
+        if (sacrificeVotes === reqSacrificeVotes) {
             const targetID = reaction.message.author.id;
             const targetMember = await UsersHelper.fetchMemberByID(guild, targetID);
 
@@ -153,26 +159,50 @@ export default class SacrificeHelper {
                 const backstabMsg = await reaction.message.say(
                     `${targetMember.user.username} got backstabbed! ${EMOJIS.DAGGER.repeat(updatedNumVotes)}`
                 );
-            }, 3000)
+            }, 3000);
         }
     }
 
     static async offer(user) {
         // TODO: Check last sacrifice time
 
+        const cooperMood = await CooperMorality.load();
+
+        let moodText = '';
+        const tenRoll = STATE.CHANCE.bool({ likelihood: 6 });
+        const twentyRoll = STATE.CHANCE.bool({ likelihood: 4 });
+        const twoRoll = STATE.CHANCE.bool({ likelihood: 2 });
+        const oneRoll = STATE.CHANCE.bool({ likelihood: 1 });
+
+        if (tenRoll && cooperMood === 'EVIL') moodText = ' (and I hope you are)';
+        if (twentyRoll && cooperMood === 'EVIL') moodText = ' lol';
+        if (twoRoll && cooperMood === 'EVIL') moodText = ' (been looking forward to this one)';
+        if (oneRoll && cooperMood === 'EVIL') moodText = ', ha';
+
+        if (tenRoll && cooperMood === 'GOOD') moodText = ' (and I hope they don\'t)';
+        if (twentyRoll && cooperMood === 'GOOD') moodText = ' ;(';
+        if (twoRoll && cooperMood === 'GOOD') moodText = ' nooooooooo';
+        if (oneRoll && cooperMood === 'GOOD') moodText = ' violence never solved anything.';
+
+        if (tenRoll && cooperMood === 'NEUTRAL') moodText = ' it\'s a shame it had to come to this.';
+        if (twentyRoll && cooperMood === 'NEUTRAL') moodText = ' this is Coop standard HR practise';
+        if (twoRoll && cooperMood === 'NEUTRAL') moodText = ' it is what it is';
+        if (oneRoll && cooperMood === 'NEUTRAL') moodText = ' just awaiting the paperwork';
+        if (oneRoll && twentyRoll && cooperMood === 'NEUTRAL') moodText = ' all sacrificial rights reserved, The Coop';
+
         // Add message to sacrifice
         const sacrificeEmbed = { embed: embedHelper({ 
-            title: `${user.username}, you are being considered for sacrifice!`,
-            description: `To sacrifice <@${user.id}> press dagger, to protect the user press the shield.`,
-            thumbnail: UsersHelper.avatar(user)
+            title: `${user.username}, you may be sacrificed${moodText}!`,
+            description: `**Decide <@${user.id}>'s fate**: React to choose! Dagger (remove) OR Shield (keep)`,
+            thumbnail: UsersHelper.avatar(user),
+            footerText: 'The best Discord community to be sacrificed from!',
         }) };
 
         const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
-        const sacrificeLink = MessagesHelper.link(sacrificeMsg);
 
         // Post to feed
         setTimeout(() => {
-            const sacrificeMsgText = `<@${user.id}> is being considered for sacrifice! Vote now! :O ` + sacrificeLink;
+            const sacrificeMsgText = `${user.username} is being considered for sacrifice! Vote now! <#${CHANNELS.SACRIFICE.id}>`
             ChannelsHelper._postToFeed(sacrificeMsgText);
 
             setTimeout(() => {
@@ -182,8 +212,8 @@ export default class SacrificeHelper {
         }, 1500);
 
         // Add reactions for voting
-        setTimeout(async () => { await sacrificeMsg.react(EMOJIS.DAGGER); }, 1500);
-        setTimeout(async () => { await sacrificeMsg.react(EMOJIS.SACRIFICE_SHIELD); }, 2000);
+        MessagesHelper.delayReact(sacrificeMsg, EMOJIS.DAGGER, 1500);
+        MessagesHelper.delayReact(sacrificeMsg, EMOJIS.SACRIFICE_SHIELD, 2000);
 
         return true;
     }

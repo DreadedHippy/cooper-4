@@ -10,6 +10,7 @@ import ItemsHelper from '../../items/itemsHelper';
 import STATE from '../../../../state';
 import MessagesHelper from '../../../../core/entities/messages/messagesHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
+import DropTable from '../../items/droptable';
 
 
 export const EGG_DATA = {
@@ -67,11 +68,32 @@ export default class EggHuntMinigame {
         return eggRarity;
     }
 
+    static async processBombDrop(rarity, user) {
+        // Ignore toxic eggs for now.
+        if (rarity === 'TOXIC_EGG') return false;
+
+        const tierLevel = rarity.replace('_EGG', '');
+        const reward = DropTable.getRandomTieredWithQty(tierLevel);
+
+        const actionTypeText = MessagesHelper.randomChars(7);
+        const subjectText = `the ${tierLevel.toLowerCase()} egg`;
+        const actionText = `${user.username} ${actionTypeText}'d items from bombing ${subjectText}...`;
+        const emojiText = MessagesHelper.emojiText(EMOJIS[rarity]);
+        const emojiItemText = MessagesHelper.emojiText(EMOJIS[reward.item]);
+        const eventText = `${actionText} ${emojiText}\n${emojiItemText} ${reward.item}x${reward.qty}`;
+        ChannelsHelper._postToFeed(eventText, 2000);
+        
+        await ItemsHelper.add(user.id, reward.item, reward.qty);
+    }
+
     // TODO: Add a small chance of bomb exploding on you.
     static async explode(reaction, user) {
 
         // Check if user has a bomb to use
         try {
+
+
+            // TODO: Allow all other explosives to do this too.
             const bombQuantity = await ItemsHelper.getUserItemQty(user.id, 'BOMB');
 
             const rarity = this.calculateRarityFromMessage(reaction.message);
@@ -103,8 +125,8 @@ export default class EggHuntMinigame {
             const awardedUserIDs = Object.keys(aroundUsers);
             await Promise.all(awardedUserIDs.map(userID => PointsHelper.addPointsByID(userID, reward)));
 
-            // Add/update egg item to user
-            await ItemsHelper.add(user.id, rarity, 1);
+            // Add/update random item to user if it was a legendary egg
+            await this.processBombDrop(rarity, user);
 
             // Create feedback text from list of users.
             const usersRewardedText = awardedUserIDs.map(userID => aroundUsers[userID].username).join(', ');
@@ -219,8 +241,11 @@ export default class EggHuntMinigame {
             const randomDelayBaseMs = 30000;
             setTimeout(async () => {
                 try {
-                    const eggMsg = await dropChannel.send(`<${EGG_DATA[rarity].emoji}>`);
-                    await eggMsg.react('🧺');
+                    const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
+                    const eggMsg = await dropChannel.send(emojiText);
+
+                    // Add collection action emoji.
+                    MessagesHelper.delayReact(eggMsg, '🧺', 666);
 
                     // Remove toxic egg after few minutes so people aren't forced to take it.
                     if (rarity === 'TOXIC_EGG') MessagesHelper.delayDelete(eggMsg, 200000);

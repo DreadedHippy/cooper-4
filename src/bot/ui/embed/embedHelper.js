@@ -17,7 +17,7 @@ export default function embedHelper(params) {
         image: params.image || null,
         timestamp: new Date(),
         footer: {
-            text: 'The best server on Discord, because you\'re here!',
+            text:  params.footerText || 'The best server on Discord, because you\'re here!',
             icon_url: cooperImageURL,
         }
     };

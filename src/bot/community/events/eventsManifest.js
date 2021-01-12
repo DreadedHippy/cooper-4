@@ -20,6 +20,7 @@ import CooperMorality from "../features/minigame/small/cooperMorality";
 import TradingHelper from "../features/items/tradingHelper";
 import EconomyHelper from "../features/economy/economyHelper";
 import ElectionHelper from "../features/hierarchy/election/electionHelper";
+import UsersHelper from "../../core/entities/users/usersHelper";
 
 
 export const baseTickDur = 60 * 25 * 1000;
@@ -28,6 +29,9 @@ export default function eventsManifest() {
 
   // Server related house keeping items.
   EventsHelper.runInterval(() => StatisticsHelper.update(), baseTickDur * 5);
+
+  // Clean up user data, may have missed detection on a leave/kick/ban.
+  EventsHelper.runInterval(() => UsersHelper.cleanupUsers(), baseTickDur * 5);
 
   // New day events/calendar events.
   EventsHelper.runInterval(() => Chicken.checkIfNewDay([
