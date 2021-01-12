@@ -137,6 +137,11 @@ export default class ElectionHelper {
 
     }
 
+
+    static getMaxNumLeaders() {
+        return VotingHelper.getNumRequired(ServerHelper._coop(), .025);
+    }
+
     // Provide updates and functionality for an ongoing election.
     static async commentateElectionProgress() {
         const votes = await this.fetchAllVotes();
@@ -146,12 +151,14 @@ export default class ElectionHelper {
         await ChannelsHelper._postToFeed(commentatingText);
 
         const hierarchy = this.calcHierarchy(votes);
+        const maxNumLeaders = this.getMaxNumLeaders();
+        const numLeaders = hierarchy.leaders.length;
 
         const electionProgressText = `Election is still running for ${readableElecLeft}, latest vote results:` +
             `\n\n` +
-            `Commander: ${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)` +
+            `**Commander:** ${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)` +
             `\n\n` +
-            `Leaders: (/${numLeaders})\n ${
+            `**Leaders ${numLeaders}/${maxNumLeaders}:**\n${
                 hierarchy.leaders
                     .map(leader => `${leader.username} (${leader.votes} Votes)`)
                     .join('\n')
@@ -354,6 +361,9 @@ export default class ElectionHelper {
                     // Add vote to database
                     await this.addVote(user.id, candidate.candidate_id);
 
+                    // Announce and update.
+                    await this.commentateElectionProgress();
+
                     // Need to load candidate via cache id, no access YET.
                     console.log('voted for candidate id ' + candidate.candidate_id);
         
@@ -380,8 +390,10 @@ export default class ElectionHelper {
 
     static calcHierarchy(votes) {
         const commander = votes[0];
-        const numLeaders = VotingHelper.getNumRequired(ServerHelper._coop(), .025);
-        const leaders = votes.slice(1, numLeaders);
+        const numLeaders = this.getMaxNumLeaders();
+        const leaders = votes.slice(1, numLeaders + 1);
+
+        console.log(votes);
 
         const hierarchy = { commander, leaders, numLeaders };
 
@@ -435,7 +447,17 @@ export default class ElectionHelper {
         const campaignMsgs = await this.loadAllCampaigns();
         campaignMsgs.map(campaignMsg => {
             // Find the candidate for these reactions.
-            const candidate = campaignMsg.mentions.users.first();
+            let candidate = campaignMsg.mentions.users.first();
+            if (!candidate) {
+                const embed = campaignMsg.embeds[0] || null;
+                if (embed) {
+                    const idMatches = embed.description.match(/\<@(\d+)\>/gms);
+                    let embedUserID = idMatches[0];
+                    embedUserID = embedUserID.replace('<@', '');
+                    embedUserID = embedUserID.replace('>', '');
+                    if (embedUserID) candidate = UsersHelper._getMemberByID(embedUserID).user;
+                }
+            }
 
             // Add to the overall data.
             if (candidate) {

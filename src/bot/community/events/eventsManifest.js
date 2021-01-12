@@ -70,6 +70,10 @@ export default function eventsManifest() {
  
   // Processes announcements and election events.
   EventsHelper.runInterval(() => ElectionHelper.checkProgress(), baseTickDur * 4);
+  EventsHelper.runInterval(async () => {
+    if (await ElectionHelper.isElectionOn()) 
+      ElectionHelper.commentateElectionProgress();
+  }, baseTickDur * 2);
 
 
   // Miscellaneous features.

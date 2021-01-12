@@ -65,7 +65,7 @@ export default class StandCommand extends CoopCommand {
 					const emojiText = MessagesHelper.emojiText(EMOJIS.ELECTION_CROWN);
 					const electionEmbed = { embed: embedHelper({ 
 						title: `Election Event: ${msg.author.username} stands for election!`,
-						description: `${msg.content}
+						description: `${msg.content}\n\n
 							To vote for <@${msg.author.id}> press (react) the crown emoji ${emojiText}.
 						`,
 						thumbnail: UsersHelper.avatar(msg.author)

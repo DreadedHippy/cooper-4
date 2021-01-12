@@ -91,8 +91,6 @@ export default class EggHuntMinigame {
 
         // Check if user has a bomb to use
         try {
-
-
             // TODO: Allow all other explosives to do this too.
             const bombQuantity = await ItemsHelper.getUserItemQty(user.id, 'BOMB');
 
@@ -223,8 +221,10 @@ export default class EggHuntMinigame {
                     MessagesHelper.selfDestruct(reaction.message, acknowledgementMsgText, 666, 30000);
 
                     // Animate the egg collection.
-                    MessagesHelper.delayEdit(reaction.message, '', 888);
-                    MessagesHelper.delayEdit(reaction.message, '', 1666);
+                    const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
+                    const basketEmojiText = MessagesHelper.emojiText(EMOJIS.BASKET);
+                    MessagesHelper.delayEdit(reaction.message, `${emojiText}${basketEmojiText}💨`, 333);
+                    MessagesHelper.delayEdit(reaction.message, '💨...', 1666);
                     MessagesHelper.delayDelete(reaction.message, 3000);
                 } else {
                     acknowledgementMsgText = `${actionText} clumsily broke the egg, 0 points!`.trim();

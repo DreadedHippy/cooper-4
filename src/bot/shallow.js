@@ -9,6 +9,7 @@ import MessagesHelper from './core/entities/messages/messagesHelper';
 import ItemsHelper from './community/features/items/itemsHelper';
 import DropTable from './community/features/items/droptable';
 import EggHuntMinigame from './community/features/minigame/small/egghunt';
+import ElectionHelper from './community/features/hierarchy/election/electionHelper';
 
 // v DEV IMPORT AREA v
 
@@ -30,9 +31,23 @@ const shallowBot = async () => {
 
         // TODO:
         // I should end and clean up current election and let the day slide into election...
-        // Knock 4 days off election
 
-        
+        // const voteSecs = await ElectionHelper.votingPeriodLeftSecs();
+        // const lastElec = parseInt(await Chicken.getConfigVal('last_election'));
+        // const adjustedSecs = lastElec - (ElectionHelper.DURATION_SECS / 7);
+        // Chicken.setConfig('last_election', adjustedSecs)
+
+        // ElectionHelper.commentateElectionProgress();
+
+
+        const votes = await ElectionHelper.fetchAllVotes();
+        console.log(votes);
+
+        const hierarchy = ElectionHelper.calcHierarchy(votes);
+        console.log(hierarchy);
+
+        // Try to trigger function which should update election results
+
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
 

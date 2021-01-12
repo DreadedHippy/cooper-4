@@ -18,7 +18,7 @@ export default class ItemsCommand extends CoopCommand {
 					key: 'targetUser',
 					prompt: 'Whose items are you trying to check?',
 					type: 'user',
-					default: null
+					default: ''
 				},
 			]
 		});
