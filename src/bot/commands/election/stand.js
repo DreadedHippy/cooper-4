@@ -1,7 +1,7 @@
 import CoopCommand from '../../core/entities/coopCommand';
 
 import CHANNELS from '../../core/config/channels.json';
- from '../../core/config/emojis.json';
+import EMOJIS from '../../core/config/emojis.json';
 
 import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
 import ChannelsHelper from '../../core/entities/channels/channelsHelper';
