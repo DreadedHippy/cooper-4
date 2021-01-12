@@ -23,6 +23,11 @@ export default class UsersHelper {
         return member.roles.cache.get(id);
     }
 
+    static hasRoleIDs = (guild, member, roleIDs) => 
+        guild.roles.cache
+            .filter(role => roleIDs.includes(role.id))
+            .some(role => member.roles.cache.has(role.id));
+
     static hasRoleNames = (guild, member, roleNames) => 
         guild.roles.cache
             .filter(role => roleNames.includes(role.name))
@@ -42,7 +47,7 @@ export default class UsersHelper {
         const guild = ServerHelper._coop();
         this.directMSG(guild, userID, msg);
     }
-    
+
     static getOnlineMembers = (guild) => guild.members.cache.filter(member => member.presence.status === 'online');
     
     static filterMembers = (guild, filter) => guild.members.cache.filter(filter);

@@ -5,6 +5,8 @@ import CHANNELS from '../../core/config/channels.json';
 import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
 import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
+import embedHelper from '../../ui/embed/embedHelper';
+import UsersHelper from '../../core/entities/users/usersHelper';
 
 
 
@@ -60,9 +62,14 @@ export default class StandCommand extends CoopCommand {
 					MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for <#${CHANNELS.ELECTION.id}>, eyyy?`);
 		
 					// Save message link from election channel
-					const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', 
-						`Campaign Ad - ${msg.author.toString()}:\n\n${campaignText}`
-					);
+					const electionEmbed = { embed: embedHelper({ 
+						title: `Election Event: ${msg.author.username} stands for election!`,
+						description: `To elect <@${msg.author.id}> press (react) the crown emoji.`,
+						thumbnail: UsersHelper.avatar(msg.author)
+					}) };
+
+					const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', electionEmbed);
+
 					const msgLink = MessagesHelper.link(electionMsg);
 	
 					// Add candidate to election

@@ -45,9 +45,8 @@ export default class ConsiderCommand extends CoopCommand {
 			const candidates = await ElectionHelper.getAllCandidates();
 			const VotesCounts = await ElectionHelper.countVotes();
 
-
-			const Results = candidates.map(u => `${u.candidate_id}:${VotesCounts[u.candidate_id]}`).join('\n');
-			await msg.reply(Results);
+			const resultsText = candidates.map(u => `${u.candidate_id}:${VotesCounts[u.candidate_id]}`).join('\n');
+			await msg.reply(resultsText);
 		
 		}
 

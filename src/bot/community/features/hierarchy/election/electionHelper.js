@@ -12,6 +12,7 @@ import CHANNELS from '../../../../core/config/channels.json';
 import STATE from '../../../../state';
 import DatabaseHelper from '../../../../core/entities/databaseHelper';
 import VotingHelper from '../../../events/voting/votingHelper';
+import RolesHelper from '../../../../core/entities/roles/rolesHelper';
 
 // MVP: Elections
 // Election Start -> Stand -> Consider -> Vote -> Election Declared
@@ -164,16 +165,17 @@ export default class ElectionHelper {
         try {
             const votes = await this.fetchAllVotes();
             const hierarchy = this.calcHierarchy(votes);
-            console.log('Ending the election!', votes);
-            
-            // TODO: Add roles to the hierarchy
-            // Add commander role
-            // Add leader role to leaders
+           
+            // Remove roles from previous hierarchy.
+            await this.resetHierarchyRoles();
 
-            // Announce the winners!
-
-            // Slatxyo could convert that to an embed hopefully.
-            ChannelsHelper._postToFeed('Ending the election...');
+            // Add roles to winners.
+            await RolesHelper._add(hierarchy.commander.id, 'COMMANDER');
+            await Promise.all(hierarchy.leaders.map(async (leader, index) => {
+                await new Promise(r => setTimeout(r, 777 * index));
+                await RolesHelper._add(leader.id, 'LEADER');
+                return true;
+            }));
 
             // Cleanup database records fresh for next run.
             await this.clearElection();
@@ -181,13 +183,40 @@ export default class ElectionHelper {
             // Set Cooper's config election_on to 'false' so he does not think election is ongoing.
             await Chicken.setConfig('election_on', 'false');
 
+            const nextElecFmt = await this.nextElecFmt();
+
+            // Announce the winners!
+            ChannelsHelper._postToFeed(`**Election Certification!**
+
+                New Commander: ${hierarchy.commander.username}
+
+                New Leaders: 
+                    ${hierarchy.leaders.map(leader => {
+                       return `${leader.username} (${leader.votes} Votes)`;
+                    })}
+
+                Next Election: ${nextElecFmt}.
+            `);
+
             // Set the election info message to next election data, previous winners.
-            await this.editElectionInfoMsg('Election ended... next will be?');
+            const nextElecText = `Election ended and results were declared. Next Election: ${nextElecFmt}`;
+            await this.editElectionInfoMsg(nextElecText);
 
         } catch(e) {
             console.log('Something went wrong ending the election...');
             console.error(e);
         }
+    }
+
+    static async resetHierarchyRoles() {
+        const exCommander = RolesHelper._getUsersWithRoleCodes(['COMMANDER']).first();
+        const exLeaders = RolesHelper._getUsersWithRoleCodes(['LEADER']);
+        await Promise.all(exLeaders.map(async (exLeader, index) => {
+            await new Promise(r => setTimeout(r, 777 * index));
+            await RolesHelper._remove(exLeader.user.id, 'LEADER');
+            return true;
+        }));
+        await RolesHelper._remove(exCommander.user.id, 'COMMANDER');
     }
 
     static async checkProgress() {
@@ -329,7 +358,7 @@ export default class ElectionHelper {
 
     static calcHierarchy(votes) {
         const commander = votes[0];
-        const numLeaders = VotingHelper.getNumRequired(ServerHelper._coop(), 2.5);
+        const numLeaders = VotingHelper.getNumRequired(ServerHelper._coop(), .025);
         const leaders = votes.slice(1, numLeaders);
 
         const hierarchy = { commander, leaders, numLeaders };

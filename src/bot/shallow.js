@@ -13,6 +13,7 @@ import ServerHelper from './core/entities/server/serverHelper';
 import MessagesHelper from './core/entities/messages/messagesHelper';
 import UsersHelper from './core/entities/users/usersHelper';
 import CooperMorality from './community/features/minigame/small/cooperMorality';
+import RolesHelper from './core/entities/roles/rolesHelper';
 // ^ DEV IMPORT AREA ^
 
 dotenv.config();
@@ -28,8 +29,6 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-
-        ElectionHelper.checkProgress();
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
