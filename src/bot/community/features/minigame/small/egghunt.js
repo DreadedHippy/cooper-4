@@ -192,6 +192,9 @@ export default class EggHuntMinigame {
 
     static async collect(reaction, user) {
         try {
+            if (reaction.count > 2) 
+                return MessagesHelper.selfDestruct(reaction.message, 'That egg was just taken before you...');
+
             if (!UsersHelper.isCooper(user.id)) {
                 const rarity = this.calculateRarityFromMessage(reaction.message);
                 const reward = EGG_DATA[rarity].points;
@@ -208,25 +211,30 @@ export default class EggHuntMinigame {
                 let acknowledgementMsgText =`${actionText} ${rewardPolarity}${reward} points!`.trim();
                 let activityFeedMsgText = `${user.username} collected an egg in ${location}! <${emoji}>`.trim();
 
-                if (STATE.CHANCE.bool({ likelihood: 90 })) {
+                // TODO: If Cooper is evil you break more pickaxes, axes, frying pans and eggs.
+
+                if (STATE.CHANCE.bool({ likelihood: 83 })) {
                     // Store points and egg collection data in database.
                     const updated = await PointsHelper.addPointsByID(user.id, reward);
                     acknowledgementMsgText += ` (${updated})`;
                     // Add/update egg item to user
                     await ItemsHelper.add(user.id, rarity, 1);
+                    
+                    MessagesHelper.selfDestruct(reaction.message, acknowledgementMsgText, 666, 30000);
+
+                    // Animate the egg collection.
+                    MessagesHelper.delayEdit(reaction.message, '', 888);
+                    MessagesHelper.delayEdit(reaction.message, '', 1666);
+                    MessagesHelper.delayDelete(reaction.message, 3000);
                 } else {
                     acknowledgementMsgText = `${actionText} clumsily broke the egg, 0 points!`.trim();
                     activityFeedMsgText = `${user.username} broke an egg in ${location}! :( <${emoji}>`.trim();
+                    MessagesHelper.selfDestruct(reaction.message, acknowledgementMsgText, 666, 30000);
+                    MessagesHelper.delayDelete(reaction.message, 0);
                 }
 
-                // Provide feedback.
-                const acknowledgementMsg = await reaction.message.say(acknowledgementMsgText);        
-                ChannelsHelper._postToFeed(activityFeedMsgText)
-                
-                // Delete the egg and channel feedback message when collected.
-                MessagesHelper.delayDelete(acknowledgementMsg, 30000);
-                // Fix egg delay to prevent corrupt collecting.
-                MessagesHelper.delayDelete(reaction.message, 0);
+                // Provide record of event.
+                ChannelsHelper._postToFeed(activityFeedMsgText)                
             }
         } catch(e) {
             console.error(e);

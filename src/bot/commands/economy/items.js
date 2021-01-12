@@ -27,8 +27,8 @@ export default class ItemsCommand extends CoopCommand {
 	async run(msg, { targetUser }) {
 		super.run(msg);
 
-		if (!targetUser) targetUser = msg.author;
 		if (msg.mentions.users.first()) targetUser = msg.mentions.users.first();
+		if (!targetUser) targetUser = msg.author;
 
 
         try {
