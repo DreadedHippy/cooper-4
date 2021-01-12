@@ -34,8 +34,6 @@ export default class StandCommand extends CoopCommand {
 	async run(msg, { campaignText }) {
 		super.run(msg);
 
-		const { id: userID, username } = msg.author;
-
 		try {
 			// Prevent bad campaign texts.
 			if (campaignText.length < 30) {
@@ -64,7 +62,9 @@ export default class StandCommand extends CoopCommand {
 					// Save message link from election channel
 					const electionEmbed = { embed: embedHelper({ 
 						title: `Election Event: ${msg.author.username} stands for election!`,
-						description: `To elect <@${msg.author.id}> press (react) the crown emoji.`,
+						description: `${msg.content}
+							To elect <@${msg.author.id}> press (react) the crown emoji.
+						`,
 						thumbnail: UsersHelper.avatar(msg.author)
 					}) };
 

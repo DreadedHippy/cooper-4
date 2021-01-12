@@ -4,16 +4,7 @@ import STATE from './state';
 import dotenv from 'dotenv';
 
 // v DEV IMPORT AREA v
-import ChannelsHelper from './core/entities/channels/channelsHelper';
-import ElectionHelper from './community/features/hierarchy/election/electionHelper';
-import Chicken from './community/chicken';
 
-import moment from 'moment';
-import ServerHelper from './core/entities/server/serverHelper';
-import MessagesHelper from './core/entities/messages/messagesHelper';
-import UsersHelper from './core/entities/users/usersHelper';
-import CooperMorality from './community/features/minigame/small/cooperMorality';
-import RolesHelper from './core/entities/roles/rolesHelper';
 // ^ DEV IMPORT AREA ^
 
 dotenv.config();
@@ -29,6 +20,10 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
+
+
+        // I should end and clean up current election and let the day slide into election...
+
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
