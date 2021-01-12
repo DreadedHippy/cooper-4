@@ -2,6 +2,7 @@ import CoopCommand from '../../core/entities/coopCommand';
 
 import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
+import TimeHelper from '../../community/features/server/timeHelper';
 
 
 export default class VotingTimeCommand extends CoopCommand {
