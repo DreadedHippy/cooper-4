@@ -12,6 +12,7 @@ import ItemsHelper from "../../features/items/itemsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
 import CleanupHandler from '../../features/messages/cleanupHandler';
 import ElectionHelper from '../../features/hierarchy/election/electionHelper';
+import AboutHelper from '../../features/server/aboutHelper';
 
 export default async function reactAddedHandler(reaction, user) {
     const isUser = !UsersHelper.isCooper(user.id);
@@ -41,6 +42,9 @@ export default async function reactAddedHandler(reaction, user) {
 
         // Allow elected people to cleanup Cooper messages.
         CleanupHandler.onReaction(reaction, user);
+
+        // Settings via about channel
+        AboutHelper.onReaction(reaction, user);
 
     } catch(e) {
         console.error(e);
