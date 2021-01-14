@@ -1,17 +1,16 @@
-import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import PointsHelper from "../points/pointsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";
-import embedHelper from "../../../ui/embed/embedHelper";
+import RolesHelper from "../../../core/entities/roles/rolesHelper";
+
+import CHANNELS from '../../../core/config/channels.json';
+import KEY_MESSAGES from '../../../core/config/keymessages.json';
 
 import Chicken from "../../chicken";
-import CHANNELS from '../../../core/config/channels.json';
 
-import KEY_MESSAGES from '../../../core/config/keymessages.json';
 import AnnouncementOpts from "./about/announceOpts";
 import GameOpts from "./about/gameOpts";
 import CommunityOpts from "./about/communityOpts";
-import RolesHelper from "../../../core/entities/roles/rolesHelper";
 
 
 
@@ -44,9 +43,9 @@ export default class AboutHelper {
             '☠️': AnnouncementOpts.privacyBomb // Most complex unfinished (need to add confirm)
         },
         FOCUS: {
-            '💻': () => RolesHelper.toggle(user.id, 'CODE'),
-            '💼': () => RolesHelper.toggle(user.id, 'BUSINESS'),
-            '🖌️': () => RolesHelper.toggle(user.id, 'ART'),
+            '💻': (react, user) => RolesHelper.toggle(user.id, 'CODE'),
+            '💼': (react, user) => RolesHelper.toggle(user.id, 'BUSINESS'),
+            '🖌️': (react, user) => RolesHelper.toggle(user.id, 'ART'),
         },
         GAMES: {
             '🤝': GameOpts.economyToggle, // Done
