@@ -37,8 +37,8 @@ export default class RolesHelper {
     
             // Check if user has it or not.
             const hasRoleAlready = UsersHelper.hasRoleID(member, ROLES[roleCode].id);
-            if (!hasRoleAlready) await this._add(user.id, roleCode);
-            else await this._remove(user.id, roleCode);
+            if (!hasRoleAlready) await this._add(userID, roleCode);
+            else await this._remove(userID, roleCode);
             return true;
 
         } catch(e) {

@@ -224,7 +224,6 @@ export default class EggHuntMinigame {
                     const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
                     const basketEmojiText = MessagesHelper.emojiText(EMOJIS.BASKET);
                     MessagesHelper.delayEdit(reaction.message, `${emojiText}${basketEmojiText}💨`, 333);
-                    MessagesHelper.delayEdit(reaction.message, '💨...', 1666);
                     MessagesHelper.delayDelete(reaction.message, 3000);
                 } else {
                     acknowledgementMsgText = `${actionText} clumsily broke the egg, 0 points!`.trim();
