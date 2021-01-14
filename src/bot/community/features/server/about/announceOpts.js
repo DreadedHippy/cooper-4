@@ -1,24 +1,23 @@
 
 // import KEY_MESSAGES from '../../../core/config/keymessages.json';
 
+import RolesHelper from "../../../../core/entities/roles/rolesHelper";
+
 export default class AnnouncementOpts {
 
     static keyInfoToggle(reaction, user) {
-
-        try {
-            console.log('keyInfoToggle', reaction.message.id, user.username);
-        } catch(e) {
-            console.log('Error with key info pings toggle.');
-            console.error(e);
-        }
+        RolesHelper.toggle(user.id, 'KEY_INFO');
     }
     static newsletterToggle(reaction, user) {
-        console.log('newsletterToggle', reaction.message.id, user.username);
-        return 1;
+        // console.log('newsletterToggle', reaction.message.id, user.username);
+        // return 1;
+
+        // Prompt user to give email in Cooper DM to get the role
+
+        // If turn off, delete email.
     }
     static announcementSubToggle(reaction, user) {
-        console.log('announcementSubToggle', reaction.message.id, user.username);
-        return 1;
+        RolesHelper.toggle(user.id, 'SUBSCRIBER');
     }
     static privacyBomb(reaction, user) {
         console.log('privacyBomb', reaction.message.id, user.username);

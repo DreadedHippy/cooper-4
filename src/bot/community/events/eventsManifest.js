@@ -50,10 +50,9 @@ export default function eventsManifest() {
   
   // Above is unfinished
   EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);
-  EventsHelper.runInterval(() => MessageNotifications.post(), baseTickDur / 2);
-  EventsHelper.runInterval(() => EconomyNotifications.post(), baseTickDur / 1.5);
+  EventsHelper.runInterval(() => MessageNotifications.post(), baseTickDur * 2);
+  EventsHelper.runInterval(() => EconomyNotifications.post(), baseTickDur * 1.75);
   EventsHelper.runInterval(() => SacrificeHelper.random(), baseTickDur * 12);
-
 
   // Update trades channel message
   EventsHelper.runInterval(() => TradingHelper.updateChannel(), baseTickDur * 2);

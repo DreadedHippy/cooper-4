@@ -10,6 +10,8 @@ import CHANNELS from '../../../core/config/channels.json';
 import KEY_MESSAGES from '../../../core/config/keymessages.json';
 import AnnouncementOpts from "./about/announceOpts";
 import GameOpts from "./about/gameOpts";
+import CommunityOpts from "./about/communityOpts";
+import RolesHelper from "../../../core/entities/roles/rolesHelper";
 
 
 
@@ -33,19 +35,26 @@ export default class AboutHelper {
             return acc;
         }, null);
     }
-
     
     static sectionEmojis = {
         ANNOUNCEMENTS: {
-            '❗': AnnouncementOpts.keyInfoToggle,
-            '📰': AnnouncementOpts.newsletterToggle,
-            '📢': AnnouncementOpts.announcementSubToggle,
-            '☠️': AnnouncementOpts.privacyBomb
+            '❗': AnnouncementOpts.keyInfoToggle, // Done
+            '📢': AnnouncementOpts.announcementSubToggle, // Done
+            '📰': AnnouncementOpts.newsletterToggle, // More complex unfinished
+            '☠️': AnnouncementOpts.privacyBomb // Most complex unfinished (need to add confirm)
         },
-        // Add economy and 
+        FOCUS: {
+            '💻': () => RolesHelper.toggle(user.id, 'CODE'),
+            '💼': () => RolesHelper.toggle(user.id, 'BUSINESS'),
+            '🖌️': () => RolesHelper.toggle(user.id, 'ART'),
+        },
         GAMES: {
-            '🤝': GameOpts.economyToggle,
-            '🗡': GameOpts.conquestToggle
+            '🤝': GameOpts.economyToggle, // Done
+            '🗡': GameOpts.conquestToggle // Done
+        },
+        COMMUNITY: {
+            '🧵': CommunityOpts.miscToggle, // Done
+            '👷': CommunityOpts.projectsToggle // Done
         }
     }
 
@@ -59,12 +68,16 @@ export default class AboutHelper {
 
         // Check if this reaction is on about channel.
         if (reaction.message.channel.id !== CHANNELS.ABOUT.id) return false;
-        
+
         // Ignore Cooper.
         if (UsersHelper.isCooper(user.id)) return false;
-        
+
         // Check if in array of interaction emojis.
         if (!this.optionEmojis.includes(reactEmoji)) return false;
+
+        // Check if the user is a member, only members may gain access.
+        const member = await UsersHelper.loadSingle(user.id);
+        if (!member) return false;
 
         // Map emojis to right option handler.
         const resultCallback = this.getEmojiHandler(reactEmoji);

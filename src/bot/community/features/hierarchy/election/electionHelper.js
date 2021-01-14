@@ -265,21 +265,31 @@ export default class ElectionHelper {
     
             // Election needs to announce update?
             if (isVotingPeriod && isElecOn) await this.commentateElectionProgress();
-
+            
             // If election isn't running (sometimes) update about next election secs.
             if (!isElecOn && !electionStarted) {
                 const elecMsg = await this.getElectionMsg();
                 const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
                 const hour = 360000;
+
                 if (diff > hour * 8) {
                     const diff = await this.nextElecSecs() - parseInt(Date.now() / 1000)
-                    const humanRemaining = moment.duration(diff).humanize();
+                    const humanRemaining = TimeHelper.humaniseSecs(diff);
                     const nextElecReadable = await this.nextElecFmt();
-                    await this.editElectionInfoMsg(`**Election is over.**
 
-                        Your current elected members:
+                    const hierarchy = {
+                        commander: RolesHelper._getUserWithCode('COMMANDER'),
+                        leaders: RolesHelper._getUsersWithRoleCodes(['LEADER'])
+                    }
 
-                        Next Election: ${nextElecReadable} (${humanRemaining})`);
+                    await this.editElectionInfoMsg(`**Election is over, here are your current officials:** \n\n` +
+
+                        `**Commander:** ${hierarchy.commander.user.username} :crown: \n\n` +
+
+                        `**Leaders:** \n` +
+                            `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords: \n`)}\n` +
+
+                        `**Next Election:** ${nextElecReadable} (${humanRemaining})`);
                 }
             }
 

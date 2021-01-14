@@ -1,3 +1,4 @@
+import { filter } from 'lodash';
 import ROLES from '../../config/roles.json';
 import ServerHelper from '../server/serverHelper';
 import UsersHelper from '../users/usersHelper';
@@ -25,6 +26,25 @@ export default class RolesHelper {
         }
         // 727311131705868299 COMMANDER
         // 723676356818239773 LEADER
+    }
+
+    static async toggle(userID, roleCode) {
+        try {
+            const member = UsersHelper._getMemberByID(userID);
+
+            if (!member) return false;
+            if (!Object.keys(ROLES).includes(roleCode)) return false;
+    
+            // Check if user has it or not.
+            const hasRoleAlready = UsersHelper.hasRoleID(member, ROLES[roleCode].id);
+            if (!hasRoleAlready) await this._add(user.id, roleCode);
+            else await this._remove(user.id, roleCode);
+            return true;
+
+        } catch(e) {
+            console.log('Error with toggle role ' + roleCode);
+            console.error(e);
+        }
     }
 
     static async _remove(userID, roleCode) {
@@ -57,5 +77,17 @@ export default class RolesHelper {
 
             return match;
         });
+    }
+
+    static _getUserWithCode(code) {
+        let user = null;
+
+        const guild = ServerHelper._coop();
+        const roleID = ROLES[code].id || null;
+
+        const filterUsers = guild.members.cache.filter(member => member.roles.cache.has(roleID));
+        if (filterUsers.size > 0) user = filterUsers.first();
+
+        return user;
     }
 }
