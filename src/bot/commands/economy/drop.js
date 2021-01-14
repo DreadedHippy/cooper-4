@@ -33,14 +33,15 @@ export default class DropCommand extends CoopCommand {
 		const noMatchErrText = 'Please provide a valid item name.';
 		if (!usableItems.includes(itemCode)) return msg.reply(noMatchErrText);
 
-		// Check user owns it, nvm... let ItemsHelper do that.
-		// ItemsHelper.dropItem(msg.author.id, itemCode);
+		const didUse = await ItemsHelper.use(msg.author.id, itemCode, 1);
+		if (!didUse) {
+			// TODO: This needs pickup functionality, besides basket on eggs lol.
+	
+			const emojiText = MessagesHelper.emojiText(EMOJIS[itemCode]);
+			const dropMsg = await msg.say(emojiText);
+			MessagesHelper.delayReact(dropMsg, EMOJIS.DROPPED, 666);
+		}
 
-		// TODO: This needs pickup functionality.
-
-		const emojiText = MessagesHelper.emojiText(EMOJIS[itemCode]);
-		const dropMsg = await msg.say(emojiText);
-		MessagesHelper.delayReact(dropMsg, EMOJIS.DROPPED, 666);
     }
     
 };

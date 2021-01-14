@@ -1,4 +1,4 @@
-import _channel from "../../core/entities/channels/channelsHelper";
+import ChannelHelper from "../../core/entities/channels/channelsHelper";
 
 import SacrificeHelper from "../features/events/sacrificeHelper";
 import PointsHelper from "../features/points/pointsHelper";
@@ -37,8 +37,10 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => Chicken.checkIfNewDay([
     () => {
       // Iso please double check this method is sound?
-      _channel._postToFeed('A new day?')
+      ChannelHelper._postToFeed('A new day?')
       ElectionHelper.checkProgress()
+
+      // If election is running, it should announce something at beginning of day, with time remaining.
     }
   ]), baseTickDur / 2);
 
@@ -70,16 +72,12 @@ export default function eventsManifest() {
  
   // Processes announcements and election events.
   EventsHelper.runInterval(() => ElectionHelper.checkProgress(), baseTickDur * 4);
-  EventsHelper.runInterval(async () => {
-    if (await ElectionHelper.isElectionOn()) 
-      ElectionHelper.commentateElectionProgress();
-  }, baseTickDur * 2);
 
 
   // Miscellaneous features.
   EventsHelper.chanceRunInterval(() => {
-    _channel._postToFeed('Ruuuuuu' + 'u'.repeat(STATE.CHANCE.natural({ min: 1, max: 20 })));
+    ChannelHelper._postToFeed('Ruuuuuu' + 'u'.repeat(STATE.CHANCE.natural({ min: 1, max: 20 })));
   }, 2.5, baseTickDur * 5);
 
-  EventsHelper.chanceRunInterval(() => { _channel._postToFeed('._.') }, 7, baseTickDur * 3.5);
+  EventsHelper.chanceRunInterval(() => { ChannelHelper._postToFeed('._.') }, 7, baseTickDur * 3.5);
 }

@@ -1,4 +1,5 @@
 import ElectionHelper from "../../community/features/hierarchy/election/electionHelper";
+import AboutHelper from "../../community/features/server/aboutHelper";
 import ServerHelper from "../entities/server/serverHelper";
 import Crossover from "./crossover";
 import Redis from "./redis";
@@ -29,6 +30,9 @@ export default (discordClient) => {
 
                 // Cache candidate messages.
                 await ElectionHelper.onLoad();
+
+                // Preload all about/options preferences options.
+                await AboutHelper.preloadMesssages();
 
             } catch(e) {
                 console.error(e);

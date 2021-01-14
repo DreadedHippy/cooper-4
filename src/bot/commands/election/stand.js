@@ -44,6 +44,14 @@ export default class StandCommand extends CoopCommand {
 				);
 			}
 
+
+			if (campaignText.length > 300) {
+				return MessagesHelper.selfDestruct(
+					msg, 
+					`${msg.author.username} rewrite campaign message, too long.`
+				);
+			}
+
 			// Check if election is ongoing.
 			const isElec = await ElectionHelper.isElectionOn();
 	
@@ -59,9 +67,7 @@ export default class StandCommand extends CoopCommand {
 				const prevCandidate = await ElectionHelper.getCandidate(msg.author.id);
 				if (!prevCandidate) {
 					MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for <#${CHANNELS.ELECTION.id}>, eyyy?`);
-		
-					// Save message link from election channel
-					
+
 					const emojiText = MessagesHelper.emojiText(EMOJIS.ELECTION_CROWN);
 					const electionEmbed = { embed: embedHelper({ 
 						title: `Election Event: ${msg.author.username} stands for election!`,
@@ -79,16 +85,18 @@ export default class StandCommand extends CoopCommand {
 					await ElectionHelper.addCandidate(msg.author.id, msgLink);
 	
 					// Post to feed
-					ChannelsHelper._postToFeed(`${msg.author.username} was put forward for <#${CHANNELS.ELECTION.id}>`);
+					const successfulCandidateText = `${msg.author.username} was put forward for <#${CHANNELS.ELECTION.id}>`;
+					MessagesHelper.selfDestruct(msg, successfulCandidateText);
+					ChannelsHelper._postToFeed(successfulCandidateText);
 					
 					// Add coop emoji to campaign message and crown
 					MessagesHelper.delayReact(electionMsg, '👑', 666);
 				} else {
-					// If is already, ask them if they want to replace their campaign text if current message.
-					const wannaEditMsg = await msg.say(`${msg.author.username}, react to change your campaign message?`);
-					// TODO: create awaitReaction
-					MessagesHelper.delayReact(wannaEditMsg, '👑', 666);
-					MessagesHelper.delayDelete(wannaEditMsg, 30000);
+					// // If is already, ask them if they want to replace their campaign text if current message.
+					// const wannaEditMsg = await msg.say(`${msg.author.username}, react to change your campaign message?`);
+					// // TODO: create awaitReaction
+					// MessagesHelper.delayReact(wannaEditMsg, '👑', 666);
+					// MessagesHelper.delayDelete(wannaEditMsg, 30000);
 				}
 			}
 

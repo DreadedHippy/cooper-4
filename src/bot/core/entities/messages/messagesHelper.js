@@ -144,11 +144,16 @@ export default class MessagesHelper {
         return str.join(' ');
     }
 
+    static async getByLink(link) {
+        const msgData = this.parselink(link);
+        const channel = ChannelsHelper._get(msgData.channel);
+        const msg = await channel.messages.fetch(msgData.message);
+        return msg;
+    }
+
     static async editByLink(link, content) {
         try {
-            const msgData = this.parselink(link);
-            const channel = ChannelsHelper._get(msgData.channel);
-            const msg = await channel.messages.fetch(msgData.message);
+            const msg = await this.getByLink(link);
             const editedMsg = await msg.edit(content);
             return editedMsg;
         } catch(e) {
@@ -165,6 +170,23 @@ export default class MessagesHelper {
             result += characters.charAt(randIndex);
         }
         return result;
+    }
+
+    static async preloadMsgLinks(messageLinks = []) {
+        return await Promise.all(messageLinks.map((link, index) => {
+            const channelCache = (ServerHelper._coop()).channels.cache;
+            return new Promise((resolve, reject) => {
+                setTimeout(async () => {
+                    const entityIDs = MessagesHelper.parselink(link);
+                    const chan = channelCache.get(entityIDs.channel);
+                    if (chan) {
+                        const msg = await chan.messages.fetch(entityIDs.message);
+                        resolve(msg);
+                    }
+                    resolve(null);
+                }, 666 * index);
+            });
+        }));
     }
 
 }

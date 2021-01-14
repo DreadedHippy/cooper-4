@@ -204,21 +204,17 @@ export default class ElectionHelper {
             const nextElecFmt = await this.nextElecFmt();
 
             // Announce the winners!
-            ChannelsHelper._postToFeed(`**Election Certification!**
+            const declareText = `**Latest <#${CHANNELS.ELECTION.id}> ends with these results!**\n\n` +
 
-                New Commander: ${hierarchy.commander.username}
+                `**New Commander:** ${hierarchy.commander.username}\n\n` +
 
-                New Leaders: 
-                    ${hierarchy.leaders.map(leader => {
-                       return `${leader.username} (${leader.votes} Votes)`;
-                    })}
+                `**New Leaders:** \n` +
+                    `${hierarchy.leaders.map(leader => `${leader.username} (${leader.votes} Votes)`)}\n\n` +
 
-                Next Election: ${nextElecFmt}.
-            `);
-
-            // Set the election info message to next election data, previous winners.
-            const nextElecText = `Election ended and results were declared. Next Election: ${nextElecFmt}`;
-            await this.editElectionInfoMsg(nextElecText);
+                `**Next Election:** ${nextElecFmt}.`;
+            
+            ChannelsHelper._postToFeed(declareText);
+            await this.editElectionInfoMsg(declareText);
 
         } catch(e) {
             console.log('Something went wrong ending the election...');
@@ -229,7 +225,9 @@ export default class ElectionHelper {
     static async resetHierarchyRoles() {
         const exCommander = RolesHelper._getUsersWithRoleCodes(['COMMANDER']).first();
         const exLeaders = RolesHelper._getUsersWithRoleCodes(['LEADER']);
-        await Promise.all(exLeaders.map(async (exLeader, index) => {
+        let index = 0;
+        await Promise.all(exLeaders.map(async (exLeader) => {
+            index++;
             await new Promise(r => setTimeout(r, 777 * index));
             await RolesHelper._remove(exLeader.user.id, 'LEADER');
             return true;
@@ -238,14 +236,14 @@ export default class ElectionHelper {
     }
 
     static async resetHierarchyItems() {
-        const exCommander = RolesHelper._getUsersWithRoleCodes(['COMMANDER']).first();
-        const exLeaders = RolesHelper._getUsersWithRoleCodes(['LEADER']);
-        await Promise.all(exLeaders.map(async (exLeader, index) => {
+        const leaderItems = await ItemsHelper.getUsersWithItem('LEADERS_SWORD');
+        const commanderItems = await ItemsHelper.getUsersWithItem('ELECTION_CROWN');        
+        await Promise.all(leaderItems.map(async (exLeader, index) => {
             await new Promise(r => setTimeout(r, 777 * index));
-            await ItemsHelper.subtract(exLeader.user.id, 'LEADERS_SWORD');
+            await ItemsHelper.subtract(exLeader.owner_id, 'LEADERS_SWORD');
             return true;
         }));
-        await ItemsHelper.subtract(exCommander.user.id, 'ELECTION_CROWN');
+        await ItemsHelper.subtract(commanderItems[0].owner_id, 'ELECTION_CROWN', 1);
     }
 
     static async checkProgress() {

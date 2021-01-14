@@ -67,7 +67,7 @@ export default class ItemsHelper {
             text: `SELECT * FROM "items" WHERE owner_id = $1 AND item_code = $2`,
             values: [userID, itemCode]
         };
-        return await DatabaseHelper.single(await Database.query(query));
+        return DatabaseHelper.single(await Database.query(query));
     }
 
     static async getUserItemQty(userID, itemCode) {
@@ -196,6 +196,16 @@ export default class ItemsHelper {
         const nameCapitalized = LowerName.charAt(0).toUpperCase() + LowerName.slice(1);
         const emoji = MessagesHelper.emojifyID(EMOJIS[Code]);
         return nameCapitalized + " " + emoji;
+    }
+
+    static async getUsersWithItem(itemCode) {
+        const query = {
+            name: "get-users-with-item",
+            text: `SELECT * FROM "items" WHERE quantity > 0 AND item_code = $1`,
+            values: [itemCode]
+        };
+        const result = await Database.query(query);
+        return DatabaseHelper.many(result);
     }
 
     static NON_USABLE_EMOJIS = [
