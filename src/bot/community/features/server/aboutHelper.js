@@ -40,12 +40,13 @@ export default class AboutHelper {
             '❗': AnnouncementOpts.keyInfoToggle, // Done
             '📢': AnnouncementOpts.announcementSubToggle, // Done
             '📰': AnnouncementOpts.newsletterToggle, // More complex unfinished
-            '☠️': AnnouncementOpts.privacyBomb // Most complex unfinished (need to add confirm)
+            '☠️': AnnouncementOpts.privacyBomb, // Most complex unfinished (need to add confirm)
         },
         FOCUS: {
+            '💬': (r, user) => RolesHelper.toggle(user.id, 'SOCIAL'),
             '💻': (react, user) => RolesHelper.toggle(user.id, 'CODE'),
             '💼': (react, user) => RolesHelper.toggle(user.id, 'BUSINESS'),
-            '🖌️': (react, user) => RolesHelper.toggle(user.id, 'ART'),
+            '🖌️': (react, user) => RolesHelper.toggle(user.id, 'ART')
         },
         GAMES: {
             '🤝': GameOpts.economyToggle, // Done
@@ -59,7 +60,9 @@ export default class AboutHelper {
 
     static optionEmojis = [
         ...Object.keys(this.sectionEmojis.ANNOUNCEMENTS),
+        ...Object.keys(this.sectionEmojis.FOCUS),
         ...Object.keys(this.sectionEmojis.GAMES),
+        ...Object.keys(this.sectionEmojis.COMMUNITY)
     ]
 
     static async onReaction(reaction, user) {

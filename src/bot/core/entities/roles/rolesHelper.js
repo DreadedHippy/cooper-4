@@ -32,6 +32,8 @@ export default class RolesHelper {
         try {
             const member = UsersHelper._getMemberByID(userID);
 
+            console.log('Toggling role ' + roleCode);
+
             if (!member) return false;
             if (!Object.keys(ROLES).includes(roleCode)) return false;
     

@@ -32,6 +32,18 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
         
+        await AboutHelper.preloadMesssages();
+        STATE.CLIENT.on('messageReactionAdd', (reaction, user) => {
+                AboutHelper.onReaction(reaction, user);
+        });
+
+
+
+
+
+
+
+
         // msg.suppressEmbeds(true);
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
