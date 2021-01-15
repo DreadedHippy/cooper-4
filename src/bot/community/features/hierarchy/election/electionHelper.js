@@ -156,7 +156,8 @@ export default class ElectionHelper {
 
         const electionProgressText = `Election is still running for ${readableElecLeft}, latest vote results:` +
             `\n\n` +
-            `**Commander:** ${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)` +
+            `**Commander:** ${hierarchy.commander ? 
+                `${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)` : ''}` +
             `\n\n` +
             `**Leaders ${numLeaders}/${maxNumLeaders}:**\n${
                 hierarchy.leaders

@@ -32,19 +32,18 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
         
-        await AboutHelper.preloadMesssages();
-        STATE.CLIENT.on('messageReactionAdd', (reaction, user) => {
-                AboutHelper.onReaction(reaction, user);
-        });
-
-
-
-
-
-
-
-
         // msg.suppressEmbeds(true);
+
+        // await AboutHelper.preloadMesssages();
+        // STATE.CLIENT.on('messageReactionAdd', (reaction, user) => {
+        //         AboutHelper.onReaction(reaction, user);
+        // });
+
+        
+        ElectionHelper.checkProgress();
+
+        // Then I can ping for self-roles/access and election...
+        // ChannelsHelper._postToChannelCode('KEY_INFO', 'TEST?')
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });
