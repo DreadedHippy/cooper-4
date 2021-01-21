@@ -28,12 +28,16 @@ export default class ChannelsHelper {
     static _postToFeed(message, delay = 666) {
         const prodServer = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const feedChannel = this.getByCode(prodServer, 'FEED');
-        setTimeout(() => { feedChannel.send(message); }, delay);
+        setTimeout(() => feedChannel.send(message), delay);
     }
-    static _postToChannelCode(name, message) {
+    static _postToChannelCode(name, message, delay = 666) {
         const prodServer = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const feedChannel = this.getByCode(prodServer, name);
-        return feedChannel.send(message);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(feedChannel.send(message));
+            }, delay);
+        });
     }
     static sendByCodes(guild, codes, message) {
         return ChannelsHelper
@@ -60,12 +64,12 @@ export default class ChannelsHelper {
     static checkIsByCode(id, code) {
         return CHANNELS[code].id === id;
     }
-    static async _propogate(msgRef, text, selfDestruct = true) {
-        if (!this.checkIsByCode(msgRef.channel.id, 'FEED')) {
+    static async propagate(msgRef, text, recordChan, selfDestruct = true) {
+        if (!this.checkIsByCode(msgRef.channel.id, recordChan)) {
             const feedbackMsg = await msgRef.say(text);
             if (selfDestruct) MessagesHelper.delayDelete(feedbackMsg, 15000);
         }
-        setTimeout(() => { this._postToFeed(text); }, 666);
+        return this._postToChannelCode(recordChan, text, 666);
     }
     static async _delete(id) {
         const guild = ServerHelper._coop();

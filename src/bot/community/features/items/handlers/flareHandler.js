@@ -15,12 +15,7 @@ export default class FlareHandler {
             if (STATE.CHANCE.bool({ likelihood: 45 })) setTimeout(() => CratedropMinigame.drop(), 333);
 
             const feedbackText = `${user.username} used a FLARE and potentially triggered crate drop!`;
-            if (!ChannelsHelper.checkIsByCode(commandMsg.channel.id, 'FEED')) {
-                const feedbackMsg = await commandMsg.say(feedbackText);
-                MessagesHelper.delayReact(feedbackMsg, '🪓', 1333);
-                MessagesHelper.delayDelete(feedbackMsg, 10000);
-            }
-            setTimeout(() => ChannelsHelper._postToFeed(feedbackText), 666);
+            ChannelsHelper.propagate(commandMsg, feedbackText, 'ACTIONS');
         }
         else {
             const unableMsg = await commandMsg.say('Unable to use FLARE, you own none. :/');

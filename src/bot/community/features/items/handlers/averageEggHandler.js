@@ -1,4 +1,5 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
+import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import STATE from "../../../../state";
 import { EGG_DATA } from "../../minigame/small/egghunt";
 import PointsHelper from "../../points/pointsHelper";
@@ -33,23 +34,15 @@ export default class AverageEggHandler {
                     const updatedPoints = await PointsHelper.addPointsByID(targetID, damage);
 
                     // Add visuals animation
-                    setTimeout(() => { 
-                        reaction.remove(); 
-                        setTimeout(() => { reaction.message.react('💚'); }, 666);
-                    }, 333);
+                    MessagesHelper.delayReactionRemove(reaction, 333);
+                    MessagesHelper.delayReact(reaction.message, '💚', 666);
 
                     const damageInfoText = ` ${damage} points (${updatedPoints})`;
                     let actionInfoText = `${user.username} used an average egg on ${author.username}`;
                     if (backFired) actionInfoText = `${user.username} tried to use an average egg on ${author.username}, but it backfired`;
 
                     const feedbackMsgText = `${actionInfoText}: ${damageInfoText}.`;
-
-                    if (!ChannelsHelper.checkIsByCode(reaction.message.channel.id, 'FEED')) {
-                        const feedbackMsg = await reaction.message.say(feedbackMsgText);
-                        setTimeout(() => { feedbackMsg.react('💚'); }, 1333);
-                        setTimeout(() => { feedbackMsg.delete(); }, 10000);
-                    }
-                    await ChannelsHelper._postToFeed(feedbackMsgText);
+                    ChannelsHelper.propagate(reaction.message, feedbackMsgText, 'ACTIONS');
                 }
             } catch(e) {
                 console.error(e);

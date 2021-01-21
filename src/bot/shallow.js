@@ -2,16 +2,11 @@ import { Client } from 'discord.js-commando';
 import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
-import UsersHelper from './core/entities/users/usersHelper';
-import Chicken from './community/chicken';
-import ChannelsHelper from './core/entities/channels/channelsHelper';
-import MessagesHelper from './core/entities/messages/messagesHelper';
-import ItemsHelper from './community/features/items/itemsHelper';
-import DropTable from './community/features/items/droptable';
-import EggHuntMinigame from './community/features/minigame/small/egghunt';
+
 import ElectionHelper from './community/features/hierarchy/election/electionHelper';
-import StatisticsHelper from './community/features/server/statisticsHelper';
-import AboutHelper from './community/features/server/aboutHelper';
+import SacrificeHelper from './community/features/events/sacrificeHelper';
+import UsersHelper from './core/entities/users/usersHelper';
+import ChannelsHelper from './core/entities/channels/channelsHelper';
 
 // v DEV IMPORT AREA v
 
@@ -29,21 +24,16 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
-
-        // DEV WORK AND TESTING ON THE LINES BELOW.
-        
+        // NOTES AND LONGER TERM CHALLENGES/ISSUES:
         // msg.suppressEmbeds(true);
-
-        // await AboutHelper.preloadMesssages();
-        // STATE.CLIENT.on('messageReactionAdd', (reaction, user) => {
-        //         AboutHelper.onReaction(reaction, user);
-        // });
-
-        
-        ElectionHelper.checkProgress();
-
         // Then I can ping for self-roles/access and election...
         // ChannelsHelper._postToChannelCode('KEY_INFO', 'TEST?')
+
+        // // Add a reaction to a propagated message!!!
+        // ChannelsHelper._postToChannelCode('ACTIONS', 'TEST');
+        // ChannelsHelper.propagate(reaction.message, feedbackMsgText, 'ACTIONS');
+
+        // DEV WORK AND TESTING ON THE LINES BELOW.
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
     });

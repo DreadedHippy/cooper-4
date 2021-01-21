@@ -81,7 +81,7 @@ export default class EggHuntMinigame {
         const emojiText = MessagesHelper.emojiText(EMOJIS[rarity]);
         const emojiItemText = MessagesHelper.emojiText(EMOJIS[reward.item]);
         const eventText = `${actionText} ${emojiText}\n${emojiItemText} ${reward.item}x${reward.qty}`;
-        ChannelsHelper._postToFeed(eventText, 2000);
+        ChannelsHelper._postToChannelCode('ACTIONS', eventText, 2000);
         
         await ItemsHelper.add(user.id, reward.item, reward.qty);
     }
@@ -136,7 +136,7 @@ export default class EggHuntMinigame {
             MessagesHelper.delayDelete(instantFeedbackMsg, 30000);
 
             // Add server notification in feed.
-            await ChannelsHelper._postToFeed(feedbackMsg + ' in ' + channelName);
+            await ChannelsHelper._postToChannelCode('ACTIONS', feedbackMsg + ' in ' + channelName);
 
         } catch(e) {
             console.error(e);
@@ -174,7 +174,7 @@ export default class EggHuntMinigame {
                         setTimeout(() => { feedbackMsg.react('🍳'); }, 1333);
                         setTimeout(() => { feedbackMsg.delete(); }, 10000);
                     }
-                    setTimeout(() => { ChannelsHelper._postToFeed(feedbackText); }, 666);
+                    setTimeout(() => { ChannelsHelper._postToChannelCode('ACTIONS', feedbackText); }, 666);
                 }, 333)
             } else {
                 const unableMsg = await reaction.message.say('Unable to use FRYING_PAN, you own none. :/');
@@ -233,7 +233,7 @@ export default class EggHuntMinigame {
                 }
 
                 // Provide record of event.
-                ChannelsHelper._postToFeed(activityFeedMsgText)                
+                ChannelsHelper._postToChannelCode('ACTIONS', activityFeedMsgText)                
             }
         } catch(e) {
             console.error(e);
@@ -257,7 +257,7 @@ export default class EggHuntMinigame {
                     // Remove toxic egg after few minutes so people aren't forced to take it.
                     if (rarity === 'TOXIC_EGG') MessagesHelper.delayDelete(eggMsg, 200000);
 
-                    if (dropText) ChannelsHelper._postToFeed(dropText);
+                    if (dropText) ChannelsHelper._postToChannelCode('ACTIONS', dropText);
                 } catch(e) {
                     console.error(e);
                 }
@@ -281,7 +281,7 @@ export default class EggHuntMinigame {
             // Provide feedback.
             let dropText = `${name} was sent an egg via DM! ${emojiText}`;
             if (rarity === 'LEGENDARY_EGG') dropText = 'OooOoOoOoooo... ' + dropText;
-            ChannelsHelper._postToFeed(dropText);
+            ChannelsHelper._postToChannelCode('ACTIONS', dropText);
         } catch(e) {
             console.error(e);
         }
@@ -297,7 +297,7 @@ export default class EggHuntMinigame {
                 this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
 
                 if (STATE.CHANCE.bool({ likelihood: 2.5 })) {
-                    ChannelsHelper._postToFeed('A legendary egg was dropped! Find and grab it before others can!');
+                    ChannelsHelper._postToChannelCode('ACTIONS', 'A legendary egg was dropped! Find and grab it before others can!');
                     this.drop('LEGENDARY_EGG');
                 }
             }
@@ -314,9 +314,9 @@ export default class EggHuntMinigame {
             let bonusEggsNum = STATE.CHANCE.natural({ min: 5, max: 25 });
             if (STATE.CHANCE.bool({ likelihood: 3.5 })) {
                 bonusEggsNum = STATE.CHANCE.natural({ min: 10, max: 45 });
-                ChannelsHelper._postToFeed('Bonus eggs hurtling!');
+                ChannelsHelper._postToChannelCode('ACTIONS', 'Bonus eggs hurtling!');
             } else 
-                ChannelsHelper._postToFeed('Bonus eggs rolling!');
+                ChannelsHelper._postToChannelCode('ACTIONS', 'Bonus eggs rolling!');
 
             for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE_EGG', null);
 

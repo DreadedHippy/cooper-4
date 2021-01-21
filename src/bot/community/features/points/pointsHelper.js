@@ -107,7 +107,6 @@ export default class PointsHelper {
 
         // If the new winner didn't already have the role, award it and notify server.
         if (!alreadyHadRole) {
-            
             let successText = `${username} is now the point leader.`;
             if (prevWinner) successText = ` ${username} overtakes ${prevWinner.username} for most points!`;
 
@@ -139,7 +138,7 @@ export default class PointsHelper {
             }
         }));
 
-        let leaderboardMsgText = '```\n\n ~ LEADERBOARD ~ \n\n' + 
+        let leaderboardMsgText = '```\n\n ~ POINTS LEADERBOARD ~ \n\n' + 
             rowUsers.map(user => `${user.rank + 1}. ${user.username} ${user.points}`).join('\n') +
             '```';
 

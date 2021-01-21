@@ -206,7 +206,7 @@ export default class SacrificeHelper {
             ChannelsHelper._postToFeed(sacrificeMsgText);
 
             setTimeout(() => {
-                const begPromptMsgText = `<@${user.id}> you may beg to be spared from sacrifice here.`;
+                const begPromptMsgText = `<@${user.id}> you may beg to be spared from <#${CHANNELS.SACRIFICE.id}> here.`;
                 ChannelsHelper._postToChannelCode('TALK', begPromptMsgText);
             }, 1500);
         }, 1500);
@@ -220,7 +220,7 @@ export default class SacrificeHelper {
 
     static async random() {
         try {
-            const member = await UsersHelper._random();
+            const member = await UsersHelper.random();
             if (member) this.offer(member.user);
         } catch(e) {
             console.log('Error sacrificing random member.');

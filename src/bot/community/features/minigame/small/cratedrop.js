@@ -170,7 +170,7 @@ export default class CratedropMinigame {
 
                             setTimeout(async () => {
                                 const rewardMessageText = `${user.username} took ${reward}x${rewardItemQuantity} from the crate!`;
-                                ChannelsHelper._propogate(msg, rewardMessageText, true);
+                                ChannelsHelper.propagate(msg, rewardMessageText, 'ACTIONS');
                             }, rateLimitBypassDelay);
                         });
                     }
@@ -187,7 +187,7 @@ export default class CratedropMinigame {
             const usersRewardedText = `${hitterNamesStr} ${tenseStr} rewarded ${crate.openingPoints} point(s)`;
             const rewardTypeText = `${!anyRewardGiven ? 'empty ' : ''}${rarity.replace('_', ' ').toLowerCase()}`;
             const pointsRewardString = `${usersRewardedText} for attempting to open the ${rewardTypeText}!`;
-            ChannelsHelper._propogate(msg, pointsRewardString, true);
+            ChannelsHelper.propagate(msg, pointsRewardString, 'ACTIONS');
 
             // Remove the opened crate.
             MessagesHelper.delayDelete(msg, 15000);
@@ -217,7 +217,7 @@ export default class CratedropMinigame {
         try {
             const rarity = this.selectRandomRarity();
             const rarityWord = MessagesHelper.titleCase(rarity.split('_')[0]);
-            const feedMsg = await ChannelsHelper._postToFeed(`${rarityWord} crate drop in progress.`);
+            const feedMsg = await ChannelsHelper._postToChannelCode('ACTIONS', `${rarityWord} crate drop in progress.`);
 
             // Drop the crate!
             const crateMsg = await ChannelsHelper
@@ -255,7 +255,7 @@ export default class CratedropMinigame {
     
                 // TODO: Integrate shooting down chopper here
     
-                await ChannelsHelper._postToFeed(countdownText);
+                await ChannelsHelper._postToChannelCode('ACTIONS', countdownText);
             }
         } catch(e) {
             console.error(e);

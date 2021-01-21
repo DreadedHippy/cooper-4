@@ -1,4 +1,5 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
+import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import EggHuntMinigame from "../../minigame/small/egghunt";
 import ItemsHelper from "../itemsHelper";
 
@@ -10,23 +11,16 @@ export default class LaxativeHandler {
 
         // Respond to usage result.
         if (didUseLax) {
-            // Run the egghunt dropper (20% or so chance of doing something).
-            setTimeout(() => { EggHuntMinigame.run(); }, 333);
-
             const feedbackText = `${user.username} used laxative and potentially triggered egg drops!`;
+            ChannelsHelper.propagate(commandMsg, feedbackText, 'ACTIONS');
 
-            if (!ChannelsHelper.checkIsByCode(commandMsg.channel.id, 'FEED')) {
-                const feedbackMsg = await commandMsg.say(feedbackText);
-                setTimeout(() => { feedbackMsg.react('🍫'); }, 1333);
-                setTimeout(() => { feedbackMsg.delete(); }, 10000);
-            }
-
-            setTimeout(() => { ChannelsHelper._postToFeed(feedbackText); }, 666);
-        }
-        else {
+            // Attempt to run egg drop. :D
+            EggHuntMinigame.run();
+            
+        } else {
             const unableMsg = await commandMsg.say('Unable to use LAXATIVE, you own none. :/');
-            setTimeout(() => { unableMsg.react('🍫'); }, 1333);
-            setTimeout(() => { unableMsg.delete(); }, 10000);
+            MessagesHelper.delayReact(unableMsg, '🍫', 1333);
+            MessagesHelper.delayDelete(unableMsg, 10000);
         }
     }
    

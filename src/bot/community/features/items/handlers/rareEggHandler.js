@@ -48,7 +48,7 @@ export default class RareEggHandler {
                         setTimeout(() => { feedbackMsg.react('💚'); }, 1333);
                         setTimeout(() => { feedbackMsg.delete(); }, 10000);
                     }
-                    await ChannelsHelper._postToFeed(feedbackMsgText);
+                    await ChannelsHelper.propagate(reaction.message, feedbackMsgText, 'ACTIONS');
                 }
             } catch(e) {
                 console.error(e);

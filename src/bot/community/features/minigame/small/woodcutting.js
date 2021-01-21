@@ -72,7 +72,7 @@ export default class WoodcuttingMinigame {
 
                 const actionText = `${user.username} broke an axe trying to cut wood, ${userAxesNum - 1} remaining!`;
                 const damageText = `${brokenDamage} points (${pointsDamageResult}).`;
-                ChannelsHelper._propogate(msg, `${actionText} ${damageText}`);
+                ChannelsHelper.propagate(msg, `${actionText} ${damageText}`, 'ACTIONS');
             }
         } else {
             // See if updating the item returns the item and quantity.
@@ -82,13 +82,13 @@ export default class WoodcuttingMinigame {
             // TODO: Implement something rare from cutting wood
             // if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
             //     const addDiamond = await ItemsHelper.add(user.id, 'DIAMOND', 1);
-            //     ChannelsHelper._propogate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`);
+            //     ChannelsHelper.propagate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
             // }
             
             // if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
             //     const diamondVeinQty = STATE.CHANCE.natural({ min: 5, max: 25 });
             //     await ItemsHelper.add(user.id, 'DIAMOND', diamondVeinQty);
-            //     ChannelsHelper._propogate(msg, `${user.username} hit a major diamond vein, ${diamondVeinQty} found!`);
+            //     ChannelsHelper.propagate(msg, `${user.username} hit a major diamond vein, ${diamondVeinQty} found!`, 'ACTIONS');
             // }
 
             // Reduce the number of rocks in the message.
@@ -98,7 +98,7 @@ export default class WoodcuttingMinigame {
             // Provide feedback.
             const actionText = `${user.username} successfully chopped wood.`;
             const rewardText = `+1 point (${addPoints}), +${extractedOreNum} wood (${addedWood})!`;
-            ChannelsHelper._propogate(msg, `${actionText} ${rewardText}`);
+            ChannelsHelper.propagate(msg, `${actionText} ${rewardText}`, 'ACTIONS');
 
             EconomyNotifications.add('WOODCUTTING', {
                 pointGain: addPoints,
@@ -113,10 +113,10 @@ export default class WoodcuttingMinigame {
         const magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
         const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.WOOD.repeat(magnitude));
 
-        MessagesHelper.delayReact(rockMsg, '🪓');
-
+        MessagesHelper.delayReact(rockMsg, '🪓', 666);
 
         const branchText = magnitude > 1 ? `${magnitude} branches` : `a branch`;
-        ChannelsHelper._postToFeed(`${'Ooo'.repeat(Math.floor(magnitude / 2))} a tree with ${branchText} to fell!`, 1222);
+        const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(magnitude / 2))} a tree with ${branchText} to fell!`
+        ChannelsHelper._postToChannelCode('ACTIONS', woodcuttingEventText, 1222);
     }
 }

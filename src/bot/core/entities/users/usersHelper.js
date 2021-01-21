@@ -128,19 +128,20 @@ export default class UsersHelper {
         return DatabaseHelper.single(result);
     }
 
-    // TODO: Can refactor this to a more optimised db query.
-    static async _random() {
-        let member = null;
-        const usersQuery = await this.load();
-        const rowCount = usersQuery.rowCount || 0;
-        const users = usersQuery.rows || [];
-        if (rowCount > 0) {
-            const randomIndex = STATE.CHANCE.natural({ min: 0, max: rowCount });
-            const randomUser = users[randomIndex];
-            
-            member = await ServerHelper._coop().members.fetch(randomUser.discord_id);
-        }
+    static async random() {
+        const membersManager = ServerHelper._coop().members;
+        const randomUser = await this._random();
+        const member = await membersManager.fetch(randomUser.discord_id);
         return member;
+    }
+
+    static async _random() {
+        const query = {
+            name: "get-random-user",
+            text: "SELECT * FROM users LIMIT 1 OFFSET floor(random() * (SELECT count(*) from users))"
+        };
+        const result = DatabaseHelper.single(await Database.query(query));
+        return result;
     }
 
     static isCooper(id) {

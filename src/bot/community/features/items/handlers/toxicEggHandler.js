@@ -1,4 +1,5 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
+import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import STATE from "../../../../state";
 import PointsHelper from "../../points/pointsHelper";
 import ItemsHelper from "../itemsHelper";
@@ -29,10 +30,8 @@ export default class ToxigEggHandler {
                     const updatedPoints = await PointsHelper.addPointsByID(targetID, damage);
 
                     // Add visuals animation
-                    setTimeout(() => { 
-                        reaction.remove(); 
-                        setTimeout(() => { reaction.message.react('☢️'); }, 666);
-                    }, 333);
+                    MessagesHelper.delayReactionRemove(reaction, 333);
+                    MessagesHelper.delayReact(reaction.message, '☢️', 666);
 
                     const damageInfoText = ` ${damage} points (${updatedPoints})`;
                     let actionInfoText = `${user.username} used a toxic egg on ${author.username}`;
@@ -45,7 +44,7 @@ export default class ToxigEggHandler {
                         setTimeout(() => { feedbackMsg.react('☢️'); }, 1333);
                         setTimeout(() => { feedbackMsg.delete(); }, 10000);
                     }
-                    await ChannelsHelper._postToFeed(feedbackMsgText);
+                    await ChannelsHelper._postToChannelCode('ACTIONS', feedbackMsgText);
                 }
             } catch(e) {
                 console.error(e);

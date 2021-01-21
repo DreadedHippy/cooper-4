@@ -15,31 +15,15 @@ import VotingHelper from '../../../events/voting/votingHelper';
 import RolesHelper from '../../../../core/entities/roles/rolesHelper';
 import ItemsHelper from '../../items/itemsHelper';
 
-// MVP: Elections
-// Election Start -> Stand -> Consider -> Vote -> Election Declared
-
 // TODO:
-// Tell the community once a day when the next election is [DONE]
-// Declare election over
-// Assign roles
-// Announce win
+// Vote _once_ for candidate. [DONE - WITH PROBLEMS]
+// Stand for election [DONE - WITH PROBLEMS]
+
 // Inspect candidates list (tio 10)
 // track voting like US election
-
-// Preload candidates messages. [DONE]
-// Create previous commanders table [DONE]
-// Detect the start of an election.
-// Should be posted/maintain an election message in about channel?
-// Detect a vote
-// Count votes and announce until election over
+// Create election results table 
 // Inspect candidate campaign
-// Stand for election
-// Create election results table
-// Vote _once_ for candidate.
 // Election over unix timestamp
-
-
-
 
 export default class ElectionHelper {
 

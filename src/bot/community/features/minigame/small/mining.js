@@ -73,7 +73,7 @@ export default class MiningMinigame {
 
                 const actionText = `${user.username} broke a pickaxe trying to mine, ${userPickaxesNum - 1} remaining!`;
                 const damageText = `${brokenPickDamage} points (${pointsDamageResult}).`;
-                ChannelsHelper._propogate(msg, `${actionText} ${damageText}`);
+                ChannelsHelper.propagate(msg, `${actionText} ${damageText}`, 'ACTIONS');
             }
         } else {
             // See if updating the item returns the item and quantity.
@@ -84,13 +84,13 @@ export default class MiningMinigame {
             if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
                 diamondsFound = 1;
                 const addDiamond = await ItemsHelper.add(user.id, 'DIAMOND', diamondsFound);
-                ChannelsHelper._propogate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`);
+                ChannelsHelper.propagate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
             }
             
             if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
                 diamondsFound = STATE.CHANCE.natural({ min: 5, max: 25 });
                 await ItemsHelper.add(user.id, 'DIAMOND', diamondsFound);
-                ChannelsHelper._propogate(msg, `${user.username} hit a major diamond vein, ${diamondsFound} found!`);
+                ChannelsHelper.propagate(msg, `${user.username} hit a major diamond vein, ${diamondsFound} found!`, 'ACTIONS');
             }
 
             EconomyNotifications.add('MINING', {
@@ -108,7 +108,7 @@ export default class MiningMinigame {
             // Provide feedback.
             const actionText = `${user.username} successfully mined a rock.`;
             const rewardText = `+1 point (${addPoints}), +${extractedOreNum} metal ore (${addMetalOre})!`;
-            ChannelsHelper._propogate(msg, `${actionText} ${rewardText}`);
+            ChannelsHelper.propagate(msg, `${actionText} ${rewardText}`, 'ACTIONS');
         }
     }
 
@@ -127,6 +127,6 @@ export default class MiningMinigame {
 
         MessagesHelper.delayReact(rockMsg, '⛏️');
 
-        ChannelsHelper._postToFeed(`Rockslide! Magnitude ${magnitude}!`, 1222);
+        ChannelsHelper._postToChannelCode('ACTIONS', `Rockslide! Magnitude ${magnitude}!`, 1222);
     }
 }
