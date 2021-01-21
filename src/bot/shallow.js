@@ -3,10 +3,6 @@ import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
 
-import ElectionHelper from './community/features/hierarchy/election/electionHelper';
-import SacrificeHelper from './community/features/events/sacrificeHelper';
-import UsersHelper from './core/entities/users/usersHelper';
-import ChannelsHelper from './core/entities/channels/channelsHelper';
 
 // v DEV IMPORT AREA v
 
