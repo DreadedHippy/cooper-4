@@ -35,6 +35,11 @@ export default class StandCommand extends CoopCommand {
 	async run(msg, { campaignText }) {
 		super.run(msg);
 
+		// Prevent @everyone from idiots using it.
+		if (campaignText.includes('@everyone')) {
+			return MessagesHelper.selfDestruct(msg, 'Warning: @ everyone not allowed.');
+		}
+
 		try {
 			// Prevent bad campaign texts.
 			if (campaignText.length < 30) {
@@ -71,9 +76,8 @@ export default class StandCommand extends CoopCommand {
 					const emojiText = MessagesHelper.emojiText(EMOJIS.ELECTION_CROWN);
 					const electionEmbed = { embed: embedHelper({ 
 						title: `Election Event: ${msg.author.username} stands for election!`,
-						description: `${msg.content}\n\n
-							To vote for <@${msg.author.id}> press (react) the crown emoji ${emojiText}.
-						`,
+						description: `${msg.content}\n\n` +
+							`To vote for <@${msg.author.id}> press (react) the crown emoji ${emojiText}.`,
 						thumbnail: UsersHelper.avatar(msg.author)
 					}) };
 
@@ -91,13 +95,14 @@ export default class StandCommand extends CoopCommand {
 					
 					// Add coop emoji to campaign message and crown
 					MessagesHelper.delayReact(electionMsg, '👑', 666);
-				} else {
+				} 
+				// else {
 					// // If is already, ask them if they want to replace their campaign text if current message.
 					// const wannaEditMsg = await msg.say(`${msg.author.username}, react to change your campaign message?`);
-					// // TODO: create awaitReaction
+					// // create awaitReaction
 					// MessagesHelper.delayReact(wannaEditMsg, '👑', 666);
 					// MessagesHelper.delayDelete(wannaEditMsg, 30000);
-				}
+				// }
 			}
 
 		} catch(e) {

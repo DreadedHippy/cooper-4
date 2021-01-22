@@ -8,7 +8,7 @@ export default class CleanupHandler {
         // if (UsersHelper.isCooperMsg(msg)) return false;
         // if (msg.command !== null) return false;
 
-        console.log('TRYING TO CLEAN UP COOPER MESSAGE!!!!');
+        // console.log('TRYING TO CLEAN UP COOPER MESSAGE!!!!');
 
         // Check if the reactor is leader/commander
         // If so, delete the message, trash icon?

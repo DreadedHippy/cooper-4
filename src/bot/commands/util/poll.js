@@ -22,6 +22,11 @@ export default class PollCommand extends CoopCommand {
 		// Run as a coop command (clean up the original calling message)
 		super.run(msg);
 
+		if (msg.content.includes('@everyone')) {
+			MessagesHelper.selfDestruct(msg, 'Warning: @ everyone not allowed.')
+			return false;
+		}
+
         try {
 			// Post in suggestions.
 			const pollAcknowledgement = await ChannelsHelper._postToChannelCode('SUGGESTIONS', msg.content);

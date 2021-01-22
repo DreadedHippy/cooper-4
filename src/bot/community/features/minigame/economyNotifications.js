@@ -86,11 +86,25 @@ export default class EconomyNotifications {
 
             if (STATE.EVENTS_HISTORY['WOODCUTTING']) {
                 notificationString += '\nHad woodcutting stats';
+                console.log(STATE.EVENTS_HISTORY['WOODCUTTING']);
             }
 
             if (STATE.EVENTS_HISTORY['MINING']) {
                 notificationString += '\nHad mining stats';
+                console.log(STATE.EVENTS_HISTORY['MINING']);
             }
+
+            // TODO: Add egg hunt stats
+            // if (STATE.EVENTS_HISTORY['EGG_HUNT']) {
+            //     notificationString += '\nHad mining stats';
+            //     console.log(STATE.EVENTS_HISTORY['EGG_HUNT']);
+            // }
+
+            // TODO: Add cratedrop stats
+            // if (STATE.EVENTS_HISTORY['CRATE_DROP']) {
+            //     notificationString += '\nHad mining stats';
+            //     console.log(STATE.EVENTS_HISTORY['CRATE_DROP']);
+            // }
 
             ChannelsHelper._postToChannelCode('ACTIONS', notificationString);
 

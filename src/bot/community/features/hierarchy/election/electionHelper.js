@@ -194,7 +194,7 @@ export default class ElectionHelper {
                 `**New Commander:** ${hierarchy.commander.username}\n\n` +
 
                 `**New Leaders:** \n` +
-                    `${hierarchy.leaders.map(leader => `${leader.username} (${leader.votes} Votes)`)}\n\n` +
+                    `${hierarchy.leaders.map(leader => `${leader.username} (${leader.votes} Votes)`).join(', ')}\n\n` +
 
                 `**Next Election:** ${nextElecFmt}.`;
             
@@ -208,27 +208,50 @@ export default class ElectionHelper {
     }
 
     static async resetHierarchyRoles() {
-        const exCommander = RolesHelper._getUsersWithRoleCodes(['COMMANDER']).first();
-        const exLeaders = RolesHelper._getUsersWithRoleCodes(['LEADER']);
-        let index = 0;
-        await Promise.all(exLeaders.map(async (exLeader) => {
-            index++;
-            await new Promise(r => setTimeout(r, 777 * index));
-            await RolesHelper._remove(exLeader.user.id, 'LEADER');
+        try {
+            const exCommander = RolesHelper._getUsersWithRoleCodes(['COMMANDER']).first();
+            const exLeaders = RolesHelper._getUsersWithRoleCodes(['LEADER']);
+            
+            let index = 0;
+            await Promise.all(exLeaders.map(async (exLeader) => {
+                index++;
+                await new Promise(r => setTimeout(r, 777 * index));
+                await RolesHelper._remove(exLeader.user.id, 'LEADER');
+                return true;
+            }));
+            await RolesHelper._remove(exCommander.user.id, 'COMMANDER');
+    
+            // Add former commander to ex commander!
+            await RolesHelper._add(exCommander.user.id, 'FORMER_COMMANDER');
+    
             return true;
-        }));
-        await RolesHelper._remove(exCommander.user.id, 'COMMANDER');
+
+        } catch(e) {
+            console.log('Error resetting hierarchy roles.');
+            console.error(e);
+        }
     }
 
     static async resetHierarchyItems() {
-        const leaderItems = await ItemsHelper.getUsersWithItem('LEADERS_SWORD');
-        const commanderItems = await ItemsHelper.getUsersWithItem('ELECTION_CROWN');        
-        await Promise.all(leaderItems.map(async (exLeader, index) => {
-            await new Promise(r => setTimeout(r, 777 * index));
-            await ItemsHelper.subtract(exLeader.owner_id, 'LEADERS_SWORD');
+        try {
+            const leaderItems = await ItemsHelper.getUsersWithItem('LEADERS_SWORD');
+            const commanderItems = await ItemsHelper.getUsersWithItem('ELECTION_CROWN');        
+
+            let index = 0;
+            await Promise.all(leaderItems.map(async (exLeader) => {
+                index++;
+                await new Promise(r => setTimeout(r, 777 * index));
+                await ItemsHelper.subtract(exLeader.owner_id, 'LEADERS_SWORD');
+                return true;
+            }));
+
+            if (commanderItems) await ItemsHelper.subtract(commanderItems[0].owner_id, 'ELECTION_CROWN', 1);
             return true;
-        }));
-        await ItemsHelper.subtract(commanderItems[0].owner_id, 'ELECTION_CROWN', 1);
+
+        } catch(e) {
+            console.log('Error reseting hierarchy items');
+            console.error(e);
+        }
     }
 
     static async checkProgress() {

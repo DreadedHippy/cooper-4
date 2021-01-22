@@ -1,11 +1,4 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
-import ServerHelper from "../../../core/entities/server/serverHelper";
-import Chicken from "../../chicken";
-import PointsHelper from "../points/pointsHelper";
-import CHANNELS from '../../../core/config/channels.json';
-import UsersHelper from "../../../core/entities/users/usersHelper";
-import embedHelper from "../../../ui/embed/embedHelper";
-import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import AboutHelper from "./aboutHelper";
 
 export default class StatisticsHelper {
