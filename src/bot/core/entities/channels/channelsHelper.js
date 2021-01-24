@@ -44,8 +44,9 @@ export default class ChannelsHelper {
 
     static codeShoutReact(msgRef, text, recordChan, emoji, selfDestruct = true) {
         if (!this.checkIsByCode(msgRef.channel.id, recordChan)) {
-            const feedbackMsg = await msgRef.say(text);
-            if (selfDestruct) MessagesHelper.delayDelete(feedbackMsg, 15000);
+            msgRef.say(text).then(msg => {
+                if (selfDestruct) MessagesHelper.delayDelete(msg, 15000);
+            });
         }
         return this._postToChannelCode(recordChan, text, 666)
             .then(msg => {

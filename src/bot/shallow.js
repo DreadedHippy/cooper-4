@@ -25,8 +25,6 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
-
-        // // Add a reaction to a propagated message!!!
         
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
