@@ -23,7 +23,7 @@ export default class LinkPreviewFilter {
 
         // Check if portrait emoji, toggle suppression.
         static onReaction(reaction, user) {
-            if (UsersHelper.isCooperMsg(msg)) return false;
+            if (UsersHelper.isCooperMsg(reaction.message)) return false;
             if (reaction.emoji.name === '🖼️') reaction.message.suppressEmbeds(false);
         }
 
