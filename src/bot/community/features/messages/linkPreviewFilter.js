@@ -15,6 +15,7 @@ export default class LinkPreviewFilter {
 
             // Check if message contains link.
             if (regex.test(msg.content)) {
+                console.log('message contains link', msg.content);
                 msg.suppressEmbeds(true);
                 MessagesHelper.delayReact(msg, '', 666);
             }
