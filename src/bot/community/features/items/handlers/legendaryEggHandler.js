@@ -14,15 +14,10 @@ export default class LegendaryEggHandler {
             try {
                 const didUse = await ItemsHelper.use(user.id, 'LEGENDARY_EGG', 1);
                 if (!didUse) {
+                    const failureText = `${user.username} tried to use a legendary egg, but has none l-`;
+                    MessagesHelper.selfDestruct(reaction.message, failureText)
+                    MessagesHelper.delayReactionRemoveUser(reaction, user.id, 333);
 
-                    setTimeout(async () => {
-                        const unableMsg = await reaction.message.say(
-                            `${user.username} tried to use a legendary egg, but has none l-`
-                        );
-                        MessagesHelper.delayDelete(unableMsg, 10000);
-                    }, 666);
-                    return await reaction.users.remove(user.id);
-                    
                 } else {
                     const backFired = STATE.CHANCE.bool({ likelihood: 25 });
                     const author = reaction.message.author;
@@ -40,10 +35,11 @@ export default class LegendaryEggHandler {
 
                     const damageInfoText = ` ${damage} points (${updatedPoints})`;
                     let actionInfoText = `${user.username} used a legendary egg on ${author.username}`;
-                    if (backFired) actionInfoText = `${user.username} tried to use a legendary egg on ${author.username}, but it backfired`;
+                    if (backFired) actionInfoText = `**${user.username} tried to use a legendary egg on ${author.username}, but it backfired.**`;
 
                     const feedbackMsgText = `${actionInfoText}: ${damageInfoText}.`;
-                    await ChannelsHelper.propagate(reaction.message, feedbackMsgText, 'ACTIONS');
+                    ChannelsHelper.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💜');
+                    ChannelsHelper._postToChannelCode('FEED', feedbackMsgText, 666);
                 }
             } catch(e) {
                 console.error(e);

@@ -84,6 +84,10 @@ export default class MessagesHelper {
         if (reaction) setTimeout(() => { reaction.remove(); }, delay);
     }
 
+    static delayReactionRemoveUser(reaction, userID, delay) {
+        setTimeout(() => reaction.users.remove(userID), delay);
+    }
+
     static delayReact(msg, emoji, delay = 666) {
         if (msg) setTimeout(async () => { 
             try {

@@ -8,6 +8,7 @@ import STATE from "../../../state";
 import achievementPostedHandler from "../../features/encouragement/achievementPosted";
 import workPostHandler from "../../features/encouragement/workPosted";
 import ConfessionHandler from "../../features/messages/confessionHandler";
+import LinkPreviewFilter from "../../features/messages/linkPreviewFilter";
 import MiscMessageHandlers from "../../features/messages/miscMessageHandlers";
 import PointsHelper from "../../features/points/pointsHelper";
 import SuggestionsHelper from "../../features/suggestions/suggestionsHelper";
@@ -41,4 +42,7 @@ export default async function messageAddedHandler(msg) {
 
     // Miscelleanous jokes and responses.
     MiscMessageHandlers.onMessage(msg);
+
+    // Suppress previews from links but add toggle react.
+    LinkPreviewFilter.onMessage(msg);
 }

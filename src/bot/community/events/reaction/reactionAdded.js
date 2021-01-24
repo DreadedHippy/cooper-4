@@ -13,6 +13,7 @@ import UsersHelper from "../../../core/entities/users/usersHelper";
 import CleanupHandler from '../../features/messages/cleanupHandler';
 import ElectionHelper from '../../features/hierarchy/election/electionHelper';
 import AboutHelper from '../../features/server/aboutHelper';
+import LinkPreviewFilter from '../../features/messages/linkPreviewFilter';
 
 export default async function reactAddedHandler(reaction, user) {
     const isUser = !UsersHelper.isCooper(user.id);
@@ -45,6 +46,9 @@ export default async function reactAddedHandler(reaction, user) {
 
         // Settings via about channel
         AboutHelper.onReaction(reaction, user);
+
+        // Prevent and toggle link previews.
+        LinkPreviewFilter.onReaction(reaction ,user);
 
     } catch(e) {
         console.error(e);

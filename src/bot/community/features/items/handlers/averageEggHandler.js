@@ -15,13 +15,10 @@ export default class AverageEggHandler {
             try {
                 const didUse = await ItemsHelper.use(user.id, 'AVERAGE_EGG', 1);
                 if (!didUse) {
-                    setTimeout(async () => {
-                        const unableMsg = await reaction.message.say(
-                            `${user.username} tried to use an average egg, but has none. Lul.`
-                        );
-                        setTimeout(() => { unableMsg.delete(); }, 10000);
-                    }, 666);
-                    return await reaction.users.remove(user.id);
+                    const failureText = `${user.username} tried to use an average egg, but has none. Lul.`;
+                    MessagesHelper.selfDestruct(reaction.message, failureText)
+                    MessagesHelper.delayReactionRemoveUser(reaction, user.id, 333);
+
                 } else {
                     const backFired = STATE.CHANCE.bool({ likelihood: 25 });
                     const author = reaction.message.author;
@@ -42,7 +39,7 @@ export default class AverageEggHandler {
                     if (backFired) actionInfoText = `${user.username} tried to use an average egg on ${author.username}, but it backfired`;
 
                     const feedbackMsgText = `${actionInfoText}: ${damageInfoText}.`;
-                    ChannelsHelper.propagate(reaction.message, feedbackMsgText, 'ACTIONS');
+                    ChannelsHelper.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💚');
                 }
             } catch(e) {
                 console.error(e);

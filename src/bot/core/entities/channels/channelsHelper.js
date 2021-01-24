@@ -30,15 +30,51 @@ export default class ChannelsHelper {
         const feedChannel = this.getByCode(prodServer, 'FEED');
         setTimeout(() => feedChannel.send(message), delay);
     }
+
+    static codeSay(channelCode, messageText, delay = 666) {
+        return this._postToChannelCode(channelCode, messageText, delay);
+    }
+
+    static codeSayReact(channelCode, messageText, emoji, delay = 666) {
+        return this.codeSay(channelCode, messageText, emoji, delay)
+            .then(msg => {
+                if (msg) MessagesHelper.delayReact(msg, emoji, delay * 1.5);
+            });
+    }
+
+    static codeShoutReact(msgRef, text, recordChan, emoji, selfDestruct = true) {
+        if (!this.checkIsByCode(msgRef.channel.id, recordChan)) {
+            const feedbackMsg = await msgRef.say(text);
+            if (selfDestruct) MessagesHelper.delayDelete(feedbackMsg, 15000);
+        }
+        return this._postToChannelCode(recordChan, text, 666)
+            .then(msg => {
+                if (msg) MessagesHelper.delayReact(emoji)
+            });
+    }
+
+
+    // This function may be a good example/starting point for a lib 
+    // for handling request timeouts and reject enforcement...?
     static _postToChannelCode(name, message, delay = 666) {
         const prodServer = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const feedChannel = this.getByCode(prodServer, name);
+
         return new Promise((resolve, reject) => {
+            let request = null;
             setTimeout(() => {
-                resolve(feedChannel.send(message));
+                request = feedChannel.send(message);
+                resolve(request);
             }, delay);
+
+            // Timeout.
+            setTimeout(() => {
+                // Is reject still triggered even if resolve has been?
+                if (!request) reject('Timeout');
+            }, delay * 2);
         });
     }
+
     static sendByCodes(guild, codes, message) {
         return ChannelsHelper
             .filterByCodes(guild, codes)
@@ -71,6 +107,10 @@ export default class ChannelsHelper {
         }
         return this._postToChannelCode(recordChan, text, 666);
     }
+
+
+
+
     static async _delete(id) {
         const guild = ServerHelper._coop();
         const channel = guild.channels.cache.get(id);
