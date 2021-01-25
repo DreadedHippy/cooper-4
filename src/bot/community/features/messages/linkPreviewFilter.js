@@ -14,8 +14,8 @@ export default class LinkPreviewFilter {
 
             // Check if message contains link.
             if (regex.test(msg.content)) {
-                msg.suppressEmbeds(true);
                 MessagesHelper.delayReact(msg, '🖼️', 666);
+                msg.suppressEmbeds(true);
             }
         }
 
@@ -23,6 +23,8 @@ export default class LinkPreviewFilter {
         static onReaction(reaction, user) {
             if (UsersHelper.isCooper(user.id)) return false;
             if (UsersHelper.isCooperMsg(reaction.message)) return false;
+
+            console.log(reaction.emoji.name);
             if (reaction.emoji.name === '🖼️') reaction.message.suppressEmbeds(false);
         }
 
