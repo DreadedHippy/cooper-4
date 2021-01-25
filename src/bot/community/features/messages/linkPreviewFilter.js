@@ -2,6 +2,7 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
+import STATE from "../../../state";
 
 export default class LinkPreviewFilter {
 
@@ -24,8 +25,10 @@ export default class LinkPreviewFilter {
             if (UsersHelper.isCooper(user.id)) return false;
             if (UsersHelper.isCooperMsg(reaction.message)) return false;
 
+            const toggleVal = STATE.CHANCE.bool({ likelihood: 50 });
+
             if (reaction.emoji.name === '🖼️') setTimeout(() => {
-                reaction.message.suppressEmbeds(false);
+                reaction.message.suppressEmbeds(toggleVal);
             }, 999);
         }
 
