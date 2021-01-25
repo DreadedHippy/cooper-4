@@ -24,8 +24,9 @@ export default class LinkPreviewFilter {
             if (UsersHelper.isCooper(user.id)) return false;
             if (UsersHelper.isCooperMsg(reaction.message)) return false;
 
-            console.log(reaction.emoji.name);
-            if (reaction.emoji.name === '🖼️') reaction.message.suppressEmbeds(false);
+            if (reaction.emoji.name === '🖼️') setTimeout(() => {
+                reaction.message.suppressEmbeds(false);
+            }, 999);
         }
 
 }
