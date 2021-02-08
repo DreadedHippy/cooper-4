@@ -7,6 +7,7 @@ import UsersHelper from "../../../../core/entities/users/usersHelper";
 import ItemsHelper from "../../items/itemsHelper";
 import PointsHelper from "../../points/pointsHelper";
 import EconomyNotifications from "../economyNotifications";
+import ServerHelper from "../../../../core/entities/server/serverHelper";
 
 
 export default class MiningMinigame {
@@ -124,6 +125,10 @@ export default class MiningMinigame {
             magnitude = STATE.CHANCE.natural({ min: 15, max: 35 });
 
         const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.ROCK.repeat(magnitude));
+        
+        // Ensure message is stored in database for clear up.
+        // TODO: Count as ungathered rock in activity messages.
+        ServerHelper.addTempMessage(rockMsg, 60 * 60);
 
         MessagesHelper.delayReact(rockMsg, '⛏️');
 

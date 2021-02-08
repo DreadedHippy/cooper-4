@@ -3,7 +3,6 @@ import STATE from "../../../state";
 
 export default class EconomyNotifications {
   
-
     static add(eventType, eventData = {}) {
         if (eventType === 'WOODCUTTING') this.updateWoodcutting(eventData);
         if (eventType === 'MINING') this.updateMining(eventData);
@@ -13,9 +12,8 @@ export default class EconomyNotifications {
         if (eventType === 'CRATE_DROP') this.updateCrateDrop(eventData);
     }
 
-
     static updateCrateDrop(crateDropEvent) {
-
+        console.log(crateDropEvent);
     }
 
     static updateEgghunt(egghuntEvent) {
@@ -83,15 +81,46 @@ export default class EconomyNotifications {
         if (eventStatusesKeys.length > 0) {
             let notificationString = 'Latest actions for you! ';
             
-
             if (STATE.EVENTS_HISTORY['WOODCUTTING']) {
-                notificationString += '\nHad woodcutting stats';
-                console.log(STATE.EVENTS_HISTORY['WOODCUTTING']);
+                const woodcutting = STATE.EVENTS_HISTORY['WOODCUTTING'];
+
+                notificationString += `**Latest Woodcutting Totals:**\n`
+                    // `Hits: ${mining.totals.hits}\n` +
+                    `Cut: ${woodcutting.totals.cut}\n` +
+                    `Broken Pickaxes: ${woodcutting.totals.brokenAxes}\n` +
+                    `Points Change: ${woodcutting.totals.points}\n`;
+                // users: {
+                //     652007124787789828': { points: 56, username: 'hebedebe', cut: 6, brokenAxes: 0 }
+                // },
+                //     totals: { cut: 6, brokenAxes: 0, points: 112 }
+                // }
             }
 
             if (STATE.EVENTS_HISTORY['MINING']) {
-                notificationString += '\nHad mining stats';
-                console.log(STATE.EVENTS_HISTORY['MINING']);
+                const mining = STATE.EVENTS_HISTORY['MINING'];
+                console.log(mining);
+
+                // notificationString += '\nHad mining stats';
+
+                // Format the mining data.
+
+                notificationString += `\n\n**Latest Mining Totals:**\n`
+                    `Hits: ${mining.totals.hits}\n` +
+                    `Mined: ${mining.totals.mined}\n` +
+                    `Diamonds: ${mining.totals.diamonds}\n` +
+                    `Broken Pickaxes: ${mining.totals.brokenPickaxes}\n` +
+                    `Points Change: ${mining.totals.points}\n`;
+
+                // {
+                // users: {
+                //     652007124787789828': {
+                //         points: -2,
+                //         username: 'hebedebe',
+                //         mined: 0,
+                //         brokenPickaxes: 1,
+                //         diamondsFound: 0
+                //     }
+                // },
             }
 
             // TODO: Add egg hunt stats

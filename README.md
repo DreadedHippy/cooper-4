@@ -10,6 +10,12 @@ heroku pg:psql --app cooperchickenbot
 
 <!-- Schema -->
 
+CREATE TABLE temp_messages(
+    id SERIAL PRIMARY KEY,
+    message_id VARCHAR,
+    expiry_time int
+);
+
 CREATE TABLE items(
     id SERIAL PRIMARY KEY,
     item_code VARCHAR,
@@ -106,3 +112,9 @@ CREATE TABLE chicken(
 <!-- Useful forced actions -->
 ALTER TABLE users
     ADD COLUMN email VARCHAR;
+
+ALTER TABLE temp_messages
+    ADD COLUMN message_link VARCHAR;
+    
+ALTER TABLE temp_messages
+    DROP COLUMN message_id;

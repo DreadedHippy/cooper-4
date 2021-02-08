@@ -251,6 +251,8 @@ export default class EggHuntMinigame {
                     const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
                     const eggMsg = await dropChannel.send(emojiText);
 
+                    ServerHelper.addTempMessage(eggMsg, 60 * 60);
+
                     // Add collection action emoji.
                     MessagesHelper.delayReact(eggMsg, '🧺', 666);
 

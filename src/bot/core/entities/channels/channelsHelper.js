@@ -28,7 +28,13 @@ export default class ChannelsHelper {
     static _postToFeed(message, delay = 666) {
         const prodServer = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
         const feedChannel = this.getByCode(prodServer, 'FEED');
-        setTimeout(() => feedChannel.send(message), delay);
+        return new Promise((resolve, reject) => {
+            setTimeout(async () => {
+                const msg = await feedChannel.send(message);
+                resolve(msg);
+            }, delay);
+            setTimeout(() => reject(false), delay * 2);
+        });
     }
 
     static codeSay(channelCode, messageText, delay = 666) {

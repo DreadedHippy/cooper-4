@@ -25,6 +25,7 @@ export default class LinkPreviewFilter {
             if (UsersHelper.isCooper(user.id)) return false;
             if (UsersHelper.isCooperMsg(reaction.message)) return false;
 
+            // TODO: Test for embeds instead.
             const toggleVal = STATE.CHANCE.bool({ likelihood: 50 });
 
             if (reaction.emoji.name === '🖼️') setTimeout(() => {

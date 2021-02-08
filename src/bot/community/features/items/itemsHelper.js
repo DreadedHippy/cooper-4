@@ -174,19 +174,18 @@ export default class ItemsHelper {
     }
 
     //Input Takes a string and extracts the items mentioned in it. Returns an array containing the item codes. The search is greedy so will extrct the longest possible name
-    static parseItemCodes(Input) {
+    static parseItemCodes(inputString) {
         //Remove multiple spaces and make uppercase
-        const str = Input.replace(/\s\s+/g, ' ').toUpperCase();
+        const str = inputString.replace(/\s\s+/g, ' ').toUpperCase();
 
         const usableItemsStr = ItemsHelper.getUsableItems();
 
-        //Generate The regex to match the items. This is only done once to save server time
-        if (!!this.MatchRegex) {
-            this.MatchRegex = new RegExp("(" + usableItemsStr.join("|").replace("_", "[_\\s]") + ")", 'g');
-        }
+        // Generate The regex to match the items. This is only done once to save server time
+        const matchRegex = new RegExp("(" + usableItemsStr.join("|").replace("_", "[_\\s]") + ")", 'g');
 
-        //Match with the regex. This returns an array of the found matches
-        const matches = str.match(this.MatchRegex);
+        // Match with the regex. This returns an array of the found matches
+        const matches = str.match(matchRegex);
+
         // Return matches as canonical item codes
         return matches.map(x => x.replace(/\s/g, '_'));
     }

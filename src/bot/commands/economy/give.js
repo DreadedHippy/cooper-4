@@ -44,8 +44,7 @@ export default class GiveCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
-
-			// TODO:
+			// TODO: Use a gift basket up on this.
 
 			// Target is first mention
 
@@ -73,6 +72,7 @@ export default class GiveCommand extends CoopCommand {
 			// Attempt to use item and only grant once returned successful, avoid double gift glitching.
 			if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
 				await ItemsHelper.add(target.id, itemCode, qty);
+				
 				const addText = `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`;
 				ChannelsHelper.propagate(msg, addText, 'ACTIONS');
 			}

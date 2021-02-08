@@ -21,6 +21,7 @@ import TradingHelper from "../features/items/tradingHelper";
 import EconomyHelper from "../features/economy/economyHelper";
 import ElectionHelper from "../features/hierarchy/election/electionHelper";
 import UsersHelper from "../../core/entities/users/usersHelper";
+import ServerHelper from "../../core/entities/server/serverHelper";
 
 
 export const baseTickDur = 60 * 25 * 1000;
@@ -32,6 +33,9 @@ export default function eventsManifest() {
 
   // Clean up user data, may have missed detection on a leave/kick/ban.
   EventsHelper.runInterval(() => UsersHelper.cleanupUsers(), baseTickDur * 5);
+
+  // Clean up temporary messages.
+  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 2);
 
   // New day events/calendar events.
   EventsHelper.runInterval(() => Chicken.checkIfNewDay([
@@ -62,9 +66,9 @@ export default function eventsManifest() {
   // Minigame related items.
   EventsHelper.runInterval(() => CooperMorality.evaluate(), baseTickDur * 4.5);
   EventsHelper.runInterval(() => PointsHelper.updateCurrentWinner(), baseTickDur * 2);
-  EventsHelper.chanceRunInterval(() => WoodcuttingMinigame.run(), 55, baseTickDur * 2.5);
-  EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 45, baseTickDur * 2);
-  EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur);
+  EventsHelper.chanceRunInterval(() => WoodcuttingMinigame.run(), 55, baseTickDur * 3.5);
+  EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 45, baseTickDur * 3);
+  EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur * 1.5);
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 65, baseTickDur / 1.5);
 
   // TODO: Update and create most items role
