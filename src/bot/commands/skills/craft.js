@@ -1,5 +1,6 @@
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CraftingHelper from '../../community/features/skills/crafting/craftingHelper';
+import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 

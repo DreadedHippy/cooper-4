@@ -295,7 +295,7 @@ export default class ElectionHelper {
                         `**Commander:** ${hierarchy.commander.user.username} :crown: \n\n` +
 
                         `**Leaders:** \n` +
-                            `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords: \n`)}\n` +
+                            `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n` +
 
                         `**Next Election:** ${nextElecReadable} (${humanRemaining})`);
                 }
