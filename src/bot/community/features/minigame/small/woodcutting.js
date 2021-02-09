@@ -7,6 +7,7 @@ import UsersHelper from "../../../../core/entities/users/usersHelper";
 import ItemsHelper from "../../items/itemsHelper";
 import PointsHelper from "../../points/pointsHelper";
 import EconomyNotifications from "../economyNotifications";
+import ServerHelper from "../../../../core/entities/server/serverHelper";
 
 
 export default class WoodcuttingMinigame {
@@ -111,9 +112,12 @@ export default class WoodcuttingMinigame {
 
     static async run() {
         const magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
-        const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.WOOD.repeat(magnitude));
+        const woodMsg = await ChannelsHelper._randomText().send(EMOJIS.WOOD.repeat(magnitude));
 
-        MessagesHelper.delayReact(rockMsg, '🪓', 666);
+        // TODO: Count as ungathered wood in activity messages.
+        ServerHelper.addTempMessage(woodMsg, 30 * 60);
+
+        MessagesHelper.delayReact(woodMsg, '🪓', 666);
 
         const branchText = magnitude > 1 ? `${magnitude} branches` : `a branch`;
         const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(magnitude / 2))} a tree with ${branchText} to fell!`

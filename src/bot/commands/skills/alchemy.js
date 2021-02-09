@@ -1,8 +1,6 @@
-import { drop } from 'lodash';
 import DropTable from '../../community/features/items/droptable';
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
-
 
 export default class AlchemyCommand extends CoopCommand {
 

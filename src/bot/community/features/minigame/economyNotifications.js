@@ -83,6 +83,8 @@ export default class EconomyNotifications {
             
             if (STATE.EVENTS_HISTORY['WOODCUTTING']) {
                 const woodcutting = STATE.EVENTS_HISTORY['WOODCUTTING'];
+                
+                console.log(woodcutting);
 
                 notificationString += `**Latest Woodcutting Totals:**\n`
                     // `Hits: ${mining.totals.hits}\n` +

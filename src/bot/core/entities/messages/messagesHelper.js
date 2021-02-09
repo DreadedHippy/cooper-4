@@ -4,6 +4,8 @@ import ServerHelper from "../server/serverHelper";
 export default class MessagesHelper {
 
     static parselink(link) {
+        let result = null;
+
         // Remove domains.
         let subjStr = link.replace('https://discordapp.com/channels/', '');
         subjStr = subjStr.replace('https://discord.com/channels/', '');
@@ -15,8 +17,10 @@ export default class MessagesHelper {
             channel: msgPcs[1],
             message: msgPcs[2]
         };
+        
+        result = data;
 
-        return data;
+        return result;
     }
     
     static link(msg) {

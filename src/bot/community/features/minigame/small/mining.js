@@ -128,7 +128,7 @@ export default class MiningMinigame {
         
         // Ensure message is stored in database for clear up.
         // TODO: Count as ungathered rock in activity messages.
-        ServerHelper.addTempMessage(rockMsg, 60 * 60);
+        ServerHelper.addTempMessage(rockMsg, 30 * 60);
 
         MessagesHelper.delayReact(rockMsg, '⛏️');
 
