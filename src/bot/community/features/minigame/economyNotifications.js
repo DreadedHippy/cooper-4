@@ -86,7 +86,7 @@ export default class EconomyNotifications {
                 
                 console.log(woodcutting);
 
-                notificationString += `**Latest Woodcutting Totals:**\n`
+                notificationString += `**Latest Woodcutting Totals:**\n` +
                     // `Hits: ${mining.totals.hits}\n` +
                     `Cut: ${woodcutting.totals.cut}\n` +
                     `Broken Pickaxes: ${woodcutting.totals.brokenAxes}\n` +
@@ -106,7 +106,7 @@ export default class EconomyNotifications {
 
                 // Format the mining data.
 
-                notificationString += `\n\n**Latest Mining Totals:**\n`
+                notificationString += `\n\n**Latest Mining Totals:**\n` +
                     `Hits: ${mining.totals.hits}\n` +
                     `Mined: ${mining.totals.mined}\n` +
                     `Diamonds: ${mining.totals.diamonds}\n` +

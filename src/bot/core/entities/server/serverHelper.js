@@ -54,7 +54,6 @@ export default class ServerHelper {
 
         // Batch delete won't work due to different channels, use message link approach.
         const expiredMsgIDs = tempMessages.map(tempMsg => tempMsg.message_link);
-        console.log(expiredMsgIDs);
         expiredMsgIDs.map((expiredID, index) => {
             // Load message by link and delete.
             setTimeout(async () => {
