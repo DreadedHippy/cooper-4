@@ -29,6 +29,18 @@ export default class ServerHelper {
         const result = await Database.query(query);
         return result;
     }
+    static async deleteTempMsgLink(link) {
+        const query = {
+            name: "delete-temp-message-link",
+            text: `SELECT * FROM temp_messages 
+                WHERE message_link = $1
+                LIMIT 15`,
+            values: [link]
+        };
+        
+        const result = await Database.query(query);
+        return result;
+    }
     static async cleanupTempMessages() {
         const query = {
             name: "get-temp-messages",
@@ -41,12 +53,19 @@ export default class ServerHelper {
         const tempMessages = DatabaseHelper.many(result);
 
         // Batch delete won't work due to different channels, use message link approach.
-        const expiredMsgIDs = tempMessages.map(tempMsg => tempMsg.message_id);
+        const expiredMsgIDs = tempMessages.map(tempMsg => tempMsg.message_link);
+        console.log(expiredMsgIDs);
         expiredMsgIDs.map((expiredID, index) => {
             // Load message by link and delete.
             setTimeout(async () => {
                 const message = await MessagesHelper.getByLink(expiredID);
-                MessagesHelper.delayDelete(message, index * 30000);
+                if (message) {
+                    return MessagesHelper.delayDelete(message, index * 3333);
+                } else {
+                    // Remove from database
+                    return this.deleteTempMsgLink(expiredID);
+                }
+                
             }, index * 10000);
         });
 

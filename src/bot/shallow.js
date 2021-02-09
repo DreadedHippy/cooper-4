@@ -3,6 +3,7 @@ import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
 import CraftingHelper from './community/features/skills/crafting/craftingHelper';
+import ServerHelper from './core/entities/server/serverHelper';
 
 
 // v DEV IMPORT AREA v
@@ -32,7 +33,7 @@ const shallowBot = async () => {
 
         // await CraftingHelper.craft('786671654721683517', 'AXE', 2);
 
-
+        ServerHelper.cleanupTempMessages();
             
         // Finish actions messages for woodcutting/mining
         
