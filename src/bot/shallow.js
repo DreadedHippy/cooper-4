@@ -8,6 +8,8 @@ import Chicken from './community/chicken';
 import ElectionHelper from './community/features/hierarchy/election/electionHelper';
 import MessagesHelper from './core/entities/messages/messagesHelper';
 import TimeHelper from './community/features/server/timeHelper';
+import ChannelsHelper from './core/entities/channels/channelsHelper';
+import CHANNELS from '../bot/core/config/channels.json';
 
 
 // v DEV IMPORT AREA v
@@ -30,14 +32,9 @@ const shallowBot = async () => {
         
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-
-        // New day detection:
-
-        // Chicken.checkIfNewDay();
-
         
+       
         // Hard, Quick:
-        // New day detection
         // If Cooper is feeling good, randomly give a user items.
         // Finish alching
         // Add a multiplier to drops for wood etc... too weak atm.

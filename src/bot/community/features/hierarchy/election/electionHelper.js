@@ -110,16 +110,26 @@ export default class ElectionHelper {
 
     static async startElection() {
         try {
-            ChannelsHelper._postToFeed(`@everyone, the <#${CHANNELS.ELECTION}> is starting.`);
-    
             // Turn election on and set latest election to now! :D
             await Chicken.setConfig('election_on', 'true');
             await Chicken.setConfig('last_election', parseInt(Date.now() / 1000));
-    
+            
             // Update the election message
             const readableElecLeft = TimeHelper.humaniseSecs((await this.votingPeriodLeftSecs()));
             const startElecText = `The election is currently ongoing! Time remaining: ${readableElecLeft}`;
             await this.editElectionInfoMsg(startElecText);
+
+            // Inform all members so they can fairly stand.
+            const feedMsg = await ChannelsHelper._postToFeed(
+                `@everyone, our latest <#${CHANNELS.ELECTION.id}> is running, all members are welcome to stand or vote for their preferred commander and leaders. \n` +
+                `For further information on our elections refer to our forth amendment in <#${CHANNELS.CONSTITUTION.id}>\n\n` +
+                `To stand for election, send in any channel this message: \n\n !stand ((and your campaign message here, brackets - () - not needed)) \n\n` +
+                `Time remaining: ${readableElecLeft}.`
+            );
+
+            MessagesHelper.delayReact(feedMsg, '👑', 666);
+
+            // TODO: React crown to this message.
 
         } catch(e) {
             console.log('Starting the election failed... :\'(');
@@ -176,16 +186,6 @@ export default class ElectionHelper {
                 return true;
             }));
 
-            await this.resetHierarchyItems();
-
-            // Add the election items.
-            await ItemsHelper.add(hierarchy.commander.id, 'ELECTION_CROWN', 1);
-            await Promise.all(hierarchy.leaders.map(async (leader, index) => {
-                await new Promise(r => setTimeout(r, 777 * index));
-                await ItemsHelper.add(leader.id, 'LEADERS_SWORD', 1);
-                return true;
-            }));
-
             // Cleanup database records fresh for next run.
             await this.clearElection();
 
@@ -206,6 +206,18 @@ export default class ElectionHelper {
             
             ChannelsHelper._postToFeed(declareText);
             await this.editElectionInfoMsg(declareText);
+
+
+            // Handle election items.
+            await this.resetHierarchyItems();
+
+            // Add the election items.
+            ItemsHelper.add(hierarchy.commander.id, 'ELECTION_CROWN', 1);
+            Promise.all(hierarchy.leaders.map(async (leader, index) => {
+                await new Promise(r => setTimeout(r, 333 * index));
+                await ItemsHelper.add(leader.id, 'LEADERS_SWORD', 1);
+                return true;
+            }));
 
         } catch(e) {
             console.log('Something went wrong ending the election...');
