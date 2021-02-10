@@ -3,6 +3,9 @@ import Database from "../core/setup/database";
 // TODO: Consider adding observable for checkIfNewDay (provide events)
 
 import moment from 'moment';
+import TimeHelper from "./features/server/timeHelper";
+import ChannelsHelper from "../core/entities/channels/channelsHelper";
+import ElectionHelper from "./features/hierarchy/election/electionHelper";
 
 export default class Chicken {
 
@@ -71,38 +74,35 @@ export default class Chicken {
 
     static async getCurrentDaySecs() {
         let secs = null;
-        const cooperUnixSecsResp = await this.getConfig('current_day');
-        if (cooperUnixSecsResp) secs = parseInt(cooperUnixSecsResp.value);
+        const currentDaySecs = await this.getConfigVal('current_day');
+        if (currentDaySecs) secs = parseInt(currentDaySecs);
         return secs;
     }
 
-    static async checkIfNewDay(...callbacks) {
+    static async isNewDay() {
+        const currentDaySecs = await this.getCurrentDaySecs();
+        const nowSecs = TimeHelper._secs();
+        const dayDurSecs = (60 * 60) * 24
+        const isNewDay = nowSecs >= currentDaySecs + dayDurSecs;
+
+        return isNewDay;
+    }
+
+    static async checkIfNewDay() {
         try {
-            let isNewDay = false;
-            const currentUnixSecs = Math.floor(+new Date() / 1000);
-            const cooperUnixSecs = await this.getCurrentDaySecs();
+            const isNewDay = await this.isNewDay();
+            if (!isNewDay) return false;
 
-            // Check if any day value already exists.
-            if (cooperUnixSecs) {
-                if (currentUnixSecs - (3600 * 24) >=  cooperUnixSecs) {
-                    await this.setConfig('current_day', '' + currentUnixSecs);
-                    isNewDay = true;                    
-                }
-            }
+            ChannelsHelper._postToFeed('A new day?')
+            ElectionHelper.checkProgress();
             
-            // Set a datbase default.
-            if (!cooperUnixSecs) isNewDay = true;
-
-            if (isNewDay) {
-                await this.setConfig('current_day', '' + currentUnixSecs);
-                callbacks.forEach(callback => {
-                    if (typeof callback === 'function') callback(currentUnixSecs);
-                });
-            }
-
+            // If election is running, it should announce something at beginning of day, with time remaining.
+            await this.setConfig('current_day', '' + TimeHelper._secs());
+            return true;
+            
         } catch(e) {
+            console.log('New data detection failed.')
             console.error(e);
-            // TODO: Send message that new day failed.
         }
     }
 

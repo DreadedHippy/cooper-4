@@ -11,4 +11,9 @@ export default class TimeHelper {
         const humanRemaining = moment.duration(secs * 1000).humanize();
         return humanRemaining;
     }
+
+    static _secs() {
+        const presentSecs = Math.round(Date.now() / 1000);
+        return presentSecs;
+    }
 }

@@ -31,42 +31,14 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        // Check if election turned on.
-        // const elecOn = await Chicken.getConfigVal('election_on');
-        // console.log(elecOn);
-        // const isElecOn = await ElectionHelper.isElectionOn();
-        // console.log(isElecOn);
+        // New day detection:
+
+        // Chicken.checkIfNewDay();
 
         
-        const isVotingPeriod = await ElectionHelper.isVotingPeriod();
-
-        const nowSecs = parseInt(Date.now() / 1000);
-
-        const lastElecSecs = await ElectionHelper.lastElecSecs();
-        const termDuration = ElectionHelper.TERM_DUR_SECS;
-
-        // console.log(nowSecs > lastElecSecs + termDuration);
-
-        // console.log((lastElecSecs + termDuration), nowSecs);
-
-        // console.log((lastElecSecs + termDuration) - nowSecs);
-
-        // console.log(TimeHelper.humaniseSecs((lastElecSecs + termDuration) - nowSecs));
-
-        console.log(isVotingPeriod);
-        // console.log(nowSecs, lastElecSecs);
-
-        // Find out why Cooper thinks it isn't voting period now...
-        
-        // 1,000,000
-        // 1 million seconds
-        // 16,667 minutes
-        // 278 hours
-        // 12 days
-        // 12 days x 3 = 36 days (rough estimate)
-        // 2983326
-
         // Hard, Quick:
+        // New day detection
+        // If Cooper is feeling good, randomly give a user items.
         // Finish alching
         // Add a multiplier to drops for wood etc... too weak atm.
         // Prevent voting for self in sacrifice

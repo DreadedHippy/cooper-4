@@ -110,7 +110,7 @@ export default class ElectionHelper {
 
     static async startElection() {
         try {
-            ChannelsHelper._postToFeed('Starting the election...');
+            ChannelsHelper._postToFeed(`@everyone, the <#${CHANNELS.ELECTION}> is starting.`);
     
             // Turn election on and set latest election to now! :D
             await Chicken.setConfig('election_on', 'true');

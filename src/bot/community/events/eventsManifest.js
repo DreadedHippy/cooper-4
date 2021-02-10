@@ -38,15 +38,7 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 2);
 
   // New day events/calendar events.
-  EventsHelper.runInterval(() => Chicken.checkIfNewDay([
-    () => {
-      // Iso please double check this method is sound?
-      ChannelHelper._postToFeed('A new day?')
-      ElectionHelper.checkProgress()
-
-      // If election is running, it should announce something at beginning of day, with time remaining.
-    }
-  ]), baseTickDur / 2);
+  EventsHelper.runInterval(() => Chicken.checkIfNewDay(), baseTickDur / 2);
 
 
   // Check progess is left within new day due to significance, but add another runner.
