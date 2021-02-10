@@ -27,8 +27,11 @@ import ItemsHelper from '../../items/itemsHelper';
 
 export default class ElectionHelper {
 
-    static INTERVAL_SECS = 3600 * 24 * 25;
-    static DURATION_SECS = 3600 * 24 * 7;
+    // Duration of election voting
+    static VOTING_DUR_SECS = (3600 * 24) * 7;
+
+    // Allow for a week of voting before reset.
+    static TERM_DUR_SECS = ((3600 * 24) * 30) + this.VOTING_DUR_SECS;
 
     static async addVote(userID, candidateID) {
         const query = {
@@ -78,14 +81,12 @@ export default class ElectionHelper {
         return result;
     }
 
-    
-
     static async votingPeriodLeftSecs() {
         let leftSecs = 0;
 
         const isVotingPeriod = await this.isVotingPeriod();
         if (isVotingPeriod) {
-            const endOfVoting = (await this.lastElecSecs()) + this.DURATION_SECS;
+            const endOfVoting = (await this.lastElecSecs()) + this.VOTING_DUR_SECS;
             const diff = Math.abs(endOfVoting - parseInt(Date.now() / 1000))
             
             if (diff) leftSecs = diff;
@@ -96,9 +97,15 @@ export default class ElectionHelper {
 
     static async isVotingPeriod() {
         const nowSecs = parseInt(Date.now() / 1000);
-        const electionSecs = await this.lastElecSecs();
-        const isVotingPeriod = !!(nowSecs >= electionSecs && nowSecs <= electionSecs + this.DURATION_SECS);
-        return isVotingPeriod;
+        const lastElectionSecs = await this.lastElecSecs();
+
+        const nextVotingTimelimit = lastElectionSecs + this.TERM_DUR_SECS + this.VOTING_DUR_SECS;
+
+        const isLastTermOver = ((lastElectionSecs + this.TERM_DUR_SECS) - nowSecs >= 0);
+        const isNextVotingTimeUnder = nowSecs <= nextVotingTimelimit;
+        
+        const isTime = isLastTermOver && isNextVotingTimeUnder;
+        return isTime;
     }
 
     static async startElection() {
@@ -120,7 +127,6 @@ export default class ElectionHelper {
         }
 
     }
-
 
     static getMaxNumLeaders() {
         return VotingHelper.getNumRequired(ServerHelper._coop(), .025);
@@ -191,10 +197,10 @@ export default class ElectionHelper {
             // Announce the winners!
             const declareText = `**Latest <#${CHANNELS.ELECTION.id}> ends with these results!**\n\n` +
 
-                `**New Commander:** ${hierarchy.commander.username}\n\n` +
+                `**New Commander:**\n${hierarchy.commander.username}\n\n` +
 
                 `**New Leaders:** \n` +
-                    `${hierarchy.leaders.map(leader => `${leader.username} (${leader.votes} Votes)`).join(', ')}\n\n` +
+                    `${hierarchy.leaders.map(leader => `${leader.username} (${leader.votes} Votes)`).join('\n')}\n\n` +
 
                 `**Next Election:** ${nextElecFmt}.`;
             
@@ -292,10 +298,10 @@ export default class ElectionHelper {
 
                     await this.editElectionInfoMsg(`**Election is over, here are your current officials:** \n\n` +
 
-                        `**Commander:** ${hierarchy.commander.user.username} :crown: \n\n` +
+                        `**Commander:**\n${hierarchy.commander.user.username} :crown: \n\n` +
 
-                        `**Leaders:** \n` +
-                            `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n` +
+                        `**Leaders:**\n` +
+                            `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n\n` +
 
                         `**Next Election:** ${nextElecReadable} (${humanRemaining})`);
                 }
@@ -576,7 +582,7 @@ export default class ElectionHelper {
 
     static async nextElecSecs() {
         const lastElecSecs = await this.lastElecSecs();
-        const nextElecSecs = lastElecSecs + this.INTERVAL_SECS;
+        const nextElecSecs = lastElecSecs + this.TERM_DUR_SECS;
         return nextElecSecs;
     }
 
@@ -589,7 +595,7 @@ export default class ElectionHelper {
     static async isElectionTime() {
         const lastElecSecs = await this.lastElecSecs();
         const nextElecSecs = await this.nextElecSecs();
-        const nextDeclareSecs = lastElecSecs + this.INTERVAL_SECS + this.DURATION_SECS;
+        const nextDeclareSecs = lastElecSecs + this.TERM_DUR_SECS + this.VOTING_DUR_SECS;
 
         const nowSecs = parseInt(Date.now() / 1000);
 

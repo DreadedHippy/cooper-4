@@ -197,4 +197,8 @@ export default class MessagesHelper {
         }));
     }
 
+    static async getReactionType(message, type) {
+        
+    }
+
 }

@@ -40,16 +40,14 @@ export default class MessageNotifications {
     static post() {
         const notificationChannelIDs = Object.keys(STATE.MESSAGE_HISTORY);
         if (notificationChannelIDs.length > 0) {
-            let notificationString = 'Latest messages for you! ';
-
-            // TODO: Order by most messages.
-
             // Count total messages beforehand to add to string as header.
             const totalCount = notificationChannelIDs.reduce((acc, val) => {
                 acc += STATE.MESSAGE_HISTORY[val].count;
                 return acc;
             }, 0);
-            notificationString += `(${totalCount})\n\n`;
+            
+            // TODO: Order by most messages.
+            let notificationString = `**Latest messages for you! (${totalCount})**\n\n`;
             
             notificationChannelIDs.map(channelID => {
                 // Access the notification data for this specific channel.

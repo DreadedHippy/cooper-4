@@ -127,7 +127,8 @@ export default class CratedropMinigame {
     static async open(reaction, user) {
         // Added fetch to message to ensure proper counting.
         const msg = await reaction.message.fetch();
-        
+        const axeEmojiReaction = await msg.reactions.resolve('🪓');
+
 		// return Boolean(await msg.channel.messages.fetch(val).catch(() => null));
 
         const rarity = this.calculateRarityFromMessage(msg);
@@ -138,7 +139,7 @@ export default class CratedropMinigame {
         // A short time after, to avoid rate-limits... award items.
         setTimeout(async () => {
             const crate = CRATE_DATA[rarity];
-            const hitters = reaction.users.cache
+            const hitters = axeEmojiReaction.users.cache
                 .map(user => user)
                 .filter(user => !UsersHelper.isCooper(user.id));
             const hitterNames = hitters.map(user => user.username);

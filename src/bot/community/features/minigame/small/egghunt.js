@@ -269,7 +269,7 @@ export default class EggHuntMinigame {
 
     static async dmDrop(rarity) {
         try {
-            const randomMember = await UsersHelper._random();
+            const randomMember = await UsersHelper.random();
             if (randomMember) {
                 const name = randomMember.user.username;
                 const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
