@@ -38,7 +38,7 @@ export default class ElectionHelper {
             name: "add-vote",
             text: `INSERT INTO election_votes(candidate_id, voter_id, time)
                 VALUES($1, $2, $3)`,
-            values: [userID, candidateID, (parseInt(Date.now() / 1000))]
+            values: [candidateID, userID, (parseInt(Date.now() / 1000))]
         };
         
         const result = await Database.query(query);
@@ -340,7 +340,6 @@ export default class ElectionHelper {
     }
 
     static async getVoteByVoterID(voterID) {
-        let voter = null;
         const query = {
             name: "get-voter",
             text: `SELECT * FROM election_votes WHERE voter_id = $1`,
@@ -348,8 +347,7 @@ export default class ElectionHelper {
         };
         
         const result = await Database.query(query);
-
-        if (result.rows) voter = result.rows[0];
+        const voter = DatabaseHelper.single(result);
 
         return voter;
     }
