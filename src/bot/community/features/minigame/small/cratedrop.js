@@ -125,7 +125,11 @@ export default class CratedropMinigame {
     }
 
     static async open(reaction, user) {
-        const msg = reaction.message;
+        // Added fetch to message to ensure proper counting.
+        const msg = await reaction.message.fetch();
+        
+		// return Boolean(await msg.channel.messages.fetch(val).catch(() => null));
+
         const rarity = this.calculateRarityFromMessage(msg);
 
         // Edit the crate to visually show it opening.

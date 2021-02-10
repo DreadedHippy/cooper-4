@@ -15,7 +15,6 @@ export default class ServerHelper {
         return this.getByCode(STATE.CLIENT, 'PROD');
     }
     static async addTempMessage(msg, deleteSecs) {
-        const msgID = msg.id;
         const expiry = Math.round(Date.now() / 1000) + deleteSecs;
 
         const messageLink = MessagesHelper.link(msg);

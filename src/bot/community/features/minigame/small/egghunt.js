@@ -270,20 +270,22 @@ export default class EggHuntMinigame {
     static async dmDrop(rarity) {
         try {
             const randomMember = await UsersHelper._random();
-            const name = randomMember.user.username;
-            const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
-
-            // Send via DM.
-            const eggMsg = await randomMember.send(emojiText);
-            MessagesHelper.delayReact(eggMsg, '🧺', 333);
-
-            // Remove toxic egg after 5 minutes so people aren't forced to take it.
-            if (rarity === 'TOXIC_EGG') MessagesHelper.delayDelete(eggMsg, 300000);
-
-            // Provide feedback.
-            let dropText = `${name} was sent an egg via DM! ${emojiText}`;
-            if (rarity === 'LEGENDARY_EGG') dropText = 'OooOoOoOoooo... ' + dropText;
-            ChannelsHelper._postToChannelCode('ACTIONS', dropText);
+            if (randomMember) {
+                const name = randomMember.user.username;
+                const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
+    
+                // Send via DM.
+                const eggMsg = await randomMember.send(emojiText);
+                MessagesHelper.delayReact(eggMsg, '🧺', 333);
+    
+                // Remove toxic egg after 5 minutes so people aren't forced to take it.
+                if (rarity === 'TOXIC_EGG') MessagesHelper.delayDelete(eggMsg, 300000);
+    
+                // Provide feedback.
+                let dropText = `${name} was sent an egg via DM! ${emojiText}`;
+                if (rarity === 'LEGENDARY_EGG') dropText = 'OooOoOoOoooo... ' + dropText;
+                ChannelsHelper._postToChannelCode('ACTIONS', dropText);
+            }
         } catch(e) {
             console.error(e);
         }

@@ -79,7 +79,7 @@ export default class EconomyNotifications {
     static post() {
         const eventStatusesKeys = Object.keys(STATE.EVENTS_HISTORY);
         if (eventStatusesKeys.length > 0) {
-            let notificationString = 'Latest actions for you! ';
+            let notificationString = '**Latest economy actions:**\n\n';
             
             if (STATE.EVENTS_HISTORY['WOODCUTTING']) {
                 const woodcutting = STATE.EVENTS_HISTORY['WOODCUTTING'];
@@ -89,8 +89,9 @@ export default class EconomyNotifications {
                 notificationString += `**Latest Woodcutting Totals:**\n` +
                     // `Hits: ${mining.totals.hits}\n` +
                     `Cut: ${woodcutting.totals.cut}\n` +
-                    `Broken Pickaxes: ${woodcutting.totals.brokenAxes}\n` +
-                    `Points Change: ${woodcutting.totals.points}\n`;
+                    `Broken Axes: ${woodcutting.totals.brokenAxes}\n` +
+                    `Points Change: ${woodcutting.totals.points}\n` +
+                    `\n\n`;
                 // users: {
                 //     652007124787789828': { points: 56, username: 'hebedebe', cut: 6, brokenAxes: 0 }
                 // },

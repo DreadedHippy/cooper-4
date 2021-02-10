@@ -102,8 +102,8 @@ export default class WoodcuttingMinigame {
             ChannelsHelper.propagate(msg, `${actionText} ${rewardText}`, 'ACTIONS');
 
             EconomyNotifications.add('WOODCUTTING', {
-                pointGain: addPoints,
-                recWood: addedWood,
+                pointGain: 1,
+                recWood: extractedOreNum,
                 playerID: user.id,
                 username: user.username
             });
