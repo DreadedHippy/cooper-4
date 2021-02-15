@@ -10,6 +10,7 @@ import MessagesHelper from './core/entities/messages/messagesHelper';
 import TimeHelper from './community/features/server/timeHelper';
 import ChannelsHelper from './core/entities/channels/channelsHelper';
 import CHANNELS from '../bot/core/config/channels.json';
+import CooperMorality from './community/features/minigame/small/cooperMorality';
 
 
 // v DEV IMPORT AREA v
@@ -33,10 +34,11 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
         
+        // If Cooper is feeling good, randomly give a user items.
+        // const dropResults = await CooperMorality.giveaway();
        
         // Hard, Quick:
-        // If Cooper is feeling good, randomly give a user items.
-        // Finish alching
+        // Finish alching (make it 13 eggs)
         // Add a multiplier to drops for wood etc... too weak atm.
         // Prevent voting for self in sacrifice
 

@@ -135,7 +135,6 @@ export default class ElectionHelper {
             console.log('Starting the election failed... :\'(');
             console.error(e);
         }
-
     }
 
     static getMaxNumLeaders() {
@@ -373,32 +372,15 @@ export default class ElectionHelper {
                 // Check if already voted
                 const vote = await this.getVoteByVoterID(user.id);
                 const candidateUser = (await UsersHelper._getMemberByID(candidate.candidate_id)).user;
+
+                // Add vote to database
+                await this.addVote(user.id, candidate.candidate_id);
                 
-                if (vote) {
-                    // self destruct message stating you've already voted.
-                    const prevVoteForCandidate = await UsersHelper._getMemberByID(vote.candidate_id);
-                    const prevVoteFor = prevVoteForCandidate.user.username || '?';
-                    const warnText = `You already voted for ${prevVoteFor}, you cheeky fluck.`;
-
-                    // Delay unreact... make sure their reaction isn't counted anyway.
-                    const userReactions = reaction.message.reactions.cache
-                        .filter(reaction => reaction.users.cache.has(user.id));
-
-                    for (const userReact of userReactions.values()) await userReact.users.remove(user.id);
-
-                    return MessagesHelper.selfDestruct(reaction.message, warnText);
-                }
-
+                // Disabled vote limits, but use it to prevent feedback spam.
                 if (!vote) {
-                    // Add vote to database
-                    await this.addVote(user.id, candidate.candidate_id);
-
                     // Announce and update.
                     await this.commentateElectionProgress();
-
-                    // Need to load candidate via cache id, no access YET.
-                    console.log('voted for candidate id ' + candidate.candidate_id);
-        
+            
                     // Acknowledge vote in feed.
                     ChannelsHelper._postToFeed(`${user.username} cast their vote for ${candidateUser.username}!`);
                 }
