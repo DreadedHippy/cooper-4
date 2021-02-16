@@ -44,41 +44,32 @@ export default class GiveCommand extends CoopCommand {
 		});
 	}
 
-	async run(msg, { itemCode, target, qty }) {
+	async run(msg, { offerItemCode, receiveItemCode, offerQty, receiveQty }) {
 		super.run(msg);
 
 		try {
+			offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
+			receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
 
-			// TODO:
+			const tradeAwayStr = `${offerItemCode}x${offerQty}`;
+			const receiveBackStr = `${receiveItemCode}x${receiveQty}`;
+			const confirmStr = `**<@${msg.author.id}> trade away ` +
+				`${tradeAwayStr} in return for ${receiveBackStr}?** \n\n` +
+				`${tradeAwayStr} ->\n` +
+				`${receiveBackStr} <-`;
 
-			// Target is first mention
+			// TODO: Make this a temp message.
 
-			// Item code is any string as long as valid
-
-			// Qty is 1 unless contains a number and is parsed
-			
-			itemCode = ItemsHelper.parseFromStr(itemCode);
+			msg.say(confirmStr)
 
 			// // Check if this item code can be given.
 			// if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
-			// 	return MessagesHelper.selfDestruct(msg, 'Please provide a valid item name  (!give item target [qty]).', 10000);
-	
-			// // Attempt to load target just to check it can be given.
-			// const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
 			// const targetMember = UsersHelper.getMemberByID(guild, target.id);
-			// if (!target || !targetMember)
-			// 	return MessagesHelper.selfDestruct(msg, `Gift target is invalid (!give item target [qty]).`, 10000);
-	
-			// // Check if this user owns that item.
 			// const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
-			// if (itemQty < 0 || itemQty - qty < 0) 
 			// 	return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}. ${itemQty}/${qty}`, 10000);
-			
-			// // Attempt to use item and only grant once returned successful, avoid double gift glitching.
 			// if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
 			// 	await ItemsHelper.add(target.id, itemCode, qty);
 			// 	ChannelsHelper.propagate(msg, `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`, 'ACTIONS');
-			// }
 		} catch(e) {
 			console.log('Failed to give item.');
 			console.error(e);
