@@ -26,8 +26,6 @@ export default class ItemTotalCommand extends CoopCommand {
 	}
 
 	static async getStat(itemCode) {
-		// itemCode = ItemsHelper.parseFromStr(itemCode);
-
 		if (!ItemsHelper.getUsableItems().includes(itemCode)) 
 			return 'Invalid item code. ' + itemCode;
 
@@ -42,7 +40,7 @@ export default class ItemTotalCommand extends CoopCommand {
 	async run(msg, { itemCode }) {
 		super.run(msg);
 
-		itemCode = ItemsHelper.parseItemCodes(itemCode)[0] || null;
+		itemCode = ItemsHelper.parseFromStr(itemCode);
 
 		if (!ItemsHelper.getUsableItems().includes(itemCode))
 			return msg.reply(`${itemCode} does not exist, please provide a valid item code.`);
