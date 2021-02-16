@@ -17,16 +17,16 @@ export default class AlchemyCommand extends CoopCommand {
 			examples: ['alchemy', '!alchemy 100 RARE_EGG'],
 			args: [
 				{
-					key: 'qty',
-					prompt: 'How many eggs?',
-					type: 'integer',
-					default: 100
-				},
-				{
 					key: 'itemCode',
 					prompt: 'Which rarity? (item_code)',
 					type: 'string',
 					default: 'AVERAGE_EGG'
+				},
+				{
+					key: 'qty',
+					prompt: 'How many eggs?',
+					type: 'integer',
+					default: 100
 				},
 			],
 		});

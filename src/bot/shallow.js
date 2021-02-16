@@ -2,15 +2,8 @@ import { Client } from 'discord.js-commando';
 import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
-import CraftingHelper from './community/features/skills/crafting/craftingHelper';
-import ServerHelper from './core/entities/server/serverHelper';
-import Chicken from './community/chicken';
-import ElectionHelper from './community/features/hierarchy/election/electionHelper';
-import MessagesHelper from './core/entities/messages/messagesHelper';
-import TimeHelper from './community/features/server/timeHelper';
-import ChannelsHelper from './core/entities/channels/channelsHelper';
-import CHANNELS from '../bot/core/config/channels.json';
-import CooperMorality from './community/features/minigame/small/cooperMorality';
+import ChopperMinigame from './community/features/minigame/small/chopper';
+
 
 
 // v DEV IMPORT AREA v
@@ -32,11 +25,12 @@ const shallowBot = async () => {
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-       
-        
+             
+        // ChopperMinigame.launch(1);
+        // ChopperMinigame.launch(2);
+
         // Hard, Quick:
         // Add a multiplier to drops for wood etc... too weak atm.
-        // Prevent voting for self in sacrifice
 
         // Harder:
         // Finish actions messages for woodcutting/mining

@@ -74,6 +74,9 @@ export default function eventsManifest() {
   // Processes announcements and election events.
   EventsHelper.runInterval(() => ElectionHelper.checkProgress(), baseTickDur * 4);
 
+  // TODO: Add a !bang very, very, rarely.
+
+
 
   // Miscellaneous features.
   EventsHelper.chanceRunInterval(() => {

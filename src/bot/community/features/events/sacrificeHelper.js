@@ -68,6 +68,9 @@ export default class SacrificeHelper {
             const sacrificeeID = /<@(\d+)>/.exec(sacrificeEmbedDesc)[1];
             const targetMember = await UsersHelper.fetchMemberByID(guild, sacrificeeID);
 
+            // If target member is self, remove vote.
+            if (user.id === targetMember.user.id) return await reaction.remove();
+
             // If member left, don't do anything.
             if (!targetMember) return false;
             
