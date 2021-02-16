@@ -28,7 +28,8 @@ export default class ItemTotalCommand extends CoopCommand {
 	static async getStat(itemCode) {
 		// itemCode = ItemsHelper.parseFromStr(itemCode);
 
-		if (!ItemsHelper.getUsableItems().includes(itemCode)) return false;
+		if (!ItemsHelper.getUsableItems().includes(itemCode)) 
+			return 'Invalid item code. ' + itemCode;
 
 		const total = await ItemsHelper.count(itemCode);
 
