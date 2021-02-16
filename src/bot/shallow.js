@@ -6,6 +6,7 @@ import ChopperMinigame from './community/features/minigame/small/chopper';
 import ItemTotalCommand from './commands/economy/itemTotal';
 import ItemsHelper from './community/features/items/itemsHelper';
 import EconomyHelper from './community/features/economy/economyHelper';
+import TradeHelper from './community/features/economy/tradeHelper';
 
 
 
@@ -28,6 +29,12 @@ const shallowBot = async () => {
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
+
+
+        // Create a trade.
+        await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'RARE_EGG', 1, 1);
+
+        console.log(await TradeHelper.all());
 
         // Hard, Quick:
         // Add a multiplier to drops for wood etc... too weak atm.

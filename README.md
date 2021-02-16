@@ -16,6 +16,16 @@ CREATE TABLE temp_messages(
     expiry_time int
 );
 
+CREATE TABLE open_trades(
+    id SERIAL PRIMARY KEY,
+    trader_id VARCHAR,
+    trader_username VARCHAR,
+    offer_item VARCHAR,
+    receive_item VARCHAR,
+    offer_qty int,
+    receive_qty int
+);
+
 CREATE TABLE items(
     id SERIAL PRIMARY KEY,
     item_code VARCHAR,

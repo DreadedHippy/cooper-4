@@ -1,10 +1,7 @@
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
-import ChannelsHelper from '../../core/entities/channels/channelsHelper';
-import ServerHelper from '../../core/entities/server/serverHelper';
-import UsersHelper from '../../core/entities/users/usersHelper';
-import STATE from '../../state';
+import TradeHelper from '../../community/features/economy/tradeHelper';
 
 export default class GiveCommand extends CoopCommand {
 
@@ -57,8 +54,8 @@ export default class GiveCommand extends CoopCommand {
 
 			const confirmStr = `**<@${msg.author.id}>, trade away ` +
 				`${tradeAwayStr} in return for ${receiveBackStr}?** \n\n` +
-				`-> ${tradeAwayStr}\n` +
-				`<- ${receiveBackStr}`;
+				`<- ${tradeAwayStr}\n` +
+				`-> ${receiveBackStr}`;
 
 			// TODO: Make this a temp message.
 
@@ -68,25 +65,35 @@ export default class GiveCommand extends CoopCommand {
 			const confirmMsg = await MessagesHelper.selfDestruct(msg, confirmStr, 333, 45000);
 			MessagesHelper.delayReact(confirmMsg, '❎', 666);
 			MessagesHelper.delayReact(confirmMsg, '✅', 999);
-			
 
+			// TODO: Update message if match found before confirmation.
+			
 			// Check if there is an existing offer for this then accept.
+			const listedMatch = await TradeHelper.find()
+			if (listedMatch) {
+				// TODO: Notify actions the trade is accepted.
+			}
+
+			// 
 
 			// If there is no existing offer, create one.
+			if (!listedMatch) {
+				const createdOffer = await TradeHelper.create(
+					msg.author.id,
+					msg.author.username,
+					offerItemCode,
+					receiveItemCode,
+					offerQty,
+					receiveQty
+				)
+
+				console.log(createdOffer);
+
+				// TODO: Notify actions the trade is added.
+			}
 
 
-			// TODO: Notify actions the trade is added.
-
-			
-
-			// // Check if this item code can be given.
-			// if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
-			// const targetMember = UsersHelper.getMemberByID(guild, target.id);
-			// const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
-			// 	return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}. ${itemQty}/${qty}`, 10000);
-			// if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
-			// 	await ItemsHelper.add(target.id, itemCode, qty);
-			// 	ChannelsHelper.propagate(msg, `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`, 'ACTIONS');
+	
 		} catch(e) {
 			console.log('Failed to trade item.');
 			console.error(e);
@@ -94,3 +101,13 @@ export default class GiveCommand extends CoopCommand {
     }
     
 };
+
+// // Check if this item code can be given.
+// if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
+// const targetMember = UsersHelper.getMemberByID(guild, target.id);
+// const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
+// 	return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}. ${itemQty}/${qty}`, 10000);
+// if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
+// 	await ItemsHelper.add(target.id, itemCode, qty);
+// 	ChannelsHelper.propagate(msg, `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`, 'ACTIONS');
+
