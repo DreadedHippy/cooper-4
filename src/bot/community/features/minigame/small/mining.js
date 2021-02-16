@@ -15,7 +15,7 @@ export default class MiningMinigame {
     // Reaction interceptor to check if user is attempting to interact.
     static async onReaction(reaction, user) {
         // High chance of preventing any mining at all to deal with rate limiting.
-        if (STATE.CHANCE.bool({ likelihood: 55 })) return false;
+        if (STATE.CHANCE.bool({ likelihood: 40 })) return false;
 
         const isOnlyEmojis = MessagesHelper.isOnlyEmojis(reaction.message.content);
         const isPickaxeReact = reaction.emoji.name === '⛏️';
@@ -35,9 +35,7 @@ export default class MiningMinigame {
         const rockEmojiUni = MessagesHelper.emojiToUni(EMOJIS.ROCK);
         const isRocksMsg = firstEmojiUni === rockEmojiUni;
 
-        if (!isRocksMsg) return false;
-
-        this.chip(reaction, user);
+        if (isRocksMsg) this.chip(reaction, user);
     }
 
     // TODO: Bomb skips a few places at random
@@ -46,7 +44,7 @@ export default class MiningMinigame {
 
         // Calculate magnitude from message: more rocks, greater reward.
         const textMagnitude = Math.floor(msg.content.length / 2);
-        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude });
+        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 2 });
 
         // Check if has a pickaxe
         const userPickaxesNum = await ItemsHelper.getUserItemQty(user.id, 'PICK_AXE');
@@ -56,8 +54,8 @@ export default class MiningMinigame {
         if (userPickaxesNum <= 0) return MessagesHelper.selfDestruct(msg, noPickText, 10000);
 
         // Handle chance of pickaxe breaking
-        const pickaxeBreakPerc = Math.min(30, rewardRemaining);
-        const extractedOreNum = Math.ceil(rewardRemaining / 2.25);
+        const pickaxeBreakPerc = Math.min(25, rewardRemaining);
+        const extractedOreNum = Math.ceil(rewardRemaining / 1.5);
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
         if (didBreak) {
             const pickaxeUpdate = await ItemsHelper.use(user.id, 'PICK_AXE', 1);
@@ -114,15 +112,15 @@ export default class MiningMinigame {
     }
 
     static async run() {
-        let magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
+        let magnitude = STATE.CHANCE.natural({ min: 1, max: 3 });
 
         // TODO: Adjust points and diamond rewards if more rocks
         // Add rare chances of a lot of rocks
-        if (STATE.CHANCE.bool({ likelihood: 20 }))
-            magnitude = STATE.CHANCE.natural({ min: 10, max: 20 });
+        if (STATE.CHANCE.bool({ likelihood: .8 }))
+            magnitude = STATE.CHANCE.natural({ min: 5, max: 20 });
 
-        if (STATE.CHANCE.bool({ likelihood: 2.5 }))
-            magnitude = STATE.CHANCE.natural({ min: 15, max: 35 });
+        if (STATE.CHANCE.bool({ likelihood: .05 }))
+            magnitude = STATE.CHANCE.natural({ min: 7, max: 35 });
 
         const rockMsg = await ChannelsHelper._randomText().send(EMOJIS.ROCK.repeat(magnitude));
         

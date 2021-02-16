@@ -15,7 +15,7 @@ export default class WoodcuttingMinigame {
     // Reaction interceptor to check if user is attempting to interact.
     static async onReaction(reaction, user) {
         // High chance of preventing any mining at all to deal with rate limiting.
-        if (STATE.CHANCE.bool({ likelihood: 55 })) return false;
+        if (STATE.CHANCE.bool({ likelihood: 44 })) return false;
 
         const isOnlyEmojis = MessagesHelper.isOnlyEmojisOrIDs(reaction.message.content);
         const isAxeReact = reaction.emoji.name === '🪓';
@@ -45,7 +45,7 @@ export default class WoodcuttingMinigame {
 
         // Calculate magnitude from message: more rocks, greater reward.
         const textMagnitude = MessagesHelper.countAllEmojiCodes(msg.content);
-        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude });
+        const rewardRemaining = STATE.CHANCE.natural({ min: 1, max: textMagnitude * 4 });
 
         // Check if has a axe
         const userAxesNum = await ItemsHelper.getUserItemQty(user.id, 'AXE');
@@ -55,8 +55,8 @@ export default class WoodcuttingMinigame {
         if (userAxesNum <= 0) return MessagesHelper.selfDestruct(msg, noText, 10000);
 
         // Handle chance of axe breaking
-        const axeBreakPerc = Math.min(30, rewardRemaining);
-        const extractedOreNum = Math.ceil(rewardRemaining / 2.25);
+        const axeBreakPerc = Math.min(25, rewardRemaining);
+        const extractedOreNum = Math.ceil(rewardRemaining / 1.25);
         const didBreak = STATE.CHANCE.bool({ likelihood: axeBreakPerc });
         if (didBreak) {
             const axeUpdate = await ItemsHelper.use(user.id, 'AXE', 1);
@@ -111,7 +111,7 @@ export default class WoodcuttingMinigame {
     }
 
     static async run() {
-        const magnitude = STATE.CHANCE.natural({ min: 1, max: 10 });
+        const magnitude = STATE.CHANCE.natural({ min: 1, max: 5 });
         const woodMsg = await ChannelsHelper._randomText().send(EMOJIS.WOOD.repeat(magnitude));
 
         // TODO: Count as ungathered wood in activity messages.
@@ -120,7 +120,7 @@ export default class WoodcuttingMinigame {
         MessagesHelper.delayReact(woodMsg, '🪓', 666);
 
         const branchText = magnitude > 1 ? `${magnitude} branches` : `a branch`;
-        const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(magnitude / 2))} a tree with ${branchText} to fell!`
+        const woodcuttingEventText = `${'Ooo'.repeat(Math.floor(magnitude))} a tree with ${branchText} to fell!`
         ChannelsHelper._postToChannelCode('ACTIONS', woodcuttingEventText, 1222);
     }
 }
