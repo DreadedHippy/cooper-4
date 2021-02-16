@@ -407,8 +407,6 @@ export default class ElectionHelper {
         const numLeaders = this.getMaxNumLeaders();
         const leaders = votes.slice(1, numLeaders + 1);
 
-        console.log(votes);
-
         const hierarchy = { commander, leaders, numLeaders };
 
         return hierarchy;
@@ -433,6 +431,7 @@ export default class ElectionHelper {
                             else reject('load_failure');
                         }
                     } catch(e) {
+                        console.log(idSet);
                         console.log('Error loading campaign message')
                         reject(e);
                     }
@@ -471,16 +470,14 @@ export default class ElectionHelper {
         const campaignMsgs = await this.loadAllCampaigns();
         campaignMsgs.map(campaignMsg => {
             // Find the candidate for these reactions.
-            let candidate = campaignMsg.mentions.users.first();
-            if (!candidate) {
-                const embed = campaignMsg.embeds[0] || null;
-                if (embed) {
-                    const idMatches = embed.description.match(/\<@(\d+)\>/gms);
-                    let embedUserID = idMatches[0];
-                    embedUserID = embedUserID.replace('<@', '');
-                    embedUserID = embedUserID.replace('>', '');
-                    if (embedUserID) candidate = UsersHelper._getMemberByID(embedUserID).user;
-                }
+            let candidate = null;
+            const embed = campaignMsg.embeds[0] || null;
+            if (embed) {
+                const idMatches = embed.description.match(/\<@(\d+)\>/gms);
+                let embedUserID = idMatches[0];
+                embedUserID = embedUserID.replace('<@', '');
+                embedUserID = embedUserID.replace('>', '');
+                if (embedUserID) candidate = UsersHelper._getMemberByID(embedUserID).user;
             }
 
             // Add to the overall data.

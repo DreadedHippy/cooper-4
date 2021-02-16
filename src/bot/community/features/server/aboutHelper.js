@@ -49,6 +49,7 @@ export default class AboutHelper {
             '🖌️': (react, user) => RolesHelper.toggle(user.id, 'ART')
         },
         GAMES: {
+            '🎮': (react, user) => RolesHelper.toggle(user.id, 'GAMING'),
             '🤝': GameOpts.economyToggle, // Done
             '🗡': GameOpts.conquestToggle // Done
         },

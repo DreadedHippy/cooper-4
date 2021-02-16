@@ -30,14 +30,11 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
 
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
-        
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-        
-        
        
+        
         // Hard, Quick:
-        // Finish alching (make it 13 eggs)
         // Add a multiplier to drops for wood etc... too weak atm.
         // Prevent voting for self in sacrifice
 
