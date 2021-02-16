@@ -127,9 +127,8 @@ export default class ElectionHelper {
                 `Time remaining: ${readableElecLeft}.`
             );
 
-            MessagesHelper.delayReact(feedMsg, '👑', 666);
-
             // TODO: React crown to this message.
+            MessagesHelper.delayReact(feedMsg, '👑', 666);
 
         } catch(e) {
             console.log('Starting the election failed... :\'(');
@@ -146,8 +145,6 @@ export default class ElectionHelper {
         const votes = await this.fetchAllVotes();
 
         const readableElecLeft = TimeHelper.humaniseSecs((await this.votingPeriodLeftSecs()));
-        const commentatingText = `<#${CHANNELS.ELECTION.id}> is running and has ${readableElecLeft} remaining!`;
-        await ChannelsHelper._postToFeed(commentatingText);
 
         const hierarchy = this.calcHierarchy(votes);
         const maxNumLeaders = this.getMaxNumLeaders();
@@ -166,6 +163,9 @@ export default class ElectionHelper {
             `\n\n`;
 
         await this.editElectionInfoMsg(electionProgressText);
+        
+        ChannelsHelper._codes(['FEED', 'TALK'], electionProgressText);
+
         // Note: Votes aren't saved in the database... we rely solely on Discord counts.
     }
 
@@ -421,20 +421,30 @@ export default class ElectionHelper {
         );
 
         // Preload each candidate message.
-        const campaigns = await Promise.all(preloadMsgIDs.map((idSet, index) => {
+        let campaigns = await Promise.allSettled(preloadMsgIDs.map((idSet, index) => {
             const guild = ServerHelper._coop();
             return new Promise((resolve, reject) => {
                 setTimeout(async () => {
-                    const chan = guild.channels.cache.get(idSet.channel);
-                    if (chan) {
-                        const msg = await chan.messages.fetch(idSet.message);
-                        resolve(msg);
+                    try {
+                        const chan = guild.channels.cache.get(idSet.channel);
+                        if (chan) {
+                            const msg = await chan.messages.fetch(idSet.message);
+                            if (msg) resolve(msg);
+                            else reject('load_failure');
+                        }
+                    } catch(e) {
+                        console.log('Error loading campaign message')
+                        reject(e);
                     }
-
-                    resolve(null);
                 }, 666 * index);
             });
         }));
+
+        // take only the fulfilled ones, let the rest keep failing until they're cleaned up.
+        campaigns = campaigns
+            .filter(campaign => campaign.status === 'fulfilled')
+            .map(campaign => campaign.value);
+
         return campaigns;
     }
 
@@ -517,7 +527,6 @@ export default class ElectionHelper {
             await this.loadAllCampaigns();
             console.warn('Cached election candidates.');
         }
-
     }
 
     static async addCandidate(userID, msgLink) {
@@ -546,7 +555,6 @@ export default class ElectionHelper {
     }
 
     static async shouldTriggerStart() {
-        console.log('shouldTriggerStart');
         const isVotingPeriod = await this.isVotingPeriod();
         const isElecOn = await this.isElectionOn();
 

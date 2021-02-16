@@ -87,6 +87,12 @@ export default class ChannelsHelper {
             .filterByCodes(guild, codes)
             .map(async channel => await channel.send(message));
     }
+    static _codes(codes, message) {
+        const guild = ServerHelper._coop();
+        return ChannelsHelper
+            .filterByCodes(guild, codes)
+            .map(async channel => await channel.send(message));
+    }
     static fetchRandomTextChannel(guild) {       
         // Prevent egg and crate drops in unverified channels.
         const filteredKeys = Object.keys(CHANNELS)
