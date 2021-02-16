@@ -1,8 +1,10 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
+import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../core/entities/users/usersHelper";
 import STATE from "../../../../state";
 import Chicken from "../../../chicken";
 import DropTable from "../../items/droptable";
+import ItemsHelper from "../../items/itemsHelper";
 import PointsHelper from "../../points/pointsHelper";
 
 
@@ -45,8 +47,8 @@ export default class CooperMorality {
 
 
     static async giveaway() {
-        const maxRewardAmount = 5;
-        const maxRewardeesAmount = 10;
+        const maxRewardAmount = 4;
+        const maxRewardeesAmount = 6;
 
         // Calculate using chance/luck.
         const rewardeesAmount = STATE.CHANCE.natural({ min: 1, max: maxRewardeesAmount });
@@ -59,7 +61,7 @@ export default class CooperMorality {
         const dropResults = rewardees.map(rewardee => {
             const rewardAmount = STATE.CHANCE.natural({ min: 1, max: maxRewardAmount });
 
-            const user = rewardee.user.username;
+            const user = rewardee.user;
             const drops = [];
 
             for (let i = 0; i < rewardAmount; i++) drops.push(DropTable.getRandomWithQty());
@@ -68,11 +70,22 @@ export default class CooperMorality {
         });
 
         // Add the item to each user.
-
+        await Promise.all(dropResults.map(dropSet =>
+            Promise.all(dropSet.drops.map(drop =>
+                ItemsHelper.add(dropSet.user.id, drop.item, drop.qty)
+            ))
+        ));
+        
         // Declare feedback.
+        const giveawayText = `**Cooper's good mood makes him charitable!**\n\n` +
+            dropResults.map(dropSet => 
+                `${dropSet.user.username}: ${dropSet.drops.map(drop => 
+                    `${MessagesHelper._displayEmojiCode(drop.item)}x${drop.qty}`
+                ).join(', ')
+            }`).join('.\n\n');
 
-        console.log(dropResults);
+        ChannelsHelper._postToFeed(giveawayText)
+
         return dropResults;
     }
-
 }

@@ -1,5 +1,6 @@
 import ChannelsHelper from "../channels/channelsHelper";
 import ServerHelper from "../server/serverHelper";
+import EMOJIS from "../../config/emojis.json";
 
 export default class MessagesHelper {
 
@@ -77,6 +78,9 @@ export default class MessagesHelper {
 
     // Handles :single: and :double:id emoji input
     // Not sure about emoji direct unicode (image char)
+    static _displayEmojiCode(code) {
+        return this.emojiText(EMOJIS[code]);
+    }
     static emojiText(emoji) {
         // const numColons = emoji.split(":").length - 1;
         const truePieces = emoji.split(':').filter(piece => piece !== '');

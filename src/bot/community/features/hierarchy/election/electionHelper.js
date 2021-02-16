@@ -150,7 +150,7 @@ export default class ElectionHelper {
         const maxNumLeaders = this.getMaxNumLeaders();
         const numLeaders = hierarchy.leaders.length;
 
-        const electionProgressText = `Election is still running for ${readableElecLeft}, latest vote results:` +
+        const electionProgressText = `**Election is still running for ${readableElecLeft}, latest vote results:**` +
             `\n\n` +
             `**Commander:** ${hierarchy.commander ? 
                 `${hierarchy.commander.username} (${hierarchy.commander.votes} Votes)` : ''}` +

@@ -1,6 +1,8 @@
 import DropTable from '../../community/features/items/droptable';
 import ItemsHelper from '../../community/features/items/itemsHelper';
+import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
+import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 export default class AlchemyCommand extends CoopCommand {
 
@@ -33,39 +35,39 @@ export default class AlchemyCommand extends CoopCommand {
 	async run(msg, { qty, itemCode }) {
 		super.run(msg);
 
-		const alcQty = parseInt(qty);
+		const alcQty = Math.round(parseInt(qty) / 100);
 
-		// Check if emoji
-		itemCode = ItemsHelper.parseFromStr(itemCode);
+		if (!alcQty || alcQty < 1) 
+			return MessagesHelper.selfDestruct(msg, 'At least 100 required.')
 
 		let rarity = null;
+		itemCode = ItemsHelper.parseFromStr(itemCode);
 		if (itemCode === 'AVERAGE_EGG') rarity = 'AVERAGE';
 		if (itemCode === 'RARE_EGG') rarity = 'RARE';
 		if (itemCode === 'LEGENDARY_EGG') rarity = 'LEGENDARY';
 
-		console.log(alcQty, itemCode, rarity);
+		if (!rarity) 
+			return MessagesHelper.selfDestruct(msg, 'Invalid item identifier.')
 
+			
+		// Calculate the alchemy reward.
 		const drop = DropTable.getRandomTieredWithQty(rarity);
+		const rewardQty = drop.qty * alcQty;
 
-		let testStr = `You wanna alchemise ${qty}x${itemCode}, eyyyy? `;
-		if (drop) testStr += `You may have won ${drop.qty}x${drop.item}`;
-		await msg.say(testStr);
+		// Take the ingredients from the user.
+		const didUse = await ItemsHelper.use(msg.author.id, itemCode, qty);
+		if (!didUse)
+			return MessagesHelper.selfDestruct(msg, 'Not enough eggs.')
 
-		// if (itemCode && rarity) {
-		// 	const ownedQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
-		// 	if (ownedQty >= alcQty) {
-		// 		const didUse = await ItemsHelper.use(msg.author.id, itemCode);
-		// 		if (didUse) {
-		// 			const drop = DropTable.getRandomTieredWithQty(rarity);
-					
+		// Add item to the user.
+		await ItemsHelper.add(msg.author.id, drop.item, rewardQty);
 
-		// 		} else {
-	
-		// 		}
+		// Present feedback text/msg.
+		const emoji = MessagesHelper._displayEmojiCode(drop.item);
+		const actionText = `${msg.author.username} alchemises ${emoji}`;
+		const dropText = actionText + `x${rewardQty}`;
 
-		// 		msg.say(`You wanna alchemise ${qty}x${rarity}, eyyyy? You may have won ${drop.qty}x${drop.item}`);
-		// 	}
-		// }
+		return ChannelsHelper.propagate(msg, dropText, 'ACTIONS');
     }
     
 };

@@ -34,12 +34,7 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
         
-
-        await ElectionHelper.checkProgress()
-
-
-        // If Cooper is feeling good, randomly give a user items.
-        // const dropResults = await CooperMorality.giveaway();
+        
        
         // Hard, Quick:
         // Finish alching (make it 13 eggs)
