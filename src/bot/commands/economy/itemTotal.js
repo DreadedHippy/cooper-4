@@ -45,7 +45,7 @@ export default class ItemTotalCommand extends CoopCommand {
 		if (!ItemsHelper.getUsableItems().includes(itemCode))
 			return msg.reply(`${itemCode} does not exist, please provide a valid item code.`);
 
-		const statText = await ItemTotalCommand.getStat();
+		const statText = await ItemTotalCommand.getStat(itemCode);
 		MessagesHelper.selfDestruct(msg, statText, 333)
     }
     

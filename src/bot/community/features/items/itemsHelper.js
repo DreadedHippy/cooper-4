@@ -175,7 +175,7 @@ export default class ItemsHelper {
 
     //Input Takes a string and extracts the items mentioned in it. Returns an array containing the item codes. The search is greedy so will extrct the longest possible name
     static parseItemCodes(inputString) {
-        //Remove multiple spaces and make uppercase
+        // Remove multiple spaces and make uppercase
         const str = inputString.replace(/\s\s+/g, ' ').toUpperCase();
 
         const usableItemsStr = ItemsHelper.getUsableItems();
