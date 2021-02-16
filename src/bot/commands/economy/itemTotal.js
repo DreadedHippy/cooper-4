@@ -25,23 +25,26 @@ export default class ItemTotalCommand extends CoopCommand {
 		});
 	}
 
-	async run(msg, { itemCode }) {
-		super.run(msg);
-
-		// Tryto format.
+	static async getStat(itemCode) {
 		itemCode = ItemsHelper.parseFromStr(itemCode);
-		// if ()
-		if (!ItemsHelper.getUsableItems().includes(itemCode))
-			return msg.reply(`${itemCode} does not exist, please provide a valid item code.`);
+
+		if (!ItemsHelper.getUsableItems().includes(itemCode)) return false;
 
 		const total = await ItemsHelper.count(itemCode);
 
-		
 		const beaks = UsersHelper.count(ServerHelper._coop(), false)
-		const feedbackMsg = await msg.say(
-			`Economic circulation: ${total}x${itemCode} | ${(total / beaks).toFixed(2)} per beak`
-		);
-		MessagesHelper.delayDelete(feedbackMsg, 15000);
+		const emoji = MessagesHelper._displayEmojiCode(itemCode);
+		
+		return `**Economic circulation:** ${total}x${emoji} | _${(total / beaks).toFixed(2)} per beak_ | (${itemCode})`;
+	}
+
+	async run(msg, { itemCode }) {
+		super.run(msg);
+
+		if (!ItemsHelper.getUsableItems().includes(itemCode))
+			return msg.reply(`${itemCode} does not exist, please provide a valid item code.`);
+
+		MessagesHelper.selfDestruct(msg, await this.getStat(), 333)
     }
     
 };

@@ -1,9 +1,16 @@
+import ItemTotalCommand from "../../../commands/economy/itemTotal";
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
+import STATE from "../../../state";
+import ItemsHelper from "../items/itemsHelper";
 
 export default class EconomyHelper {
 
     static async circulation() {
-        ChannelsHelper._postToChannelCode('ACTIONS', 'Should post circulation tip!');
+        const items = ItemsHelper.getUsableItems();
+        const itemCode = STATE.CHANCE.pickone(items);
+        const stat = await ItemTotalCommand.getStat(itemCode);
+
+        ChannelsHelper._postToChannelCode('ACTIONS', stat);
     }
 
 }

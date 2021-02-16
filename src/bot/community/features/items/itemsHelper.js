@@ -225,6 +225,9 @@ export default class ItemsHelper {
         "SACRIFICE_SHIELD",
         "ROCK",
 
+        "DROPPED",
+        "BASKET",
+
         // Maybe usable.
         "DAGGER",
     ];

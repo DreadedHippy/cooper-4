@@ -3,6 +3,9 @@ import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
 import ChopperMinigame from './community/features/minigame/small/chopper';
+import ItemTotalCommand from './commands/economy/itemTotal';
+import ItemsHelper from './community/features/items/itemsHelper';
+import EconomyHelper from './community/features/economy/economyHelper';
 
 
 
@@ -25,9 +28,6 @@ const shallowBot = async () => {
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
-             
-        // ChopperMinigame.launch(1);
-        // ChopperMinigame.launch(2);
 
         // Hard, Quick:
         // Add a multiplier to drops for wood etc... too weak atm.

@@ -131,11 +131,20 @@ export default class MessagesHelper {
         }, delay);
     }
 
-    static async selfDestruct(msgRef, content, delay = 666, fuse = 30000) {
-        setTimeout(async () => {
-            const createdMsg = await msgRef.say(content);
-            this.delayDelete(createdMsg, fuse);
-        }, delay);
+    static selfDestruct(msgRef, content, delay = 666, fuse = 30000) {
+        return new Promise((resolve, reject) => {
+            setTimeout(async () => {
+                try {
+                    const createdMsg = await msgRef.say(content);
+                    this.delayDelete(createdMsg, fuse);
+                    resolve(createdMsg);
+                } catch(e) {
+                    console.log('Error self-destructing message.');
+                    console.error(e);
+                    reject('self_destruct_message_error');
+                }
+            }, delay);
+        });
     }
 
     // Convert emojiID into Discord format, but not if its merely an unicode emoji.

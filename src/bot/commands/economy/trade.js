@@ -1,7 +1,7 @@
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
-import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
+import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import ServerHelper from '../../core/entities/server/serverHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';
 import STATE from '../../state';
@@ -51,16 +51,33 @@ export default class GiveCommand extends CoopCommand {
 			offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
 			receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
 
-			const tradeAwayStr = `${offerItemCode}x${offerQty}`;
-			const receiveBackStr = `${receiveItemCode}x${receiveQty}`;
-			const confirmStr = `**<@${msg.author.id}> trade away ` +
+			// Add emojis
+			const tradeAwayStr = `${MessagesHelper._displayEmojiCode(offerItemCode)}x${offerQty}`;
+			const receiveBackStr = `${MessagesHelper._displayEmojiCode(receiveItemCode)}x${receiveQty}`;
+
+			const confirmStr = `**<@${msg.author.id}>, trade away ` +
 				`${tradeAwayStr} in return for ${receiveBackStr}?** \n\n` +
-				`${tradeAwayStr} ->\n` +
-				`${receiveBackStr} <-`;
+				`-> ${tradeAwayStr}\n` +
+				`<- ${receiveBackStr}`;
 
 			// TODO: Make this a temp message.
 
-			msg.say(confirmStr)
+			// Inform the user if they don't have that many items to trade away.
+			// if () {}
+
+			const confirmMsg = await MessagesHelper.selfDestruct(msg, confirmStr, 333, 45000);
+			MessagesHelper.delayReact(confirmMsg, '❎', 666);
+			MessagesHelper.delayReact(confirmMsg, '✅', 999);
+			
+
+			// Check if there is an existing offer for this then accept.
+
+			// If there is no existing offer, create one.
+
+
+			// TODO: Notify actions the trade is added.
+
+			
 
 			// // Check if this item code can be given.
 			// if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
@@ -71,7 +88,7 @@ export default class GiveCommand extends CoopCommand {
 			// 	await ItemsHelper.add(target.id, itemCode, qty);
 			// 	ChannelsHelper.propagate(msg, `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`, 'ACTIONS');
 		} catch(e) {
-			console.log('Failed to give item.');
+			console.log('Failed to trade item.');
 			console.error(e);
 		}
     }
