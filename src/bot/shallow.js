@@ -30,6 +30,7 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+        // Add exchange rate method (command)
 
         // Create a trade.
         await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'RARE_EGG', 1, 1);
