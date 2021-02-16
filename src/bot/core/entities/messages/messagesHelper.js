@@ -93,13 +93,14 @@ export default class MessagesHelper {
     }
 
     static delayReact(msg, emoji, delay = 666) {
-        if (msg) setTimeout(async () => { 
-            try {
-                await msg.react(emoji); 
-            } catch(e) {
-                console.log('Delay react error.');
-                console.error(e);
-            }
+        setTimeout(() => { 
+            if (typeof msg.react === 'function') 
+                msg.react(emoji)
+                    .then()
+                    .catch(e => {
+                        console.log('Delay react error.');
+                        console.error(e);
+                    });
         }, delay);
     }
 
