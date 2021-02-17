@@ -40,6 +40,7 @@ export default class ServerHelper {
         const result = await Database.query(query);
         return result;
     }
+
     static async cleanupTempMessages() {
         const query = {
             name: "get-temp-messages",
@@ -56,14 +57,19 @@ export default class ServerHelper {
         expiredMsgIDs.map((expiredID, index) => {
             // Load message by link and delete.
             setTimeout(async () => {
-                const message = await MessagesHelper.getByLink(expiredID);
-                if (message) {
-                    return MessagesHelper.delayDelete(message, index * 3333);
-                } else {
-                    // Remove from database
-                    return this.deleteTempMsgLink(expiredID);
+                try {
+                    const message = await MessagesHelper.getByLink(expiredID);
+
+                    if (message) {
+                        return await MessagesHelper.delayDelete(message, index * 3333);
+                    } else {
+                        // Remove from database
+                        return this.deleteTempMsgLink(expiredID);
+                    }
+                } catch(e) {
+                    console.log('Temp message cleanup failure');
+                    console.error(e);
                 }
-                
             }, index * 10000);
         });
 

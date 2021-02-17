@@ -7,6 +7,8 @@ import ItemTotalCommand from './commands/economy/itemTotal';
 import ItemsHelper from './community/features/items/itemsHelper';
 import EconomyHelper from './community/features/economy/economyHelper';
 import TradeHelper from './community/features/economy/tradeHelper';
+import ElectionHelper from './community/features/hierarchy/election/electionHelper';
+import ServerHelper from './core/entities/server/serverHelper';
 
 
 
@@ -34,10 +36,15 @@ const shallowBot = async () => {
 
         // Add exchange rate method (command)
 
-        // Create a trade.
-        await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'RARE_EGG', 1, 1);
+        // const voteLeft = await ElectionHelper.votingPeriodLeftSecs();
+        // console.log(voteLeft);
 
-        console.log(await TradeHelper.all());
+        // await ServerHelper.cleanupTempMessages()
+
+        // Create a trade.
+        // await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'RARE_EGG', 1, 1);
+
+        // console.log(await TradeHelper.all());
 
         // Hard, Quick:
         // Add a multiplier to drops for wood etc... too weak atm.

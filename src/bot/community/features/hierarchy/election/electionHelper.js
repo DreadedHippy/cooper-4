@@ -87,9 +87,8 @@ export default class ElectionHelper {
         const isVotingPeriod = await this.isVotingPeriod();
         if (isVotingPeriod) {
             const endOfVoting = (await this.lastElecSecs()) + this.VOTING_DUR_SECS;
-            const diff = Math.abs(endOfVoting - parseInt(Date.now() / 1000))
-            
-            if (diff) leftSecs = diff;
+            const diff = endOfVoting - parseInt(Date.now() / 1000);
+            if (diff > 0) leftSecs = diff;
         }
 
         return leftSecs;

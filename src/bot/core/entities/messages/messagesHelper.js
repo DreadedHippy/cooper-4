@@ -167,10 +167,18 @@ export default class MessagesHelper {
     }
 
     static async getByLink(link) {
-        const msgData = this.parselink(link);
-        const channel = ChannelsHelper._get(msgData.channel);
-        const msg = await channel.messages.fetch(msgData.message);
-        return msg;
+        let msg = null;
+        
+        try {
+            const msgData = this.parselink(link);
+            const channel = ChannelsHelper._get(msgData.channel);
+            const fetchedMsg = await channel.messages.fetch(msgData.message);
+            if (fetchedMsg) msg = fetchedMsg;
+            return msg;
+
+        } catch(e) {
+            return msg;
+        }
     }
 
     static async editByLink(link, content) {
