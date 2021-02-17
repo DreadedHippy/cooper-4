@@ -25,8 +25,6 @@ const shallowBot = async () => {
     await Database.connect();
     await STATE.CLIENT.login(process.env.DISCORD_TOKEN);
 
-
-
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 
@@ -34,16 +32,25 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+        const isVotingPeriod = await ElectionHelper.isVotingPeriod();
+        console.log(isVotingPeriod);
+
+        const isElecOn = await ElectionHelper.isElectionOn();
+        console.log(isElecOn);
+
+        console.log(await ElectionHelper.votingPeriodLeftSecs());
+
         // Add exchange rate method (command)
 
-        // const voteLeft = await ElectionHelper.votingPeriodLeftSecs();
-        // console.log(voteLeft);
+        // Get trading slots working
+        // TODO: Command for viewing trading slots and other peoples'
 
-        // await ServerHelper.cleanupTempMessages()
+
+        // ALTER TABLE users
+        // ADD max_trade_slots INT NOT NULL DEFAULT 5;
 
         // Create a trade.
         // await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'RARE_EGG', 1, 1);
-
         // console.log(await TradeHelper.all());
 
         // Hard, Quick:

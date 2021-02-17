@@ -67,9 +67,10 @@ export default class ElectionHelper {
         // Bulk delete may be better here.
         // Ensure all messages deleted, use bulk delete won't be outside of 14 days
         candidates.map((candidate, index) => {
-            setTimeout(() => {
-                MessagesHelper.deleteByLink(candidate.campaign_msg_link);
-            }, 1500 * index);
+            setTimeout(() =>
+                MessagesHelper.deleteByLink(candidate.campaign_msg_link), 
+                1500 * index
+            );
         });
 
         // Clear database
@@ -95,16 +96,28 @@ export default class ElectionHelper {
     }
 
     static async isVotingPeriod() {
-        const nowSecs = parseInt(Date.now() / 1000);
-        const lastElectionSecs = await this.lastElecSecs();
+        try {
+            const isElectionOn = await this.isElectionOn();
+            const nowSecs = parseInt(Date.now() / 1000);
+            const lastElectionSecs = await this.lastElecSecs();
 
-        const nextVotingTimelimit = lastElectionSecs + this.TERM_DUR_SECS + this.VOTING_DUR_SECS;
+            let isVotingOn = false;
 
-        const isLastTermOver = ((lastElectionSecs + this.TERM_DUR_SECS) - nowSecs >= 0);
-        const isNextVotingTimeUnder = nowSecs <= nextVotingTimelimit;
-        
-        const isTime = isLastTermOver && isNextVotingTimeUnder;
-        return isTime;
+            if (isElectionOn) {
+                // Check if current moment is earlier than the end of voting.
+                if (nowSecs < lastElectionSecs + this.VOTING_DUR_SECS) isVotingOn = true;
+                
+            } else {
+                // If election isn't running, check if next election period due.
+                if (nowSecs > lastElectionSecs + this.TERM_DUR_SECS) isVotingOn = true;
+            }
+
+            return isVotingOn;
+
+        } catch(e) {
+            console.log('Voting period check failure.')
+            console.error(e);
+        }
     }
 
     static async startElection() {
@@ -273,8 +286,8 @@ export default class ElectionHelper {
     static async checkProgress() {
         let electionStarted = false;
         try {
-            const isVotingPeriod = await this.isVotingPeriod();
             const isElecOn = await this.isElectionOn();
+            const isVotingPeriod = await this.isVotingPeriod();
 
             // TODO: May need to clean up any non-info/candidates messages leftover.
 
@@ -291,31 +304,7 @@ export default class ElectionHelper {
             if (isVotingPeriod && isElecOn) await this.commentateElectionProgress();
             
             // If election isn't running (sometimes) update about next election secs.
-            if (!isElecOn && !electionStarted) {
-                const elecMsg = await this.getElectionMsg();
-                const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
-                const hour = 360000;
-
-                if (diff > hour * 8) {
-                    const diff = await this.nextElecSecs() - parseInt(Date.now() / 1000)
-                    const humanRemaining = TimeHelper.humaniseSecs(diff);
-                    const nextElecReadable = await this.nextElecFmt();
-
-                    const hierarchy = {
-                        commander: RolesHelper._getUserWithCode('COMMANDER'),
-                        leaders: RolesHelper._getUsersWithRoleCodes(['LEADER'])
-                    }
-
-                    await this.editElectionInfoMsg(`**Election is over, here are your current officials:** \n\n` +
-
-                        `**Commander:**\n${hierarchy.commander.user.username} :crown: \n\n` +
-
-                        `**Leaders:**\n` +
-                            `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n\n` +
-
-                        `**Next Election:** ${nextElecReadable} (${humanRemaining})`);
-                }
-            }
+            if (!isElecOn && !electionStarted) await this.countdownFeedback();
 
         } catch(e) {
             console.log('SOMETHING WENT WRONG WITH CHECKING ELECTION!');
@@ -599,6 +588,32 @@ export default class ElectionHelper {
         if (nowSecs >= nextElecSecs && nowSecs <= nextDeclareSecs) return true;
 
         return false;
+    }
+
+    static async countdownFeedback() {
+        const elecMsg = await this.getElectionMsg();
+        const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
+        const hour = 360000;
+
+        if (diff > hour * 8) {
+            const diff = await this.nextElecSecs() - parseInt(Date.now() / 1000)
+            const humanRemaining = TimeHelper.humaniseSecs(diff);
+            const nextElecReadable = await this.nextElecFmt();
+
+            const hierarchy = {
+                commander: RolesHelper._getUserWithCode('COMMANDER'),
+                leaders: RolesHelper._getUsersWithRoleCodes(['LEADER'])
+            }
+
+            await this.editElectionInfoMsg(`**Election is over, here are your current officials:** \n\n` +
+
+                `**Commander:**\n${hierarchy.commander.user.username} :crown: \n\n` +
+
+                `**Leaders:**\n` +
+                    `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n\n` +
+
+                `**Next Election:** ${nextElecReadable} (${humanRemaining})`);
+        }
     }
 
 }
