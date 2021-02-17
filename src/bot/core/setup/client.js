@@ -9,6 +9,12 @@ import reactAddedHandler from "../../../bot/community/events/reaction/reactionAd
 export default () => {
     const client = new Client({ owner: '786671654721683517' });
 
+
+    process.on("unhandledRejection", (error) => {
+        console.error(error); // This prints error with stack included (as for normal errors)
+        // throw error; // Following best practices re-throw error and let the process exit with error code
+    });
+
     client.registry
         .registerGroups([ 
             ['util', 'Utility and assistance commands.'],

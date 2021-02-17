@@ -23,6 +23,8 @@ const shallowBot = async () => {
     await Database.connect();
     await STATE.CLIENT.login(process.env.DISCORD_TOKEN);
 
+
+
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
 

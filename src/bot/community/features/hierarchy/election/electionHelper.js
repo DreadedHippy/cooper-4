@@ -424,16 +424,17 @@ export default class ElectionHelper {
             return new Promise((resolve, reject) => {
                 setTimeout(async () => {
                     try {
+                        // This could be more efficient.
                         const chan = guild.channels.cache.get(idSet.channel);
                         if (chan) {
                             const msg = await chan.messages.fetch(idSet.message);
                             if (msg) resolve(msg);
-                            else reject('load_failure');
+                            // else reject('load_failure');
                         }
                     } catch(e) {
                         console.log(idSet);
                         console.log('Error loading campaign message')
-                        reject(e);
+                        // reject(e);
                     }
                 }, 666 * index);
             });
