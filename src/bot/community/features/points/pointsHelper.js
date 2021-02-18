@@ -6,6 +6,7 @@ import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import ServerHelper from "../../../core/entities/server/serverHelper";
 
 export default class PointsHelper {
+    
     static async getPointsByID(id) {
         let points = 0;
         const result = await Database.query({
@@ -16,6 +17,7 @@ export default class PointsHelper {
         if (result.rows.length > 0) points = result.rows[0].points || 0;
         return points;
     }
+
     static async addPointsByID(id, points) {
         let newPoints = 0;
         const result = await Database.query({

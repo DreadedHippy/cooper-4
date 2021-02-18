@@ -40,12 +40,29 @@ const shallowBot = async () => {
 
         // Add exchange rate method (command)
 
+
+
+
         // Get trading slots working
         // TODO: Command for viewing trading slots and other peoples'
 
         // Create a trade.
-        // await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'RARE_EGG', 1, 1);
+        // await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'LEGENDARY_EGG', 1, 1);
         // console.log(await TradeHelper.all());
+
+        // const offerMatches = await TradeHelper.findOfferMatches('AVERAGE_EGG');
+        // console.log(offerMatches);
+
+        // const offerReceiveMatches = await TradeHelper.findOfferReceiveMatches('AVERAGE_EGG', 'LEGENDARY_EGG');
+        // console.log(offerReceiveMatches);
+
+        const offerReceiveMatchesQty = await TradeHelper.findOfferReceiveMatchesQty('AVERAGE_EGG', 'LEGENDARY_EGG', 1, 1);
+        console.log(offerReceiveMatchesQty);
+
+        // TradeHelper.findOfferReceiveMatches(offerItem, receiveItem)
+        // const match = TradeHelper.findOfferReceiveMatchesQty(offerItem, receiveItem, offerQty, receiveQty);
+
+    // Reverse the search order (inversion of give versus take).
 
         // Hard, Quick:
         // Add a multiplier to drops for wood etc... too weak atm.

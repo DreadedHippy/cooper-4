@@ -36,7 +36,7 @@ export default class LeaderboardCommand extends CoopCommand {
 			// Number: show rank number and 5 either side
 			const leaderboard = await PointsHelper.getLeaderboard(position);
 			const placeholderMsg = await msg.say('Calculating leaderboard, please wait.');
-			const leaderboardMsgText = await PointsHelper.renderLeaderboard(leaderboard.rows);
+			const leaderboardMsgText = await PointsHelper.renderLeaderboard(leaderboard.rows, position);
 			const leaderboardMsg = await placeholderMsg.edit(leaderboardMsgText)
 
 			// Delete after sixty seconds.

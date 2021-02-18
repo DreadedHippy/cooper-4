@@ -29,11 +29,34 @@ export default class TradeHelper {
         // const match = DatabaseHelper.single()
     }
 
-    static async listType(offerItem) {
+    static async findOfferMatches(offerItem) {
         const query = {
-            name: "get-trades-of-type",
+            name: "get-trades-by-offer",
             text: `SELECT * FROM open_trades WHERE offer_item = $1`,
             values: [offerItem]
+        };
+
+        const result = await Database.query(query);
+        return DatabaseHelper.many(result);
+    }
+
+    static async findOfferReceiveMatches(offerItem, receiveItem) {
+        const query = {
+            name: "get-trades-by-offer-receive",
+            text: `SELECT * FROM open_trades WHERE offer_item = $1 AND receive_item = $2`,
+            values: [offerItem, receiveItem]
+        };
+
+        const result = await Database.query(query);
+        return DatabaseHelper.many(result);
+    }
+
+    static async findOfferReceiveMatchesQty(offerItem, receiveItem, offerQty, receiveQty) {
+        const query = {
+            name: "get-trades-by-offer-receive-qty",
+            text: `SELECT * FROM open_trades 
+                WHERE offer_item = $1 AND receive_item = $2 AND offer_qty = $3 AND receive_qty <= $4`,
+            values: [offerItem, receiveItem, offerQty, receiveQty]
         };
 
         const result = await Database.query(query);

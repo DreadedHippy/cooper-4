@@ -57,40 +57,34 @@ export default class GiveCommand extends CoopCommand {
 				`<- ${tradeAwayStr}\n` +
 				`-> ${receiveBackStr}`;
 
-			// TODO: Make this a temp message.
-
-			// Inform the user if they don't have that many items to trade away.
-			// if () {}
 
 			const confirmMsg = await MessagesHelper.selfDestruct(msg, confirmStr, 333, 45000);
 			MessagesHelper.delayReact(confirmMsg, '❎', 666);
 			MessagesHelper.delayReact(confirmMsg, '✅', 999);
 
-			// TODO: Update message if match found before confirmation.
+
+			// Check if there is an existing offer matching this specifically.
+			const matchingOffers = await TradeHelper.findOfferReceiveMatchesQty(
+				offerItemCode, 
+				receiveItemCode, 
+				offerQty,
+				receiveQty
+			);
+
+			// TODO: Could potentially allow others to take the same trade with this. GME FTW.
+			const interactions = await confirmMsg.awaitReactions(
+				({ emoji }) => ['❎', '✅'].includes(emoji.name), 
+				{ max: 1, time: 30000, errors: ['time'] }
+			);
 			
-			// Check if there is an existing offer for this then accept.
-			const listedMatch = await TradeHelper.find()
-			if (listedMatch) {
-				// TODO: Notify actions the trade is accepted.
-			}
+			// Check reaction is from user who asked if restricting confirmation to original.
 
-			// 
 
-			// If there is no existing offer, create one.
-			if (!listedMatch) {
-				const createdOffer = await TradeHelper.create(
-					msg.author.id,
-					msg.author.username,
-					offerItemCode,
-					receiveItemCode,
-					offerQty,
-					receiveQty
-				)
+			console.log(interactions);
 
-				console.log(createdOffer);
-
-				// TODO: Notify actions the trade is added.
-			}
+			console.log(matchingOffers);
+			
+				// collected.size
 
 
 	
@@ -101,6 +95,47 @@ export default class GiveCommand extends CoopCommand {
     }
     
 };
+
+
+
+
+
+	// Edit to confirm cancelled, then delete.
+	// Delete the trade message, since rejected.
+
+
+	// TODO: Make this a temp message.
+
+	// Inform the user if they don't have that many items to trade away.
+	// if () {}
+
+	// TODO: Update message if match found before confirmation.
+
+
+	// if (matchingOffers) {
+	// 	// TODO: Notify actions the trade is accepted.
+	// }
+
+	// // 
+
+	// // If there is no existing offer, create one.
+	// if (matchingOffers.length === 0) {
+	// 	const createdOffer = await TradeHelper.create(
+	// 		msg.author.id,
+	// 		msg.author.username,
+	// 		offerItemCode,
+	// 		receiveItemCode,
+	// 		offerQty,
+	// 		receiveQty
+	// 	)
+
+	// 	console.log(createdOffer);
+
+	// 	// TODO: Notify actions the trade is added.
+	// }
+
+
+
 
 // // Check if this item code can be given.
 // if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 

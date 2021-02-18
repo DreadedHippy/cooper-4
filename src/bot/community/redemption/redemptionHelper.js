@@ -76,16 +76,21 @@ export default class RedemptionHelper {
             if (forVotes >= reqForVotes) {
                 // Give intro roles
                 const { MEMBER, BEGINNER, SUBSCRIBER, PROSPECT } = ROLES;
-
-                // TODO: Add prospect role here.
-                const introRolesNames = [MEMBER.id, BEGINNER.id, SUBSCRIBER.id, PROSPECT.id];
-                const introRoles = RolesHelper.getRolesByID(guild, introRolesNames);
+                const introRoles = RolesHelper.getRolesByID(
+                    guild, 
+                    [MEMBER.id, BEGINNER.id, SUBSCRIBER.id, PROSPECT.id]
+                );
                 
                 // Add to database
                 await UsersHelper.addToDatabase(targetMember);
 
+                // TODO: Update latest member on about stat.
+
                 await targetMember.roles.add(introRoles);
+
+                // TODO: Improve welcome text message to be more informative.
                 await targetMember.send('You were voted into The Coop and now have full access!');
+                
                 await this.notify(guild, 
                     `${targetUser.username} approved based on votes!` +
                     `${forVotes ? `\n\n${EMOJIS.VOTE_FOR.repeat(forVotes)}` : ''}` +
@@ -95,6 +100,8 @@ export default class RedemptionHelper {
             // Handle user rejected.
             } else if (againstVotes >= reqAgainstVotes) {
                 await this.notify(guild, `${targetUser.username} was removed and banned (voted out)!`);
+
+                // TODO: List current leaders/command for contact in order to appeal.
                 await targetMember.send('You were voted out of The Coop!');
                 await targetMember.ban();
             } else {
