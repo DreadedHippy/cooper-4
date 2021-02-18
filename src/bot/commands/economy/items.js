@@ -45,7 +45,7 @@ export default class ItemsCommand extends CoopCommand {
 				const items = await ItemsHelper.getUserItems(targetUser.id);
 				if (items.length === 0) return MessagesHelper.selfDestruct(msg, noItemsMsg);
 				else {
-					const itemDisplayMsg = ItemsHelper.formItemDropText(targetUser, items.rows);
+					const itemDisplayMsg = ItemsHelper.formItemDropText(targetUser, items);
 					return MessagesHelper.selfDestruct(msg, itemDisplayMsg, 666, 30000);
 				}
 
@@ -53,7 +53,7 @@ export default class ItemsCommand extends CoopCommand {
 			} else {
 				const noneOfItemMsg = `${name} does not own ${itemCode}.`;
 				const itemQty = await ItemsHelper.getUserItemQty(targetUser.id, itemCode);
-				if (itemQty > 0) return MessagesHelper.selfDestruct(msg, noneOfItemMsg);
+				if (itemQty <= 0) return MessagesHelper.selfDestruct(msg, noneOfItemMsg);
 				else return MessagesHelper.selfDestruct(msg, `${name} owns ${itemQty}x${itemCode}.`);
 			}
 
