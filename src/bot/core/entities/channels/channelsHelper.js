@@ -70,7 +70,7 @@ export default class ChannelsHelper {
         return new Promise((resolve, reject) => {
             let request = null;
             setTimeout(() => {
-                if (typeof feedChannel.send === 'function') {
+                if (feedChannel && typeof feedChannel.send === 'function') {
                     request = feedChannel.send(message);
                     resolve(request);
                 } else {
