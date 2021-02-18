@@ -55,14 +55,11 @@ export default class TradeCommand extends CoopCommand {
 			const tradeAwayStr = `${MessagesHelper._displayEmojiCode(offerItemCode)}x${offerQty}`;
 			const receiveBackStr = `${MessagesHelper._displayEmojiCode(receiveItemCode)}x${receiveQty}`;
 
-			const confirmStr = `**<@${msg.author.id}>, trade away ` +
+			let confirmStr = `**<@${msg.author.id}>, trade away ` +
 				`${tradeAwayStr} in return for ${receiveBackStr}?** \n\n` +
 				`<- ${tradeAwayStr}\n` +
 				`-> ${receiveBackStr}`;
 
-			const confirmMsg = await MessagesHelper.selfDestruct(msg, confirmStr, 333, 45000);
-			MessagesHelper.delayReact(confirmMsg, '❎', 666);
-			MessagesHelper.delayReact(confirmMsg, '✅', 999);
 
 			// Check if there is an existing offer matching this specifically.
 			const matchingOffers = await TradeHelper.findOfferReceiveMatchesQty(
@@ -72,13 +69,11 @@ export default class TradeCommand extends CoopCommand {
 				receiveQty
 			);
 
-			// Give some feedback to the original message which requires confirmation.
-			if (matchingOffers.length > 0) 
-				// TODO: Create delayAppend() method.
-				MessagesHelper.delayEdit(
-					confirmMsg, 
-					confirmMsg.content + `\n\n_Matching offers detected._`
-				);
+			if (matchingOffers) confirmStr += `\n\n_Matching offers detected._`;
+
+			const confirmMsg = await MessagesHelper.selfDestruct(msg, confirmStr, 333, 45000);
+			MessagesHelper.delayReact(confirmMsg, '❎', 666);
+			MessagesHelper.delayReact(confirmMsg, '✅', 999);
 
 			// TODO: Could potentially allow others to take the same trade with this. GME FTW.
 			const interactions = await confirmMsg.awaitReactions(
@@ -86,14 +81,12 @@ export default class TradeCommand extends CoopCommand {
 				{ max: 1, time: 30000, errors: ['time'] }
 			);
 
+			// Check reaction is from user who asked, if restricting confirmation to original.
 			const confirmation = interactions.reduce((acc, react) => {
-				// if (react.emoji.name === '✅' && react.author.id)
-				// Check reaction is from user who asked, if restricting confirmation to original.
-
-				console.log(react);
-
-				if (react.emoji.name === '✅') return acc = true;
-				return acc;
+				if (react.emoji.name === '✅' && reaction.users.cache.has(msg.author.id)) 
+					return acc = true;
+				else 
+					return acc;
 			}, false);
 			
 			console.log(interactions);
@@ -159,3 +152,9 @@ export default class TradeCommand extends CoopCommand {
 // 	await ItemsHelper.add(target.id, itemCode, qty);
 // 	ChannelsHelper.propagate(msg, `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`, 'ACTIONS');
 
+			// if (matchingOffers.length > 0) 
+			// 	// TODO: Create delayAppend() method.
+			// 	MessagesHelper.delayEdit(
+			// 		confirmMsg, 
+			// 		confirmMsg.content + `\n\n_Matching offers detected._`
+			// 	);

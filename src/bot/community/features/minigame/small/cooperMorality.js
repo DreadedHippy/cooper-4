@@ -30,19 +30,18 @@ export default class CooperMorality {
         const prevMorality = await this.load();
         const morality = await this.calculate();        
         
+        // On morality change event.
         if (prevMorality !== morality) {
             await Chicken.setConfig('morality', morality);
-
-            // On morality change event.
             await ChannelsHelper._postToFeed(`I am feeling... ${morality.toLowerCase()}!`);
-
-            // TODO: Reward a random user with items.
-            if (morality === 'GOOD') {
-                
-
-                this.giveaway();
-            }
         }
+
+        // Buffs for GOOD morality:
+        if (morality === 'GOOD' && STATE.CHANCE.bool({ likelihood: .5 })) this.giveaway();
+
+        // Negations for BAD morality:
+        // ...
+        // ...
     }
 
 

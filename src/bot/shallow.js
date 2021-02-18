@@ -9,6 +9,7 @@ import EconomyHelper from './community/features/economy/economyHelper';
 import TradeHelper from './community/features/economy/tradeHelper';
 import ElectionHelper from './community/features/hierarchy/election/electionHelper';
 import ServerHelper from './core/entities/server/serverHelper';
+import CooperMorality from './community/features/minigame/small/cooperMorality';
 
 
 
@@ -39,30 +40,12 @@ const shallowBot = async () => {
 
 
         // Add exchange rate method (command)
-
-
-
-
-        // Get trading slots working
-        // TODO: Command for viewing trading slots and other peoples'
-
+        // My trades command including # slots
         // Create a trade.
-        // await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'LEGENDARY_EGG', 1, 1);
-        // console.log(await TradeHelper.all());
+        // Accept a trade.
+        // ...
+        // Accept a specific trade may need a command
 
-        // const offerMatches = await TradeHelper.findOfferMatches('AVERAGE_EGG');
-        // console.log(offerMatches);
-
-        // const offerReceiveMatches = await TradeHelper.findOfferReceiveMatches('AVERAGE_EGG', 'LEGENDARY_EGG');
-        // console.log(offerReceiveMatches);
-
-        // const offerReceiveMatchesQty = await TradeHelper.findOfferReceiveMatchesQty('AVERAGE_EGG', 'LEGENDARY_EGG', 1, 1);
-        // console.log(offerReceiveMatchesQty);
-
-        // TradeHelper.findOfferReceiveMatches(offerItem, receiveItem)
-        // const match = TradeHelper.findOfferReceiveMatchesQty(offerItem, receiveItem, offerQty, receiveQty);
-
-    // Reverse the search order (inversion of give versus take).
 
         // Hard, Quick:
         // Add a multiplier to drops for wood etc... too weak atm.
