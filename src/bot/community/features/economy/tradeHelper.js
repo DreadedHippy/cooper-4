@@ -74,8 +74,29 @@ export default class TradeHelper {
         return DatabaseHelper.many(result);
     }
 
-    static async fulfil() {
+    // static async fulfil() {
+    //     if (await ItemsHelper.use(tradeeID, offerItemCode, offerQty)) {
+    //         await ItemsHelper.add(tradeeID, itemCode, qty);
+    // }
 
+    // This method directly takes items from user to close a trade.
+    static async accept(openTradeID, acceptingUserID) {
+        try {
+            // Get trade by ID
+
+            // Try to use/fulfil the trade.
+
+            // if (await ItemsHelper.use(tradeeID, offerItemCode, offerQty)) {
+                // await ItemsHelper.add(tradeeID, itemCode, qty);
+            
+            throw new Error('Impossible to accept.');
+
+            return true;
+        } catch(e) {
+            console.log('Error accepting trade offer.');
+            console.error(e);
+            return false;
+        }        
     }
 
 }

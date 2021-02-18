@@ -9,6 +9,10 @@ import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 const userDesiredReactsFilter = (emojis = []) =>
 	({ emoji }, user) => emojis.includes(emoji.name) && !UsersHelper.isCooper(user.id)
 
+// TODO: Create delayAppend() method.
+// 	MessagesHelper.delayEdit(confirmMsg, confirmMsg.content + `...`);
+// TODO: Could potentially allow others to take the same trade with this. GME FTW.
+// TODO: Ensure trades expire, may need a new date/time on open_trades table.
 
 export default class TradeCommand extends CoopCommand {
 
@@ -24,23 +28,23 @@ export default class TradeCommand extends CoopCommand {
 			args: [
 				{
 					key: 'offerItemCode',
-					prompt: 'Which item_code are you offering?',
+					prompt: 'Which ITEM_CODE are you offering?',
 					type: 'string'
 				},
 				{
 					key: 'receiveItemCode',
-					prompt: 'Which item_code are you offering?',
+					prompt: 'Which ITEM_CODE do you expect in return?',
 					type: 'string'
 				},
 				{
 					key: 'offerQty',
-					prompt: 'How many are you offering?',
+					prompt: 'Number quantity you are offering?',
 					type: 'integer',
 					default: 1
 				},
 				{
 					key: 'receiveQty',
-					prompt: 'How many are you offering?',
+					prompt: 'Number quantity you expect in return?',
 					type: 'integer',
 					default: 1
 				},
@@ -52,6 +56,9 @@ export default class TradeCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
+			const tradeeID = msg.author.id;
+			const tradeeName = msg.author.username;
+
 			// Try to parse item codes.
 			offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
 			receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
@@ -61,7 +68,7 @@ export default class TradeCommand extends CoopCommand {
 				`Invalid item codes for trade, ${offerItemCode} ${receiveItemCode}`);
 			
 			// Check if user can fulfil the trade.
-			const canUserFulfil = await ItemsHelper.hasQty(msg.author.id, offerItemCode, offerQty);
+			const canUserFulfil = await ItemsHelper.hasQty(tradeeID, offerItemCode, offerQty);
 			if (!canUserFulfil) return MessagesHelper.selfDestruct(msg, `Insufficient item quantity for trade.`);
 
 			// Generate strings with emojis based on item codes.
@@ -73,7 +80,7 @@ export default class TradeCommand extends CoopCommand {
 				.matches(offerItemCode, receiveItemCode, offerQty, receiveQty);
 
 			// Build the confirmation message string.
-			let confirmStr = `**<@${msg.author.id}>, trade away ` +
+			let confirmStr = `**<@${tradeeID}>, trade away ` +
 				`${tradeAwayStr} in return for ${receiveBackStr}?** \n\n` +
 				`<- ${tradeAwayStr}\n` +
 				`-> ${receiveBackStr}`;
@@ -92,7 +99,7 @@ export default class TradeCommand extends CoopCommand {
 			// Check reaction is from user who asked, if restricting confirmation to original.
 			const confirmation = interactions.reduce((acc, { emoji, users }) => {
 				// TODO: Refactor this line to Reaction helper
-				const userReacted = users.cache.has(msg.author.id);
+				const userReacted = users.cache.has(tradeeID);
 				if (emoji.name === '✅' && userReacted) return acc = true;
 				else return acc;
 			}, false);
@@ -111,31 +118,44 @@ export default class TradeCommand extends CoopCommand {
 				// Log confirmed trades
 
 				if (matchingOffers.length > 0) {
-					// Log trade matches
-
+					
 					// Accept cheapest matching offer
 					console.log('Finding cheapest:');
 					console.log(matchingOffers);
+					
+					// const tradeAccepted = TradeHelper.accept(cheapest.id, tradeeID);
+					// if (traceAccepted) {}
+
+					// Post accepted trade to channel and record channel.
+					ChannelsHelper.propagate(msg, 
+						`${tradeeName} accepted a trade... ask me for more details? ;)`,
+						'ACTIONS');
+
+					// Log trade matches
 
 				} else {
-					// Create open_trade and log to actions
-					// TODO: Add to trade stats 
-
-					ChannelsHelper._postToChannelCode('ACTIONS', 
-						`${msg.author.username} created a trade... ask me for more details? ;)`)
-
+					// Use the items to create a trade, so we can assume its always fulfillable,
+					//  the item becomes a trade credit note, can be converted back.
+					if (await ItemsHelper.use(tradeeID, offerItemCode, offerQty)) {
 						const createdOffer = await TradeHelper.create(
-							msg.author.id,
-							msg.author.username,
-							offerItemCode,
-							receiveItemCode,
-							offerQty,
-							receiveQty
-						);
+							tradeeID, tradeeName,
+							offerItemCode, receiveItemCode,
+							offerQty, receiveQty);
 
+							
 						// TODO:
 						// Post the inverted accept code for it, so they can copy and paste
 						// Actually, add a reaction to accept the trade, using trade logic.
+						// Ideally show created offer id number and tell to use !tradeaccept ID_NUM
+						ChannelsHelper.propagate(msg, 
+							`${tradeeName} created a trade... ask me for more details? ;)`,
+							'ACTIONS');
+
+						// TODO: Add to trade stats
+					} else {
+						return MessagesHelper.selfDestruct(msg, 
+							`${tradeeName} Lol, something went wrong using your items.`);
+					}				
 				}
 
 			} else {
@@ -152,55 +172,3 @@ export default class TradeCommand extends CoopCommand {
     }
     
 };
-
-
-
-
-
-	// Edit to confirm cancelled, then delete.
-	// Delete the trade message, since rejected.
-
-
-	// TODO: Make this a temp message.
-
-	// Inform the user if they don't have that many items to trade away.
-	// if () {}
-
-	// TODO: Update message if match found before confirmation.
-
-
-	// if (matchingOffers) {
-	// 	// TODO: Notify actions the trade is accepted.
-	// }
-
-	// // 
-
-	// // If there is no existing offer, create one.
-	// if (matchingOffers.length === 0) {
-
-
-	// 	console.log(createdOffer);
-
-	// 	// TODO: Notify actions the trade is added.
-	// }
-
-
-// // Check if this item code can be given.
-// if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
-// const targetMember = UsersHelper.getMemberByID(guild, target.id);
-// const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
-// 	return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}. ${itemQty}/${qty}`, 10000);
-// if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
-// 	await ItemsHelper.add(target.id, itemCode, qty);
-// 	ChannelsHelper.propagate(msg, `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`, 'ACTIONS');
-
-			// if (matchingOffers.length > 0) 
-			// 	// TODO: Create delayAppend() method.
-			// 	MessagesHelper.delayEdit(
-			// 		confirmMsg, 
-			// 		confirmMsg.content + `\n\n_Matching offers detected._`
-			// 	);
-
-			// TODO: Could potentially allow others to take the same trade with this. GME FTW.
-
-			// TODO: Ensure trades expire, may need a new date/time on open_trades table.
