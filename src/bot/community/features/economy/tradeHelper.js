@@ -17,10 +17,13 @@ export default class TradeHelper {
         const query = {
             name: "create-trade",
             text: `INSERT INTO open_trades(trader_id, trader_username, offer_item, receive_item, offer_qty, receive_qty) 
-                VALUES ($1, $2, $3, $4, $5, $6)`,
+                VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
             values: [userID, username, offerItem, receiveItem, offerQty, receiveQty]
         };
-        return await Database.query(query);
+        const result = await Database.query(query);
+        console.log('create trade result', result);
+
+        return result;
     }
 
     // Reverse the search order (inversion of give versus take).

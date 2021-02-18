@@ -137,13 +137,13 @@ export default class TradeCommand extends CoopCommand {
 					// Use the items to create a trade, so we can assume its always fulfillable,
 					//  the item becomes a trade credit note, can be converted back.
 					if (await ItemsHelper.use(tradeeID, offerItemCode, offerQty)) {
-						const createdOffer = await TradeHelper.create(
+						const createdOfferID = await TradeHelper.create(
 							tradeeID, tradeeName,
 							offerItemCode, receiveItemCode,
 							offerQty, receiveQty);
 
-							
 						// TODO:
+						// !tradeaccept ${createdOfferID} to accept this offer.
 						// Post the inverted accept code for it, so they can copy and paste
 						// Actually, add a reaction to accept the trade, using trade logic.
 						// Ideally show created offer id number and tell to use !tradeaccept ID_NUM
@@ -152,10 +152,7 @@ export default class TradeCommand extends CoopCommand {
 							'ACTIONS');
 
 						// TODO: Add to trade stats
-					} else {
-						return MessagesHelper.selfDestruct(msg, 
-							`${tradeeName} Lol, something went wrong using your items.`);
-					}				
+					}		
 				}
 
 			} else {
