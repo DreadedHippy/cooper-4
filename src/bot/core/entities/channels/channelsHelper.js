@@ -70,8 +70,12 @@ export default class ChannelsHelper {
         return new Promise((resolve, reject) => {
             let request = null;
             setTimeout(() => {
-                request = feedChannel.send(message);
-                resolve(request);
+                if (typeof feedChannel.send === 'function') {
+                    request = feedChannel.send(message);
+                    resolve(request);
+                } else {
+                    console.log(name + 'channel send failure');
+                }
             }, delay);
 
             // Timeout.
