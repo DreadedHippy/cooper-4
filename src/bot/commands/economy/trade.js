@@ -2,6 +2,7 @@ import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import TradeHelper from '../../community/features/economy/tradeHelper';
+import UsersHelper from '../../core/entities/users/usersHelper';
 
 
 // TODO: Ensure trades expire, may need a new date/time on open_trades table.
@@ -77,7 +78,9 @@ export default class TradeCommand extends CoopCommand {
 
 			// TODO: Could potentially allow others to take the same trade with this. GME FTW.
 			const interactions = await confirmMsg.awaitReactions(
-				({ emoji }) => ['❎', '✅'].includes(emoji.name), 
+				({ emoji }, user) => 
+					['❎', '✅'].includes(emoji.name) && 
+					!UsersHelper.isCooper(user.id), 
 				{ max: 1, time: 30000, errors: ['time'] }
 			);
 
