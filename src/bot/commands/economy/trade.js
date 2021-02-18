@@ -153,8 +153,8 @@ export default class TradeCommand extends CoopCommand {
 						// TODO: add a reaction to accept the trade, using trade logic.
 						ChannelsHelper.propagate(msg, 
 							`**${tradeeName} created trade #${createdOfferID}**\n\n` +
-							`Contains: \n\n` + exchangeString + `\n\n` +
-							`_Send message "!tradeaccept ${createdOfferID}" to accept this offer._`,
+							exchangeString + `\n\n` +
+							`_Send message "!tradeaccept ${createdOfferID}" to accept this trade._`,
 							'ACTIONS');
 
 						// TODO: Add to trade stats
