@@ -4,6 +4,7 @@ import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import TradeHelper from '../../community/features/economy/tradeHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';
 import ChannelsHelper from '../../core/entities/channels/channelsHelper';
+import CHANNELS from '../../core/config/channels.json';
 
 // TODO: Move to Reactions/Message helper.
 const userDesiredReactsFilter = (emojis = []) =>
@@ -74,6 +75,7 @@ export default class TradeCommand extends CoopCommand {
 			// Generate strings with emojis based on item codes.
 			const tradeAwayStr = `${MessagesHelper._displayEmojiCode(offerItemCode)}x${offerQty}`;
 			const receiveBackStr = `${MessagesHelper._displayEmojiCode(receiveItemCode)}x${receiveQty}`;
+			const exchangeString = `<- ${tradeAwayStr}\n-> ${receiveBackStr}`;
 
 			// Check if there is an existing offer matching this specifically.
 			const matchingOffers = await TradeHelper
@@ -82,8 +84,7 @@ export default class TradeCommand extends CoopCommand {
 			// Build the confirmation message string.
 			let confirmStr = `**<@${tradeeID}>, trade away ` +
 				`${tradeAwayStr} in return for ${receiveBackStr}?** \n\n` +
-				`<- ${tradeAwayStr}\n` +
-				`-> ${receiveBackStr}`;
+				exchangeString;
 			if (matchingOffers) confirmStr += `\n\n_Matching offers detected._`;
 
 			// Post the confirmation message and add reactions to assist interaction.
@@ -104,16 +105,10 @@ export default class TradeCommand extends CoopCommand {
 				else return acc;
 			}, false);
 			
-			console.log(interactions);
 			console.log(matchingOffers);
 			console.log(confirmation);
 
 			if (confirmation) {
-				// Move this down later to after cheapest offer found.
-				MessagesHelper.delayEdit(confirmMsg, 
-					'Trade confirmed, who with? Show amounts again, link to ACTIONS channel so they can view again/later'
-				);
-				console.log('Trade confirmed');
 
 				// Log confirmed trades
 
@@ -126,12 +121,21 @@ export default class TradeCommand extends CoopCommand {
 					// const tradeAccepted = TradeHelper.accept(cheapest.id, tradeeID);
 					// if (traceAccepted) {}
 
-					// Post accepted trade to channel and record channel.
-					ChannelsHelper.propagate(msg, 
-						`${tradeeName} accepted a trade... ask me for more details? ;)`,
-						'ACTIONS');
+					
 
+					const tradeConfirmStr = `**${tradeeName} accepted TRADE_ORDER ${5} from ?, contents:**\n\n` +
+						exchangeString;
+
+					// Refactor this hash string into channelsHelper?
+					const actionsLinkStr = `\n\n_View in <#${CHANNELS.ACTIONS.id}>_`;
+
+					// Post accepted trade to channel and record channel.
+					// Append ACTIONS link to edit.
+					MessagesHelper.delayEdit(confirmMsg, tradeConfirmStr, 666);
+					ChannelsHelper._postToChannelCode('ACTIONS', tradeConfirmStr, 999);
+					
 					// Log trade matches
+					console.log('Trade confirmed');
 
 				} else {
 					// Use the items to create a trade, so we can assume its always fulfillable,
@@ -142,13 +146,11 @@ export default class TradeCommand extends CoopCommand {
 							offerItemCode, receiveItemCode,
 							offerQty, receiveQty);
 
-						// TODO:
-						// !tradeaccept ${createdOfferID} to accept this offer.
-						// Post the inverted accept code for it, so they can copy and paste
-						// Actually, add a reaction to accept the trade, using trade logic.
-						// Ideally show created offer id number and tell to use !tradeaccept ID_NUM
+						// TODO: add a reaction to accept the trade, using trade logic.
 						ChannelsHelper.propagate(msg, 
-							`${tradeeName} created a trade... ask me for more details? ;)`,
+							`**${tradeeName} created TRADE_ORDER_ID: ${createdOfferID}**\n\n` +
+							`Contains: \n\n` + exchangeString + `\n\n` +
+							`_Send message "!tradeaccept ${createdOfferID}" to accept this offer._`,
 							'ACTIONS');
 
 						// TODO: Add to trade stats

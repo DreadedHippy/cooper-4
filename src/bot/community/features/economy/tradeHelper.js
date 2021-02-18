@@ -20,10 +20,12 @@ export default class TradeHelper {
                 VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
             values: [userID, username, offerItem, receiveItem, offerQty, receiveQty]
         };
-        const result = await Database.query(query);
-        console.log('create trade result', result);
+        const result = DatabaseHelper.single(await Database.query(query));
 
-        return result;
+        let tradeID = null;
+        if (typeof result.id !== 'undefined') tradeID = result.id;
+
+        return tradeID;
     }
 
     // Reverse the search order (inversion of give versus take).
