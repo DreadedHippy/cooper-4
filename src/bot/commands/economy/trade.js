@@ -3,9 +3,12 @@ import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import TradeHelper from '../../community/features/economy/tradeHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';
+import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 
+// TODO: Move to Reactions/Message helper.
+const userDesiredReactsFilter = (emojis = []) =>
+	({ emoji }, user) => emojis.includes(emoji.name) && !UsersHelper.isCooper(user.id)
 
-// TODO: Ensure trades expire, may need a new date/time on open_trades table.
 
 export default class TradeCommand extends CoopCommand {
 
@@ -49,56 +52,99 @@ export default class TradeCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
+			// Try to parse item codes.
 			offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
 			receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
 
-			// Add emojis
+			// Check if valid item codes given.
+			if (!offerItemCode || !receiveItemCode) return MessagesHelper.selfDestruct(msg, 
+				`Invalid item codes for trade, ${offerItemCode} ${receiveItemCode}`);
+			
+			// Check if user can fulfil the trade.
+			const canUserFulfil = await ItemsHelper.hasQty(msg.author.id, offerItemCode, offerQty);
+			if (!canUserFulfil) return MessagesHelper.selfDestruct(msg, `Insufficient item quantity for trade.`);
+
+			// Generate strings with emojis based on item codes.
 			const tradeAwayStr = `${MessagesHelper._displayEmojiCode(offerItemCode)}x${offerQty}`;
 			const receiveBackStr = `${MessagesHelper._displayEmojiCode(receiveItemCode)}x${receiveQty}`;
 
+			// Check if there is an existing offer matching this specifically.
+			const matchingOffers = await TradeHelper
+				.matches(offerItemCode, receiveItemCode, offerQty, receiveQty);
+
+			// Build the confirmation message string.
 			let confirmStr = `**<@${msg.author.id}>, trade away ` +
 				`${tradeAwayStr} in return for ${receiveBackStr}?** \n\n` +
 				`<- ${tradeAwayStr}\n` +
 				`-> ${receiveBackStr}`;
-
-
-			// Check if there is an existing offer matching this specifically.
-			const matchingOffers = await TradeHelper.findOfferReceiveMatchesQty(
-				offerItemCode, 
-				receiveItemCode, 
-				offerQty,
-				receiveQty
-			);
-
 			if (matchingOffers) confirmStr += `\n\n_Matching offers detected._`;
 
+			// Post the confirmation message and add reactions to assist interaction.
 			const confirmMsg = await MessagesHelper.selfDestruct(msg, confirmStr, 333, 45000);
 			MessagesHelper.delayReact(confirmMsg, '❎', 666);
 			MessagesHelper.delayReact(confirmMsg, '✅', 999);
 
-			// TODO: Could potentially allow others to take the same trade with this. GME FTW.
+			// Setup the reaction collector for trade confirmation interaction handling.
 			const interactions = await confirmMsg.awaitReactions(
-				({ emoji }, user) => 
-					['❎', '✅'].includes(emoji.name) && 
-					!UsersHelper.isCooper(user.id), 
-				{ max: 1, time: 30000, errors: ['time'] }
-			);
+				userDesiredReactsFilter(['❎', '✅']), 
+				{ max: 1, time: 30000, errors: ['time'] } );
 
 			// Check reaction is from user who asked, if restricting confirmation to original.
-			const confirmation = interactions.reduce((acc, react) => {
-				if (react.emoji.name === '✅' && reaction.users.cache.has(msg.author.id)) 
-					return acc = true;
-				else 
-					return acc;
+			const confirmation = interactions.reduce((acc, { emoji, users }) => {
+				// TODO: Refactor this line to Reaction helper
+				const userReacted = users.cache.has(msg.author.id);
+				if (emoji.name === '✅' && userReacted) return acc = true;
+				else return acc;
 			}, false);
 			
 			console.log(interactions);
 			console.log(matchingOffers);
 			console.log(confirmation);
 
+			if (confirmation) {
+				// Move this down later to after cheapest offer found.
+				MessagesHelper.delayEdit(confirmMsg, 
+					'Trade confirmed, who with? Show amounts again, link to ACTIONS channel so they can view again/later'
+				);
+				console.log('Trade confirmed');
+
+				// Log confirmed trades
+
+				if (matchingOffers.length > 0) {
+					// Log trade matches
+
+					// Accept cheapest matching offer
+					console.log('Finding cheapest:');
+					console.log(matchingOffers);
+
+				} else {
+					// Create open_trade and log to actions
+					// TODO: Add to trade stats 
+
+					ChannelsHelper._postToChannelCode('ACTIONS', 
+						`${msg.author.username} created a trade... ask me for more details? ;)`)
+
+						const createdOffer = await TradeHelper.create(
+							msg.author.id,
+							msg.author.username,
+							offerItemCode,
+							receiveItemCode,
+							offerQty,
+							receiveQty
+						);
+
+						// TODO:
+						// Post the inverted accept code for it, so they can copy and paste
+						// Actually, add a reaction to accept the trade, using trade logic.
+				}
+
+			} else {
+				// Log cancelled trades
+				console.log('Trade cancelled');
+				// Trade cancelled, remove message.
+				MessagesHelper.delayDelete(confirmMsg);
+			}
 			
-			// collected.size
-	
 		} catch(e) {
 			console.log('Failed to trade item.');
 			console.error(e);
@@ -131,14 +177,7 @@ export default class TradeCommand extends CoopCommand {
 
 	// // If there is no existing offer, create one.
 	// if (matchingOffers.length === 0) {
-	// 	const createdOffer = await TradeHelper.create(
-	// 		msg.author.id,
-	// 		msg.author.username,
-	// 		offerItemCode,
-	// 		receiveItemCode,
-	// 		offerQty,
-	// 		receiveQty
-	// 	)
+
 
 	// 	console.log(createdOffer);
 
@@ -161,3 +200,7 @@ export default class TradeCommand extends CoopCommand {
 			// 		confirmMsg, 
 			// 		confirmMsg.content + `\n\n_Matching offers detected._`
 			// 	);
+
+			// TODO: Could potentially allow others to take the same trade with this. GME FTW.
+
+			// TODO: Ensure trades expire, may need a new date/time on open_trades table.

@@ -76,6 +76,11 @@ export default class ItemsHelper {
         if (userItem) qty = userItem.quantity || 0;
         return qty;
     }
+
+    static async hasQty(userID, itemCode, qty) {
+        const hasQty = await this.getUserItemQty(userID, itemCode);
+        return (hasQty => qty);
+    }
     
     static async getUserItems(userID) {
         const query = {

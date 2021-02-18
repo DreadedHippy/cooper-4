@@ -51,7 +51,7 @@ export default class TradeHelper {
         return DatabaseHelper.many(result);
     }
 
-    static async findOfferReceiveMatchesQty(offerItem, receiveItem, offerQty, receiveQty) {
+    static async matches(offerItem, receiveItem, offerQty, receiveQty) {
         const query = {
             name: "get-trades-by-offer-receive-qty",
             text: `SELECT * FROM open_trades 
