@@ -3,7 +3,10 @@ import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import TradeHelper from '../../community/features/economy/tradeHelper';
 
-export default class GiveCommand extends CoopCommand {
+
+// TODO: Ensure trades expire, may need a new date/time on open_trades table.
+
+export default class TradeCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
@@ -57,11 +60,9 @@ export default class GiveCommand extends CoopCommand {
 				`<- ${tradeAwayStr}\n` +
 				`-> ${receiveBackStr}`;
 
-
 			const confirmMsg = await MessagesHelper.selfDestruct(msg, confirmStr, 333, 45000);
 			MessagesHelper.delayReact(confirmMsg, '❎', 666);
 			MessagesHelper.delayReact(confirmMsg, '✅', 999);
-
 
 			// Check if there is an existing offer matching this specifically.
 			const matchingOffers = await TradeHelper.findOfferReceiveMatchesQty(
@@ -71,22 +72,36 @@ export default class GiveCommand extends CoopCommand {
 				receiveQty
 			);
 
+			// Give some feedback to the original message which requires confirmation.
+			if (matchingOffers.length > 0) 
+				// TODO: Create delayAppend() method.
+				MessagesHelper.delayEdit(
+					confirmMsg, 
+					confirmMsg.content + `\n\n_Matching offers detected._`
+				);
+
 			// TODO: Could potentially allow others to take the same trade with this. GME FTW.
 			const interactions = await confirmMsg.awaitReactions(
 				({ emoji }) => ['❎', '✅'].includes(emoji.name), 
 				{ max: 1, time: 30000, errors: ['time'] }
 			);
+
+			const confirmation = interactions.reduce((acc, react) => {
+				// if (react.emoji.name === '✅' && react.author.id)
+				// Check reaction is from user who asked, if restricting confirmation to original.
+
+				console.log(react);
+
+				if (react.emoji.name === '✅') return acc = true;
+				return acc;
+			}, false);
 			
-			// Check reaction is from user who asked if restricting confirmation to original.
-
-
 			console.log(interactions);
-
 			console.log(matchingOffers);
+			console.log(confirmation);
+
 			
-				// collected.size
-
-
+			// collected.size
 	
 		} catch(e) {
 			console.log('Failed to trade item.');
@@ -133,8 +148,6 @@ export default class GiveCommand extends CoopCommand {
 
 	// 	// TODO: Notify actions the trade is added.
 	// }
-
-
 
 
 // // Check if this item code can be given.

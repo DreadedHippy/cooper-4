@@ -56,8 +56,8 @@ const shallowBot = async () => {
         // const offerReceiveMatches = await TradeHelper.findOfferReceiveMatches('AVERAGE_EGG', 'LEGENDARY_EGG');
         // console.log(offerReceiveMatches);
 
-        const offerReceiveMatchesQty = await TradeHelper.findOfferReceiveMatchesQty('AVERAGE_EGG', 'LEGENDARY_EGG', 1, 1);
-        console.log(offerReceiveMatchesQty);
+        // const offerReceiveMatchesQty = await TradeHelper.findOfferReceiveMatchesQty('AVERAGE_EGG', 'LEGENDARY_EGG', 1, 1);
+        // console.log(offerReceiveMatchesQty);
 
         // TradeHelper.findOfferReceiveMatches(offerItem, receiveItem)
         // const match = TradeHelper.findOfferReceiveMatchesQty(offerItem, receiveItem, offerQty, receiveQty);
