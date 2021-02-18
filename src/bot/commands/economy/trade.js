@@ -117,7 +117,14 @@ export default class TradeCommand extends CoopCommand {
 					// Accept cheapest matching offer
 					console.log('Finding cheapest:');
 					console.log(matchingOffers);
-					
+
+					matchingOffers.sort((a, b) => a.receive_qty > b.receive_qty);
+
+					console.log(matchingOffers);
+
+					const cheapest = matchingOffers[0];
+
+					console.log(cheapest);
 
 					// I need to take the cheapest matching offer's trade username and trade id
 					console.log('I want ' + receiveItemCode + 'x' + receiveQty);

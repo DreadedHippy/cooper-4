@@ -21,7 +21,6 @@ export default class ItemsHelper {
         AverageEggHandler.onReaction(reaction, user);
         RareEggHandler.onReaction(reaction, user);
         LegendaryEggHandler.onReaction(reaction, user);
-        // TODO: Add --average--, rare, legendary eggs abilities
     }
 
     static async add(userID, item_code, quantity) {
