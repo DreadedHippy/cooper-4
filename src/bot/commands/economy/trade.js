@@ -25,7 +25,7 @@ export default class TradeCommand extends CoopCommand {
 			aliases: ['tr'],
 			description: 'This command lets you trade the items you own',
 			details: `Details of the trade command`,
-			examples: ['trade', '!trade laxative'],
+			examples: ['trade', '!trade LAXATIVE AVERAGE_EGG 1 5'],
 			args: [
 				{
 					key: 'offerItemCode',
@@ -105,48 +105,31 @@ export default class TradeCommand extends CoopCommand {
 				else return acc;
 			}, false);
 			
-			console.log(matchingOffers);
-			console.log(confirmation);
 
 			if (confirmation) {
-
-				// Log confirmed trades
-
+				// Accept cheapest matching offer.
 				if (matchingOffers.length > 0) {
-					
-					// Accept cheapest matching offer
-					console.log('Finding cheapest:');
-					console.log(matchingOffers);
-
-					matchingOffers.sort((a, b) => a.receive_qty > b.receive_qty);
-
-					console.log(matchingOffers);
-
+					matchingOffers.sort((a, b) => a.offer_qty > b.offer_qty);
 					const cheapest = matchingOffers[0];
 
-					console.log(cheapest);
+					const tradeAccepted = await TradeHelper.accept(cheapest.id, tradeeID);
+					if (tradeAccepted) {
+						const tradeConfirmStr = `**${tradeeName} accepted trade #${cheapest.id} from ${cheapest.trader_username}**\n\n` +
+							exchangeString;
+	
+						// Refactor this hash string into channelsHelper?
+						const actionsLinkStr = `\n\n_View in <#${CHANNELS.ACTIONS.id}>_`;
+	
+						// Post accepted trade to channel and record channel.
+						// Append ACTIONS link to edit.
+						MessagesHelper.delayEdit(confirmMsg, tradeConfirmStr + actionsLinkStr, 666);
+						ChannelsHelper._postToChannelCode('ACTIONS', tradeConfirmStr, 999);
+						
+						// Log trade matches
+						console.log('Trade confirmed');
+						// Log confirmed trades
+					}
 
-					// I need to take the cheapest matching offer's trade username and trade id
-					console.log('I want ' + receiveItemCode + 'x' + receiveQty);
-					console.log('I give ' + offerItemCode + 'x' + offerQty);
-
-
-					// const tradeAccepted = TradeHelper.accept(cheapest.id, tradeeID);
-					// if (traceAccepted) {}
-
-					// const tradeConfirmStr = `**${tradeeName} accepted trade #${'?'} from ${'?'}, contents:**\n\n` +
-						// exchangeString;
-
-					// Refactor this hash string into channelsHelper?
-					// const actionsLinkStr = `\n\n_View in <#${CHANNELS.ACTIONS.id}>_`;
-
-					// Post accepted trade to channel and record channel.
-					// Append ACTIONS link to edit.
-					// MessagesHelper.delayEdit(confirmMsg, tradeConfirmStr, 666);
-					// ChannelsHelper._postToChannelCode('ACTIONS', tradeConfirmStr, 999);
-					
-					// Log trade matches
-					// console.log('Trade confirmed');
 
 				} else {
 					// Use the items to create a trade, so we can assume its always fulfillable,

@@ -1,7 +1,19 @@
 import DatabaseHelper from "../../../core/entities/databaseHelper";
 import Database from "../../../core/setup/database";
+import ItemsHelper from "../items/itemsHelper";
 
 export default class TradeHelper {
+
+    static async remove(tradeID) {
+        const query = {
+            name: "remove-trade-id",
+            text: `DELETE FROM open_trades WHERE id = $1`,
+            values: [tradeID]
+        };
+
+        const result = await Database.query(query);
+        return result;
+    }
 
     static async all() {
         const query = {
@@ -79,29 +91,46 @@ export default class TradeHelper {
         return DatabaseHelper.many(result);
     }
 
-    // static async fulfil() {
-    //     if (await ItemsHelper.use(tradeeID, offerItemCode, offerQty)) {
-    //         await ItemsHelper.add(tradeeID, itemCode, qty);
-    // }
+    static async get(tradeID) {
+        const query = {
+            name: "get-open-trade-id",
+            text: `SELECT * FROM open_trades WHERE id = $1`,
+            values: [tradeID]
+        };
+        
+        const result = await Database.query(query);
+        return DatabaseHelper.single(result);
+    }
 
     // This method directly takes items from user to close a trade.
-    static async accept(openTradeID, acceptingUserID) {
+    static async accept(openTradeID, accepteeID) {
         try {
             // Get trade by ID
+            const trade = await this.get(openTradeID);
 
-            // Try to use/fulfil the trade.
-
-            // if (await ItemsHelper.use(tradeeID, offerItemCode, offerQty)) {
-                // await ItemsHelper.add(tradeeID, itemCode, qty);
-            
-            throw new Error('Impossible to accept.');
-
-            return true;
+            // Trade may have been removed before accept.
+            if (trade) {
+                // Try to use/fulfil the trade.
+                const didUse = await ItemsHelper.use(accepteeID, trade.receive_item, trade.receive_qty);
+                if (didUse) {
+                    // Add the offer items to the acceptee.
+                    await ItemsHelper.add(accepteeID, trade.offer_item, trade.offer_qty);
+    
+                    // Add the receive items to the trader.
+                    await ItemsHelper.add(trade.trader_id, trade.receive_item, trade.receive_qty);
+    
+                    // Delete/close the open trade offer.
+                    await this.remove(openTradeID);
+    
+                    // Return successful result.
+                    return true;
+                }
+            }
         } catch(e) {
             console.log('Error accepting trade offer.');
             console.error(e);
-            return false;
         }        
+        return false;
     }
 
 }
