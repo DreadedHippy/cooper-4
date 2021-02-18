@@ -1,4 +1,3 @@
-import { filter } from 'lodash';
 import ROLES from '../../config/roles.json';
 import ServerHelper from '../server/serverHelper';
 import UsersHelper from '../users/usersHelper';

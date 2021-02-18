@@ -34,7 +34,8 @@ export default class ItemTotalCommand extends CoopCommand {
 		const beaks = UsersHelper.count(ServerHelper._coop(), false)
 		const emoji = MessagesHelper._displayEmojiCode(itemCode);
 		
-		return `**Economic circulation:** ${total}x${emoji} | _${(total / beaks).toFixed(2)} per beak_ | (${itemCode})`;
+		return `**Economic circulation:**\n` +
+			`${total}x${emoji} | _${(total / beaks).toFixed(2)} per beak_ | (${itemCode})`;
 	}
 
 	async run(msg, { itemCode }) {

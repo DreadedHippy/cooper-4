@@ -32,22 +32,16 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        const isVotingPeriod = await ElectionHelper.isVotingPeriod();
-        console.log(isVotingPeriod);
+        // Create trade/accept trade command.
+        // List my own/users trades (like items command).
+        // List all trades, trades of item, trades of matching items.
+        // Get exchange rate based on current trades for that item
 
-        const isElecOn = await ElectionHelper.isElectionOn();
-        console.log(isElecOn);
-
-        console.log(await ElectionHelper.votingPeriodLeftSecs());
 
         // Add exchange rate method (command)
 
         // Get trading slots working
         // TODO: Command for viewing trading slots and other peoples'
-
-
-        // ALTER TABLE users
-        // ADD max_trade_slots INT NOT NULL DEFAULT 5;
 
         // Create a trade.
         // await TradeHelper.create('test', 'test', 'AVERAGE_EGG', 'RARE_EGG', 1, 1);
@@ -57,7 +51,8 @@ const shallowBot = async () => {
         // Add a multiplier to drops for wood etc... too weak atm.
 
         // Harder:
-        // Finish actions messages for woodcutting/mining
+        // Trading system
+        // Finish actions messages for woodcutting/mining/crate drop
         // Detect server message/activity velocity increases (as % preferably).
         // Detect the completed gathering of wood/rocks
 

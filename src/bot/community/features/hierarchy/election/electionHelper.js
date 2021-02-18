@@ -103,14 +103,13 @@ export default class ElectionHelper {
 
             let isVotingOn = false;
 
-            if (isElectionOn) {
-                // Check if current moment is earlier than the end of voting.
-                if (nowSecs < lastElectionSecs + this.VOTING_DUR_SECS) isVotingOn = true;
+            // Check if current moment is earlier than the end of voting.
+            if (isElectionOn && nowSecs < lastElectionSecs + this.VOTING_DUR_SECS)
+                isVotingOn = true;
                 
-            } else {
-                // If election isn't running, check if next election period due.
-                if (nowSecs > lastElectionSecs + this.TERM_DUR_SECS) isVotingOn = true;
-            }
+            // If election isn't running, check if next election period due.
+            if (!isElectionOn && nowSecs > lastElectionSecs + this.TERM_DUR_SECS) 
+                isVotingOn = true;
 
             return isVotingOn;
 

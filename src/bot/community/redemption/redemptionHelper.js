@@ -75,10 +75,11 @@ export default class RedemptionHelper {
             // Handle user approved.
             if (forVotes >= reqForVotes) {
                 // Give intro roles
-                const { MEMBER, BEGINNER, SUBSCRIBER } = ROLES;
+                const { MEMBER, BEGINNER, SUBSCRIBER, PROSPECT } = ROLES;
 
-                const introRolesNames = [MEMBER.name, BEGINNER.name, SUBSCRIBER.name];
-                const introRoles = RolesHelper.getRoles(guild, introRolesNames);
+                // TODO: Add prospect role here.
+                const introRolesNames = [MEMBER.id, BEGINNER.id, SUBSCRIBER.id, PROSPECT.id];
+                const introRoles = RolesHelper.getRolesByID(guild, introRolesNames);
                 
                 // Add to database
                 await UsersHelper.addToDatabase(targetMember);

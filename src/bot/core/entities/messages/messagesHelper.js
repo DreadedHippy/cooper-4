@@ -79,7 +79,12 @@ export default class MessagesHelper {
     // Handles :single: and :double:id emoji input
     // Not sure about emoji direct unicode (image char)
     static _displayEmojiCode(code) {
-        return this.emojiText(EMOJIS[code]);
+        let displayStr = '?';
+
+        const emoji = EMOJIS[code];
+        if (emoji) displayStr = this.emojiText(emoji);
+
+        return displayStr;
     }
     static emojiText(emoji) {
         // const numColons = emoji.split(":").length - 1;
