@@ -2,17 +2,17 @@ import TradeHelper from '../../community/features/economy/tradeHelper';
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 
-export default class FindTradeCommand extends CoopCommand {
+export default class TradeFindCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
-			name: 'findtrade',
+			name: 'tradefind',
 			group: 'economy',
-			memberName: 'findtrade',
+			memberName: 'tradefind',
 			aliases: ['findtr'],
-			description: 'This command lets you find the trades you want',
-			details: `Details of the find command`,
-			examples: ['find', '!find laxative'],
+			description: 'This command lets you tradefind the trades you want',
+			details: `Details of the tradefind command`,
+			examples: ['tradefind', '!tradefind laxative'],
 			args: [
 				{
 					key: 'offerItemCode',

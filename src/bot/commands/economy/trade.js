@@ -109,25 +109,28 @@ export default class TradeCommand extends CoopCommand {
 			if (confirmation) {
 				// Accept cheapest matching offer.
 				if (matchingOffers.length > 0) {
+					// Sort offers by most offer (highest offer) qty amongst matches.
 					matchingOffers.sort((a, b) => a.offer_qty > b.offer_qty);
+
+					// Select highest offer.
 					const cheapest = matchingOffers[0];
 
-					const tradeAccepted = await TradeHelper.accept(cheapest.id, tradeeID);
+					// Let helper handle accepting of the trade, with a msgRef.
+					const tradeAccepted = await TradeHelper.accept(cheapest.id, tradeeID, tradeeName);
 					if (tradeAccepted) {
+						const exchangeString = `<- ${tradeAwayStr}\n-> ${receiveBackStr}`;
 						const tradeConfirmStr = `**${tradeeName} accepted trade #${cheapest.id} from ${cheapest.trader_username}**\n\n` +
 							exchangeString;
-	
-						// Refactor this hash string into channelsHelper?
-						const actionsLinkStr = `\n\n_View in <#${CHANNELS.ACTIONS.id}>_`;
-	
-						// Post accepted trade to channel and record channel.
-						// Append ACTIONS link to edit.
-						MessagesHelper.delayEdit(confirmMsg, tradeConfirmStr + actionsLinkStr, 666);
-						ChannelsHelper._postToChannelCode('ACTIONS', tradeConfirmStr, 999);
 						
-						// Log trade matches
-						console.log('Trade confirmed');
-						// Log confirmed trades
+						// If passed a message reference, handle interaction feedback.
+							// Refactor this hash string into channelsHelper?
+							const actionsLinkStr = `\n\n_View in <#${CHANNELS.ACTIONS.id}>_`;
+		
+							// Post accepted trade to channel and record channel.
+							MessagesHelper.delayEdit(confirmMsg, tradeConfirmStr + actionsLinkStr, 666);
+					} else {
+						// Edit failure onto message.
+						MessagesHelper.delayEdit(confirmMsg, 'Failure confirming instant trade.', 666);
 					}
 
 

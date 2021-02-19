@@ -3,17 +3,17 @@ import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import TradeHelper from '../../community/features/economy/tradeHelper';
 
-export default class MyTradesCommand extends CoopCommand {
+export default class TradesCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
-			name: 'mytrades',
+			name: 'trades',
 			group: 'economy',
-			memberName: 'mytrades',
+			memberName: 'trades',
 			aliases: ['mytr'],
-			description: 'This command lets you mytrades the items you own',
-			details: `Details of the mytrades command`,
-			examples: ['mytrades', '!mytrades laxative'],
+			description: 'This command lets you trades the items you own',
+			details: `Details of the trades command`,
+			examples: ['trades', '!trades laxative'],
 			args: [
 				{
 					key: 'offerItemCode',

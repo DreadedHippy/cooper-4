@@ -1,4 +1,6 @@
+import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import DatabaseHelper from "../../../core/entities/databaseHelper";
+import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import Database from "../../../core/setup/database";
 import ItemsHelper from "../items/itemsHelper";
 
@@ -103,7 +105,7 @@ export default class TradeHelper {
     }
 
     // This method directly takes items from user to close a trade.
-    static async accept(openTradeID, accepteeID) {
+    static async accept(openTradeID, accepteeID, accepteeName) {
         try {
             // Get trade by ID
             const trade = await this.get(openTradeID);
@@ -122,6 +124,16 @@ export default class TradeHelper {
                     // Delete/close the open trade offer.
                     await this.remove(openTradeID);
     
+                    // Build string for logging/feedback.
+                    const tradeAwayStr = `${MessagesHelper._displayEmojiCode(trade.offer_item)}x${trade.offer_qty}`;
+                    const receiveBackStr = `${MessagesHelper._displayEmojiCode(trade.receive_item)}x${trade.receive_qty}`;
+                    const exchangeString = `<- ${tradeAwayStr}\n-> ${receiveBackStr}`;
+                    const tradeConfirmStr = `**${accepteeName} accepted trade #${trade.id} from ${trade.trader_username}**\n\n` +
+                        exchangeString;
+                                        
+                    // Log confirmed trades
+                    ChannelsHelper._postToChannelCode('ACTIONS', tradeConfirmStr, 999);
+
                     // Return successful result.
                     return true;
                 }
