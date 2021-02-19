@@ -39,6 +39,9 @@ export default class StandCommand extends CoopCommand {
 		if (campaignText.includes('@everyone')) {
 			return MessagesHelper.selfDestruct(msg, 'Warning: @ everyone not allowed.');
 		}
+		else if (campaignText.includes('@')) {
+			return MessagesHelper.selfDestruct(msg, "Warning: @ is not allowed. Stand on your own or don't stand at all");
+		}
 
 		try {
 			// Prevent bad campaign texts.
