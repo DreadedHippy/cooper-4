@@ -13,7 +13,7 @@ export default class TradesCommand extends CoopCommand {
 			aliases: ['mytr'],
 			description: 'This command lets you trades the items you own',
 			details: `Details of the trades command`,
-			examples: ['trades', '!trades laxative'],
+			examples: ['trades', '!trades LAXATIVE'],
 			args: [
 				{
 					key: 'offerItemCode',

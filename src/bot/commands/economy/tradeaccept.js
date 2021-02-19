@@ -12,7 +12,7 @@ export default class TradeAcceptCommand extends CoopCommand {
 			name: 'tradeaccept',
 			group: 'economy',
 			memberName: 'tradeaccept',
-			aliases: ['tr'],
+			aliases: [],
 			description: 'This command lets you tradeaccept the items you own',
 			details: `Details of the tradeaccept command`,
 			examples: ['tradeaccept', '!tradeaccept LAXATIVE AVERAGE_EGG 1 5'],

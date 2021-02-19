@@ -33,13 +33,13 @@ export default class TradeFindCommand extends CoopCommand {
 		super.run(msg);
 
 		offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
+		receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
 
 		// If receive item code has been given, make sure only those matching returned.
-		if (receiveItemCode !== '') {
-			receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
-
+		if (receiveItemCode && receiveItemCode !== '') {
 			// If both items given, list only those matching.
 			const matches = await TradeHelper.listMatch(offerItemCode, receiveItemCode);
+			
 
 		} else {
 			// If only offer item given, list all of that type.
