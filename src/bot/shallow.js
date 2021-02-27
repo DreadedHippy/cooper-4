@@ -33,6 +33,8 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+        STATE.CLIENT.user.setPresence({ activity: { name: 'SACRIFICE REFORM 2021' }, status: 'online' })
+
         // Create trade/accept trade command.
         // List my own/users trades (like items command).
         // List all trades, trades of item, trades of matching items.

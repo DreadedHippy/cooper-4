@@ -118,7 +118,7 @@ export default class TradeCommand extends CoopCommand {
 					// Let helper handle accepting of the trade, with a msgRef.
 					const tradeAccepted = await TradeHelper.accept(cheapest.id, tradeeID, tradeeName);
 					if (tradeAccepted) {
-						const exchangeString = `<- ${tradeAwayStr}\n-> ${receiveBackStr}`;
+						const exchangeString = `-> ${tradeAwayStr}\n<- ${receiveBackStr}`;
 						const tradeConfirmStr = `**${tradeeName} accepted trade #${cheapest.id} from ${cheapest.trader_username}**\n\n` +
 							exchangeString;
 						

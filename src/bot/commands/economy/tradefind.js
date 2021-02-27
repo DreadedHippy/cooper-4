@@ -10,7 +10,7 @@ export default class TradeFindCommand extends CoopCommand {
 			group: 'economy',
 			memberName: 'tradefind',
 			aliases: ['findtr'],
-			description: 'This command lets you tradefind the trades you want',
+			description: 'This command lets you find the trades you want',
 			details: `Details of the tradefind command`,
 			examples: ['tradefind', '!tradefind laxative'],
 			args: [

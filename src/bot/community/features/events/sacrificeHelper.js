@@ -148,15 +148,12 @@ export default class SacrificeHelper {
 
             setTimeout(async () => {
                 // May have got stabbed more in the past 3 seconds.
+                // TODO: Implement backstabbers list.
                 let updatedNumVotes = sacrificeVotes;
                 const backstabbers = [];
                 reaction.message.reactions.cache.map(reactionType => {
                     const emoji = reactionType.emoji.name;
-                    if (this.emojiToUni(emoji) === this.emojiToUni(EMOJIS.DAGGER)) {
-                        updatedNumVotes = reactionType.count;
-
-                        // TODO: Implement backstabbers list.
-                    }
+                    if (emoji === EMOJIS.DAGGER) updatedNumVotes = reactionType.count;
                 });
 
                 const backstabMsg = await reaction.message.say(
