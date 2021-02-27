@@ -13,7 +13,12 @@ export default (discordClient) => {
         .on('ready', async () => { 
             try {
                 console.log(`Logged in as ${discordClient.user.username}`); 
-    
+                
+                // Set activity.
+                discordClient.user.setPresence({ 
+                    activity: { name: 'SACRIFICE REFORM 2021' }, status: 'online' }
+                );
+
                 // Connect to redis and preload crossover data.
                 Redis.connect();
                 Redis.connection.on('connect', () => Crossover.load());
