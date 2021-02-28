@@ -199,6 +199,7 @@ export default class SacrificeHelper {
         }) };
 
         const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
+        ServerHelper.addTempMessage(sacrificeMsg, 60 * 60 * 24); //Schedule end of message and reaction voting (24hr)
 
         // Post to feed
         setTimeout(() => {
