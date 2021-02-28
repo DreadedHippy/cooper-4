@@ -2,6 +2,8 @@ import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
 import STATE from "../../../state";
 import CHANNELS from '../../../core/config/channels.json';
+import MessagesHelper from "../../../core/entities/messages/messagesHelper";
+import Chicken from "../../chicken";
 
 export default class MessageNotifications {
 
@@ -68,7 +70,8 @@ export default class MessageNotifications {
                 this.clear(channelID);
             });
 
-            ChannelsHelper._postToFeed(notificationString, 2000);
+            // Edit the message in about channel.
+            MessagesHelper.editByLink(KEY_MESSAGES.latest_messages, notificationString);
         }
     }
 

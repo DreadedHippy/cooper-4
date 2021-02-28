@@ -16,8 +16,9 @@ export default (discordClient) => {
                 
                 // Set activity.
                 discordClient.user.setPresence({ 
-                    activity: { name: 'SACRIFICE REFORM 2021' }, status: 'online' }
-                );
+                    activity: { name: 'SACRIFICE REFORM 2021' }, 
+                    status: 'online' 
+                });
 
                 // Connect to redis and preload crossover data.
                 Redis.connect();

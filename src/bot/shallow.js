@@ -10,6 +10,7 @@ import TradeHelper from './community/features/economy/tradeHelper';
 import ElectionHelper from './community/features/hierarchy/election/electionHelper';
 import ServerHelper from './core/entities/server/serverHelper';
 import CooperMorality from './community/features/minigame/small/cooperMorality';
+import ChannelsHelper from './core/entities/channels/channelsHelper';
 
 
 
@@ -33,7 +34,9 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        STATE.CLIENT.user.setPresence({ activity: { name: 'SACRIFICE REFORM 2021' }, status: 'online' });
+        // STATE.CLIENT.user.setPresence({ activity: { name: 'SACRIFICE REFORM 2021' }, status: 'online' });
+
+        ChannelsHelper._postToChannelCode('ABOUT', 'MESSAGES');
 
         // Create trade/accept trade command.
         // List my own/users trades (like items command).
