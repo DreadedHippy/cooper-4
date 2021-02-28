@@ -10,6 +10,7 @@ import ToxicEggHandler from "./handlers/toxicEggHandler";
 import AverageEggHandler from "./handlers/averageEggHandler";
 import RareEggHandler from "./handlers/rareEggHandler";
 import LegendaryEggHandler from "./handlers/legendaryEggHandler";
+import DiamondHandler from "./handlers/diamondHandler";
 
 
 export default class ItemsHelper {
@@ -21,6 +22,7 @@ export default class ItemsHelper {
         AverageEggHandler.onReaction(reaction, user);
         RareEggHandler.onReaction(reaction, user);
         LegendaryEggHandler.onReaction(reaction, user);
+        DiamondHandler.onReaction(reaction, user);
     }
 
     static async add(userID, item_code, quantity) {
