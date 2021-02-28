@@ -154,6 +154,12 @@ export default class MiscMessageHandlers {
             if (STATE.CHANCE.bool({ likelihood: 2.5 }) && msg.channel.id === CHANNELS.SOLATWAR.id)
                 MessagesHelper.delayReact(msg, '🪐', 333);
         }
+
+        //surprise lmf, i hope this works ;--;
+        if(msg.author.id === '786671654721683517') {
+            if (STATE.CHANCE.bool({ likelihood: 1.5 }))
+                MessagesHelper.delayReact(msg, '737182281130704936', 333);            
+            }
     }
 
 }
