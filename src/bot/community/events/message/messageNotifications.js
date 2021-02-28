@@ -2,6 +2,7 @@ import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
 import STATE from "../../../state";
 import CHANNELS from '../../../core/config/channels.json';
+import KEY_MESSAGES from '../../../core/config/keymessages.json';
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import Chicken from "../../chicken";
 
@@ -49,7 +50,7 @@ export default class MessageNotifications {
             }, 0);
             
             // TODO: Order by most messages.
-            let notificationString = `**Latest messages for you! (${totalCount})**\n\n`;
+            let notificationString = `**${totalCount}) latest messages!**\n\n`;
             
             notificationChannelIDs.map(channelID => {
                 // Access the notification data for this specific channel.
