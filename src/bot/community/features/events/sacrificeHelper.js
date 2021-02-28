@@ -140,9 +140,10 @@ export default class SacrificeHelper {
             const targetID = reaction.message.author.id;
             const targetMember = await UsersHelper.fetchMemberByID(guild, targetID);
 
-            // TODO: Award points to bakcstabbers
+            // TODO: Award points to backstabbers
             // TODO: Award points for successfully removing a backstabbed member.
             // TODO: Also reward points for approving/rejecting an incoming member (reward more for rejection)
+            // TODO: limit number of sacrifices to a maximum of five by checking the number of messages in the sacrifice channel
 
             await this.offer(targetMember.user);
 
