@@ -6,6 +6,9 @@ import moment from 'moment';
 import TimeHelper from "./features/server/timeHelper";
 import ChannelsHelper from "../core/entities/channels/channelsHelper";
 import ElectionHelper from "./features/hierarchy/election/electionHelper";
+import STATE from "../state";
+import CooperMorality from "./features/minigame/small/cooperMorality";
+
 
 export default class Chicken {
 
@@ -93,7 +96,12 @@ export default class Chicken {
             const isNewDay = await this.isNewDay();
             if (!isNewDay) return false;
 
-            ChannelsHelper._postToFeed('A new day?')
+
+            // TODO: Improve where server announces new day.
+            ChannelsHelper._postToFeed('A new day?');
+
+            if (STATE.CHANCE.bool({ likelihood: 15 })) CooperMorality.giveaway();
+
             ElectionHelper.checkProgress();
             
             // If election is running, it should announce something at beginning of day, with time remaining.

@@ -1,10 +1,10 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
 import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../core/entities/users/usersHelper";
+import PointsHelper from "../../points/pointsHelper";
 import ItemsHelper from "../itemsHelper";
 
 export default class DiamondHandler {
-
 
     static async onReaction(reaction, user) {       
         if (reaction.emoji.name === 'diamond') {
@@ -12,7 +12,7 @@ export default class DiamondHandler {
                 const didUse = await ItemsHelper.use(user.id, 'DIAMOND', 1);
                 if (!didUse) {
                     // Warn that the user is missing the item
-                    MessagesHelper.selfDestruct(reaction.message, `${user.username} lacks 1xDIAMOND`);
+                    MessagesHelper.selfDestruct(reaction.message, `${user.username} lacks 1xDIAMOND...`);
                     return await reaction.users.remove(user.id);
                 } else {
                     const messageAuthor = reaction.message.author;
