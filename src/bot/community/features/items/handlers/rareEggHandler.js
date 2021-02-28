@@ -36,8 +36,8 @@ export default class RareEggHandler {
 
                     // Send feedback and emojis.
                     ChannelsHelper.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💙');
-                    MessagesHelper.delayReactionRemove(reaction, 333);
-                    MessagesHelper.delayReact(reaction, 666);
+                    // MessagesHelper.delayReactionRemove(reaction, 333);
+                    MessagesHelper.delayReact(reaction.message, '💙', 666);
                 }
             } catch(e) {
                 console.error(e);

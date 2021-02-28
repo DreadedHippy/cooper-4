@@ -14,8 +14,10 @@ export default class MessageNotifications {
 
         // Filter out Cooper's messages.
         if (UsersHelper.isCooperMsg(msg)) return false;
+
         // Filter out direct message and testing.
         if (channelID === CHANNELS.COOPERTESTS.id) return false;
+
         // Filter out DM messages.
         if (msg.channel.type === 'dm') return false;
 
@@ -40,6 +42,7 @@ export default class MessageNotifications {
         STATE.MESSAGE_HISTORY[channelID].authors[authorID].count++;
     }
 
+    // TODO: These messages should be added to a global statistics store... quite significant stats.
     static post() {
         const notificationChannelIDs = Object.keys(STATE.MESSAGE_HISTORY);
         if (notificationChannelIDs.length > 0) {
@@ -50,7 +53,7 @@ export default class MessageNotifications {
             }, 0);
             
             // TODO: Order by most messages.
-            let notificationString = `**${totalCount}) latest messages!**\n\n`;
+            let notificationString = `**${totalCount} latest messages!**\n\n`;
             
             notificationChannelIDs.map(channelID => {
                 // Access the notification data for this specific channel.

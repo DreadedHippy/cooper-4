@@ -12,6 +12,7 @@ import ServerHelper from './core/entities/server/serverHelper';
 import CooperMorality from './community/features/minigame/small/cooperMorality';
 import ChannelsHelper from './core/entities/channels/channelsHelper';
 import InstantFurnaceMinigame from './community/features/minigame/small/instantfurnace';
+import MessagesHelper from './core/entities/messages/messagesHelper';
 
 
 
@@ -35,20 +36,11 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        // STATE.CLIENT.user.setPresence({ activity: { name: 'SACRIFICE REFORM 2021' }, status: 'online' });
 
-        // ChopperMinigame.launch(.5);
-        // ChopperMinigame.launch(1.25);
 
-        InstantFurnaceMinigame.run();
-
-        STATE.CLIENT.on('messageReactionAdd', InstantFurnaceMinigame.onReaction);
-
-        // Create trade/accept trade command.
         // List my own/users trades (like items command).
         // List all trades, trades of item, trades of matching items.
         // Get exchange rate based on current trades for that item
-
 
         // Add exchange rate method (command)
         // My trades command including # slots
@@ -62,7 +54,6 @@ const shallowBot = async () => {
         // Add a multiplier to drops for wood etc... too weak atm.
 
         // Harder:
-        // Trading system
         // Finish actions messages for woodcutting/mining/crate drop
         // Detect server message/activity velocity increases (as % preferably).
         // Detect the completed gathering of wood/rocks

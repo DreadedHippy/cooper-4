@@ -101,11 +101,12 @@ export default class SacrificeHelper {
 
                 } else {
                     // Provide feedback for user who is not currently protected or sacrificed.
-                    await ChannelsHelper._postToFeed(
+                    ChannelsHelper.codeShout(reaction.message, 'FEED',
                         `**Remaining votes to sacrifice ${targetMember.user.username}**` +
                         `\n\n` +
                         `Protect: ${EMOJIS.SACRIFICE_SHIELD} ${remainingProtectVotes} ${EMOJIS.SACRIFICE_SHIELD}` +
-                        `| Sacrifice: ${EMOJIS.DAGGER} ${remainingSacrificeVotes} ${EMOJIS.DAGGER}`
+                        `| Sacrifice: ${EMOJIS.DAGGER} ${remainingSacrificeVotes} ${EMOJIS.DAGGER}`, 
+                        true
                     );
                 }
 
