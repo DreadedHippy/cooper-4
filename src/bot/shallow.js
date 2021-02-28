@@ -11,6 +11,7 @@ import ElectionHelper from './community/features/hierarchy/election/electionHelp
 import ServerHelper from './core/entities/server/serverHelper';
 import CooperMorality from './community/features/minigame/small/cooperMorality';
 import ChannelsHelper from './core/entities/channels/channelsHelper';
+import InstantFurnaceMinigame from './community/features/minigame/small/instantfurnace';
 
 
 
@@ -36,7 +37,12 @@ const shallowBot = async () => {
 
         // STATE.CLIENT.user.setPresence({ activity: { name: 'SACRIFICE REFORM 2021' }, status: 'online' });
 
-        ChannelsHelper._postToChannelCode('ABOUT', 'MESSAGES');
+        // ChopperMinigame.launch(.5);
+        // ChopperMinigame.launch(1.25);
+
+        InstantFurnaceMinigame.run();
+
+        STATE.CLIENT.on('messageReactionAdd', InstantFurnaceMinigame.onReaction);
 
         // Create trade/accept trade command.
         // List my own/users trades (like items command).
