@@ -29,6 +29,8 @@ export default class InstantFurnaceMinigame {
         // Reject all N/A
         if (UsersHelper.isCooper(user.id)) return false;
         if (reaction.message.content.trim() !== '🌋') return false;
+
+        console.log(reaction.emoji.name, 'metal_ore');
         if (reaction.emoji.name !== 'metal_ore') return false;
 
         try {
