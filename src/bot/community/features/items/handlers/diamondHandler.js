@@ -7,7 +7,7 @@ export default class DiamondHandler {
 
 
     static async onReaction(reaction, user) {       
-        if (reaction.emoji.name === '💎') {
+        if (reaction.emoji.name === 'diamond') {
             try {
                 const didUse = await ItemsHelper.use(user.id, 'DIAMOND', 1);
                 if (!didUse) {
