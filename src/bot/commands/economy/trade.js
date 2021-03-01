@@ -130,14 +130,15 @@ export default class TradeCommand extends CoopCommand {
 							MessagesHelper.delayEdit(confirmMsg, tradeConfirmStr + actionsLinkStr, 666);
 					} else {
 						// Edit failure onto message.
-						MessagesHelper.delayEdit(confirmMsg, 'Failure confirming instant trade.', 666);
+						MessagesHelper.selfDestruct(confirmMsg, 'Failure confirming instant trade.', 666);
 					}
 
 
 				} else {
 					// Use the items to create a trade, so we can assume its always fulfillable,
 					//  the item becomes a trade credit note, can be converted back.
-					if (await ItemsHelper.use(tradeeID, offerItemCode, offerQty)) {
+					const didUse = await ItemsHelper.use(tradeeID, offerItemCode, offerQty);
+					if (didUse) {
 						const createdOfferID = await TradeHelper.create(
 							tradeeID, tradeeName,
 							offerItemCode, receiveItemCode,
@@ -151,12 +152,15 @@ export default class TradeCommand extends CoopCommand {
 							'ACTIONS');
 
 						// TODO: Add to trade stats
-					}		
+					} else {
+						MessagesHelper.selfDestruct(confirmMsg, 'Error creating trade.', 666);
+					}
 				}
 
 			} else {
 				// Log cancelled trades
 				console.log('Trade cancelled');
+
 				// Trade cancelled, remove message.
 				MessagesHelper.delayDelete(confirmMsg);
 			}

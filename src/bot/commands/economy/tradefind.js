@@ -21,7 +21,7 @@ export default class TradeFindCommand extends CoopCommand {
 				},
 				{
 					key: 'receiveItemCode',
-					prompt: 'Which item_code are you offering?',
+					prompt: 'Which item_code should you receive?',
 					type: 'string',
 					default: ''
 				}
@@ -40,10 +40,13 @@ export default class TradeFindCommand extends CoopCommand {
 			// If both items given, list only those matching.
 			const matches = await TradeHelper.listMatch(offerItemCode, receiveItemCode);
 			
+			console.log(matches);
 
 		} else {
 			// If only offer item given, list all of that type.
 			const types = await TradeHelper.listType(offerItemCode);
+
+			console.log(types);
 		}
 
     }

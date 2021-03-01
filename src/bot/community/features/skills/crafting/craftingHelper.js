@@ -18,6 +18,14 @@ export default class CraftingHelper {
                 IRON_BAR: 2
             }
         },
+        FRYING_PAN: {
+            levelReq: 0,
+            expReward: 10,
+            ingredients: {
+                STEEL_BAR: 2,
+                IRON_BAR: 1
+            }
+        },
         AXE: {
             levelReq: 0,
             expReward: 5,
