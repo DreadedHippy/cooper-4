@@ -231,7 +231,7 @@ export default class SacrificeHelper {
             const messageNum = fetchedMessages.size;
             if (member && messageNum <= 5) this.offer(member.user);
         } catch(e) {
-            console.log('Error sacrificing random member.');
+            console.log('Error sacrificing random member!');
             console.error(e);
         }
     }
