@@ -17,7 +17,6 @@ export default class ItemsHelper {
 
     static async onReaction(reaction, user) {
         BombHandler.onReaction(reaction, user);
-
         ToxicEggHandler.onReaction(reaction, user);
         AverageEggHandler.onReaction(reaction, user);
         RareEggHandler.onReaction(reaction, user);

@@ -32,7 +32,7 @@ export default class InstantFurnaceMinigame {
 
         console.log(reaction.emoji.name, 'metal_ore');
         if (reaction.emoji.name !== 'metal_ore') return false;
-
+        
         try {
             // Uses a random amount of their metal ore.
             const oreLimitMin = 25;

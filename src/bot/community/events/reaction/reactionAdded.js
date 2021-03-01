@@ -14,6 +14,7 @@ import CleanupHandler from '../../features/messages/cleanupHandler';
 import ElectionHelper from '../../features/hierarchy/election/electionHelper';
 import AboutHelper from '../../features/server/aboutHelper';
 import LinkPreviewFilter from '../../features/messages/linkPreviewFilter';
+import InstantFurnaceMinigame from '../../features/minigame/small/instantfurnace';
 
 export default async function reactAddedHandler(reaction, user) {
     const isUser = !UsersHelper.isCooper(user.id);
@@ -31,6 +32,7 @@ export default async function reactAddedHandler(reaction, user) {
         CratedropMinigame.onReaction(reaction, user);
         MiningMinigame.onReaction(reaction, user);
         WoodcuttingMinigame.onReaction(reaction, user);
+        InstantFurnaceMinigame.onReaction(reaction, user);
 
         // Check for reaction on intro message.
         RedemptionHelper.onReaction(reaction, user);

@@ -68,7 +68,6 @@ export default class AboutHelper {
         ...Object.keys(this.sectionEmojis.FOCUS),
         ...Object.keys(this.sectionEmojis.GAMES),
         ...Object.keys(this.sectionEmojis.COMMUNITY),
-
         ...Object.keys(this.sectionEmojis.ACADEMY_AGENCY)
     ]
 

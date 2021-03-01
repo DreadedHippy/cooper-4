@@ -36,6 +36,9 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+        STATE.CLIENT.on('messageReactionAdd', InstantFurnaceMinigame.onReaction);
+
+        InstantFurnaceMinigame.spawn();
 
 
         // List my own/users trades (like items command).
