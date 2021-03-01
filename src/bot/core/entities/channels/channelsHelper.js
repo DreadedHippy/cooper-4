@@ -119,7 +119,11 @@ export default class ChannelsHelper {
         return ChannelsHelper.fetchRandomTextChannel(server);
     }
     static checkIsByCode(id, code) {
-        return CHANNELS[code].id === id;
+        const channel = CHANNELS[code];
+
+        let result = false;
+        if (channel && channel.id === id) result = true;
+        return result;
     }
     static async propagate(msgRef, text, recordChan, selfDestruct = true) {
         if (!this.checkIsByCode(msgRef.channel.id, recordChan)) {
