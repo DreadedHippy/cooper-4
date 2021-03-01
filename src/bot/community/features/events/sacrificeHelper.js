@@ -199,8 +199,9 @@ export default class SacrificeHelper {
             footerText: 'The best Discord community to be sacrificed from!',
         }) };
 
+         //Schedule end of message and reaction voting (24hr)
         const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
-        ServerHelper.addTempMessage(sacrificeMsg, 60 * 60 * 24); //Schedule end of message and reaction voting (24hr)
+        ServerHelper.addTempMessage(sacrificeMsg, 60 * 60 * 24);
 
         // Post to feed
         setTimeout(() => {
@@ -222,8 +223,13 @@ export default class SacrificeHelper {
 
     static async random() {
         try {
+            //sacrifice random member if a maximum of five people are being sacrificed and the member exists
             const member = await UsersHelper.random();
-            if (member) this.offer(member.user);
+            const sacrificeChannel = client.channels.cache.get(CHANNELS.SACRIFICE.id);
+
+            const fetchedMessages = await sacrificeChannel.messages.fetch({ limit: 6 });
+            const messageNum = fetchedMessages.size;
+            if (member && messageNum <= 5) this.offer(member.user);
         } catch(e) {
             console.log('Error sacrificing random member.');
             console.error(e);
