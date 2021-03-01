@@ -15,9 +15,12 @@ export default (discordClient) => {
                 console.log(`Logged in as ${discordClient.user.username}`); 
                 
                 // Set activity.
-                discordClient.user.setPresence({ 
-                    activity: { name: 'SACRIFICE REFORM 2021' }, 
-                    status: 'online' 
+                discordClient.user.setPresence({
+                    status: "dnd",
+                    activity: {
+                      name: "🗡 SACRIFICE REFORM 2021",
+                      type: "LISTENING"
+                    }
                 });
 
                 // Connect to redis and preload crossover data.

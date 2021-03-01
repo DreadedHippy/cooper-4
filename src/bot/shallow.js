@@ -36,9 +36,14 @@ const shallowBot = async () => {
 
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        STATE.CLIENT.on('messageReactionAdd', InstantFurnaceMinigame.onReaction);
+        STATE.CLIENT.user.setPresence({
+            status: "dnd",
+            activity: {
+              name: "🗡 SACRIFICE REFORM 2021",
+              type: "LISTENING"
+            }
+        });
 
-        InstantFurnaceMinigame.spawn();
 
 
         // List my own/users trades (like items command).
