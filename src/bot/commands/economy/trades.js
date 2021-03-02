@@ -11,7 +11,7 @@ export default class TradesCommand extends CoopCommand {
 			group: 'economy',
 			memberName: 'trades',
 			aliases: ['mytr'],
-			description: 'This command lets you trades the items you own',
+			description: 'This command lets you check your ongoing trades',
 			details: `Details of the trades command`,
 			examples: ['trades', '!trades LAXATIVE'],
 			args: [
@@ -30,10 +30,10 @@ export default class TradesCommand extends CoopCommand {
 
 		try {
 			// Calculate used/total trade slots.
-			const tradeslotStr = `${msg.author.username} have ?/? trade slots currently.`;
+			const tradeslotStr = `${msg.author.username} has ?/? available trade slots currently.`;
 			await MessagesHelper.selfDestruct(msg, tradeslotStr);
 
-
+			// Distinguish between whether the user wants all trade information of a specific one.
 			if (offerItemCode === 'ALL') {
 				// Display all trades
 

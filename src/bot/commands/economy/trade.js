@@ -95,7 +95,8 @@ export default class TradeCommand extends CoopCommand {
 			// Setup the reaction collector for trade confirmation interaction handling.
 			const interactions = await confirmMsg.awaitReactions(
 				userDesiredReactsFilter(['❎', '✅']), 
-				{ max: 1, time: 30000, errors: ['time'] } );
+				{ max: 1, time: 30000, errors: ['time'] }
+			);
 
 			// Check reaction is from user who asked, if restricting confirmation to original.
 			const confirmation = interactions.reduce((acc, { emoji, users }) => {
@@ -107,6 +108,7 @@ export default class TradeCommand extends CoopCommand {
 			
 
 			if (confirmation) {
+
 				// Accept cheapest matching offer.
 				if (matchingOffers.length > 0) {
 					// Sort offers by most offer (highest offer) qty amongst matches.
@@ -142,14 +144,20 @@ export default class TradeCommand extends CoopCommand {
 						const createdOfferID = await TradeHelper.create(
 							tradeeID, tradeeName,
 							offerItemCode, receiveItemCode,
-							offerQty, receiveQty);
+							offerQty, receiveQty
+						);
 
-						// TODO: add a reaction to accept the trade, using trade logic.
+						// Remove the original message now to simplify the UI.
+						MessagesHelper.delayDelete(confirmMsg, 999);
+
+						// Offer feedback for trade creation. :)
 						ChannelsHelper.propagate(msg, 
 							`**${tradeeName} created trade #${createdOfferID}**\n\n` +
 							exchangeString + `\n\n` +
 							`_Send message "!tradeaccept ${createdOfferID}" to accept this trade._`,
 							'ACTIONS');
+
+						// TODO: add a reaction to accept the trade, using trade logic.
 
 						// TODO: Add to trade stats
 					} else {
