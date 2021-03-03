@@ -217,19 +217,21 @@ export default class EggHuntMinigame {
                     acknowledgementMsgText += ` (${updated})`;
                     // Add/update egg item to user
                     await ItemsHelper.add(user.id, rarity, 1);
-                    
-                    MessagesHelper.selfDestruct(reaction.message, acknowledgementMsgText, 666, 30000);
 
                     // Animate the egg collection.
                     const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
                     const basketEmojiText = MessagesHelper.emojiText(EMOJIS.BASKET);
-                    MessagesHelper.delayEdit(reaction.message, `${emojiText}${basketEmojiText}💨`, 333);
-                    MessagesHelper.delayDelete(reaction.message, 3000);
+                    MessagesHelper.delayEdit(
+                        reaction.message, 
+                        `${emojiText}${basketEmojiText}💨\n\n${acknowledgementMsgText}`, 
+                        333
+                    );
+                    MessagesHelper.delayDelete(reaction.message, 15000);
                 } else {
                     acknowledgementMsgText = `${actionText} clumsily broke the egg, 0 points!`.trim();
                     activityFeedMsgText = `${user.username} broke an egg in ${location}! :( <${emoji}>`.trim();
-                    MessagesHelper.selfDestruct(reaction.message, acknowledgementMsgText, 666, 30000);
-                    MessagesHelper.delayDelete(reaction.message, 0);
+                    MessagesHelper.delayEdit(reaction.message, acknowledgementMsgText, 666);
+                    MessagesHelper.delayDelete(reaction.message, 15000);
                 }
 
                 // Provide record of event.
