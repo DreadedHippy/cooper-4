@@ -36,7 +36,7 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => UsersHelper.cleanupUsers(), baseTickDur * 5);
 
   // Clean up temporary messages.
-  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 2);
+  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 3);
 
   // New day events/calendar events.
   EventsHelper.runInterval(() => Chicken.checkIfNewDay(), baseTickDur / 2);
