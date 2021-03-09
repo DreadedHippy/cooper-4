@@ -27,6 +27,7 @@ export default class InstantFurnaceMinigame {
     // Burn metal ore into metal
     static async onReaction(reaction, user) {
         // Reject all N/A
+        if (!UsersHelper.isCooper(reaction.message.author.id)) return false;
         if (UsersHelper.isCooper(user.id)) return false;
         if (reaction.message.content.trim() !== '🌋') return false;
 
