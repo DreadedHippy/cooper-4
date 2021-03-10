@@ -22,6 +22,7 @@ import EconomyHelper from "../features/economy/economyHelper";
 import ElectionHelper from "../features/hierarchy/election/electionHelper";
 import UsersHelper from "../../core/entities/users/usersHelper";
 import ServerHelper from "../../core/entities/server/serverHelper";
+import InstantFurnaceMinigame from "../features/minigame/small/instantfurnace";
 
 
 export const baseTickDur = 60 * 25 * 1000;
@@ -35,15 +36,17 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => UsersHelper.cleanupUsers(), baseTickDur * 5);
 
   // Clean up temporary messages.
-  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 2);
+  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 3);
 
   // New day events/calendar events.
-  // TODO: Broken.
   EventsHelper.runInterval(() => Chicken.checkIfNewDay(), baseTickDur / 2);
 
 
   // Check progess is left within new day due to significance, but add another runner.
   EventsHelper.runInterval(() => ElectionHelper.shouldTriggerStart(), baseTickDur * 4);
+
+  // TODO: Ensure leadership and commander based on items so they are treated seriously.
+  EventsHelper.runInterval(() => ElectionHelper.ensureItemSeriousness(), baseTickDur * 6);
   
   // Above is unfinished
   EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);
@@ -68,6 +71,8 @@ export default function eventsManifest() {
   EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 45, baseTickDur * 6);
   EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur * 5);
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 65, baseTickDur);
+
+  EventsHelper.chanceRunInterval(() => InstantFurnaceMinigame.run(), 65, baseTickDur * 6);
 
   // TODO: Update and create most items role
  

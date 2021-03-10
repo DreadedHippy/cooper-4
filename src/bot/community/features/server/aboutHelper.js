@@ -56,6 +56,10 @@ export default class AboutHelper {
         COMMUNITY: {
             '🧵': CommunityOpts.miscToggle, // Done
             '👷': CommunityOpts.projectsToggle // Done
+        },
+        ACADEMY_AGENCY: {
+            '🏢': (react, user) => RolesHelper.toggle(user.id, 'AGENCY'),
+            '📝': (react, user) => RolesHelper.toggle(user.id, 'ACADEMY')
         }
     }
 
@@ -63,7 +67,8 @@ export default class AboutHelper {
         ...Object.keys(this.sectionEmojis.ANNOUNCEMENTS),
         ...Object.keys(this.sectionEmojis.FOCUS),
         ...Object.keys(this.sectionEmojis.GAMES),
-        ...Object.keys(this.sectionEmojis.COMMUNITY)
+        ...Object.keys(this.sectionEmojis.COMMUNITY),
+        ...Object.keys(this.sectionEmojis.ACADEMY_AGENCY)
     ]
 
     static async onReaction(reaction, user) {
@@ -93,7 +98,8 @@ export default class AboutHelper {
             KEY_MESSAGES.about_notifications_msg,
             KEY_MESSAGES.about_ourfocus_msg,
             KEY_MESSAGES.about_optout_msg,
-            KEY_MESSAGES.about_gamesopt_msg
+            KEY_MESSAGES.about_gamesopt_msg,
+            KEY_MESSAGES.about_academyagency_msg
         ];
         return await MessagesHelper.preloadMsgLinks(links);
     }

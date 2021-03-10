@@ -16,8 +16,10 @@ export default class AverageEggHandler {
                 const didUse = await ItemsHelper.use(user.id, 'AVERAGE_EGG', 1);
                 if (!didUse) {
                     const failureText = `${user.username} tried to use an average egg, but has none. Lul.`;
-                    MessagesHelper.selfDestruct(reaction.message, failureText)
-                    MessagesHelper.delayReactionRemoveUser(reaction, user.id, 333);
+                    MessagesHelper.selfDestruct(reaction.message, failureText);
+
+                    // TODO: Experimenting with it off.
+                    // MessagesHelper.delayReactionRemoveUser(reaction, user.id, 333);
 
                 } else {
                     const backFired = STATE.CHANCE.bool({ likelihood: 25 });

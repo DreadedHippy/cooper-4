@@ -282,6 +282,17 @@ export default class ElectionHelper {
         }
     }
 
+    // TODO: Implement this.
+    static async ensureItemSeriousness() {
+        // Any leader who has role but not leaders_sword -> role removed.
+        // Any commander who has role but not election_crown -> role removed.
+
+
+
+        // Any leader who has leaders_sword but not role -> leaders_sword added.
+        // Any commander who has election_crown but not role -> election_crown added.
+    }
+
     static async checkProgress() {
         let electionStarted = false;
         try {

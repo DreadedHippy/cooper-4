@@ -7,13 +7,7 @@ import messageAddedHandler from "../../../bot/community/events/message/messageAd
 import reactAddedHandler from "../../../bot/community/events/reaction/reactionAdded";
 
 export default () => {
-    const client = new Client({ owner: '786671654721683517' });
-
-
-    process.on("unhandledRejection", (error) => {
-        console.error(error); // This prints error with stack included (as for normal errors)
-        // throw error; // Following best practices re-throw error and let the process exit with error code
-    });
+    const client = new Client({ owner: '799692429442809937' });
 
     client.registry
         .registerGroups([ 

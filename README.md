@@ -1,6 +1,15 @@
 # Cooper (The Coop's Discord Bot)
 https://docs.google.com/document/d/1nmZARuG1FRNW4sibJU0k2BleP5KTcKurBa-Uul7lCf4/edit?usp=sharing
 
+
+TODO: Clean this README up.
+
+
+
+
+
+
+
 <!-- Access database -->
 heroku pg:psql --app cooperchickenbot
 
@@ -10,11 +19,6 @@ heroku pg:psql --app cooperchickenbot
 
 <!-- Schema -->
 
-CREATE TABLE temp_messages(
-    id SERIAL PRIMARY KEY,
-    message_id VARCHAR,
-    expiry_time int
-);
 
 CREATE TABLE open_trades(
     id SERIAL PRIMARY KEY,
@@ -122,6 +126,14 @@ CREATE TABLE chicken(
 <!-- Useful forced actions -->
 ALTER TABLE users
     ADD COLUMN email VARCHAR;
+
+
+
+CREATE TABLE temp_messages(
+    id SERIAL PRIMARY KEY,
+    message_id VARCHAR,
+    expiry_time int
+);
 
 ALTER TABLE temp_messages
     ADD COLUMN message_link VARCHAR;

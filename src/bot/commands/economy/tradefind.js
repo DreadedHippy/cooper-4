@@ -1,6 +1,7 @@
 import TradeHelper from '../../community/features/economy/tradeHelper';
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
+import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 export default class TradeFindCommand extends CoopCommand {
 
@@ -21,7 +22,7 @@ export default class TradeFindCommand extends CoopCommand {
 				},
 				{
 					key: 'receiveItemCode',
-					prompt: 'Which item_code are you offering?',
+					prompt: 'Which item_code should you receive?',
 					type: 'string',
 					default: ''
 				}
@@ -40,10 +41,19 @@ export default class TradeFindCommand extends CoopCommand {
 			// If both items given, list only those matching.
 			const matches = await TradeHelper.listMatch(offerItemCode, receiveItemCode);
 			
+			if (matches.length === 0) return MessagesHelper.selfDestruct(msg, 
+				`No existing trades exchanging ${offerItemCode} for ${receiveItemCode}`);
 
 		} else {
 			// If only offer item given, list all of that type.
 			const types = await TradeHelper.listType(offerItemCode);
+
+			if (matches.length === 0) return MessagesHelper.selfDestruct(msg, 
+				`No existing trades offering ${offerItemCode}`);
+
+			// TODO: Format and present the matches if they exist.
+
+			console.log(types);
 		}
 
     }

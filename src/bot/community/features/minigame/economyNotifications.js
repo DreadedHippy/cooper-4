@@ -107,12 +107,12 @@ export default class EconomyNotifications {
 
                 // Format the mining data.
 
-                notificationString += `\n\n**Latest Mining Totals:**\n` +
+                notificationString += `**Latest Mining Totals:**\n` +
                     `Hits: ${mining.totals.hits}\n` +
                     `Mined: ${mining.totals.mined}\n` +
                     `Diamonds: ${mining.totals.diamonds}\n` +
                     `Broken Pickaxes: ${mining.totals.brokenPickaxes}\n` +
-                    `Points Change: ${mining.totals.points}\n`;
+                    `Points Change: ${mining.totals.points}\n\n`;
 
                 // {
                 // users: {

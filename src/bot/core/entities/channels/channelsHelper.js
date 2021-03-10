@@ -48,13 +48,17 @@ export default class ChannelsHelper {
             });
     }
 
-    static codeShoutReact(msgRef, text, recordChan, emoji, selfDestruct = true) {
+    static codeShout(msgRef, text, recordChan, selfDestruct = true) {
         if (!this.checkIsByCode(msgRef.channel.id, recordChan)) {
             msgRef.say(text).then(msg => {
                 if (selfDestruct) MessagesHelper.delayDelete(msg, 15000);
             });
         }
-        return this._postToChannelCode(recordChan, text, 666)
+        return this._postToChannelCode(recordChan, text, 666);
+    }
+
+    static codeShoutReact(msgRef, text, recordChan, emoji, selfDestruct = true) {
+        return this.codeShout(msgRef, text, recordChan, selfDestruct)
             .then(msg => {
                 if (msg) MessagesHelper.delayReact(emoji)
             });
@@ -115,7 +119,11 @@ export default class ChannelsHelper {
         return ChannelsHelper.fetchRandomTextChannel(server);
     }
     static checkIsByCode(id, code) {
-        return CHANNELS[code].id === id;
+        const channel = CHANNELS[code];
+
+        let result = false;
+        if (channel && channel.id === id) result = true;
+        return result;
     }
     static async propagate(msgRef, text, recordChan, selfDestruct = true) {
         if (!this.checkIsByCode(msgRef.channel.id, recordChan)) {

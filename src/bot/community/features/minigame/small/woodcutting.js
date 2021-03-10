@@ -71,6 +71,7 @@ export default class WoodcuttingMinigame {
                     pointGain: brokenDamage
                 });
 
+                
                 const actionText = `${user.username} broke an axe trying to cut wood, ${userAxesNum - 1} remaining!`;
                 const damageText = `${brokenDamage} points (${pointsDamageResult}).`;
                 ChannelsHelper.propagate(msg, `${actionText} ${damageText}`, 'ACTIONS');

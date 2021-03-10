@@ -4,9 +4,9 @@ import AboutHelper from "./aboutHelper";
 export default class StatisticsHelper {
 
     static async update() {
-        ChannelsHelper._postToFeed('Should update about messages with new statistics!');
-
+        
         try {
+            // ChannelsHelper._postToFeed('Should update about messages with new statistics!');
             await AboutHelper.addAboutStats();
         } catch(e) {
             console.error(e);
