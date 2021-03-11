@@ -2,6 +2,22 @@ import { Client } from 'discord.js-commando';
 import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
+<<<<<<< HEAD
+=======
+import ChopperMinigame from './community/features/minigame/small/chopper';
+import ItemTotalCommand from './commands/economy/itemTotal';
+import ItemsHelper from './community/features/items/itemsHelper';
+import EconomyHelper from './community/features/economy/economyHelper';
+import TradeHelper from './community/features/economy/tradeHelper';
+import ElectionHelper from './community/features/hierarchy/election/electionHelper';
+import ServerHelper from './core/entities/server/serverHelper';
+import CooperMorality from './community/features/minigame/small/cooperMorality';
+import ChannelsHelper from './core/entities/channels/channelsHelper';
+import InstantFurnaceMinigame from './community/features/minigame/small/instantfurnace';
+import MessagesHelper from './core/entities/messages/messagesHelper';
+import SacrificeHelper from './community/features/events/sacrificeHelper.js';
+
+>>>>>>> c9508f73382bf5a934f44ef2c2b76ed358f58d91
 
 
 // v DEV IMPORT AREA v
