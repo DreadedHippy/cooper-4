@@ -1,8 +1,6 @@
 import ElectionHelper from "../../community/features/hierarchy/election/electionHelper";
 import AboutHelper from "../../community/features/server/aboutHelper";
 import ServerHelper from "../entities/server/serverHelper";
-import Crossover from "./crossover";
-import Redis from "./redis";
 
 export default (discordClient) => {
 
@@ -22,10 +20,6 @@ export default (discordClient) => {
                       type: "LISTENING"
                     }
                 });
-
-                // Connect to redis and preload crossover data.
-                Redis.connect();
-                Redis.connection.on('connect', () => Crossover.load());
 
                 // Prepare cache (avoid partials)!
                 const guild = ServerHelper.getByCode(discordClient, 'PROD');
