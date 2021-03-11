@@ -11,6 +11,9 @@ const STATE = {
     // Chance/random instance
     CHANCE: new Chance,
 
+    // The economy reserve wallet
+    WALLET: null,
+
     // Message ephemeral state for tracking message updates/notifications
     MESSAGE_HISTORY: {},
     EVENTS_HISTORY: {}

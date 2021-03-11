@@ -1,7 +1,9 @@
+import BlockIO from 'block_io';
+import CDNManager from './setup/cdn';
+import Database from './setup/database';
+
 import client from './setup/client';
 import registerLogging from './setup/logging';
-import Database from './setup/database';
-import CDNManager from './setup/cdn';
 
 // Feature/abstract usage.
 import registerCommunityEvents from '../../bot/community/events/eventsManifest';
@@ -18,6 +20,9 @@ export default async function bootstrap() {
 
     // Login to Discord with the bot.
     await botClient.login(process.env.DISCORD_TOKEN);
+
+    // Setup the bot wallet for economy reserves.
+    STATE.WALLET = new BlockIO(process.env.BITCOIN_APIKEY);
 
     // Register community events.
     registerCommunityEvents(botClient);
