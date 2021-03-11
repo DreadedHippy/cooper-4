@@ -158,7 +158,9 @@ export default class UsersHelper {
             text: "SELECT intro_link, intro_time FROM users WHERE discord_id = $1",
             values: [member.user.id]
         };
-        return await Database.query(query);
+        
+        const result = await Database.query(query);
+        return DatabaseHelper.single(result);
     }
     
     static async getLastUser() {
