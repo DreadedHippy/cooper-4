@@ -3,7 +3,6 @@ import RolesHelper from '../../core/entities/roles/rolesHelper';
 import ServerHelper from '../../core/entities/server/serverHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';
 import ROLES from '../../core/config/roles.json';
-import { Server } from 'socket.io';
 
 export default class DontCommitCommand extends CoopCommand {
 
