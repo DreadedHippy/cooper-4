@@ -15,14 +15,14 @@ export default async function bootstrap() {
     // Globalise the created client (extended Discordjs).
     const botClient = STATE.CLIENT = client();
 
+    // Setup the bot wallet for economy reserves.
+    STATE.WALLET = new BlockIO(process.env.BITCOIN_APIKEY, process.env.WALLET_PIN);
+
     // Connect to PostGres Database
     await Database.connect();
 
     // Login to Discord with the bot.
     await botClient.login(process.env.DISCORD_TOKEN);
-
-    // Setup the bot wallet for economy reserves.
-    STATE.WALLET = new BlockIO(process.env.BITCOIN_APIKEY);
 
     // Register community events.
     registerCommunityEvents(botClient);

@@ -19,11 +19,11 @@ export default class ReservesHelper {
             messageText = 'Failure accessing reserves balance.'
         }
 
-        return this.balanceText;
+        return messageText;
     }
 
     static balance() {
-        return STATE.WALLET.getBalance();
+        return STATE.WALLET.get_balance();
     }
 
 }
