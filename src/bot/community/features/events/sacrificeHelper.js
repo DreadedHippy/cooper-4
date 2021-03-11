@@ -227,7 +227,7 @@ export default class SacrificeHelper {
         try {
             //sacrifice random member if a maximum of five people are being sacrificed and the member exists
             const member = await UsersHelper.random();
-            const sacrificeChannel = client.channels.cache.get(CHANNELS.SACRIFICE.id);
+            const sacrificeChannel = STATE.CLIENT.channels.cache.get(CHANNELS.SACRIFICE.id);
 
             const fetchedMessages = await sacrificeChannel.messages.fetch({ limit: 6 });
             const messageNum = fetchedMessages.size;

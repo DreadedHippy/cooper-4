@@ -13,6 +13,7 @@ import CooperMorality from './community/features/minigame/small/cooperMorality';
 import ChannelsHelper from './core/entities/channels/channelsHelper';
 import InstantFurnaceMinigame from './community/features/minigame/small/instantfurnace';
 import MessagesHelper from './core/entities/messages/messagesHelper';
+import SacrificeHelper from './community/features/events/sacrificeHelper.js';
 
 
 
