@@ -29,5 +29,5 @@ export default async function bootstrap() {
     await CDNManager.start();
 
     // Set activity.
-    botClient.user.setActivity('castles being planned.', { type: 'WATCHING' });
+    botClient.user.setActivity('SACRIFICE REFORM 2021', { type: 'WATCHING' });
 }
