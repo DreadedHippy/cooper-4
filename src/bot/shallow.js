@@ -32,25 +32,21 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
 
-        // List my own/users trades (like items command).
+        // List my own/users trades (like items command) My trades command including # slots
         // List all trades, trades of item, trades of matching items.
 
 
+        // const matches = await TradeHelper.findOfferReceiveMatches(offerItemCode, receiveItemCode);
+        // console.log(matches);
 
+        // const types = await TradeHelper.findReceiveMatches(offerItemCode);
+        // console.log(types);
 
         
 
-
-
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
         // Get exchange rate based on current trades for that item
-
         // Add exchange rate method (command)
-        // My trades command including # slots
-        // Create a trade.
-        // Accept a trade.
-        // ...
-        // Accept a specific trade may need a command
 
 
         // Hard, Quick:
