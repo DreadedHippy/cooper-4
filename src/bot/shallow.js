@@ -28,8 +28,8 @@ const shallowBot = async () => {
             
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        STATE.WALLET = new BlockIO(process.env.BITCOIN_APIKEY, process.env.WALLET_PIN);
-        console.log(await ReservesHelper.balanceText());
+        // STATE.WALLET = new BlockIO(process.env.BITCOIN_APIKEY, process.env.WALLET_PIN);
+        // console.log(await ReservesHelper.balanceText());
         
         
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
