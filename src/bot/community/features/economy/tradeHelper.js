@@ -132,7 +132,9 @@ export default class TradeHelper {
     }
 
     static manyTradeItemsStr(trades) {
-        return trades.map(trade => `${this.tradeItemsStr(trade)}\n\n`).join('');
+        return trades.map(trade => 
+            `#${trade.id} by ${trade.trader_username}\n${this.tradeItemsStr(trade)}\n\n`
+        ).join('');
     }
 
     // This method directly takes items from user to close a trade.
