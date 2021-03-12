@@ -10,6 +10,7 @@ import BlockIO from 'block_io';
 import ReservesHelper from './community/features/economy/reservesHelper';
 import ElectionHelper from './community/features/hierarchy/election/electionHelper';
 import ItemsHelper from './community/features/items/itemsHelper';
+import ChannelsHelper from './core/entities/channels/channelsHelper';
 
 // ^ DEV IMPORT AREA ^
 
@@ -31,20 +32,17 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
 
-        // const commanderItem = await ItemsHelper.getUserWithItem('ELECTION_CROWN');
-        // console.log(commanderItem);
-        // 786671654721683517
-
-        // ElectionHelper.ensureItemSeriousness();
-
-
-        // STATE.WALLET = new BlockIO(process.env.BITCOIN_APIKEY, process.env.WALLET_PIN);
-        // console.log(await ReservesHelper.balanceText());
-        
-        
-        // NOTES AND LONGER TERM CHALLENGES/ISSUES:
         // List my own/users trades (like items command).
         // List all trades, trades of item, trades of matching items.
+
+
+
+
+        
+
+
+
+        // NOTES AND LONGER TERM CHALLENGES/ISSUES:
         // Get exchange rate based on current trades for that item
 
         // Add exchange rate method (command)
