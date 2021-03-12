@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 import BlockIO from 'block_io';
 import ReservesHelper from './community/features/economy/reservesHelper';
 import ElectionHelper from './community/features/hierarchy/election/electionHelper';
+import ItemsHelper from './community/features/items/itemsHelper';
 
 // ^ DEV IMPORT AREA ^
 
@@ -30,7 +31,11 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
 
-        ElectionHelper.ensureItemSeriousness();
+        // const commanderItem = await ItemsHelper.getUserWithItem('ELECTION_CROWN');
+        // console.log(commanderItem);
+        // 786671654721683517
+
+        // ElectionHelper.ensureItemSeriousness();
 
 
         // STATE.WALLET = new BlockIO(process.env.BITCOIN_APIKEY, process.env.WALLET_PIN);
