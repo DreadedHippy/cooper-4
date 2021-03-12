@@ -16,13 +16,13 @@ export default class TradeFindCommand extends CoopCommand {
 			examples: ['tradefind', '!tradefind laxative'],
 			args: [
 				{
-					key: 'offerItemCode',
+					key: 'offerItemCodeStr',
 					prompt: 'Which item_code are you offering?',
 					type: 'string',
 					default: ''
 				},
 				{
-					key: 'receiveItemCode',
+					key: 'receiveItemCodeStr',
 					prompt: 'Which item_code should you receive?',
 					type: 'string',
 					default: ''
@@ -31,19 +31,19 @@ export default class TradeFindCommand extends CoopCommand {
 		});
 	}
 
-	async run(msg, { offerItemCode, receiveItemCode }) {
+	async run(msg, { offerItemCodeStr, receiveItemCodeStr }) {
 		super.run(msg);
 
-		offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
-		receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
+		const offerItemCode = ItemsHelper.parseFromStr(offerItemCodeStr);
+		const receiveItemCode = ItemsHelper.parseFromStr(receiveItemCodeStr);
 
 		// Check if offer item code is default (all) or valid.
-		if (offerItemCode !== '' && !ItemsHelper.getUsableItems().includes(offerItemCode))
-			return MessagesHelper.selfDestruct(msg, `Invalid item code (${offerItemCode}).`);
+		if (offerItemCodeStr !== '' && !offerItemCode)
+			return MessagesHelper.selfDestruct(msg, `Invalid item code (${offerItemCodeStr}).`);
 
 		// Check if receive item code is default (all) or valid.
-		if (receiveItemCode !== '' && !ItemsHelper.getUsableItems().includes(receiveItemCode))
-			return MessagesHelper.selfDestruct(msg, `Invalid item code (${receiveItemCode}).`);
+		if (receiveItemCodeStr !== '' && !receiveItemCode)
+			return MessagesHelper.selfDestruct(msg, `Invalid item code (${receiveItemCodeStr}).`);
 
 		// Check for index request/all/latest.
 		if (offerItemCode === '') {

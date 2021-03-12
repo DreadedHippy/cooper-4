@@ -16,13 +16,13 @@ export default class TradesCommand extends CoopCommand {
 			examples: ['trades', '!trades LAXATIVE'],
 			args: [
 				{
-					key: 'offerItemCode',
+					key: 'offerItemCodeStr',
 					prompt: 'Which item_code are you offering?',
 					type: 'string',
 					default: ''
 				},
 				{
-					key: 'receiveItemCode',
+					key: 'receiveItemCodeStr',
 					prompt: 'Which item_code should you receive?',
 					type: 'string',
 					default: ''
@@ -31,20 +31,23 @@ export default class TradesCommand extends CoopCommand {
 		});
 	}
 
-	async run(msg, { offerItemCode, receiveItemCode }) {
+	async run(msg, { offerItemCodeStr, receiveItemCodeStr }) {
 		super.run(msg);
 
 		try {
 			// Load trades for that user.
 			const myTrades = await TradeHelper.getByTrader(msg.author.id);
 			
+			const offerItemCode = ItemsHelper.parseFromStr(offerItemCodeStr);
+			const receiveItemCode = ItemsHelper.parseFromStr(receiveItemCodeStr);
+	
 			// Check if offer item code is default (all) or valid.
-			if (offerItemCode !== '' && !ItemsHelper.getUsableItems().includes(offerItemCode))
-				return MessagesHelper.selfDestruct(msg, `Invalid item code (${offerItemCode}).`);
-
+			if (offerItemCodeStr !== '' && !offerItemCode)
+				return MessagesHelper.selfDestruct(msg, `Invalid item code (${offerItemCodeStr}).`);
+	
 			// Check if receive item code is default (all) or valid.
-			if (receiveItemCode !== '' && !ItemsHelper.getUsableItems().includes(receiveItemCode))
-				return MessagesHelper.selfDestruct(msg, `Invalid item code (${receiveItemCode}).`);
+			if (receiveItemCodeStr !== '' && !receiveItemCode)
+				return MessagesHelper.selfDestruct(msg, `Invalid item code (${receiveItemCodeStr}).`);
 
 			// Calculate used/total trade slots.
 			// TODO: Implement trade slots as a separate command.
