@@ -118,7 +118,7 @@ export default class TradeHelper {
         };
         
         const result = await Database.query(query);
-        return DatabaseHelper.single(result);
+        return DatabaseHelper.many(result);
     }
 
 

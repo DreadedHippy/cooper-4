@@ -44,7 +44,8 @@ const shallowBot = async () => {
         const firstFifteenTrades = all.map(trade => `${TradeHelper.tradeItemsStr(trade)}\n\n`);
         console.log(firstFifteenTrades);
 
-
+        const myTrades = await TradeHelper.getByTrader('786671654721683517');
+        console.log(myTrades);
 
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
         // Get exchange rate based on current trades for that item
