@@ -5,7 +5,7 @@ import ItemsHelper from "../itemsHelper";
 import { EGG_DATA } from '../../minigame/small/egghunt';
 import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 
-// TODO: Make into "ReactionUsableItem" and add callback
+v
 
 export default class LegendaryEggHandler {
 
@@ -44,7 +44,15 @@ export default class LegendaryEggHandler {
             } catch(e) {
                 console.error(e);
             }
-        }   
+        }
+
+        // On 3 average hearts, allow average egg suggestion.
+        if (reaction.emoji.name === '💜' && reaction.count === 3)
+            // Add legendary_egg emoji reaction.
+            MessagesHelper.delayReact(reaction.message, EMOJIS.LEGENDARY_EGG, 333);
+
+            // TODO: Add animation due to rarity.
+            MessagesHelper.delayReact(reaction.message, '✨', 666);
     }
    
 }
