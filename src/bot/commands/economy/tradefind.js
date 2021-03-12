@@ -56,7 +56,7 @@ export default class TradeFindCommand extends CoopCommand {
 			// Return matching trades.
 			} else {
 				// Format and present the matches if they exist.
-				const matchesStr = matches.map(trade => `${TradeHelper.tradeItemsStr(trade)}\n\n`)
+				const matchesStr = TradeHelper.manyTradeItemsStr(matches);
 				return MessagesHelper.selfDestruct(msg, matchesStr);
 			}
 
@@ -72,7 +72,7 @@ export default class TradeFindCommand extends CoopCommand {
 			// Return matching trades.
 			} else {
 				// Format and present the matches if they exist.
-				const typesStr = matches.map(trade => `${TradeHelper.tradeItemsStr(trade)}\n\n`)
+				const typesStr = TradeHelper.manyTradeItemsStr(types);
 				return MessagesHelper.selfDestruct(msg, typesStr);
 			}
 		}

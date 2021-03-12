@@ -131,6 +131,10 @@ export default class TradeHelper {
         );
     }
 
+    static manyTradeItemsStr(trades) {
+        return trades.map(trade => `${this.tradeItemsStr(trade)}\n\n`).join('');
+    }
+
     // This method directly takes items from user to close a trade.
     static async accept(openTradeID, accepteeID, accepteeName) {
         try {
@@ -152,7 +156,6 @@ export default class TradeHelper {
                     await this.remove(openTradeID);
     
                     // Build string for logging/feedback.
-                    
                     const exchangeStr = this.tradeItemsStr(trade);
                     const actionStr = `**${accepteeName} accepted trade #${trade.id} from ${trade.trader_username}`;
                     const tradeConfirmStr = `${actionStr}**\n\n${exchangeStr}`;

@@ -42,35 +42,31 @@ export default class TradesCommand extends CoopCommand {
 			// TODO: Filter out invalid item codes before they cause major issues.
 
 
-
 			// Calculate used/total trade slots.
 			// TODO: Implement trade slots as a separate command.
 			const tradeslotStr = `${msg.author.username} has ${myTrades.length}/5 active trades slots.\n\n`;
 
-			// Distinguish between whether the user wants all trade information of a specific one.
+			// User did not specify a preference, show default response.
 			if (offerItemCode === '') {
 				// Display all trades
-				const allTradesStr = myTrades.map(trade => `${TradeHelper.tradeItemsStr(trade)}\n\n`)
+				const allTradesStr = TradeHelper.manyTradeItemsStr(myTrades);
 				return MessagesHelper.selfDestruct(msg, tradeslotStr + allTradesStr);
 			
-			}else if (offerItemCode !== '' && receiveItemCode === '') {
+			// User attempted to provide offer item code, find only trades with that offer item.
+			} else if (offerItemCode !== '' && receiveItemCode === '') {
 				// Get trades based on a match.
-				const matchingTradesStr = myTrades.map(trade => {
-					if (trade.offer_item === offerItemCode)
-						return `${TradeHelper.tradeItemsStr(trade)}\n\n`;
-					else 
-						return '';
-				});
+				const matchingOffered = myTrades.filter(trade => trade.offer_item === offerItemCode);
+				const matchingTradesStr = TradeHelper.manyTradeItemsStr(matchingOffered);
 				return MessagesHelper.selfDestruct(msg, tradeslotStr + matchingTradesStr);				
+			
+			// User attempted to provide both item codes, find only matches.
 			} else if (offerItemCode !== '' && receiveItemCode !== '') {
 				// Get trades based on a match.
-				const matchingTradesStr = myTrades.map(trade => {
-					if (trade.offer_item === offerItemCode && trade.receive_item === receiveItemCode)
-						return `${TradeHelper.tradeItemsStr(trade)}\n\n`;
-					else 
-						return '';
-				});
-				return MessagesHelper.selfDestruct(msg, tradeslotStr + matchingTradesStr);
+				const matchingOfferedReceived = myTrades.filter(trade => 
+					trade.offer_item === offerItemCode && trade.receive_item === receiveItemCode
+				);
+				const matchingOfferedReceivedStr = TradeHelper.manyTradeItemsStr(matchingOfferedReceived);
+				return MessagesHelper.selfDestruct(msg, tradeslotStr + matchingOfferedReceivedStr);
 			}
 			
 		} catch(e) {
