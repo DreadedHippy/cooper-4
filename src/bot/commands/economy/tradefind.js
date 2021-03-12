@@ -57,7 +57,7 @@ export default class TradeFindCommand extends CoopCommand {
 			// If only offer item given, list all of that type.
 			const types = await TradeHelper.findReceiveMatches(offerItemCode);
 
-			if (matches.length === 0) return MessagesHelper.selfDestruct(msg, 
+			if (types.length === 0) return MessagesHelper.selfDestruct(msg, 
 				`No existing trades offering ${offerItemCode}`);
 
 			// TODO: Format and present the matches if they exist.
