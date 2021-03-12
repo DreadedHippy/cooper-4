@@ -5,8 +5,6 @@ import ItemsHelper from "../itemsHelper";
 import { EGG_DATA } from '../../minigame/small/egghunt';
 import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 
-v
-
 export default class LegendaryEggHandler {
 
     static async onReaction(reaction, user) {

@@ -286,9 +286,12 @@ export default class ElectionHelper {
     static async ensureItemSeriousness() {
         // Any leader who has role but not leaders_sword -> role removed.
         // Any commander who has role but not election_crown -> role removed.
+        const leaderItems = await ItemsHelper.getUsersWithItem('LEADERS_SWORD');
+        const commanderItems = await ItemsHelper.getUsersWithItem('ELECTION_CROWN');
 
+        console.log(leaderItems, commanderItems);
 
-
+        // TODO: Optional.
         // Any leader who has leaders_sword but not role -> leaders_sword added.
         // Any commander who has election_crown but not role -> election_crown added.
     }
@@ -600,6 +603,14 @@ export default class ElectionHelper {
         return false;
     }
 
+    static async _roleHierarchy() {
+        const hierarchy = {
+            commander: RolesHelper._getUserWithCode('COMMANDER'),
+            leaders: RolesHelper._getUsersWithRoleCodes(['LEADER'])
+        };
+        return hierarchy;
+    }
+
     static async countdownFeedback() {
         const elecMsg = await this.getElectionMsg();
         const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
@@ -610,19 +621,18 @@ export default class ElectionHelper {
             const humanRemaining = TimeHelper.humaniseSecs(diff);
             const nextElecReadable = await this.nextElecFmt();
 
-            const hierarchy = {
-                commander: RolesHelper._getUserWithCode('COMMANDER'),
-                leaders: RolesHelper._getUsersWithRoleCodes(['LEADER'])
-            }
+            const hierarchy = this._roleHierarchy();
 
-            await this.editElectionInfoMsg(`**Election is over, here are your current officials:** \n\n` +
+            await this.editElectionInfoMsg(
+                `**Election is over, here are your current officials:** \n\n` +
 
                 `**Commander:**\n${hierarchy.commander.user.username} :crown: \n\n` +
 
                 `**Leaders:**\n` +
                     `${hierarchy.leaders.map(leader => `${leader.user.username} :crossed_swords:`).join('\n')}\n\n` +
 
-                `**Next Election:** ${nextElecReadable} (${humanRemaining})`);
+                `**Next Election:** ${nextElecReadable} (${humanRemaining})`
+            );
         }
     }
 

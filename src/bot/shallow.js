@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 
 import BlockIO from 'block_io';
 import ReservesHelper from './community/features/economy/reservesHelper';
+import ElectionHelper from './community/features/hierarchy/election/electionHelper';
 
 // ^ DEV IMPORT AREA ^
 
@@ -27,6 +28,10 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
             
         // DEV WORK AND TESTING ON THE LINES BELOW.
+
+
+        ElectionHelper.ensureItemSeriousness();
+
 
         // STATE.WALLET = new BlockIO(process.env.BITCOIN_APIKEY, process.env.WALLET_PIN);
         // console.log(await ReservesHelper.balanceText());
