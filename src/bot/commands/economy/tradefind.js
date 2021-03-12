@@ -46,13 +46,13 @@ export default class TradeFindCommand extends CoopCommand {
 			return MessagesHelper.selfDestruct(msg, `Invalid item code (${receiveItemCodeStr}).`);
 
 		// Check for index request/all/latest.
-		if (offerItemCode === '') {
+		if (offerItemCodeStr === '') {
 			// Return a list of 15 latest trades.
 			const all = await TradeHelper.all();
 			const allTitleStr = `**Latest 15 trade listings:**\n\n`;
 			return MessagesHelper.selfDestruct(msg, allTitleStr + TradeHelper.manyTradeItemsStr(all));
 
-		} else if (offerItemCode !== '' && receiveItemCode !== '') {
+		} else if (offerItemCodeStr !== '' && receiveItemCodeStr !== '') {
 			// If receive item code has been given, make sure only those matching returned.
 			const matches = await TradeHelper.findOfferReceiveMatches(offerItemCode, receiveItemCode);
 			
@@ -69,7 +69,7 @@ export default class TradeFindCommand extends CoopCommand {
 				return MessagesHelper.selfDestruct(msg, matchesTitleStr + matchesStr);
 			}
 
-		} else if (offerItemCode !== '' && receiveItemCode === '') {
+		} else if (offerItemCodeStr !== '' && receiveItemCodeStr === '') {
 			// If only offer item given, list all of that type.
 			const types = await TradeHelper.findReceiveMatches(offerItemCode);
 

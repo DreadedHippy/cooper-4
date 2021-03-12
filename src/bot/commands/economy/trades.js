@@ -54,7 +54,7 @@ export default class TradesCommand extends CoopCommand {
 			const tradeslotStr = `${msg.author.username} has ${myTrades.length}/5 active trades slots.\n\n`;
 
 			// User did not specify a preference, show default response.
-			if (offerItemCode === '') {
+			if (offerItemCodeStr === '') {
 				// Display all trades
 				const allTradesStr = TradeHelper.manyTradeItemsStr(myTrades);
 				const allTitleStr = `**All ${msg.author.username}'s trades:**\n\n`;
@@ -63,7 +63,7 @@ export default class TradesCommand extends CoopCommand {
 				// Do this and then prevent eggs from removing themselves under that condition....
 
 			// User attempted to provide offer item code, find only trades with that offer item.
-			} else if (offerItemCode !== '' && receiveItemCode === '') {
+			} else if (offerItemCodeStr !== '' && receiveItemCodeStr === '') {
 				// Get trades based on a match.
 				const matchingOffered = myTrades.filter(trade => trade.offer_item === offerItemCode);
 				const matchingTitleStr = `**Trades requiring your ${offerItemCode}:**\n\n`;
@@ -71,7 +71,7 @@ export default class TradesCommand extends CoopCommand {
 				return MessagesHelper.selfDestruct(msg, matchingTitleStr + matchingTradesStr);				
 			
 			// User attempted to provide both item codes, find only matches.
-			} else if (offerItemCode !== '' && receiveItemCode !== '') {
+			} else if (offerItemCodeStr !== '' && receiveItemCodeStr !== '') {
 				// Get trades based on a match.
 				const matchingOfferedReceived = myTrades.filter(trade => 
 					trade.offer_item === offerItemCode && trade.receive_item === receiveItemCode

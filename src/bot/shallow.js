@@ -28,6 +28,9 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
             
         // DEV WORK AND TESTING ON THE LINES BELOW.
+            // Get exchange rate based on current trades for that item
+            // Add exchange rate method (command)
+            
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
 
@@ -40,8 +43,7 @@ const shallowBot = async () => {
             // Detect server message/activity velocity increases (as % preferably).
             // Detect the completed gathering of wood/rocks
             // Community set and managed variable/value.
-            // Get exchange rate based on current trades for that item
-            // Add exchange rate method (command)
+
     });
 
 };
