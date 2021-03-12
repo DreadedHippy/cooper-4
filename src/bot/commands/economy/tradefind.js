@@ -37,6 +37,14 @@ export default class TradeFindCommand extends CoopCommand {
 		offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
 		receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
 
+		// Check if offer item code is default (all) or valid.
+		if (offerItemCode !== '' && !ItemsHelper.getUsableItems().includes(offerItemCode))
+			return MessagesHelper.selfDestruct(msg, `Invalid item code (${offerItemCode}).`);
+
+		// Check if receive item code is default (all) or valid.
+		if (receiveItemCode !== '' && !ItemsHelper.getUsableItems().includes(receiveItemCode))
+			return MessagesHelper.selfDestruct(msg, `Invalid item code (${receiveItemCode}).`);
+
 		// Check for index request/all/latest.
 		if (offerItemCode === '') {
 			// Return a list of 15 latest trades.
@@ -44,7 +52,7 @@ export default class TradeFindCommand extends CoopCommand {
 			const allTitleStr = `**Latest 15 trade listings:**\n\n`;
 			return MessagesHelper.selfDestruct(msg, allTitleStr + TradeHelper.manyTradeItemsStr(all));
 
-		} else if (receiveItemCode && receiveItemCode !== '') {
+		} else if (offerItemCode !== '' && receiveItemCode !== '') {
 			// If receive item code has been given, make sure only those matching returned.
 			const matches = await TradeHelper.findOfferReceiveMatches(offerItemCode, receiveItemCode);
 			
@@ -61,7 +69,7 @@ export default class TradeFindCommand extends CoopCommand {
 				return MessagesHelper.selfDestruct(msg, matchesTitleStr + matchesStr);
 			}
 
-		} else {
+		} else if (offerItemCode !== '' && receiveItemCode === '') {
 			// If only offer item given, list all of that type.
 			const types = await TradeHelper.findReceiveMatches(offerItemCode);
 

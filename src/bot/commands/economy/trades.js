@@ -38,9 +38,13 @@ export default class TradesCommand extends CoopCommand {
 			// Load trades for that user.
 			const myTrades = await TradeHelper.getByTrader(msg.author.id);
 			
+			// Check if offer item code is default (all) or valid.
+			if (offerItemCode !== '' && !ItemsHelper.getUsableItems().includes(offerItemCode))
+				return MessagesHelper.selfDestruct(msg, `Invalid item code (${offerItemCode}).`);
 
-			// TODO: Filter out invalid item codes before they cause major issues.
-
+			// Check if receive item code is default (all) or valid.
+			if (receiveItemCode !== '' && !ItemsHelper.getUsableItems().includes(receiveItemCode))
+				return MessagesHelper.selfDestruct(msg, `Invalid item code (${receiveItemCode}).`);
 
 			// Calculate used/total trade slots.
 			// TODO: Implement trade slots as a separate command.

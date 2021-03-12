@@ -37,9 +37,6 @@ const shallowBot = async () => {
         // Hard, Quick:
         
         // Harder:
-            // Add a multiplier to drops for woodcutting + mining etc... too weak atm.
-            // Finish actions messages for woodcutting/mining/crate drop
-            
             // Detect server message/activity velocity increases (as % preferably).
             // Detect the completed gathering of wood/rocks
             // Community set and managed variable/value.
