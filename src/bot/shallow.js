@@ -29,37 +29,22 @@ const shallowBot = async () => {
             
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-        // List my own/users trades (like items command) My trades command including # slots
-        // List all trades, trades of item, trades of matching items.
+        // DEV WORK AND TESTING ON THE LINES ABOVE.
 
-        // const matches = await TradeHelper.findOfferReceiveMatches(offerItemCode, receiveItemCode);
-        // console.log(matches);
-
-        // const types = await TradeHelper.findReceiveMatches(offerItemCode);
-        // console.log(types);
-
-
-        // Useful for debugging.
-        const all = await TradeHelper.all();
-        const firstFifteenTrades = all.map(trade => `${TradeHelper.tradeItemsStr(trade)}\n\n`);
-        console.log(firstFifteenTrades);
-
-        const myTrades = await TradeHelper.getByTrader('786671654721683517');
-        console.log(myTrades);
 
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
-        // Get exchange rate based on current trades for that item
-        // Add exchange rate method (command)
-
+        
         // Hard, Quick:
-        // Add a multiplier to drops for wood etc... too weak atm.
-
+        
         // Harder:
-        // Finish actions messages for woodcutting/mining/crate drop
-        // Detect server message/activity velocity increases (as % preferably).
-        // Detect the completed gathering of wood/rocks
-
-        // DEV WORK AND TESTING ON THE LINES ABOVE.
+            // Add a multiplier to drops for woodcutting + mining etc... too weak atm.
+            // Finish actions messages for woodcutting/mining/crate drop
+            
+            // Detect server message/activity velocity increases (as % preferably).
+            // Detect the completed gathering of wood/rocks
+            // Community set and managed variable/value.
+            // Get exchange rate based on current trades for that item
+            // Add exchange rate method (command)
     });
 
 };

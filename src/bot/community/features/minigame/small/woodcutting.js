@@ -8,6 +8,7 @@ import ItemsHelper from "../../items/itemsHelper";
 import PointsHelper from "../../points/pointsHelper";
 import EconomyNotifications from "../economyNotifications";
 import ServerHelper from "../../../../core/entities/server/serverHelper";
+import ReactionHelper from "../../../../core/entities/messages/reactionHelper";
 
 
 export default class WoodcuttingMinigame {
@@ -55,15 +56,21 @@ export default class WoodcuttingMinigame {
         if (userAxesNum <= 0) return MessagesHelper.selfDestruct(msg, noText, 10000);
 
         // Handle chance of axe breaking
-        const axeBreakPerc = Math.min(25, rewardRemaining);
-        const extractedOreNum = Math.ceil(rewardRemaining / 1.25);
-        const didBreak = STATE.CHANCE.bool({ likelihood: axeBreakPerc });
+        const pickaxeBreakPerc = Math.min(25, rewardRemaining);
+        
+        // Calculate number of extracted wood with applied collab buff/modifier.
+        const numCutters = ReactionHelper.countType(msg, '🪓') - 1;
+        const extractedWoodNum = Math.ceil(rewardRemaining / 1.25) * numCutters;
+
+
+        const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
         if (didBreak) {
             const axeUpdate = await ItemsHelper.use(user.id, 'AXE', 1);
             if (axeUpdate) {
                 const brokenDamage = -2;
                 const pointsDamageResult = await PointsHelper.addPointsByID(user.id, brokenDamage);
-    
+                
+                // Update economy statistics.
                 EconomyNotifications.add('MINING', {
                     playerID: user.id,
                     username: user.username,
@@ -78,20 +85,26 @@ export default class WoodcuttingMinigame {
             }
         } else {
             // See if updating the item returns the item and quantity.
-            const addedWood = await ItemsHelper.add(user.id, 'WOOD', extractedOreNum);
+            const addedWood = await ItemsHelper.add(user.id, 'WOOD', extractedWoodNum);
             const addPoints = await PointsHelper.addPointsByID(user.id, 1);
 
-            // TODO: Implement something rare from cutting wood
-            // if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
-            //     const addDiamond = await ItemsHelper.add(user.id, 'DIAMOND', 1);
-            //     ChannelsHelper.propagate(msg, `${user.username} found a diamond whilst mining! (${addDiamond})`, 'ACTIONS');
-            // }
+            // Rare events from woodcutting.
+            if (STATE.CHANCE.bool({ likelihood: 3.33 })) {
+                const addDiamond = await ItemsHelper.add(user.id, 'AVERAGE_EGG', 1);
+                ChannelsHelper.propagate(msg, `${user.username} found a average egg whilst mining! (${addDiamond})`, 'ACTIONS');
+            }
             
-            // if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
-            //     const diamondVeinQty = STATE.CHANCE.natural({ min: 5, max: 25 });
-            //     await ItemsHelper.add(user.id, 'DIAMOND', diamondVeinQty);
-            //     ChannelsHelper.propagate(msg, `${user.username} hit a major diamond vein, ${diamondVeinQty} found!`, 'ACTIONS');
-            // }
+            if (STATE.CHANCE.bool({ likelihood: 0.25 })) {
+                const diamondVeinQty = STATE.CHANCE.natural({ min: 5, max: 25 });
+                await ItemsHelper.add(user.id, 'RARE_EGG', diamondVeinQty);
+                ChannelsHelper.propagate(msg, `${user.username} triggered a chain branch reaction, ${diamondVeinQty} rare eggs found!`, 'ACTIONS');
+            }
+
+            if (STATE.CHANCE.bool({ likelihood: 0.075 })) {
+                const diamondVeinQty = STATE.CHANCE.natural({ min: 1, max: 3 });
+                await ItemsHelper.add(user.id, 'LEGENDARY_EGG', diamondVeinQty);
+                ChannelsHelper.propagate(msg, `${user.username} hit a lucky branch, ${diamondVeinQty} legendary egg(s) found!`, 'ACTIONS');
+            }
 
             // Reduce the number of rocks in the message.
             if (textMagnitude > 1) await msg.edit(EMOJIS.WOOD.repeat(textMagnitude - 1));
@@ -99,12 +112,12 @@ export default class WoodcuttingMinigame {
             
             // Provide feedback.
             const actionText = `${user.username} successfully chopped wood.`;
-            const rewardText = `+1 point (${addPoints}), +${extractedOreNum} wood (${addedWood})!`;
+            const rewardText = `+1 point (${addPoints}), +${extractedWoodNum} wood (${addedWood})!`;
             ChannelsHelper.propagate(msg, `${actionText} ${rewardText}`, 'ACTIONS');
 
             EconomyNotifications.add('WOODCUTTING', {
                 pointGain: 1,
-                recWood: extractedOreNum,
+                recWood: extractedWoodNum,
                 playerID: user.id,
                 username: user.username
             });

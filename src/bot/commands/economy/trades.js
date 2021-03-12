@@ -50,14 +50,18 @@ export default class TradesCommand extends CoopCommand {
 			if (offerItemCode === '') {
 				// Display all trades
 				const allTradesStr = TradeHelper.manyTradeItemsStr(myTrades);
-				return MessagesHelper.selfDestruct(msg, tradeslotStr + allTradesStr);
-			
+				const allTitleStr = `**All ${msg.author.username}'s trades:**\n\n`;
+				return MessagesHelper.selfDestruct(msg, allTitleStr + tradeslotStr + allTradesStr);
+		
+				// Do this and then prevent eggs from removing themselves under that condition....
+
 			// User attempted to provide offer item code, find only trades with that offer item.
 			} else if (offerItemCode !== '' && receiveItemCode === '') {
 				// Get trades based on a match.
 				const matchingOffered = myTrades.filter(trade => trade.offer_item === offerItemCode);
+				const matchingTitleStr = `**Trades requiring your ${offerItemCode}:**\n\n`;
 				const matchingTradesStr = TradeHelper.manyTradeItemsStr(matchingOffered);
-				return MessagesHelper.selfDestruct(msg, tradeslotStr + matchingTradesStr);				
+				return MessagesHelper.selfDestruct(msg, matchingTitleStr + matchingTradesStr);				
 			
 			// User attempted to provide both item codes, find only matches.
 			} else if (offerItemCode !== '' && receiveItemCode !== '') {
@@ -65,8 +69,9 @@ export default class TradesCommand extends CoopCommand {
 				const matchingOfferedReceived = myTrades.filter(trade => 
 					trade.offer_item === offerItemCode && trade.receive_item === receiveItemCode
 				);
+				const matchesTitleStr = `**Trades exchanging ${offerItemCode} for ${receiveItemCode}:**\n\n`;
 				const matchingOfferedReceivedStr = TradeHelper.manyTradeItemsStr(matchingOfferedReceived);
-				return MessagesHelper.selfDestruct(msg, tradeslotStr + matchingOfferedReceivedStr);
+				return MessagesHelper.selfDestruct(msg, matchesTitleStr + matchingOfferedReceivedStr);
 			}
 			
 		} catch(e) {

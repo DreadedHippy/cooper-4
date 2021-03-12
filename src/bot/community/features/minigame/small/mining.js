@@ -8,6 +8,7 @@ import ItemsHelper from "../../items/itemsHelper";
 import PointsHelper from "../../points/pointsHelper";
 import EconomyNotifications from "../economyNotifications";
 import ServerHelper from "../../../../core/entities/server/serverHelper";
+import ReactionHelper from "../../../../core/entities/messages/reactionHelper";
 
 
 export default class MiningMinigame {
@@ -55,14 +56,20 @@ export default class MiningMinigame {
 
         // Handle chance of pickaxe breaking
         const pickaxeBreakPerc = Math.min(25, rewardRemaining);
-        const extractedOreNum = Math.ceil(rewardRemaining / 1.5);
+
+        // Calculate number of extracted pickaxe with applied collab buff/modifier.
+        const numCutters = ReactionHelper.countType(msg, '⛏️') - 1;
+        const extractedOreNum = Math.ceil(rewardRemaining / 1.5) * numCutters;
+
+        // Test the pickaxe for breaking.
         const didBreak = STATE.CHANCE.bool({ likelihood: pickaxeBreakPerc });
         if (didBreak) {
             const pickaxeUpdate = await ItemsHelper.use(user.id, 'PICK_AXE', 1);
             if (pickaxeUpdate) {
                 const brokenPickDamage = -2;
                 const pointsDamageResult = await PointsHelper.addPointsByID(user.id, brokenPickDamage);
-    
+                
+                // Update mining economy statistics.
                 EconomyNotifications.add('MINING', {
                     playerID: user.id,
                     username: user.username,

@@ -6,6 +6,7 @@ import { EGG_DATA } from '../../minigame/small/egghunt';
 import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 
 import EMOJIS from "../../../../core/config/emojis.json";
+import ReactionHelper from "../../../../core/entities/messages/reactionHelper";
 
 export default class RareEggHandler {
 
@@ -36,7 +37,10 @@ export default class RareEggHandler {
 
                     // Send feedback and emojis.
                     ChannelsHelper.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💙');
-                    // MessagesHelper.delayReactionRemove(reaction, 333);
+
+                    const popularity = ReactionHelper.countType(reaction.message, '💙');
+                    if (popularity < 3) MessagesHelper.delayReactionRemove(reaction, 333);
+
                     MessagesHelper.delayReact(reaction.message, '💙', 666);
                 }
             } catch(e) {

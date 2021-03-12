@@ -5,6 +5,7 @@ import { EGG_DATA } from "../../minigame/small/egghunt";
 import PointsHelper from "../../points/pointsHelper";
 import ItemsHelper from "../itemsHelper";
 import EMOJIS from "../../../../core/config/emojis.json";
+import ReactionHelper from "../../../../core/entities/messages/reactionHelper";
 
 
 // TODO: Make into "ReactionUsableItem" and add callback
@@ -33,8 +34,11 @@ export default class AverageEggHandler {
                     // Apply the damage to the target's points.
                     const updatedPoints = await PointsHelper.addPointsByID(targetID, damage);
 
-                    // Add visuals animation
-                    MessagesHelper.delayReactionRemove(reaction, 333);
+                    // Add visuals animation.
+                    const popularity = ReactionHelper.countType(reaction.message, '💚');
+                    if (popularity < 3) MessagesHelper.delayReactionRemove(reaction, 333);
+
+                    // Add Cooper's popularity suggestion.
                     MessagesHelper.delayReact(reaction.message, '💚', 666);
 
                     const damageInfoText = ` ${damage} points (${updatedPoints})`;
