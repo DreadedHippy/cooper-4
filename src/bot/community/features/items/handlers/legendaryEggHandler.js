@@ -44,13 +44,14 @@ export default class LegendaryEggHandler {
             }
         }
 
-        // On 3 average hearts, allow average egg suggestion.
-        if (reaction.emoji.name === '💜' && reaction.count === 3)
+        // On 3 legendary hearts, allow average egg suggestion.
+        if (reaction.emoji.name === '💜' && reaction.count === 3) { 
             // Add legendary_egg emoji reaction.
             MessagesHelper.delayReact(reaction.message, EMOJIS.LEGENDARY_EGG, 333);
 
             // TODO: Add animation due to rarity.
             MessagesHelper.delayReact(reaction.message, '✨', 666);
+        }
     }
    
 }
