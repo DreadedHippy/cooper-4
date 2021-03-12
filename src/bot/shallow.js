@@ -30,7 +30,14 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
             // Get exchange rate based on current trades for that item
             // Add exchange rate method (command)
-            
+
+            const matches = await TradeHelper.findOfferReceiveMatches('GOLD_BAR', 'METAL_ORE');
+            const ratios = matches.map(match => match.receive_qty / match.offer_qty);
+            const average = ratios.reduce((acc, val) => {
+                acc = (acc + val) / 2;
+                return acc;
+            }, 0);
+            console.log(average);
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
 

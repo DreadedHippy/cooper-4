@@ -204,4 +204,15 @@ export default class TradeHelper {
         }        
     }
 
+    // Calculate conversion rate between items based on current open trade rates.
+    static async conversionRate(offerItem, receiveItem) {
+        const matches = await TradeHelper.findOfferReceiveMatches(offerItem, receiveItem);
+        const ratios = matches.map(match => match.receive_qty / match.offer_qty);
+        const average = ratios.reduce((acc, val) => {
+            acc = (acc + val) / 2;
+            return acc;
+        }, 0);
+        return average;
+    }
+
 }

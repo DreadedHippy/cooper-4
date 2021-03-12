@@ -49,7 +49,17 @@ export default class TradeFindCommand extends CoopCommand {
 		if (offerItemCodeStr === '') {
 			// Return a list of 15 latest trades.
 			const all = await TradeHelper.all();
-			const allTitleStr = `**Latest 15 trade listings:**\n\n`;
+			
+			// Add feedback for no trades currently.
+			if (all.length === 0) {
+				const noMatchesStr = `No existing trades listed/open.`;
+				return MessagesHelper.selfDestruct(msg, noMatchesStr);
+			}
+			
+			// Give feedback about trade listings.
+
+			// TODO: Provide more tips about !tradeaccept
+			const allTitleStr = `**Latest ${all.length} trade listings:**\n\n`;
 			return MessagesHelper.selfDestruct(msg, allTitleStr + TradeHelper.manyTradeItemsStr(all));
 
 		} else if (offerItemCodeStr !== '' && receiveItemCodeStr !== '') {
