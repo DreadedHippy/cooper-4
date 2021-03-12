@@ -3,15 +3,13 @@ import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
 
-
 // v DEV IMPORT AREA v
-
 import BlockIO from 'block_io';
 import ReservesHelper from './community/features/economy/reservesHelper';
 import ElectionHelper from './community/features/hierarchy/election/electionHelper';
 import ItemsHelper from './community/features/items/itemsHelper';
 import ChannelsHelper from './core/entities/channels/channelsHelper';
-
+import TradeHelper from './community/features/economy/tradeHelper';
 // ^ DEV IMPORT AREA ^
 
 // Load ENV variables.
@@ -31,10 +29,8 @@ const shallowBot = async () => {
             
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-
         // List my own/users trades (like items command) My trades command including # slots
         // List all trades, trades of item, trades of matching items.
-
 
         // const matches = await TradeHelper.findOfferReceiveMatches(offerItemCode, receiveItemCode);
         // console.log(matches);
@@ -42,12 +38,17 @@ const shallowBot = async () => {
         // const types = await TradeHelper.findReceiveMatches(offerItemCode);
         // console.log(types);
 
-        
+
+        // Useful for debugging.
+        const all = await TradeHelper.all();
+        const firstFifteenTrades = all.map(trade => `${TradeHelper.tradeItemsStr(trade)}\n\n`);
+        console.log(firstFifteenTrades);
+
+
 
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
         // Get exchange rate based on current trades for that item
         // Add exchange rate method (command)
-
 
         // Hard, Quick:
         // Add a multiplier to drops for wood etc... too weak atm.

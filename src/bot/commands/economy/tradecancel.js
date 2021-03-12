@@ -13,13 +13,13 @@ export default class TradeCancelCommand extends CoopCommand {
 			group: 'economy',
 			memberName: 'tradecancel',
 			aliases: [],
-			description: 'This command lets you tradecancel the items you own',
+			description: 'Cancel one of your open trades.',
 			details: `Details of the tradecancel command`,
-			examples: ['tradecancel', '!tradecancel LAXATIVE AVERAGE_EGG 1 5'],
+			examples: ['tradecancel', '!tradecancel {TRADE_ORDER_ID eg. 21} -> !tradecancel 21'],
 			args: [
 				{
 					key: 'tradeID',
-					prompt: 'Accept which trade #ID?',
+					prompt: 'Cancel which trade #ID?',
 					type: 'string'
 				},
 			],
@@ -30,6 +30,7 @@ export default class TradeCancelCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
+			// More readable access to useful properties.
 			const tradeeID = msg.author.id;
 			const tradeeName = msg.author.username;
 
@@ -38,21 +39,21 @@ export default class TradeCancelCommand extends CoopCommand {
 			if (!trade) return MessagesHelper.selfDestruct(msg, `Invalid trade ID - already sold?`);
 			
 			// Check if user can fulfil the trade.
-			const hasEnough = await ItemsHelper.hasQty(tradeeID, trade.receive_item, trade.receive_qty);
-			if (!hasEnough) return MessagesHelper.selfDestruct(msg, `Insufficient offer quantity for trade.`);
+			const isYours = trade.trader_id === tradeeID;
+			if (!isYours) return MessagesHelper.selfDestruct(msg, `Trade #${trade.id} is not yours to cancel.`);
 
 			// Let helper handle accepting logic as it's used in multiple places so far.
-			const tradeAccepted = await TradeHelper.accept(tradeID, tradeeID, tradeeName);
-			if (tradeAccepted) {
-				MessagesHelper.selfDestruct(msg, 'Trade accepted.');
-			} else {
+			const tradeCancelled = await TradeHelper.cancel(tradeID, tradeeID, tradeeName);
+			if (tradeCancelled) {
 				// Log cancelled trades
-				MessagesHelper.selfDestruct(msg, 'Trade could not be accepted.');
-				console.log('Trade accept failed');
+				MessagesHelper.selfDestruct(msg, `Trade #${trade.id} cancelled.`);
+			} else {
+				MessagesHelper.selfDestruct(msg, `Trade #${trade.id} could not be cancelled.`);
+				console.log('Trade cancel failed');
 			}
 			
 		} catch(e) {
-			console.log('Failed to trade item.');
+			console.log('Failed to cancel trade.');
 			console.error(e);
 		}
     }

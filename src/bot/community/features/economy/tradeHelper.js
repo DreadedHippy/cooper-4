@@ -1,6 +1,5 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import DatabaseHelper from "../../../core/entities/databaseHelper";
-import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import Database from "../../../core/setup/database";
 import ItemsHelper from "../items/itemsHelper";
 
@@ -17,10 +16,12 @@ export default class TradeHelper {
         return result;
     }
 
-    static async all() {
+    // Defaults to returning 15 latest trades.
+    static async all(limit = 15) {
         const query = {
             name: "get-all-trades",
-            text: `SELECT * FROM open_trades`
+            text: `SELECT * FROM open_trades ORDER BY id ASC LIMIT $1;`,
+            values: [limit]
         };
 
         const result = await Database.query(query);
@@ -115,6 +116,15 @@ export default class TradeHelper {
         return DatabaseHelper.single(result);
     }
 
+    // Turn trade into items receive/loss string from searcher perspective 
+    // (not trader perspective).
+    static tradeItemsStr(trade) {
+        return ItemsHelper.exchangeItemsQtysStr(
+            trade.receive_item, trade.receive_qty,
+            trade.offer_item, trade.offer_qty
+        );
+    }
+
     // This method directly takes items from user to close a trade.
     static async accept(openTradeID, accepteeID, accepteeName) {
         try {
@@ -136,11 +146,10 @@ export default class TradeHelper {
                     await this.remove(openTradeID);
     
                     // Build string for logging/feedback.
-                    const tradeAwayStr = `${MessagesHelper._displayEmojiCode(trade.offer_item)}x${trade.offer_qty}`;
-                    const receiveBackStr = `${MessagesHelper._displayEmojiCode(trade.receive_item)}x${trade.receive_qty}`;
-                    const exchangeString = `<- ${tradeAwayStr}\n-> ${receiveBackStr}`;
-                    const tradeConfirmStr = `**${accepteeName} accepted trade #${trade.id} from ${trade.trader_username}**\n\n` +
-                        exchangeString;
+                    
+                    const exchangeStr = this.tradeItemsStr(trade);
+                    const actionStr = `**${accepteeName} accepted trade #${trade.id} from ${trade.trader_username}`;
+                    const tradeConfirmStr = `${actionStr}**\n\n${exchangeStr}`;
                                         
                     // Log confirmed trades
                     ChannelsHelper._postToChannelCode('ACTIONS', tradeConfirmStr, 999);
@@ -154,6 +163,34 @@ export default class TradeHelper {
             console.error(e);
         }        
         return false;
+    }
+
+    static async cancel(cancelTradeID, canceleeID, canceleeName) {
+        try {
+            // Get trade by ID
+            const trade = await this.get(cancelTradeID);
+
+            // Add the offer items to the cancelee.
+            await ItemsHelper.add(canceleeID, trade.offer_item, trade.offer_qty);
+
+            // Delete/close the open trade offer.
+            await this.remove(cancelTradeID);
+
+            // Build string for logging/feedback.
+            const lossItemQtyStr = ItemsHelper.lossItemQtyStr(trade.offer_item, trade.offer_qty);
+            const tradeCancelStr = `**${canceleeName} cancelled trade #${trade.id}**\n\n${lossItemQtyStr}`;
+
+            // Log confirmed trades
+            ChannelsHelper._postToChannelCode('ACTIONS', tradeCancelStr, 999);
+
+            // Return successful result.
+            return true;
+
+        } catch(e) {
+            console.log('Error accepting trade offer.');
+            console.error(e);
+            return false;
+        }        
     }
 
 }

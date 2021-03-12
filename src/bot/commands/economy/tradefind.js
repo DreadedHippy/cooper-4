@@ -18,7 +18,8 @@ export default class TradeFindCommand extends CoopCommand {
 				{
 					key: 'offerItemCode',
 					prompt: 'Which item_code are you offering?',
-					type: 'string'
+					type: 'string',
+					default: 'ALL'
 				},
 				{
 					key: 'receiveItemCode',
@@ -36,14 +37,20 @@ export default class TradeFindCommand extends CoopCommand {
 		offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
 		receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
 
-		// If receive item code has been given, make sure only those matching returned.
-		if (receiveItemCode && receiveItemCode !== '') {
-			// If both items given, list only those matching.
+		if (offerItemCode === 'ALL') {
+			// Return a list of 15 latest trades.
+			const all = await TradeHelper.all();
+			const firstFifteenTrades = all.map(trade => `${TradeHelper.tradeItemsStr(trade)}\n\n`);
+			return MessagesHelper.selfDestruct(msg, firstFifteenTrades);
+
+		} else if (receiveItemCode && receiveItemCode !== '') {
+			// If receive item code has been given, make sure only those matching returned.
 			const matches = await TradeHelper.findOfferReceiveMatches(offerItemCode, receiveItemCode);
 			
 			if (matches.length === 0) return MessagesHelper.selfDestruct(msg, 
 				`No existing trades exchanging ${offerItemCode} for ${receiveItemCode}`);
-
+				
+			// TODO: Format and present the matches if they exist.
 			console.log(matches);
 
 		} else {
@@ -54,7 +61,6 @@ export default class TradeFindCommand extends CoopCommand {
 				`No existing trades offering ${offerItemCode}`);
 
 			// TODO: Format and present the matches if they exist.
-
 			console.log(types);
 		}
 

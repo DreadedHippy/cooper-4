@@ -221,6 +221,23 @@ export default class ItemsHelper {
         const result = await Database.query(query);
         return DatabaseHelper.many(result);
     }
+    
+    static itemEmojiQtyStr(itemCode, itemQty = 1) {
+        return `${MessagesHelper._displayEmojiCode(itemCode)}x${itemQty}`;
+    }
+
+    static gainItemQtyStr(itemCode, itemQty = 1) {
+        return `-> ${this.itemEmojiQtyStr(itemCode, itemQty)}`;
+    }
+
+    static lossItemQtyStr(itemCode, itemQty = 1) {
+        return `<- ${this.itemEmojiQtyStr(itemCode, itemQty)}`;
+    }
+
+    static exchangeItemsQtysStr(lossItem, lossQty, gainItem, gainQty) {
+        return `${this.lossItemQtyStr(lossItem, lossQty)}\n${this.gainItemQtyStr(gainItem, gainQty)}`;
+    }
+
 
     static NON_USABLE_EMOJIS = [
         "COOP",
