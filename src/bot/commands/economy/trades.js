@@ -19,7 +19,7 @@ export default class TradesCommand extends CoopCommand {
 					key: 'offerItemCode',
 					prompt: 'Which item_code are you offering?',
 					type: 'string',
-					default: 'ALL'
+					default: ''
 				},
 				{
 					key: 'receiveItemCode',
@@ -35,21 +35,42 @@ export default class TradesCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
-			// TODO: Implement trade slots
-			// const tradeslotStr = `${msg.author.username} has ?/? available trade slots currently.`;
+			// Load trades for that user.
+			const myTrades = await TradeHelper.getByTrader(msg.author.id);
+			
+
+			// TODO: Filter out invalid item codes before they cause major issues.
+
+
 
 			// Calculate used/total trade slots.
-			const tradeslotStr = `${msg.author.username} has ?/? active trades currently.`;
-			await MessagesHelper.selfDestruct(msg, tradeslotStr);
+			// TODO: Implement trade slots as a separate command.
+			const tradeslotStr = `${msg.author.username} has ${myTrades.length}/5 active trades slots.\n\n`;
 
 			// Distinguish between whether the user wants all trade information of a specific one.
-			if (offerItemCode === 'ALL') {
+			if (offerItemCode === '') {
 				// Display all trades
-
-			} else {
-				// Get trades by a certain item code
-				// TODO: Make work for single or both
-				// if (receiveItemCode && receiveItemCode !== '') {
+				const allTradesStr = myTrades.map(trade => `${TradeHelper.tradeItemsStr(trade)}\n\n`)
+				return MessagesHelper.selfDestruct(msg, tradeslotStr + allTradesStr);
+			
+			}else if (offerItemCode !== '' && receiveItemCode === '') {
+				// Get trades based on a match.
+				const matchingTradesStr = myTrades.map(trade => {
+					if (trade.offer_item === offerItemCode)
+						return `${TradeHelper.tradeItemsStr(trade)}\n\n`;
+					else 
+						return '';
+				});
+				return MessagesHelper.selfDestruct(msg, tradeslotStr + matchingTradesStr);				
+			} else if (offerItemCode !== '' && receiveItemCode !== '') {
+				// Get trades based on a match.
+				const matchingTradesStr = myTrades.map(trade => {
+					if (trade.offer_item === offerItemCode && trade.receive_item === receiveItemCode)
+						return `${TradeHelper.tradeItemsStr(trade)}\n\n`;
+					else 
+						return '';
+				});
+				return MessagesHelper.selfDestruct(msg, tradeslotStr + matchingTradesStr);
 			}
 			
 		} catch(e) {

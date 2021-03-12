@@ -43,12 +43,6 @@ export default class TradeHelper {
         return tradeID;
     }
 
-    // Reverse the search order (inversion of give versus take).
-    static async find(offerItem, receiveItem, offerQty, receiveQty) {
-        // Find the cheapest match
-        // const match = DatabaseHelper.single()
-    }
-
     static async findOfferMatches(offerItem) {
         const query = {
             name: "get-trades-by-offer",
@@ -115,6 +109,18 @@ export default class TradeHelper {
         const result = await Database.query(query);
         return DatabaseHelper.single(result);
     }
+
+    static async getByTrader(traderID) {
+        const query = {
+            name: "get-open-by-trader-id",
+            text: `SELECT * FROM open_trades WHERE trader_id = $1`,
+            values: [traderID]
+        };
+        
+        const result = await Database.query(query);
+        return DatabaseHelper.single(result);
+    }
+
 
     // Turn trade into items receive/loss string from searcher perspective 
     // (not trader perspective).
