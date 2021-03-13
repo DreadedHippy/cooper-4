@@ -28,16 +28,12 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
             
         // DEV WORK AND TESTING ON THE LINES BELOW.
-            // Get exchange rate based on current trades for that item
-            // Add exchange rate method (command)
 
-            const matches = await TradeHelper.findOfferReceiveMatches('GOLD_BAR', 'METAL_ORE');
-            const ratios = matches.map(match => match.receive_qty / match.offer_qty);
-            const average = ratios.reduce((acc, val) => {
-                acc = (acc + val) / 2;
-                return acc;
-            }, 0);
-            console.log(average);
+            // Sacrifice reform as promised.
+            // No more than 5 at once
+            // Message at the top of channel
+            // Delete after 72 hours
+            // Add column and prevent repeats/back to back sacrifice
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
 
@@ -48,7 +44,6 @@ const shallowBot = async () => {
         
         // Harder:
             // Detect server message/activity velocity increases (as % preferably).
-            // Detect the completed gathering of wood/rocks
             // Community set and managed variable/value.
 
     });

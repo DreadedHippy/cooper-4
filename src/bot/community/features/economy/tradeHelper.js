@@ -208,10 +208,12 @@ export default class TradeHelper {
     static async conversionRate(offerItem, receiveItem) {
         const matches = await TradeHelper.findOfferReceiveMatches(offerItem, receiveItem);
         const ratios = matches.map(match => match.receive_qty / match.offer_qty);
-        const average = ratios.reduce((acc, val) => {
-            acc = (acc + val) / 2;
-            return acc;
+        const sumAverage = ratios.reduce((acc, val) => {
+          acc += val;
+          return acc;
         }, 0);
+        const average = sumAverage / ratios.length;
+
         return average;
     }
 
