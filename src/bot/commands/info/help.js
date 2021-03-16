@@ -84,7 +84,7 @@ export default class HelpCommand extends CoopCommand {
 		// Check the message for matching command.
 		let commandOpt = null
 		const commandNamesRegex = new RegExp(commandNames.join('|'));
-		const commandMatches = commandNamesRegex.exec(msg.content);
+		const commandMatches = commandNamesRegex.exec(msg.content.replace('help', ''));
 		if (commandMatches) commandOpt = commandMatches[0];
 
 		console.log('commandMatches', commandMatches);

@@ -183,7 +183,7 @@ export default class ItemsHelper {
         let itemDisplayMsg = `${user.username}'s items:`;
         items.forEach(item => {
             const emojiIcon = MessagesHelper.emojifyID(EMOJIS[item.item_code]);
-            const itemText = `\n${emojiIcon} (${item.item_code}) x ${item.quantity}`;
+            const itemText = `\n${emojiIcon} (${this.escCode(item.item_code)}) x ${item.quantity}`;
             itemDisplayMsg += itemText;
         })
         return itemDisplayMsg
