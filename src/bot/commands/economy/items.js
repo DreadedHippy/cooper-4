@@ -45,7 +45,7 @@ export default class ItemsCommand extends CoopCommand {
 				const items = await ItemsHelper.getUserItems(targetUser.id);
 				if (items.length === 0) return MessagesHelper.selfDestruct(msg, noItemsMsg);
 				else {
-					items.sort((a, b) => (a.quantity > b.quantity) ? 1 : -1);
+					items.sort((a, b) => (a.quantity < b.quantity) ? 1 : -1);
 
 					const itemDisplayMsg = ItemsHelper.formItemDropText(targetUser, items);
 					return MessagesHelper.selfDestruct(msg, itemDisplayMsg, 666, 30000);
