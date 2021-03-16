@@ -39,11 +39,17 @@ export default class CooperMorality {
         // Buffs for GOOD morality:
         if (morality === 'GOOD' && STATE.CHANCE.bool({ likelihood: .5 })) this.giveaway();
 
-        // Negations for BAD morality:
+        // Negations for EVIL morality:
+        if (morality === 'EVIL' && STATE.CHANCE.bool({ likelihood: .5 })) this.takeway();
         // ...
         // ...
+
+        // Quirky things for neutral, produces rarer items.
     }
 
+    static async takeaway() {
+        ChannelsHelper._postToFeed('I taketh as I giveth...');
+    }
 
     static async giveaway() {
         const maxRewardAmount = 4;
@@ -57,16 +63,14 @@ export default class CooperMorality {
         const rewardees = await Promise.all(rewardeeReqs);
 
         // Add results to
-        const dropResults = rewardees.map(rewardee => {
+        const dropResults = rewardees.map(({ user }) => {
             const rewardAmount = STATE.CHANCE.natural({ min: 1, max: maxRewardAmount });
 
-            const user = rewardee.user;
-            const drops = [];
-
-            for (let i = 0; i < rewardAmount; i++) drops.push(DropTable.getRandomWithQty());
+            const drops = DropTable.getRandomWithQtyMany(rewardAmount);
 
             return { user, drops };
         });
+
 
         // Add the item to each user.
         await Promise.all(dropResults.map(dropSet =>
@@ -82,8 +86,7 @@ export default class CooperMorality {
                     `${MessagesHelper._displayEmojiCode(drop.item)}x${drop.qty}`
                 ).join(', ')
             }`).join('.\n\n');
-
-        ChannelsHelper._postToFeed(giveawayText)
+        ChannelsHelper._codes(['FEED', 'TALK'], giveawayText)
 
         return dropResults;
     }

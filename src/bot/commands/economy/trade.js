@@ -86,6 +86,9 @@ export default class TradeCommand extends CoopCommand {
 				`${tradeAwayStr} in return for ${receiveBackStr}?** \n\n` +
 				exchangeString;
 			if (matchingOffers.length > 0) confirmStr += `\n\n_Matching offers detected._`;
+			
+
+			// TODO: Support moving all personal confirmations to DM.
 
 			// Post the confirmation message and add reactions to assist interaction.
 			const confirmMsg = await MessagesHelper.selfDestruct(msg, confirmStr, 333, 45000);
@@ -167,7 +170,7 @@ export default class TradeCommand extends CoopCommand {
 
 			} else {
 				// Log cancelled trades
-				console.log('Trade cancelled');
+				// console.log('Trade cancelled');
 
 				// Trade cancelled, remove message.
 				MessagesHelper.delayDelete(confirmMsg);

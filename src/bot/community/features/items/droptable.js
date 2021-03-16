@@ -44,7 +44,10 @@ export default class DropTable {
     }
 
     static getRandom() {
+        // TODO: OVERPOWERED - Reduce legendary/rare access, etc.
         const tier = STATE.CHANCE.pickone(Object.keys(this.TIERS));
+
+
         const item = this.getRandomTiered(tier);
         return item;
     }
@@ -60,6 +63,29 @@ export default class DropTable {
             item: this.getRandom(),
             qty: this.getRandomQty()
         }
+    }
+
+    static getRandomWithQtyMany(scoops) {
+        const drops = [];
+        const givenItemCodes = [];
+
+        // Calculate the giveaway drops.
+        for (let i = 0; i < scoops; i++) {
+            const calcDrop = this.getRandomWithQty();
+
+            // Prevent duplication of drop item codes.
+            const existingIndex = drops.findIndex(d => d.item === calcDrop.item);
+            if (existingIndex) drops[existingIndex].qty += calcDrop.qty;
+            else {
+                givenItemCodes.push(calcDrop.item)
+                drops.push(calcDrop);
+            }
+        }
+
+        // Sort drops by highest qty first.
+        drops.sort((a, b) => (a.qty < b.qty) ? 1 : -1);
+
+        return drops;
     }
 
     static getRandomTieredWithQty(level) {
