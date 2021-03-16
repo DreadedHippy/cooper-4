@@ -34,6 +34,35 @@ export default class ItemsHelper {
         }
     }
 
+
+    // Input Takes a string and extracts the items mentioned in it. Returns an array containing the item codes. The search is greedy so will extrct the longest possible name
+    static parseItemCodes(inputString) {
+        // Remove multiple spaces and make uppercase
+        const str = inputString.replace(/\s\s+/g, ' ').toUpperCase();
+
+        const usableItemsStr = ItemsHelper.getUsableItems();
+
+        // Generate The regex to match the items. This is only done once to save server time
+        const matchRegex = new RegExp("(" + usableItemsStr.join("|").replace("_", "[_\\s]") + ")", 'g');
+
+        // Match with the regex. This returns an array of the found matches
+        const matches = str.match(matchRegex);
+
+        // Return matches as canonical item codes
+        return matches.map(x => x.replace(/\s/g, '_'));
+    }
+
+    static beautifyItemCode(itemCode) {
+        const lowerName = itemCode.replace("_", " ").toLowerCase();
+        const nameCapitalized = lowerName.charAt(0).toUpperCase() + lowerName.slice(1);
+        const emoji = MessagesHelper.emojifyID(EMOJIS[itemCode]);
+        return nameCapitalized + " " + emoji;
+    }
+
+
+
+
+
     static async add(userID, item_code, quantity) {
         const query = {
             name: "add-item",
@@ -188,29 +217,7 @@ export default class ItemsHelper {
         return Object.keys(EMOJIS).filter(codeFilter);
     }
 
-    //Input Takes a string and extracts the items mentioned in it. Returns an array containing the item codes. The search is greedy so will extrct the longest possible name
-    static parseItemCodes(inputString) {
-        // Remove multiple spaces and make uppercase
-        const str = inputString.replace(/\s\s+/g, ' ').toUpperCase();
-
-        const usableItemsStr = ItemsHelper.getUsableItems();
-
-        // Generate The regex to match the items. This is only done once to save server time
-        const matchRegex = new RegExp("(" + usableItemsStr.join("|").replace("_", "[_\\s]") + ")", 'g');
-
-        // Match with the regex. This returns an array of the found matches
-        const matches = str.match(matchRegex);
-
-        // Return matches as canonical item codes
-        return matches.map(x => x.replace(/\s/g, '_'));
-    }
-
-    static beautifyItemCode(Code) {
-        const LowerName = Code.replace("_", " ").toLowerCase();
-        const nameCapitalized = LowerName.charAt(0).toUpperCase() + LowerName.slice(1);
-        const emoji = MessagesHelper.emojifyID(EMOJIS[Code]);
-        return nameCapitalized + " " + emoji;
-    }
+  
 
     static async getUserWithItem(itemCode) {
         const query = {
@@ -269,28 +276,29 @@ export default class ItemsHelper {
         try {
             // Try to figure out what they're going to pick up.
             const pickupSubject = MessagesHelper.getEmojiIdentifier(reaction.message);
-            if (!pickupSubject) return false;
             
-            // I believe mostly needed for testing?
-            MessagesHelper.selfDestruct(reaction.message,
-                `${user.username} are you trying to pick up ${pickupSubject}?`
-            );
-    
-            if (!ItemsHelper.isUsable(pickupSubject))
+            // Find item code via emoji/emoji ID (trimmed) string in comparison to emojis.json.
+            let itemCode = '';
+            Object.keys(EMOJIS).map(emojiName => {
+                if (EMOJIS[emojiName] === pickupSubject) itemCode = EMOJIS;
+            });
+                
+            // If invalid item code or not usable, don't allow pick up event.
+            if (!itemCode || !ItemsHelper.isUsable(itemCode))
                 return MessagesHelper.selfDestruct(reaction.message,
                     `${user.username} you can't pick that up. (${pickupSubject})`
                 );
             
             // Add recalculated item ownership to user.
-            const addEvent = await ItemsHelper.add(user.id, pickupSubject, 1);
+            const addEvent = await ItemsHelper.add(user.id, itemCode, 1);
 
             // TODO: ADD TO STATISTICS!
 
             // Format and display success message temporarily to channel and as a record in actions channel.
-            const emoji = MessagesHelper.emojiText(pickupSubject);
+            const emoji = MessagesHelper.emojiText(itemCode);
             ChannelsHelper.propagate(
                 reaction.message,
-                `${user.username} picked up ${pickupSubject} ${emoji} and now has x${addEvent}`,
+                `${user.username} picked up ${itemCode} ${emoji} and now has x${addEvent}`,
                 'ACTIONS'
             );
         } catch(e) {
