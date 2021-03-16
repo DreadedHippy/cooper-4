@@ -55,12 +55,11 @@ export default class HelpCommand extends CoopCommand {
 			'misc'
 		];
 
-		
-		// TODO: Critical support needed for command/command group DETAIL.
+
 
 		// Store group names to detect matches and provide helpful/detailed feedback.
-		const groupNames = this.commando.registry.groups
-			.filteR(group => hiddenGroups.includes(group.name.toLowerCase()))
+		const categoryNames = this.commando.registry.groups
+			.filter(group => hiddenGroups.includes(group.name.toLowerCase()))
 			.map(group => group.name.toLowerCase());
 
 		// Store command names to detect matches and provide helpful/detailed feedback.
@@ -70,20 +69,22 @@ export default class HelpCommand extends CoopCommand {
 				.map(cmd => cmd.memberName.toLowerCase())
 		);
 
-
-		// Check the first 15 words of the message to check for matching category.
+		// Check the message for matching category.
 		const categoryOpt = null;
-		groupNames.map(groupName => {
-			// TODO: If string matches group name, set it to desired.
-		});
+		const categoryNamesRegex = new RegExp(categoryNames.join('|'));
+		const categoryMatches = categoryNamesRegex.exec(msg.content);
+		if (categoryMatches) categoryOpt = categoryMatches[0];
 
-		// Check the first 15 words of the message to check for matching command.
+		// TODO: Critical support needed for command/command group DETAIL.
+		console.log('categoryMatches', categoryMatches);
+
+		// Check the message for matching command.
 		const commandOpt = null
-		commandNames.map(cmdName => {
-			// TODO: If string matches command name, set it to desired.
-		});
+		const commandNamesRegex = new RegExp(commandNames.join('|'));
+		const commandMatches = commandNamesRegex.exec(msg.content);
+		if (commandMatches) commandOpt = commandMatches[0];
 
-		console.log(commandNames);
+		console.log('commandMatches', commandMatches);
 
         try {
 			// TODO: Implement properly.
@@ -112,14 +113,13 @@ export default class HelpCommand extends CoopCommand {
 				textSplitter(helpString, 1500).map((helpSection, index) => {
 					setTimeout(() => msg.direct(helpSection), 1666 * index);
 				});
-
 			}
 
 			if (commandOpt) {
-				msg.say('I should help you with the command...')
+				msg.say('I should help you with the command... ' + commandOpt)
 				
 			} else if (categoryOpt) {
-				msg.say('I should help you with the category of commands you specified...')
+				msg.say('I should help you with the category of commands you specified... ' + categoryOpt)
 			}
 
         } catch(err) {

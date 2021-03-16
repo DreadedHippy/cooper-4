@@ -17,6 +17,7 @@ export default class UsersHelper {
     }
 
     static _get = this._getMemberByID;
+    
     static _getMemberByID(id) {
         return this._cache().get(id);
     }

@@ -15,6 +15,7 @@ import UsersHelper from "../../../core/entities/users/usersHelper";
 import EggHuntMinigame from "../minigame/small/egghunt";
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import ReactionHelper from "../../../core/entities/messages/reactionHelper";
+import Chicken from "../../chicken";
 
 
 export default class ItemsHelper {
@@ -266,9 +267,14 @@ export default class ItemsHelper {
         // Filter out eggs, since they already have their own handler.
         if (EggHuntMinigame.isEgghuntDrop(reaction)) return false;
 
-        // Check if message has dropped emoji
-        if (ReactionHelper.countType(reaction.message, EMOJIS.DROPPED) <= 0)
-            return false;
+        // Check if message has dropped emoji and by Cooper (official/valid drop).
+        const officiallyDropped = ReactionHelper.didUserReactWith(
+            reaction.message, 
+            Chicken.getDiscordID(), 
+            EMOJIS.DROPPED
+        );
+        if (!officiallyDropped) return false;
+
 
         // Check if they are trying to collect via basket
         if (reaction.emoji.name !== EMOJIS.BASKET) return false;
@@ -295,6 +301,9 @@ export default class ItemsHelper {
                     `${user.username} you can't pick that up. (${itemCode})`
                 );
             
+            // Clear the message to prevent abuse.
+            MessagesHelper.delayDelete(reaction.message, 33);
+
             // Add recalculated item ownership to user.
             const addEvent = await ItemsHelper.add(user.id, itemCode, 1);
 

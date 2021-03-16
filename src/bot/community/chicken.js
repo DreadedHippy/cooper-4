@@ -12,6 +12,10 @@ import CooperMorality from "./features/minigame/small/cooperMorality";
 
 export default class Chicken {
 
+    static getDiscordID() {
+        return STATE.CLIENT.user.id;
+    }
+
     static async getConfig(key) {
         let value = null;
 
