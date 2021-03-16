@@ -71,7 +71,7 @@ export default class HelpCommand extends CoopCommand {
 		);
 
 		// Check the message for matching category.
-		const categoryOpt = null;
+		let categoryOpt = null;
 		const categoryNamesRegex = new RegExp(categoryNames.join('|'));
 		const categoryMatches = categoryNamesRegex.exec(msg.content);
 		if (categoryMatches) categoryOpt = categoryMatches[0];
@@ -80,7 +80,7 @@ export default class HelpCommand extends CoopCommand {
 		console.log('categoryMatches', categoryMatches);
 
 		// Check the message for matching command.
-		const commandOpt = null
+		let commandOpt = null
 		const commandNamesRegex = new RegExp(commandNames.join('|'));
 		const commandMatches = commandNamesRegex.exec(msg.content);
 		if (commandMatches) commandOpt = commandMatches[0];
