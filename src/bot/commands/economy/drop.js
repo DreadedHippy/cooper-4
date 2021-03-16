@@ -51,6 +51,11 @@ export default class DropCommand extends CoopCommand {
 				// Add indicative and suggestive icons, maybe refactor.
 				MessagesHelper.delayReact(dropMsg, EMOJIS.DROPPED, 333);
 				MessagesHelper.delayReact(dropMsg, EMOJIS.BASKET, 666);
+
+				// Add success feedback message. (Could edit instead)
+				const emoji = MessagesHelper.emojiText(EMOJIS[itemCode]);
+				const userDroppedText = `${msg.author.username} dropped ${itemCode} ${emoji}.`;
+				MessagesHelper.selfDestruct(userDroppedText);
 			}
 	
 		} catch(e) {
