@@ -20,18 +20,24 @@ import ReactionHelper from "../../../core/entities/messages/reactionHelper";
 export default class ItemsHelper {
 
     static async onReaction(reaction, user) {
-        if (UsersHelper.isCooper(user.id)) {
+
+        // Prevent Cooper from interacting with items.
+        if (!UsersHelper.isCooper(user.id)) {
             
             BombHandler.onReaction(reaction, user);
             ToxicEggHandler.onReaction(reaction, user);
-            AverageEggHandler.onReaction(reaction, user);
-            RareEggHandler.onReaction(reaction, user);
             LegendaryEggHandler.onReaction(reaction, user);
+
             DiamondHandler.onReaction(reaction, user);
     
             // Check if message is dropped item message being picked up.
             if (this.isPickupable(reaction, user)) this.pickup(reaction, user);
         }
+
+        // Allow Cooper to add average/rare eggs when prompted.
+        // TODO: Should fail silently.
+        AverageEggHandler.onReaction(reaction, user);
+        RareEggHandler.onReaction(reaction, user);
     }
 
 
@@ -280,13 +286,13 @@ export default class ItemsHelper {
             // Find item code via emoji/emoji ID (trimmed) string in comparison to emojis.json.
             let itemCode = '';
             Object.keys(EMOJIS).map(emojiName => {
-                if (EMOJIS[emojiName] === pickupSubject) itemCode = EMOJIS;
+                if (EMOJIS[emojiName] === pickupSubject) itemCode = EMOJIS[emojiName];
             });
                 
             // If invalid item code or not usable, don't allow pick up event.
             if (!itemCode || !ItemsHelper.isUsable(itemCode))
                 return MessagesHelper.selfDestruct(reaction.message,
-                    `${user.username} you can't pick that up. (${pickupSubject})`
+                    `${user.username} you can't pick that up. (${itemCode})`
                 );
             
             // Add recalculated item ownership to user.
