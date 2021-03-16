@@ -41,7 +41,7 @@ export default class ItemTotalCommand extends CoopCommand {
 	async run(msg, { itemCode }) {
 		super.run(msg);
 
-		const parsedItemCode = ItemsHelper.parseFromStr(itemCode);
+		const parsedItemCode = ItemsHelper.interpretItemCodeArg(itemCode);
 
 		if (!ItemsHelper.isUsable(parsedItemCode))
 			return msg.reply(`${itemCode} does not exist, please provide a valid item code.`);

@@ -38,8 +38,9 @@ export default class TradesCommand extends CoopCommand {
 			// Load trades for that user.
 			const myTrades = await TradeHelper.getByTrader(msg.author.id);
 			
-			const offerItemCode = ItemsHelper.parseFromStr(offerItemCodeStr);
-			const receiveItemCode = ItemsHelper.parseFromStr(receiveItemCodeStr);
+			// Interpret item codes from strings or emojis.
+			const offerItemCode = ItemsHelper.interpretItemCodeArg(offerItemCodeStr);
+			const receiveItemCode = ItemsHelper.interpretItemCodeArg(receiveItemCodeStr);
 	
 			// Check if offer item code is default (all) or valid.
 			if (offerItemCodeStr !== '' && !offerItemCode)

@@ -34,8 +34,8 @@ export default class TradeFindCommand extends CoopCommand {
 	async run(msg, { offerItemCode, receiveItemCode }) {
 		super.run(msg);
 
-		offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
-		receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
+		offerItemCode = ItemsHelper.interpretItemCodeArg(offerItemCode);
+		receiveItemCode = ItemsHelper.interpretItemCodeArg(receiveItemCode);
 
 		// Check if offer item code is default (all) or valid.
 		if (!offerItemCode)

@@ -61,8 +61,8 @@ export default class TradeCommand extends CoopCommand {
 			const tradeeName = msg.author.username;
 
 			// Try to parse item codes.
-			offerItemCode = ItemsHelper.parseFromStr(offerItemCode);
-			receiveItemCode = ItemsHelper.parseFromStr(receiveItemCode);
+			offerItemCode = ItemsHelper.interpretItemCodeArg(offerItemCode);
+			receiveItemCode = ItemsHelper.interpretItemCodeArg(receiveItemCode);
 
 			// Check if valid item codes given.
 			if (!offerItemCode || !receiveItemCode) return MessagesHelper.selfDestruct(msg, 

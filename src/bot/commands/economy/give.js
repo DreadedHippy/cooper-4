@@ -45,15 +45,7 @@ export default class GiveCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
-			// TODO: Use a gift basket up on this.
-
-			// Target is first mention
-
-			// Item code is any string as long as valid
-
-			// Qty is 1 unless contains a number and is parsed
-			
-			itemCode = ItemsHelper.parseFromStr(itemCode);
+			itemCode = ItemsHelper.interpretItemCodeArg(itemCode);
 
 			// Check if this item code can be given.
 			if (!ItemsHelper.isUsable(itemCode) || itemCode === null) 
@@ -69,7 +61,12 @@ export default class GiveCommand extends CoopCommand {
 			const itemQty = await ItemsHelper.getUserItemQty(msg.author.id, itemCode);
 			if (itemQty < 0 || itemQty - qty < 0) 
 				return MessagesHelper.selfDestruct(msg, `You do not own enough ${itemCode}. ${itemQty}/${qty}`, 10000);
-			
+
+			// Add giftbox requirement for gifts.
+			const usedGiftbasket = await ItemsHelper.use(msg.author.id, 'EMPTY_GIFTBOX', 1);
+			if (!usedGiftbasket)
+				return MessagesHelper.selfDestruct(msg, `${msg.author.username}, you do not have an EMPTY_GIFTBOX for this gift.`, 5000);
+
 			// Attempt to use item and only grant once returned successful, avoid double gift glitching.
 			if (await ItemsHelper.use(msg.author.id, itemCode, qty)) {
 				await ItemsHelper.add(target.id, itemCode, qty);
