@@ -35,7 +35,7 @@ export default class DropCommand extends CoopCommand {
 			const usableItems = ItemsHelper.getUsableItems();
 			const noMatchErrText = `${itemCode} is an invalid item name..`;
 			if (!usableItems.includes(itemCode)) 
-				return MessagesHelper.selfDestruct(noMatchErrText);
+				return MessagesHelper.selfDestruct(msg, noMatchErrText);
 	
 			const didUse = await ItemsHelper.use(msg.author.id, itemCode, 1);
 			if (didUse) {
