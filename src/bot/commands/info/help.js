@@ -60,8 +60,8 @@ export default class HelpCommand extends CoopCommand {
 
 		// Store group names to detect matches and provide helpful/detailed feedback.
 		const categoryNames = this.commando.registry.groups
-			.filter(group => !hiddenGroups.includes(group.name))
-			.map(group => group.name.toLowerCase());
+			.filter(group => !hiddenGroups.includes(group.id))
+			.map(group => group.id.toLowerCase());
 
 		// Store command names to detect matches and provide helpful/detailed feedback.
 		const commandNames = [];
@@ -105,7 +105,7 @@ export default class HelpCommand extends CoopCommand {
 
 						if (count === group.commands.size - 1) finalSpacer = '.';
 
-						if (hidden.includes(cmd.memberName)) return false;
+						if (hiddenGroups.includes(cmd.memberName)) return false;
 						helpString += `!${cmd.memberName}${finalSpacer}`;
 
 						count++;
