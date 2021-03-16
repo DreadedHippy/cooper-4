@@ -286,7 +286,7 @@ export default class ItemsHelper {
             // Find item code via emoji/emoji ID (trimmed) string in comparison to emojis.json.
             let itemCode = '';
             Object.keys(EMOJIS).map(emojiName => {
-                if (EMOJIS[emojiName] === pickupSubject) itemCode = EMOJIS[emojiName];
+                if (EMOJIS[emojiName] === pickupSubject) itemCode = emojiName;
             });
                 
             // If invalid item code or not usable, don't allow pick up event.
