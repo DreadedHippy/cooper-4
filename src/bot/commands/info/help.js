@@ -70,7 +70,7 @@ export default class HelpCommand extends CoopCommand {
 			.map(cmd => commandNames.push(cmd.memberName.toLowerCase()))
 		);
 
-		console.log(commandNames);
+		console.log(categoryNames);
 
 		// Check the message for matching category.
 		let categoryOpt = null;
@@ -125,8 +125,10 @@ export default class HelpCommand extends CoopCommand {
 				msg.reply('I should help you with the category of commands you specified... ' + categoryOpt)
 			}
 
-        } catch(err) {
-            await msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
+        } catch(e) {
+			console.log('Help error.')
+			console.error(e);
+            msg.reply('Unable to send you the help DM. You probably have DMs disabled.');
         }
     }
     
