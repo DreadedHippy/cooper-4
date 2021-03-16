@@ -38,10 +38,12 @@ export default class DropCommand extends CoopCommand {
 				return MessagesHelper.selfDestruct(noMatchErrText);
 	
 			const didUse = await ItemsHelper.use(msg.author.id, itemCode, 1);
-			if (!didUse) {
+			if (didUse) {
 				// Drop the item based on its code.
 				const emojiText = MessagesHelper.emojiText(EMOJIS[itemCode]);
 				const dropMsg = await msg.say(emojiText);
+
+				// TODO: Add to statistics.
 	
 				// Make it a temporary message to it gets cleaned up after an hour.
 				ServerHelper.addTempMessage(msg, 60 * 60);

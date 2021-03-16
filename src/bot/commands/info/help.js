@@ -38,15 +38,16 @@ export default class HelpCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 
-		let helpString = `**Available Commands**: \nTo find out more provide a command group or command name. !help {?CMD|GROUP?}\n\n`;
+		// TODO: ADD STATISTICS + SATISFACTION FEEDBACK FOR HELP
 		
-		// TODO: Add category support
+		
+		
+		// Improve hidden to filter by roles
+		const hiddenCommand = [
+			'nuke',
 
-		let category = null;
-
-		// TODO: Improve hidden to filter by roles
-		const hidden = [
-			'nuke'
+			// Added to prevent infinite loop on !help (help) text search.
+			'help'
 		];
 
 		const hiddenGroups = [
@@ -54,10 +55,41 @@ export default class HelpCommand extends CoopCommand {
 			'misc'
 		];
 
+		
+		// TODO: Critical support needed for command/command group DETAIL.
+
+		// Store group names to detect matches and provide helpful/detailed feedback.
+		const groupNames = this.commando.registry.groups
+			.filteR(group => hiddenGroups.includes(group.name.toLowerCase()))
+			.map(group => group.name.toLowerCase());
+
+		// Store command names to detect matches and provide helpful/detailed feedback.
+		const commandNames = this.commando.registry.groups.flatMap(
+			group => group.commands
+				.filter(cmd => cmd.memberName.toLowerCase())
+				.map(cmd => cmd.memberName.toLowerCase())
+		);
+
+
+		// Check the first 15 words of the message to check for matching category.
+		const categoryOpt = null;
+		groupNames.map(groupName => {
+			// TODO: If string matches group name, set it to desired.
+		});
+
+		// Check the first 15 words of the message to check for matching command.
+		const commandOpt = null
+		commandNames.map(cmdName => {
+			// TODO: If string matches command name, set it to desired.
+		});
+
+		console.log(commandNames);
+
         try {
 			// TODO: Implement properly.
 
-			if (!category) {
+			if (!categoryOpt && !commandOpt) {
+				let helpString = `**Available Commands**: \nTo find out more provide a command group or command name. !help {?CMD|GROUP?}\n\n`;
 				this.commando.registry.groups.map(group => {
 					if (hiddenGroups.includes(group.id)) return false;
 					helpString += `**${group.id}: ${group.name}**\n`;
@@ -78,12 +110,16 @@ export default class HelpCommand extends CoopCommand {
 				});
 	
 				textSplitter(helpString, 1500).map((helpSection, index) => {
-					// setTimeout(() => msg.direct(`\`\`\`\n${helpSection}\n\`\`\``), 1666 * index);
 					setTimeout(() => msg.direct(helpSection), 1666 * index);
 				});
 
-			} else {
+			}
 
+			if (commandOpt) {
+				msg.say('I should help you with the command...')
+				
+			} else if (categoryOpt) {
+				msg.say('I should help you with the category of commands you specified...')
 			}
 
         } catch(err) {
