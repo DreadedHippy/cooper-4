@@ -199,10 +199,6 @@ export default class ItemsHelper {
             return true;
         } else return false;
     }
-
-    static dropItem() {}
-    
-    static dropItems() {}
  
     static isUsable(itemCode) {
 		return this.getUsableItems().includes(itemCode);
@@ -287,17 +283,34 @@ export default class ItemsHelper {
         return true;
     }
 
+    static emojiToItemCode(emoji) {
+        let itemCode = null;
+        Object.keys(EMOJIS).map(emojiName => {
+            if (EMOJIS[emojiName] === emoji) itemCode = emojiName;
+        });
+        return itemCode;
+    }
+
+    // Try to parse item codes.
+    static interpretItemCodeArg(text) {
+		let itemCode = null;
+        
+        // Interpret item code from the assumed item name not emoji.
+        itemCode = this.parseFromStr(text);
+
+        // Prioritse emoji overwriting/preference over text (if supplied).
+        const emojiSupportedCode = this.emojiToItemCode(text);
+        if (emojiSupportedCode) itemCode = emojiSupportedCode;
+
+        return itemCode;
+    }
+
     // The event handler for when someone wants to pickup a dropped item message.
     static async pickup(reaction, user) {
         try {
-            // Try to figure out what they're going to pick up.
-            const pickupSubject = MessagesHelper.getEmojiIdentifier(reaction.message);
-            
             // Find item code via emoji/emoji ID (trimmed) string in comparison to emojis.json.
-            let itemCode = '';
-            Object.keys(EMOJIS).map(emojiName => {
-                if (EMOJIS[emojiName] === pickupSubject) itemCode = emojiName;
-            });
+            const emojiID = MessagesHelper.getEmojiIdentifier(reaction.message);
+            const itemCode = this.emojiToItemCode(emojiID);
                 
             // If invalid item code or not usable, don't allow pick up event.
             if (!itemCode || !ItemsHelper.isUsable(itemCode))
@@ -314,14 +327,12 @@ export default class ItemsHelper {
             // TODO: ADD TO STATISTICS!
 
             // Format and display success message temporarily to channel and as a record in actions channel.
-            const emoji = MessagesHelper.emojiText(EMOJIS[itemCode]);
-
-            // TODO: Text the display item code method before refactor:
+            const emojiText = MessagesHelper.emojiText(emojiID);
             const displayItemCode = this.escCode(itemCode);
 
             ChannelsHelper.propagate(
                 reaction.message,
-                `${user.username} picked up ${displayItemCode} ${emoji} and now has x${addEvent}.`,
+                `${user.username} picked up ${displayItemCode} ${emojiText} and now has x${addEvent}.`,
                 'ACTIONS'
             );
         } catch(e) {

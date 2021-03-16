@@ -30,7 +30,7 @@ export default class DropCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
-			itemCode = ItemsHelper.parseFromStr(itemCode);
+			itemCode = ItemsHelper.interpretItemCodeArg(itemCode);
 
 			const usableItems = ItemsHelper.getUsableItems();
 			const noMatchErrText = `${itemCode} is an invalid item name..`;
