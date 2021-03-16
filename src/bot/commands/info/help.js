@@ -50,6 +50,7 @@ export default class HelpCommand extends CoopCommand {
 			'help'
 		];
 
+		
 		const hiddenGroups = [
 			'mod',
 			'misc'

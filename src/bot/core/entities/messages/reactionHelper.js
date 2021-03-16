@@ -4,7 +4,7 @@ export default class ReactionHelper {
         let didReactWith = false;
 
         // Check reactions for user with that reaction.
-        reactions.cache.map(react => {
+        msg.reactions.cache.map(react => {
             if (react.emoji.name === emoji && react.users.cache.has(userID)) 
                 didReactWith = true;
         });
