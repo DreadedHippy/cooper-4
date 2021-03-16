@@ -49,6 +49,11 @@ export default class MessagesHelper {
     static removeSymbols(str) {
         return str.replace('>', '').replace('<', '');
     }
+
+    static strToEmojiID(str) {
+        return this.removeSymbols(str.trim());
+    }
+    
     static getEmojiIdentifier(msg) {
         return this.removeSymbols(msg.content.trim());
     }

@@ -27,7 +27,10 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
             
-
+        console.log(ItemsHelper.interpretItemCodeArg('average egg'));
+        console.log(ItemsHelper.interpretItemCodeArg(':frying_pan:796486324021887048'));
+        console.log(ItemsHelper.interpretItemCodeArg('🛡️'));
+        
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 

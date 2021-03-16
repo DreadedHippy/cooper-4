@@ -67,9 +67,6 @@ export default class ItemsHelper {
     }
 
 
-
-
-
     static async add(userID, item_code, quantity) {
         const query = {
             name: "add-item",
@@ -299,7 +296,8 @@ export default class ItemsHelper {
         itemCode = this.parseFromStr(text);
 
         // Prioritse emoji overwriting/preference over text (if supplied).
-        const emojiSupportedCode = this.emojiToItemCode(text);
+        const emojiID = MessagesHelper.strToEmojiID(text);
+        const emojiSupportedCode = this.emojiToItemCode(emojiID);
         if (emojiSupportedCode) itemCode = emojiSupportedCode;
 
         return itemCode;
