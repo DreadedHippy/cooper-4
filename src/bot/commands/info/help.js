@@ -43,7 +43,7 @@ export default class HelpCommand extends CoopCommand {
 		
 		
 		// Improve hidden to filter by roles
-		const hiddenCommand = [
+		const hiddenCommands = [
 			'nuke',
 
 			// Added to prevent infinite loop on !help (help) text search.
@@ -60,13 +60,13 @@ export default class HelpCommand extends CoopCommand {
 
 		// Store group names to detect matches and provide helpful/detailed feedback.
 		const categoryNames = this.commando.registry.groups
-			.filter(group => hiddenGroups.includes(group.name.toLowerCase()))
+			.filter(group => hiddenGroups.includes(group.name))
 			.map(group => group.name.toLowerCase());
 
 		// Store command names to detect matches and provide helpful/detailed feedback.
 		const commandNames = this.commando.registry.groups.flatMap(
 			group => group.commands
-				.filter(cmd => cmd.memberName.toLowerCase())
+				.filter(cmd => hiddenCommands.includes(cmd.memberName))
 				.map(cmd => cmd.memberName.toLowerCase())
 		);
 

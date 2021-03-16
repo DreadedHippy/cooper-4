@@ -208,6 +208,10 @@ export default class ItemsHelper {
 		return this.getUsableItems().includes(itemCode);
     }
 
+    static escCode(itemCode) {
+        return itemCode.replace('_', '\\_');
+    }
+
     static parseFromStr(str) {
         let match = null;
         const usables = this.getUsableItems();
@@ -310,10 +314,14 @@ export default class ItemsHelper {
             // TODO: ADD TO STATISTICS!
 
             // Format and display success message temporarily to channel and as a record in actions channel.
-            const emoji = MessagesHelper.emojiText(itemCode);
+            const emoji = MessagesHelper.emojiText(EMOJIS[itemCode]);
+
+            // TODO: Text the display item code method before refactor:
+            const displayItemCode = this.escCode(itemCode);
+
             ChannelsHelper.propagate(
                 reaction.message,
-                `${user.username} picked up ${itemCode} ${emoji} and now has x${addEvent}`,
+                `${user.username} picked up ${displayItemCode} ${emoji} and now has x${addEvent}.`,
                 'ACTIONS'
             );
         } catch(e) {

@@ -1,5 +1,6 @@
 export default class ReactionHelper {
 
+    // Check if the user with specified ID reacted to a message with a certain emoji.
     static didUserReactWith(msg, userID, emoji) {
         let didReactWith = false;
 
@@ -9,19 +10,16 @@ export default class ReactionHelper {
                 didReactWith = true;
         });
 
-        return didReactWith
+        return didReactWith;
     }
 
+    // Count the types of emoji on message by emoji name.
     static countType(message, type) {
         let count = 0;
         message.reactions.cache.map(reaction => {
             if (reaction.emoji.name === type) count = reaction.count;
         });
         return count;
-    }
-
-    static async getReactionType(message, type) {
-        
     }
 
 }
