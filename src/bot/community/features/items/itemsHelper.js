@@ -183,7 +183,7 @@ export default class ItemsHelper {
         let itemDisplayMsg = `${user.username}'s items:`;
         items.forEach(item => {
             const emojiIcon = MessagesHelper.emojifyID(EMOJIS[item.item_code]);
-            const itemText = `\n${emojiIcon} (${this.escCode(item.item_code)}) x ${item.quantity}`;
+            const itemText = `\nx${item.quantity} ${this.escCode(item.item_code)} ${emojiIcon}`;
             itemDisplayMsg += itemText;
         })
         return itemDisplayMsg
@@ -209,7 +209,7 @@ export default class ItemsHelper {
     }
 
     static escCode(itemCode) {
-        return itemCode.replace('_', '\\_');
+        return `**${itemCode.replace('_', '\\_')}**`;
     }
 
     static parseFromStr(str) {
