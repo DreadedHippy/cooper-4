@@ -114,15 +114,15 @@ export default class HelpCommand extends CoopCommand {
 				});
 	
 				textSplitter(helpString, 1500).map((helpSection, index) => {
-					setTimeout(() => msg.direct(helpSection), 1666 * index);
+					setTimeout(() => msg.reply(helpSection), 1666 * index);
 				});
 			}
 
 			if (commandOpt) {
-				msg.say('I should help you with the command... ' + commandOpt)
+				msg.reply('I should help you with the command... ' + commandOpt)
 				
 			} else if (categoryOpt) {
-				msg.say('I should help you with the category of commands you specified... ' + categoryOpt)
+				msg.reply('I should help you with the category of commands you specified... ' + categoryOpt)
 			}
 
         } catch(err) {
