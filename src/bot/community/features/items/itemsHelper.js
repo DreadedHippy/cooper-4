@@ -11,17 +11,27 @@ import AverageEggHandler from "./handlers/averageEggHandler";
 import RareEggHandler from "./handlers/rareEggHandler";
 import LegendaryEggHandler from "./handlers/legendaryEggHandler";
 import DiamondHandler from "./handlers/diamondHandler";
+import UsersHelper from "../../../core/entities/users/usersHelper";
+import EggHuntMinigame from "../minigame/small/egghunt";
+import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
+import ReactionHelper from "../../../core/entities/messages/reactionHelper";
 
 
 export default class ItemsHelper {
 
     static async onReaction(reaction, user) {
-        BombHandler.onReaction(reaction, user);
-        ToxicEggHandler.onReaction(reaction, user);
-        AverageEggHandler.onReaction(reaction, user);
-        RareEggHandler.onReaction(reaction, user);
-        LegendaryEggHandler.onReaction(reaction, user);
-        DiamondHandler.onReaction(reaction, user);
+        if (UsersHelper.isCooper(user.id)) {
+            
+            BombHandler.onReaction(reaction, user);
+            ToxicEggHandler.onReaction(reaction, user);
+            AverageEggHandler.onReaction(reaction, user);
+            RareEggHandler.onReaction(reaction, user);
+            LegendaryEggHandler.onReaction(reaction, user);
+            DiamondHandler.onReaction(reaction, user);
+    
+            // Check if message is dropped item message being picked up.
+            if (this.isPickupable(reaction, user)) this.pickup(reaction, user);
+        }
     }
 
     static async add(userID, item_code, quantity) {
@@ -79,7 +89,7 @@ export default class ItemsHelper {
 
     static async hasQty(userID, itemCode, qty) {
         const hasQty = await this.getUserItemQty(userID, itemCode);
-        return (hasQty => qty);
+        return hasQty >= qty;
     }
     
     static async getUserItems(userID) {
@@ -236,6 +246,57 @@ export default class ItemsHelper {
 
     static exchangeItemsQtysStr(lossItem, lossQty, gainItem, gainQty) {
         return `${this.lossItemQtyStr(lossItem, lossQty)}\n${this.gainItemQtyStr(gainItem, gainQty)}`;
+    }
+
+    // Check if a message has an emoji and is pickupable.
+    static isPickupable(reaction, user) {
+        // Filter out eggs, since they already have their own handler.
+        if (EggHuntMinigame.isEgghuntDrop(reaction)) return false;
+
+        // Check if message has dropped emoji
+        if (ReactionHelper.countType(reaction.message, EMOJIS.DROPPED) <= 0)
+            return false;
+
+        // Check if they are trying to collect via basket
+        if (reaction.emoji.name !== EMOJIS.BASKET) return false;
+
+        // Appears to be safe to pickup.
+        return true;
+    }
+
+    // The event handler for when someone wants to pickup a dropped item message.
+    static async pickup(reaction, user) {
+        try {
+            // Try to figure out what they're going to pick up.
+            const pickupSubject = MessagesHelper.getEmojiIdentifier(reaction.message);
+            if (!pickupSubject) return false;
+            
+            // I believe mostly needed for testing?
+            MessagesHelper.selfDestruct(reaction.message,
+                `${user.username} are you trying to pick up ${pickupSubject}?`
+            );
+    
+            if (!ItemsHelper.isUsable(pickupSubject))
+                return MessagesHelper.selfDestruct(reaction.message,
+                    `${user.username} you can't pick that up. (${pickupSubject})`
+                );
+            
+            // Add recalculated item ownership to user.
+            const addEvent = await ItemsHelper.add(user.id, pickupSubject, 1);
+
+            // TODO: ADD TO STATISTICS!
+
+            // Format and display success message temporarily to channel and as a record in actions channel.
+            const emoji = MessagesHelper.emojiText(pickupSubject);
+            ChannelsHelper.propagate(
+                reaction.message,
+                `${user.username} picked up ${pickupSubject} ${emoji} and now has x${addEvent}`,
+                'ACTIONS'
+            );
+        } catch(e) {
+			console.log('Error with pickup handler.');
+			console.error(e);
+        }
     }
 
 

@@ -19,11 +19,7 @@ import InstantFurnaceMinigame from '../../features/minigame/small/instantfurnace
 export default async function reactAddedHandler(reaction, user) {
     const isUser = !UsersHelper.isCooper(user.id);
 
-    try {   
-        // If coop emoji ever added, double down on it... just because.
-        if (reaction.emoji.name === 'coop' && isUser) reaction.message.react(EMOJIS.COOP);
-        if (reaction.emoji.name === '🤦‍♂️' && isUser) reaction.message.react('🤦‍♂️');
-    
+    try {      
         // Check for usable items being exercised.
         ItemsHelper.onReaction(reaction, user);
 
@@ -50,7 +46,16 @@ export default async function reactAddedHandler(reaction, user) {
         AboutHelper.onReaction(reaction, user);
 
         // Prevent and toggle link previews.
-        LinkPreviewFilter.onReaction(reaction ,user);
+        LinkPreviewFilter.onReaction(reaction, user);
+
+        // If coop emoji ever added, double down on it... just because.
+        if (reaction.emoji.name === 'coop' && isUser) reaction.message.react(EMOJIS.COOP);
+        if (reaction.emoji.name === '🤦‍♂️' && isUser) reaction.message.react('🤦‍♂️');
+
+        // Events which are unconcerned with if the reactor is Cooper:
+        if (UsersHelper.isCooper(user.id)) return false;
+
+        // Functions called here completely ignore Cooper, should be all bots.
 
     } catch(e) {
         console.error(e);

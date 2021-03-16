@@ -15,19 +15,19 @@ import DropTable from '../../items/droptable';
 
 export const EGG_DATA = {
     TOXIC_EGG: {
-        points: -5,
+        points: -10,
         emoji: EMOJIS.TOXIC_EGG
     },
     AVERAGE_EGG: {
-        points: 1,
+        points: 3,
         emoji: EMOJIS.AVERAGE_EGG
     },
     RARE_EGG: {
-        points: 3,
+        points: 10,
         emoji: EMOJIS.RARE_EGG
     },
     LEGENDARY_EGG: {
-        points: 20,
+        points: 100,
         emoji: EMOJIS.LEGENDARY_EGG
     },
 };
@@ -35,18 +35,23 @@ export const EGG_DATA = {
 
 export default class EggHuntMinigame {
     
+    static isEgghuntDrop(reaction) {
+        const eggEmojiNames = _map(_values(EGG_DATA), "emoji");
+        const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
+        const isEgghuntDrop = eggEmojiNames.includes(emojiIdentifier);
+        return isEgghuntDrop;
+    }
+
     static onReaction(reaction, user) {
         try {
             const isCooperMessage = UsersHelper.isCooperMsg(reaction.message);
-            const eggEmojiNames = _map(_values(EGG_DATA), "emoji");
-            const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
-            const isEgghuntDrop = eggEmojiNames.includes(emojiIdentifier);
+            const isEgghuntDrop = this.isEgghuntDrop(reaction);
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             const isEggCollectible = isCooperMessage && isEgghuntDrop && hasEggRarity;
             
             const isBombEmoji = reaction.emoji.name === '💣';
             const isBasketEmoji = reaction.emoji.name === '🧺';
-            const isPanEmoji = reaction.emoji.name === '🍳';
+            const isPanEmoji = reaction.emoji.name === EMOJIS.FRYING_PAN;
 
             if (isEggCollectible && isPanEmoji) this.fry(reaction, user);
             if (isEggCollectible && isBasketEmoji) this.collect(reaction, user);
@@ -111,7 +116,7 @@ export default class EggHuntMinigame {
 
             // Share points with nearest 5 message authors.
             const channelMessages = reaction.message.channel.messages;
-            const surroundingMsgs = await channelMessages.fetch({ around: reaction.message.id, limit: 30 });
+            const surroundingMsgs = await channelMessages.fetch({ around: reaction.message.id, limit: 40 });
             const aroundUsers = surroundingMsgs.reduce((acc, msg) => {
                 const notIncluded = typeof acc[msg.author.id] === 'undefined';
                 const notCooper = !UsersHelper.isCooperMsg(msg);
@@ -121,22 +126,18 @@ export default class EggHuntMinigame {
 
             // Store points and egg collection data in database.
             const awardedUserIDs = Object.keys(aroundUsers);
-            await Promise.all(awardedUserIDs.map(userID => PointsHelper.addPointsByID(userID, reward)));
+            Promise.all(awardedUserIDs.map(userID => PointsHelper.addPointsByID(userID, reward)));
 
             // Add/update random item to user if it was a legendary egg
-            await this.processBombDrop(rarity, user);
+            this.processBombDrop(rarity, user);
 
             // Create feedback text from list of users.
             const usersRewardedText = awardedUserIDs.map(userID => aroundUsers[userID].username).join(', ');
             const emojiText = MessagesHelper.emojiText(emoji);
             const feedbackMsg = `${usersRewardedText} gained ${reward} points by being splashed by exploding egg ${emojiText}`.trim();
-
-            // Add self-destructing message in channel.
-            const instantFeedbackMsg = await reaction.message.say(feedbackMsg);
-            MessagesHelper.delayDelete(instantFeedbackMsg, 30000);
-
+            
             // Add server notification in feed.
-            await ChannelsHelper._postToChannelCode('ACTIONS', feedbackMsg + ' in ' + channelName);
+            ChannelsHelper.propagate(reaction.message, feedbackMsg, 'ACTIONS')
 
         } catch(e) {
             console.error(e);
@@ -296,36 +297,48 @@ export default class EggHuntMinigame {
     static run() {        
         this.drop('AVERAGE_EGG', 'Whoops! I dropped an egg, but where...?');
 
-        if (STATE.CHANCE.bool({ likelihood: 40 })) {
+        if (STATE.CHANCE.bool({ likelihood: 15 })) {
             this.drop('TOXIC_EGG', 'I dropped an egg, but where...? Tsk.');
 
             if (STATE.CHANCE.bool({ likelihood: 7.5 })) {
                 this.drop('RARE_EGG', 'Funknes! Rare egg on the loose!');
 
-                if (STATE.CHANCE.bool({ likelihood: 2.5 })) {
+                if (STATE.CHANCE.bool({ likelihood: 4.5 })) {
                     ChannelsHelper._postToChannelCode('ACTIONS', 'A legendary egg was dropped! Find and grab it before others can!');
                     this.drop('LEGENDARY_EGG');
                 }
             }
         }
 
-        // Handle DM dropping
-        if (STATE.CHANCE.bool({ likelihood: 1.35 })) this.dmDrop('TOXIC_EGG');
-        if (STATE.CHANCE.bool({ likelihood: 3.85 })) this.dmDrop('AVERAGE_EGG');
-        if (STATE.CHANCE.bool({ likelihood: 2.45 })) this.dmDrop('RARE_EGG');
-        if (STATE.CHANCE.bool({ likelihood: 0.025 })) this.dmDrop('LEGENDARY_EGG');
+        // Small chance of rolling for a direct message egg.
+        if (STATE.CHANCE.bool({ likelihood: 10 })) {
+            if (STATE.CHANCE.bool({ likelihood: 1.35 })) this.dmDrop('TOXIC_EGG');
+            if (STATE.CHANCE.bool({ likelihood: 3.85 })) this.dmDrop('AVERAGE_EGG');
+            if (STATE.CHANCE.bool({ likelihood: 2.45 })) this.dmDrop('RARE_EGG');
+            if (STATE.CHANCE.bool({ likelihood: 0.025 })) this.dmDrop('LEGENDARY_EGG');
+        }
 
-        // Bonus eggs            
-        if (STATE.CHANCE.bool({ likelihood: 6.5 })) {           
+        // Small chance of bonus eggs being released.     
+        if (STATE.CHANCE.bool({ likelihood: 4.5 })) {        
+            // Calculate a number of bonus eggs.   
             let bonusEggsNum = STATE.CHANCE.natural({ min: 5, max: 25 });
-            if (STATE.CHANCE.bool({ likelihood: 3.5 })) {
-                bonusEggsNum = STATE.CHANCE.natural({ min: 10, max: 45 });
-                ChannelsHelper._postToChannelCode('ACTIONS', 'Bonus eggs hurtling!');
-            } else 
-                ChannelsHelper._postToChannelCode('ACTIONS', 'Bonus eggs rolling!');
 
+            // Even rare chance of mass release.
+            if (STATE.CHANCE.bool({ likelihood: 1.5 })) {
+                bonusEggsNum = STATE.CHANCE.natural({ min: 10, max: 45 });
+                ChannelsHelper._postToChannelCode('ACTIONS', 'Bonus eggs rolling!');
+            }
+            
+            // Even rare(er) chance of mass(er) release.
+            if (STATE.CHANCE.bool({ likelihood: .075 })) {
+                bonusEggsNum = STATE.CHANCE.natural({ min: 20, max: 70 });
+                ChannelsHelper._postToChannelCode('ACTIONS', 'Bonus eggs hurtling!');
+            }
+
+            // Drop the bonus average eggs.
             for (let i = 0; i < bonusEggsNum; i++) this.drop('AVERAGE_EGG', null);
 
+            // Add in a mixture of toxic eggs.
             const toxicEggsMixupNum = STATE.CHANCE.natural({ min: 1, max: Math.floor(bonusEggsNum / 2.5) });
             for (let i = 0; i < toxicEggsMixupNum; i++) this.drop('TOXIC_EGG', null);
         }

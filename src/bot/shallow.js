@@ -27,6 +27,8 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
             
+
+        
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
             // Sacrifice reform as promised.

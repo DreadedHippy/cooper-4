@@ -9,16 +9,16 @@ import UsersHelper from "../../../../core/entities/users/usersHelper";
 
 export const BAR_DATA = {
     GOLD_BAR: {
-        FAIL_RATE: 70
+        FAIL_RATE: 90
     }, 
     SILVER_BAR: {
-        FAIL_RATE: 50
+        FAIL_RATE: 75
     }, 
     STEEL_BAR: {
-        FAIL_RATE: 35
+        FAIL_RATE: 50
     },
     IRON_BAR: {
-        FAIL_RATE: 15
+        FAIL_RATE: 33
     }
 };
 
@@ -44,7 +44,7 @@ export default class InstantFurnaceMinigame {
 
             // Guard the action from those not sincerely using the item.
             const didUse = await ItemsHelper.use(user.id, 'METAL_ORE', oreLimitMin);
-            if (!didUse) return MessagesHelper.selfDestruct(reaction.message, `Something went wrong smelting your ore.`);
+            if (!didUse) return MessagesHelper.selfDestruct(reaction.message, `${user.username}, something went wrong smelting your ore. ;(`);
 
             // Add smelting multiplier effect.
             const multiplier = reaction.count - 1;
