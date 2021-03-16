@@ -64,10 +64,10 @@ export default class HelpCommand extends CoopCommand {
 			.map(group => group.name.toLowerCase());
 
 		// Store command names to detect matches and provide helpful/detailed feedback.
-		const commandNames = this.commando.registry.groups.flatMap(
-			group => group.commands
-				.filter(cmd => hiddenCommands.includes(cmd.memberName))
-				.map(cmd => cmd.memberName.toLowerCase())
+		const commandNames = [];
+		this.commando.registry.groups.map(group => group.commands
+			.filter(cmd => hiddenCommands.includes(cmd.memberName))
+			.map(cmd => commandNames.push(cmd.memberName.toLowerCase()))
 		);
 
 		console.log(commandNames);

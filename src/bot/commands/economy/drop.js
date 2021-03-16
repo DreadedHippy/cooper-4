@@ -55,7 +55,7 @@ export default class DropCommand extends CoopCommand {
 				// Add success feedback message. (Could edit instead)
 				const emoji = MessagesHelper.emojiText(EMOJIS[itemCode]);
 				const userDroppedText = `${msg.author.username} dropped ${itemCode} ${emoji}.`;
-				MessagesHelper.selfDestruct(userDroppedText);
+				MessagesHelper.selfDestruct(dropMsg, userDroppedText);
 			}
 	
 		} catch(e) {
