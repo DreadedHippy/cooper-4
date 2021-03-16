@@ -157,6 +157,7 @@ export default class CratedropMinigame {
             // Raise reward rate.
             if (STATE.CHANCE.bool({ likelihood: 40 })) rewardedUsersNum = hitters.length
 
+            // TODO: Refactor all of this to one message.
             if (rewardedUsersNum > 0) {
                 // Pick the amount of rewarded users.   
                 STATE.CHANCE.pickset(hitters, rewardedUsersNum).forEach((user, rewardeeIndex) => {
@@ -172,6 +173,7 @@ export default class CratedropMinigame {
 
                             anyRewardGiven = true;
                             await ItemsHelper.add(user.id, reward, rewardItemQuantity);
+
 
                             setTimeout(async () => {
                                 const rewardMessageText = `${user.username} took ${reward}x${rewardItemQuantity} from the crate!`;
