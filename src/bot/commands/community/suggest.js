@@ -4,17 +4,17 @@ import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 import EMOJIS from '../../core/config/emojis.json';
 
-export default class PollCommand extends CoopCommand {
+export default class SuggestCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
-			name: 'poll',
-			group: 'util',
-			memberName: 'poll',
-			aliases: ['suggest', 'suggestion'],
-			description: 'polls will always be granted at The Coop to those who ask for them.',
+			name: 'suggest',
+			group: 'community',
+			memberName: 'suggest',
+			aliases: ['suggestion'],
+			description: 'suggests will always be granted at The Coop to those who ask for them.',
 			details: `Details`,
-			examples: ['poll', 'poll prefix'],
+			examples: ['suggest', 'suggest prefix'],
 		});
 	}
 
@@ -22,14 +22,15 @@ export default class PollCommand extends CoopCommand {
 		// Run as a coop command (clean up the original calling message)
 		super.run(msg);
 
-		if (msg.content.includes('@everyone')) {
-			MessagesHelper.selfDestruct(msg, 'Warning: @ everyone not allowed.')
+		if (msg.content.includes('@everyone') || msg.content.includes('@here')) {
+			MessagesHelper.selfDestruct(msg, 'Pinging via Cooper disallowed.')
 			return false;
 		}
 
         try {
 			// Post in suggestions.
-			const pollAcknowledgement = await ChannelsHelper._postToChannelCode('SUGGESTIONS', msg.content);
+			const pollAcknowledgement = await ChannelsHelper._postToChannelCode('SUGGESTIONS', 
+				msg.content.replace('!suggest', ''));
 
 			// Add reactions for people to use.
 			MessagesHelper.delayReact(pollAcknowledgement, EMOJIS.POLL_FOR, 333);
