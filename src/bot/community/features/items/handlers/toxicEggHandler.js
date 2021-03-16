@@ -1,5 +1,6 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
 import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
+import ReactionHelper from "../../../../core/entities/messages/reactionHelper";
 import STATE from "../../../../state";
 import PointsHelper from "../../points/pointsHelper";
 import ItemsHelper from "../itemsHelper";
