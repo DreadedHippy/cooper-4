@@ -60,13 +60,13 @@ export default class HelpCommand extends CoopCommand {
 
 		// Store group names to detect matches and provide helpful/detailed feedback.
 		const categoryNames = this.commando.registry.groups
-			.filter(group => hiddenGroups.includes(group.name))
+			.filter(group => !hiddenGroups.includes(group.name))
 			.map(group => group.name.toLowerCase());
 
 		// Store command names to detect matches and provide helpful/detailed feedback.
 		const commandNames = [];
 		this.commando.registry.groups.map(group => group.commands
-			.filter(cmd => hiddenCommands.includes(cmd.memberName))
+			.filter(cmd => !hiddenCommands.includes(cmd.memberName))
 			.map(cmd => commandNames.push(cmd.memberName.toLowerCase()))
 		);
 
@@ -84,7 +84,7 @@ export default class HelpCommand extends CoopCommand {
 		// Check the message for matching command.
 		let commandOpt = null
 		const commandNamesRegex = new RegExp(commandNames.join('|'));
-		const commandMatches = commandNamesRegex.exec(msg.content.replace('help', ''));
+		const commandMatches = commandNamesRegex.exec(msg.content);
 		if (commandMatches) commandOpt = commandMatches[0];
 
 		console.log('commandMatches', commandMatches);
