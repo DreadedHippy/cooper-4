@@ -66,7 +66,15 @@ export default class SourceCommand extends CoopCommand {
 			// If intended path is a folder, show the files in that folder instead.
 			if (intendedPath[intendedPath.length - 1] === '/') {
 
-				const folderContent = await SourceCommand.getFolderContent(intendedPath);
+				const rawFolderContent = await SourceCommand.getFolderContent(intendedPath);
+
+				// Form the folder content feedback.
+				const folderContent = `\`\`\`\n` +
+						`// ${intendedPath}\n` +
+						`https://github.com/lmf-git/cooper/${intendedPath.replace('./', '')}\n` +
+						`${rawFolderContent.join('\n')}` +
+					`\n\`\`\``;
+	
 
 				// Guard invalid path.
 				if (!folderContent) 
