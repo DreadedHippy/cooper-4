@@ -201,7 +201,7 @@ export default class SacrificeHelper {
             footerText: 'The best Discord community to be sacrificed from!',
         }) };
 
-         //Schedule end of message and reaction voting (24hr)
+        // Schedule end of message and reaction voting (24hr)
         const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
         ServerHelper.addTempMessage(sacrificeMsg, 60 * 60 * 24);
 

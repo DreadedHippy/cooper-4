@@ -46,7 +46,7 @@ export default class EconomyNotifications {
                     Object.keys(woodcutting.users)
                         .map(wcUserID => {
                             const wcUser = woodcutting.users[wcUserID];
-                            return `${wcUser.username} +${wcUser.points}P +${wcUser.mined}LC`;
+                            return `${wcUser.username} +${wcUser.points}P ${wcUser.cut}x:wood:`;
                         })
                         .join(', ') +
 
@@ -67,6 +67,7 @@ export default class EconomyNotifications {
                     Object.keys(mining.users)
                         .map(mnUserID => {
                             const mnUser = mining.users[mnUserID];
+                            // TODO: Add metal ore and diamonds here (emojis display):
                             return `${mnUser.username} +${mnUser.points}P +${mnUser.mined}OM`;
                         })
                         .join(', ') +

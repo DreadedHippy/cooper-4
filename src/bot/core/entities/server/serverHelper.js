@@ -46,7 +46,7 @@ export default class ServerHelper {
             name: "get-temp-messages",
             text: `SELECT * FROM temp_messages 
                 WHERE expiry_time <= extract(epoch from now())
-                LIMIT 15`
+                LIMIT 20`
         };
         
         const result = await Database.query(query);
@@ -60,17 +60,20 @@ export default class ServerHelper {
                 try {
                     const message = await MessagesHelper.getByLink(expiredID);
 
-                    if (message) {
-                        return await MessagesHelper.delayDelete(message, index * 3333);
-                    } else {
-                        // Remove from database
-                        return this.deleteTempMsgLink(expiredID);
-                    }
+                    // If message could be loaded/wasn't already deleted -> delete.
+                    if (message)
+                        await MessagesHelper.delayDelete(message, index * 2000);
+                    
+                    // Remove record from temp messages table.
+                    this.deleteTempMsgLink(expiredID);
+                        
+                    // TODO: After a very long time, leave to manual so we notice it visually.
+
                 } catch(e) {
                     console.log('Temp message cleanup failure');
                     console.error(e);
                 }
-            }, index * 10000);
+            }, index * 5000);
         });
 
         // TODO: Add types and log that a resource wasn't gathered.

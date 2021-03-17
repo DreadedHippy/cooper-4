@@ -36,8 +36,8 @@ export default function eventsManifest() {
   // Clean up user data, may have missed detection on a leave/kick/ban.
   EventsHelper.runInterval(() => UsersHelper.cleanupUsers(), baseTickDur * 5);
 
-  // Clean up temporary messages around every 3.33 minutes.
-  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 7.5);
+  // Clean up temporary messages around every... quick lol.
+  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 12.5);
 
   // New day events/calendar events.
   EventsHelper.runInterval(() => Chicken.checkIfNewDay(), baseTickDur / 2);
@@ -77,7 +77,7 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur * 5);
   EventsHelper.chanceRunInterval(() => EggHuntMinigame.run(), 2.5, baseTickDur / 10);
 
-  EventsHelper.chanceRunInterval(() => InstantFurnaceMinigame.run(), 65, baseTickDur * 7.5);
+  EventsHelper.chanceRunInterval(() => InstantFurnaceMinigame.run(), 45, baseTickDur * 7.5);
 
   // TODO: Update and create most items role
  

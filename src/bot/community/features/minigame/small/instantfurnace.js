@@ -30,8 +30,6 @@ export default class InstantFurnaceMinigame {
         if (!UsersHelper.isCooper(reaction.message.author.id)) return false;
         if (UsersHelper.isCooper(user.id)) return false;
         if (reaction.message.content.trim() !== '🌋') return false;
-
-        console.log(reaction.emoji.name, 'metal_ore');
         if (reaction.emoji.name !== 'metal_ore') return false;
         
         try {
@@ -100,7 +98,7 @@ export default class InstantFurnaceMinigame {
 
             
             // TODO: Animate flame out like egg collect.
-            await ServerHelper.addTempMessage(msg, 5 * 60);
+            await ServerHelper.addTempMessage(msg, 60);
 
             // Add reaction for action suggestion/tip.
             MessagesHelper.delayReact(msg, EMOJIS.METAL_ORE, 333);

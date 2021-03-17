@@ -31,29 +31,36 @@ const shallowBot = async () => {
             
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
+            
+            // Sacrifice reform as promised.
+
+            // No more than 5 at once
+            // Message at the top of channel
+            // Delete after 72 hours
 
             // Track last message secs from the latest messages updater and DB COL.
-            // Track last sacrifice secs from sacrifice initiator and DB COL.
-            // Track member of week by historical_points DB COL and check every week.
+            // last_msg_secs
+
+            // TODO: Also create a command !lastmsg @{user} to check their last message time.
 
             // const lastMsgFmt = UsersHelper.getLastMsgDateFmt('786671654721683517');
             // console.log(lastMsgFmt);
 
-
-            // Calculate the player with most items.
-            // ItemsHelper.updateMostItems()
-
-            // Sacrifice reform as promised.
-            // No more than 5 at once
-            // Message at the top of channel
-            // Delete after 72 hours
             // Add column and prevent repeats/back to back sacrifice
+            // Track last sacrifice secs from sacrifice initiator and DB COL.
+
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
 
 
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
-        
+
+            // After sacrifice reform, using a similar patch:
+                // Track member of week by historical_points DB COL and check every week.
+
+                // Calculate the player with most items.
+                    // ItemsHelper.updateMostItems()
+
         // Hard, Quick:
         
         // Harder:
