@@ -97,10 +97,7 @@ export default class SourceCommand extends CoopCommand {
 				const rawFileContent = await SourceCommand.getFileContent(intendedPath);
 	
 				// Add file path comment to the top of the code.
-				const fileContent = `// ${intendedPath}\n` +
-					// Add github link to this to keep DreadedHippy happy.
-					`// ${gitBaseUrl}${intendedPath}\n\n` +
-					rawFileContent;
+				const fileContent = `// ${intendedPath}\n// ${gitBaseUrl}${intendedPath}\n\n`;
 	
 				// Guard invalid path.
 				if (!fileContent) 
@@ -108,9 +105,11 @@ export default class SourceCommand extends CoopCommand {
 	
 				// Decide if it will fit in an embed or not.
 				if (fileContent.length > (1000 - 20))
-					MessagesHelper.selfDestruct(msg, fileContent, 666, 15000);
+					MessagesHelper.selfDestruct(msg, fileContent
+						.replace(gitBaseUrl + intendedPath, `<${gitBaseUrl + intendedPath}>`)
+						+ "Too long to load source code, please view on Github.", 666, 15000);
 				else 
-					MessagesHelper.selfDestruct(msg, `\`\`\`js\n${fileContent}\n\`\`\``, 666, 15000);
+					MessagesHelper.selfDestruct(msg, `\`\`\`js\n${fileContent + rawFileContent}\n\`\`\``, 666, 15000);
 			}
 
 
