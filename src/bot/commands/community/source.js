@@ -58,6 +58,8 @@ export default class SourceCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
+			const gitBaseUrl = `https://github.com/lmf-git/cooper/tree/master/`;
+
 			// Calculate and output file source.
 			const intendedPath = msg.content
 				.replace('!src ', '')
@@ -77,8 +79,10 @@ export default class SourceCommand extends CoopCommand {
 					// Form the folder content feedback.
 					const folderContent = `\`\`\`\n` +
 						`// ${intendedPath}\n` +
-						`// https://github.com/lmf-git/cooper/${intendedPath.replace('./', '')}\n\n` +
-						`${rawFolderContent.join('\n')}` +
+						`// ${gitBaseUrl}${intendedPath.replace('./', '')}\n\n` +
+
+						`- ${intendedPath} <:file_folder:>` +
+						`${rawFolderContent.map(fld => `-- ${fld}`).join('\n')}` +
 						`\n\`\`\``;
 
 					// Output the display text lines of the folders.
@@ -95,7 +99,7 @@ export default class SourceCommand extends CoopCommand {
 				// Add file path comment to the top of the code.
 				const fileContent = `// ${intendedPath}\n` +
 					// Add github link to this to keep DreadedHippy happy.
-					`// https://github.com/lmf-git/cooper/${intendedPath}\n\n` +
+					`// ${gitBaseUrl}${intendedPath}\n\n` +
 					rawFileContent;
 	
 				// Guard invalid path.
