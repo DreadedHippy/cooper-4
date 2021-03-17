@@ -5,6 +5,15 @@ import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises
 
+const isFolder = (path) => {
+	if (path[path.length - 1] === '/') return true;
+
+	if (!path.includes('.')) return true;
+
+	return false;
+}
+
+
 export default class SourceCommand extends CoopCommand {
 
 	constructor(client) {
@@ -66,7 +75,7 @@ export default class SourceCommand extends CoopCommand {
 				.replace('!source ', '').trim();
 
 			// If intended path is a folder, show the files in that folder instead.
-			if (intendedPath[intendedPath.length - 1] === '/') {
+			if (isFolder(intendedPath)) {
 
 				const rawFolderContent = await SourceCommand.getFolderContent(intendedPath);
 
@@ -83,7 +92,9 @@ export default class SourceCommand extends CoopCommand {
 						// TODO: Add distance/breadcrumbs from root here.
 
 						`-- :file_folder: ${intendedPath}\n` +
-						`${rawFolderContent.map(fld => `---- :minidisc: ${fld}`).join('\n')}`;
+						`${rawFolderContent.map(folderItem => 
+							`---- ${!isFolder(folderItem) ? ':minidisc:' : 'file_folder'} ${folderItem}`
+						).join('\n')}`;
 
 					// Output the display text lines of the folders.
 					MessagesHelper.selfDestruct(msg, folderContent, 666, 15000);
@@ -100,14 +111,13 @@ export default class SourceCommand extends CoopCommand {
 				const fileContent = `// ${intendedPath}\n// ${gitBaseUrl}${intendedPath}\n\n`;
 	
 				// Guard invalid path.
-				if (!fileContent) 
+				if (!rawFileContent) 
 					return MessagesHelper.selfDestruct(msg, `Could not load the file for ${intendedPath}.`, 666, 15000);
 	
 				// Decide if it will fit in an embed or not.
-				if (fileContent.length > (1000 - 20))
-					MessagesHelper.selfDestruct(msg, fileContent
-						.replace(gitBaseUrl + intendedPath, `<${gitBaseUrl + intendedPath}>`)
-						+ "Too long to load source code, please view on Github.", 666, 15000);
+				if (rawFileContent.length > 1000 - 20)
+					MessagesHelper.selfDestruct(msg, fileContent.replace(gitBaseUrl + intendedPath, `<${gitBaseUrl + intendedPath}>`)
+						+ `Source code too verbose (${rawFileContent.length}/980 chars), please view on Github.`, 666, 15000);
 				else 
 					MessagesHelper.selfDestruct(msg, `\`\`\`js\n${fileContent + rawFileContent}\n\`\`\``, 666, 15000);
 			}
