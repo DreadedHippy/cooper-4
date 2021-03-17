@@ -77,7 +77,7 @@ export default class SourceCommand extends CoopCommand {
 					// Form the folder content feedback.
 					const folderContent = `\`\`\`\n` +
 						`// ${intendedPath}\n` +
-						`https://github.com/lmf-git/cooper/${intendedPath.replace('./', '')}\n` +
+						`// https://github.com/lmf-git/cooper/${intendedPath.replace('./', '')}\n\n` +
 						`${rawFolderContent.join('\n')}` +
 						`\n\`\`\``;
 
@@ -95,7 +95,7 @@ export default class SourceCommand extends CoopCommand {
 				// Add file path comment to the top of the code.
 				const fileContent = `// ${intendedPath}\n` +
 					// Add github link to this to keep DreadedHippy happy.
-					`https://github.com/lmf-git/cooper/${intendedPath}\n` +
+					`// https://github.com/lmf-git/cooper/${intendedPath}\n\n` +
 					rawFileContent;
 	
 				// Guard invalid path.
