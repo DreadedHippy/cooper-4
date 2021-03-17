@@ -1,13 +1,13 @@
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
-// Work around duie to Heroku hosting not seeming to like fs/promises import.
+// Work around due to Heroku hosting not seeming to like fs/promises import.
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises
 
 const isFolder = (path) => {
+	if (path.includes('Procfile')) return false;
 	if (path[path.length - 1] === '/') return true;
-
 	if (!path.includes('.')) return true;
 
 	return false;

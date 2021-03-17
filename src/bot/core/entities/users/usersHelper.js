@@ -22,6 +22,13 @@ export default class UsersHelper {
         return this._cache().get(id);
     }
 
+    static getLastMsgDateFmt(userID) {
+
+        // TODO: Fmt.
+        const member = this._getMemberByID(userID);
+        console.log(member);
+    }
+
     static getMemberByID = (guild, id) => guild.members.cache.get(id);
 
     static fetchMemberByID = (guild, id) => guild.members.fetch(id);

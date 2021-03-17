@@ -11,6 +11,7 @@ import ItemsHelper from './community/features/items/itemsHelper';
 import ChannelsHelper from './core/entities/channels/channelsHelper';
 import TradeHelper from './community/features/economy/tradeHelper';
 import SourceCommand from './commands/community/source';
+import UsersHelper from './core/entities/users/usersHelper';
 // ^ DEV IMPORT AREA ^
 
 // Load ENV variables.
@@ -31,8 +32,13 @@ const shallowBot = async () => {
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+            // Track last message secs from the latest messages updater and DB COL.
+            // Track last sacrifice secs from sacrifice initiator and DB COL.
+            // Track member of week by historical_points DB COL and check every week.
 
-            // console.log(await SourceCommand.getFolderContent('src'));
+            // const lastMsgFmt = UsersHelper.getLastMsgDateFmt('786671654721683517');
+            // console.log(lastMsgFmt);
+
 
             // Calculate the player with most items.
             // ItemsHelper.updateMostItems()

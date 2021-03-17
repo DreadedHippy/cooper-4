@@ -5,9 +5,9 @@ const clientSecret = '7e3aca3ec854dcdcead25da190e26cc3a88e6756';
 
 export default class CDNManager {
 
-    static accessToken = 'fdc810de5be1b2acfd88b0f1a99312b5bae19fce';
-    static refreshToken = 'd1e2e50db0496d76183094dc85e9884e29237b17';
-     
+    static accessToken = process.env.IMGUR_ACCESS_TOKEN;
+    static refreshToken =  process.env.IMGUR_REFRESH_TOKEN;
+
     static async start() {
         const config = {
             method: 'post',
