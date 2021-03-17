@@ -42,9 +42,13 @@ export default class SourceCommand extends CoopCommand {
 
 		try {
 			// Calculate and output file source.
-			const intendedPath = msg.content.replace('!source', '');
+			const intendedPath = msg.content
+				.replace('!src ', '')
+				.replace('!source ', '').trim();
+
 			const fileContent = await SourceCommand.getFileContent(intendedPath);
 
+			console.log(intendedPath)
 
 			// Guard invalid path.
 			if (!fileContent) 
