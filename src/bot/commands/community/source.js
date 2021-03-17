@@ -68,22 +68,23 @@ export default class SourceCommand extends CoopCommand {
 
 				const rawFolderContent = await SourceCommand.getFolderContent(intendedPath);
 
-				// Form the folder content feedback.
-				const folderContent = `\`\`\`\n` +
-						`// ${intendedPath}\n` +
-						`https://github.com/lmf-git/cooper/${intendedPath.replace('./', '')}\n` +
-						`${rawFolderContent.join('\n')}` +
-					`\n\`\`\``;
-	
-
 				// Guard invalid path.
-				if (!folderContent) 
+				if (!rawFolderContent) 
 					return MessagesHelper.selfDestruct(msg, `Could not load the folder (${intendedPath}).`, 666, 15000);
 	
 				// Decide if it will fit in an embed or not.
-				if (folderContent.length > 0)
-					MessagesHelper.selfDestruct(msg, `\`\`\`\n${folderContent.join('\n')}\n\`\`\``, 666, 15000);
-				else 
+				if (rawFolderContent.length > 0) {
+					// Form the folder content feedback.
+					const folderContent = `\`\`\`\n` +
+						`// ${intendedPath}\n` +
+						`https://github.com/lmf-git/cooper/${intendedPath.replace('./', '')}\n` +
+						`${rawFolderContent.join('\n')}` +
+						`\n\`\`\``;
+
+					// Output the display text lines of the folders.
+					MessagesHelper.selfDestruct(msg, folderContent, 666, 15000);
+
+				} else 
 					MessagesHelper.selfDestruct(msg, `${intendedPath} is empty/invalid folder.`, 666, 15000);
 				
 			// File loading intended instead.
