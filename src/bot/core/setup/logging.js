@@ -1,46 +1,19 @@
-import ElectionHelper from "../../community/features/hierarchy/election/electionHelper";
-import AboutHelper from "../../community/features/server/aboutHelper";
-import ServerHelper from "../entities/server/serverHelper";
+import STATE from "../../state";
+import ready from "./ready";
 
-export default (discordClient) => {
+export default () => {
 
-    discordClient
+    STATE.CLIENT
+
+        // Currently overly verbose debugging.
         .on('error', console.error)
         .on('warn', console.warn)
         .on('debug', console.log)
-        .on('ready', async () => { 
-            try {
-                console.log(`Logged in as ${discordClient.user.username}`); 
-                
-                // Set activity.
-                discordClient.user.setPresence({
-                    status: "dnd",
-                    activity: {
-                      name: "🗡 SACRIFICE REFORM 2021",
-                      type: "LISTENING"
-                    }
-                });
 
-                // Prepare cache (avoid partials)!
-                const guild = ServerHelper.getByCode(discordClient, 'PROD');
-                let reqNum = 0;
-                guild.channels.cache.each(channel => {
-                    if (channel.type === 'text') {
-                        setTimeout(() => channel.messages.fetch({ limit: 5 }), 666 * reqNum);
-                        reqNum++;
-                    }
-                });
+        // Connection notifiers.
+        .on('disconnect', () => console.warn('Disconnected!'))
+        .on('reconnecting', () => console.warn('Reconnecting...'))
 
-                // Cache candidate messages.
-                await ElectionHelper.onLoad();
-
-                // Preload all about/options preferences options.
-                await AboutHelper.preloadMesssages();
-
-            } catch(e) {
-                console.error(e);
-            }
-        })
-        .on('disconnect', () => { console.warn('Disconnected!'); })
-        .on('reconnecting', () => { console.warn('Reconnecting...'); });
+        // Add on ready handler to application/discordjs dep.
+        .on('ready', ready);
 }

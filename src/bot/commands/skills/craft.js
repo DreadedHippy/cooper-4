@@ -36,15 +36,15 @@ export default class CraftCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
-			// TODO: Check if emoji and handle emoji inputs.
-			const itemMatches = ItemsHelper.parseItemCodes(itemCode);
-			if (itemMatches.length === 0) 
-				return MessagesHelper.selfDestruct(msg, `Cannot craft invalid item code.`);
+			// Check if emoji and handle emoji inputs.
+			itemCode = ItemsHelper.interpretItemCodeArg(itemCode);
+
+			if (!itemCode)
+				return MessagesHelper.selfDestruct(msg, `Cannot craft invalid item code. (${itemCode})`);
 
 			// Check if item is craftable
-			const craftItemCode = itemMatches[0];
-			if (!CraftingHelper.isItemCraftable(craftItemCode))
-				return MessagesHelper.selfDestruct(msg, `Cannot craft ${craftItemCode}.`);
+			if (!CraftingHelper.isItemCraftable(itemCode))
+				return MessagesHelper.selfDestruct(msg, `Cannot craft ${itemCode}.`);
 
 			// Check for ingredients and multiply quantities.
 			const canCraft = await CraftingHelper.canCraft(msg.author.id, craftItemCode, qty);
