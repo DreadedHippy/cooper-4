@@ -46,23 +46,24 @@ export default class SourceCommand extends CoopCommand {
 				.replace('!src ', '')
 				.replace('!source ', '').trim();
 
-			const fileContent = await SourceCommand.getFileContent(intendedPath);
+			// Load the raw file source code.
+			const rawFileContent = await SourceCommand.getFileContent(intendedPath);
 
-			console.log(intendedPath)
+			// Add file path comment to the top of the code.
+			const fileContent = `// ${intendedPath}\n` +
+				// Add github link to this to keep DreadedHippy happy.
+				`https://github.com/lmf-git/cooper/${intendedPath}` +
+				rawFileContent;
 
 			// Guard invalid path.
 			if (!fileContent) 
 				return MessagesHelper.selfDestruct(msg, `Could not load the file for ${intendedPath}.`, 666, 15000);
 
-			// TODO: Add github link to this to keep DreadedHippy happy.
-
 			// Decide if it will fit in an embed or not.
-			if (fileContent.length > 1000)
+			if (fileContent.length > (1000 - 20))
 				MessagesHelper.selfDestruct(msg, fileContent, 666, 15000);
 			else 
 				MessagesHelper.selfDestruct(msg, `\`\`\`js\n${fileContent}\n\`\`\``, 666, 15000);
-
-
 
 		} catch(e) {
 			console.error(e);

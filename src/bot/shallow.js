@@ -32,12 +32,7 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
             // Calculate the player with most items.
-            // ItemsHelper.updateMostItems();
-
-
-            console.log(await SourceCommand.getFileContent('./README.md'));
-            console.log(await SourceCommand.getFileContent('README.md'));
-
+            // ItemsHelper.updateMostItems()
 
             // Sacrifice reform as promised.
             // No more than 5 at once
