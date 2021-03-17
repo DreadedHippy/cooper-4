@@ -31,6 +31,9 @@ const shallowBot = async () => {
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+
+            // console.log(await SourceCommand.getFolderContent('src'));
+
             // Calculate the player with most items.
             // ItemsHelper.updateMostItems()
 

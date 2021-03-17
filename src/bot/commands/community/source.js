@@ -37,6 +37,23 @@ export default class SourceCommand extends CoopCommand {
 		}
 	}
 
+	static async getFolderContent(path) {
+		// Prevent loading node_modules... retarded.
+		if (path === 'node_modules/' || path === './node_modules/')
+			return null;
+
+		try {
+			// Load the file content.
+			const folder = await fs.readdir(path, "utf8");
+			return folder;
+
+		} catch(e) {
+			console.log(`'Error getting file: ${path}`);
+			console.error(e);
+			return null;
+		}
+	}
+
 	async run(msg) {
 		super.run(msg);
 
@@ -46,24 +63,43 @@ export default class SourceCommand extends CoopCommand {
 				.replace('!src ', '')
 				.replace('!source ', '').trim();
 
-			// Load the raw file source code.
-			const rawFileContent = await SourceCommand.getFileContent(intendedPath);
+			// If intended path is a folder, show the files in that folder instead.
+			if (intendedPath[intendedPath.length - 1] === '/') {
 
-			// Add file path comment to the top of the code.
-			const fileContent = `// ${intendedPath}\n` +
-				// Add github link to this to keep DreadedHippy happy.
-				`https://github.com/lmf-git/cooper/${intendedPath}` +
-				rawFileContent;
+				const folderContent = await SourceCommand.getFolderContent(intendedPath);
 
-			// Guard invalid path.
-			if (!fileContent) 
-				return MessagesHelper.selfDestruct(msg, `Could not load the file for ${intendedPath}.`, 666, 15000);
+				// Guard invalid path.
+				if (!folderContent) 
+					return MessagesHelper.selfDestruct(msg, `Could not load the folder (${intendedPath}).`, 666, 15000);
+	
+				// Decide if it will fit in an embed or not.
+				if (folderContent.length > 0)
+					MessagesHelper.selfDestruct(msg, `\`\`\`\n${folderContent.join('\n')}\n\`\`\``, 666, 15000);
+				else 
+					MessagesHelper.selfDestruct(msg, `${intendedPath} is empty/invalid folder.`, 666, 15000);
+				
+			// File loading intended instead.
+			} else {
+				// Load the raw file source code.
+				const rawFileContent = await SourceCommand.getFileContent(intendedPath);
+	
+				// Add file path comment to the top of the code.
+				const fileContent = `// ${intendedPath}\n` +
+					// Add github link to this to keep DreadedHippy happy.
+					`https://github.com/lmf-git/cooper/${intendedPath}\n` +
+					rawFileContent;
+	
+				// Guard invalid path.
+				if (!fileContent) 
+					return MessagesHelper.selfDestruct(msg, `Could not load the file for ${intendedPath}.`, 666, 15000);
+	
+				// Decide if it will fit in an embed or not.
+				if (fileContent.length > (1000 - 20))
+					MessagesHelper.selfDestruct(msg, fileContent, 666, 15000);
+				else 
+					MessagesHelper.selfDestruct(msg, `\`\`\`js\n${fileContent}\n\`\`\``, 666, 15000);
+			}
 
-			// Decide if it will fit in an embed or not.
-			if (fileContent.length > (1000 - 20))
-				MessagesHelper.selfDestruct(msg, fileContent, 666, 15000);
-			else 
-				MessagesHelper.selfDestruct(msg, `\`\`\`js\n${fileContent}\n\`\`\``, 666, 15000);
 
 		} catch(e) {
 			console.error(e);
