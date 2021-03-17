@@ -27,7 +27,7 @@ export default class SourceCommand extends CoopCommand {
 			examples: ['source', 'source example'],
 			args: [
 				{
-					key: 'sourcePath',
+					key: 'path',
 					prompt: 'Please provide the path you want sauce for:',
 					type: 'string',
 					default: './'
@@ -36,7 +36,7 @@ export default class SourceCommand extends CoopCommand {
 		});
 	}
 
-	static async getFileContent(path) {
+	static async getFileContent({ path }) {
 		// Figure out project root.
 		try {
 			// Prevent access to secure data.
