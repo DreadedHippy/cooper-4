@@ -52,7 +52,7 @@ export default class SourceCommand extends CoopCommand {
 
 			// Guard invalid path.
 			if (!fileContent) 
-				MessagesHelper.selfDestruct(msg, `Could not load the file for ${intendedPath}.`, 666, 15000);
+				return MessagesHelper.selfDestruct(msg, `Could not load the file for ${intendedPath}.`, 666, 15000);
 
 			// TODO: Add github link to this to keep DreadedHippy happy.
 
