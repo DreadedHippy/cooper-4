@@ -22,9 +22,17 @@ export default class SourceCommand extends CoopCommand {
 			group: 'community',
 			memberName: 'source',
 			aliases: ['src'],
-			description: 'Get the source of a file.',
+			description: 'Get the source of a file/folder/cooper.',
 			details: ``,
-			examples: ['source', 'source example']
+			examples: ['source', 'source example'],
+			args: [
+				{
+					key: 'sourcePath',
+					prompt: 'Please provide the path you want sauce for:',
+					type: 'string',
+					default: './'
+				}
+			]
 		});
 	}
 
@@ -46,6 +54,7 @@ export default class SourceCommand extends CoopCommand {
 		}
 	}
 
+	
 	static async getFolderContent(path) {
 		// Prevent loading node_modules... retarded.
 		if (path === 'node_modules/' || path === './node_modules/')
@@ -54,6 +63,10 @@ export default class SourceCommand extends CoopCommand {
 		try {
 			// Load the file content.
 			const folder = await fs.readdir(path, "utf8");
+
+			// TODO: Sort by type, folders at top, files at bottom.
+			folder.sort((a, b) => (isFolder(a) === isFolder(b)) ? 0 : isFolder(a) ? -1 : 1);
+
 			return folder;
 
 		} catch(e) {
@@ -93,7 +106,7 @@ export default class SourceCommand extends CoopCommand {
 
 						`-- :file_folder: ${intendedPath}\n` +
 						`${rawFolderContent.map(folderItem => 
-							`---- ${!isFolder(folderItem) ? ':minidisc:' : 'file_folder'} ${folderItem}`
+							`---- ${!isFolder(folderItem) ? ':minidisc:' : ':file_folder:'} ${folderItem}`
 						).join('\n')}`;
 
 					// Output the display text lines of the folders.
