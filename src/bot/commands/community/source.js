@@ -1,6 +1,9 @@
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
-import fs from 'fs/promises';
+
+// Work around duie to Heroku hosting not seeming to like fs/promises import.
+import { default as fsWithCallbacks } from 'fs';
+const fs = fsWithCallbacks.promises
 
 export default class SourceCommand extends CoopCommand {
 
@@ -41,6 +44,7 @@ export default class SourceCommand extends CoopCommand {
 			// Calculate and output file source.
 			const intendedPath = msg.content.replace('!source', '');
 			const fileContent = await this.getFileContent(intendedPath);
+
 
 			// Guard invalid path.
 			if (!fileContent) 

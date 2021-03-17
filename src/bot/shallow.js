@@ -35,8 +35,8 @@ const shallowBot = async () => {
             // ItemsHelper.updateMostItems();
 
 
-            SourceCommand.getFileContent('./.env');
-            SourceCommand.getFileContent('.env');
+            console.log(await SourceCommand.getFileContent('./README.md'));
+            console.log(await SourceCommand.getFileContent('README.md'));
 
 
             // Sacrifice reform as promised.
