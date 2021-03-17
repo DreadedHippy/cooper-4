@@ -12,7 +12,7 @@ export default class SourceCommand extends CoopCommand {
 			name: 'source',
 			group: 'community',
 			memberName: 'source',
-			aliases: ['s'],
+			aliases: ['src'],
 			description: 'Get the source of a file.',
 			details: ``,
 			examples: ['source', 'source example']
