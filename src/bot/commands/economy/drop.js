@@ -43,6 +43,11 @@ export default class DropCommand extends CoopCommand {
 				const emojiText = MessagesHelper.emojiText(EMOJIS[itemCode]);
 				const dropMsg = await msg.say(emojiText);
 
+
+				// TODO: If dropping an egg, high chance of breaking due to dropping it.
+				// TODO: If collecting a dropped egg, high chance of breaking due to having been dropped.
+
+
 				// TODO: Add to statistics.
 	
 				// Make it a temporary message to it gets cleaned up after an hour.

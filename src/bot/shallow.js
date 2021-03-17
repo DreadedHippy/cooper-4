@@ -10,6 +10,7 @@ import ElectionHelper from './community/features/hierarchy/election/electionHelp
 import ItemsHelper from './community/features/items/itemsHelper';
 import ChannelsHelper from './core/entities/channels/channelsHelper';
 import TradeHelper from './community/features/economy/tradeHelper';
+import SourceCommand from './commands/community/source';
 // ^ DEV IMPORT AREA ^
 
 // Load ENV variables.
@@ -27,12 +28,16 @@ const shallowBot = async () => {
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
             
-        console.log(ItemsHelper.interpretItemCodeArg('average egg'));
-        console.log(ItemsHelper.interpretItemCodeArg(':frying_pan:796486324021887048'));
-        console.log(ItemsHelper.interpretItemCodeArg('🛡️'));
-        
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
+
+            // Calculate the player with most items.
+            // ItemsHelper.updateMostItems();
+
+
+            SourceCommand.getFileContent('./.env');
+            SourceCommand.getFileContent('.env');
+
 
             // Sacrifice reform as promised.
             // No more than 5 at once

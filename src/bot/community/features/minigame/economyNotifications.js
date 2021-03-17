@@ -1,21 +1,21 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import STATE from "../../../state";
 
-    // EGGS FOUND
+// EGGS FOUND
 
-    // WOOD CUT
+// WOOD CUT
 
-    // ORE MINED
-    // DIAMONDS MINED
+// ORE MINED
+// DIAMONDS MINED
 
-    // CRATE REWARDS
-    // CRATE HIT
-    // CRATE OPEN
+// CRATE REWARDS
+// CRATE HIT
+// CRATE OPEN
 
-    // ITEMS USED (Intercept items helper)
-        // Diamonds and broken pickaxes
-        // Update total data
-        // Diamonds and broken pickaxes
+// ITEMS USED (Intercept items helper)
+    // Diamonds and broken pickaxes
+    // Update total data
+    // Diamonds and broken pickaxes
 
 export default class EconomyNotifications {
   
@@ -42,8 +42,12 @@ export default class EconomyNotifications {
                     `Broken Axes: ${woodcutting.totals.brokenAxes}\n` +
                     `Points Change: ${woodcutting.totals.points}\n` +
 
-                    woodcutting.users
-                        .map(wcUser => `${wcUser.username} +${wcUser.points}P +${wcUser.cut}LC`)
+                    // Map woodcutting users string into visual feedback.
+                    Object.keys(woodcutting.users)
+                        .map(wcUserID => {
+                            const wcUser = woodcutting.users[wcUserID];
+                            return `${wcUser.username} +${wcUser.points}P +${wcUser.mined}LC`;
+                        })
                         .join(', ') +
 
                     `\n\n`;
@@ -57,10 +61,14 @@ export default class EconomyNotifications {
                     `Mined: ${mining.totals.mined}\n` +
                     `Diamonds: ${mining.totals.diamonds}\n` +
                     `Broken Pickaxes: ${mining.totals.brokenPickaxes}\n` +
-                    `Points Change: ${mining.totals.points}\n\n`;
+                    `Points Change: ${mining.totals.points}\n\n` +
 
-                    mining.users
-                        .map(mnUser => `${mnUser.username} +${mnUser.points}P +${mnUser.mined}OM`)
+                    // Map mining users string into visual feedback.
+                    Object.keys(mining.users)
+                        .map(mnUserID => {
+                            const mnUser = mining.users[mnUserID];
+                            return `${mnUser.username} +${mnUser.points}P +${mnUser.mined}OM`;
+                        })
                         .join(', ') +
 
                     `\n\n`;

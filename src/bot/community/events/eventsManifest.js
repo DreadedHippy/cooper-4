@@ -23,6 +23,7 @@ import ElectionHelper from "../features/hierarchy/election/electionHelper";
 import UsersHelper from "../../core/entities/users/usersHelper";
 import ServerHelper from "../../core/entities/server/serverHelper";
 import InstantFurnaceMinigame from "../features/minigame/small/instantfurnace";
+import ItemsHelper from "../features/items/itemsHelper";
 
 
 export const baseTickDur = 60 * 25 * 1000;
@@ -67,6 +68,10 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => CooperMorality.evaluate(), baseTickDur * 4.5);
 
   EventsHelper.runInterval(() => PointsHelper.updateCurrentWinner(), baseTickDur * 3);
+
+  // Update person in the community economy with MOST_ITEMS and give role/reward.
+  EventsHelper.runInterval(() => ItemsHelper.updateMostItems(), baseTickDur * 3);
+
   EventsHelper.chanceRunInterval(() => WoodcuttingMinigame.run(), 55, baseTickDur * 5);
   EventsHelper.chanceRunInterval(() => MiningMinigame.run(), 45, baseTickDur * 6);
   EventsHelper.runInterval(() => CratedropMinigame.run(), baseTickDur * 5);

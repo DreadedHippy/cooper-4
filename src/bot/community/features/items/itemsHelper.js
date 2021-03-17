@@ -339,6 +339,22 @@ export default class ItemsHelper {
         }
     }
 
+    // Calculating person with most items and rewarding them.
+    static async updateMostItems() {
+        const query = {
+            name: "get-all-owned-sums",
+            text: `SELECT owner_id, SUM(quantity) as total FROM items GROUP BY owner_id ORDER BY total DESC LIMIT 1`
+        };
+
+        const result = await Database.query(query);
+        const mostItems = DatabaseHelper.single(result);
+
+        const mostItemsMember = UsersHelper._get(mostItems.owner_id);
+        const username = mostItemsMember.user.username;
+
+        ChannelsHelper._postToChannelCode('TALK', `${username} has the most items (${mostItems.total})!`);
+    }
+
 
     static NON_USABLE_EMOJIS = [
         "COOP",

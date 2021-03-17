@@ -1,6 +1,6 @@
 import Database from "../core/setup/database";
 
-// TODO: Consider adding observable for checkIfNewDay (provide events)
+
 
 import moment from 'moment';
 import TimeHelper from "./features/server/timeHelper";
@@ -85,7 +85,8 @@ export default class Chicken {
         if (currentDaySecs) secs = parseInt(currentDaySecs);
         return secs;
     }
-
+    
+    // TODO: Consider adding observable for checkIfNewDay (provide events)
     static async isNewDay() {
         const currentDaySecs = await this.getCurrentDaySecs();
         const nowSecs = TimeHelper._secs();
