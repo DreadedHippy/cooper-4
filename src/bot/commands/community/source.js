@@ -77,13 +77,11 @@ export default class SourceCommand extends CoopCommand {
 				// Decide if it will fit in an embed or not.
 				if (rawFolderContent.length > 0) {
 					// Form the folder content feedback.
-					const folderContent = `\`\`\`\n` +
-						`// ${intendedPath}\n` +
+					const folderContent = `// ${intendedPath}\n` +
 						`// ${gitBaseUrl}${intendedPath.replace('./', '')}\n\n` +
 
 						`- ${intendedPath} <:file_folder:>` +
-						`${rawFolderContent.map(fld => `-- ${fld}`).join('\n')}` +
-						`\n\`\`\``;
+						`${rawFolderContent.map(fld => `-- ${fld}`).join('\n')}`;
 
 					// Output the display text lines of the folders.
 					MessagesHelper.selfDestruct(msg, folderContent, 666, 15000);
