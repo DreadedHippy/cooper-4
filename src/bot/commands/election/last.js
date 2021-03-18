@@ -8,13 +8,13 @@ export default class LastElectionCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
-			name: 'last',
+			name: 'lastelec',
 			group: 'election',
-			memberName: 'last',
+			memberName: 'lastelec',
 			aliases: [],
-			description: 'Check last election date',
+			description: 'Check lastelec election date',
 			details: ``,
-			examples: ['last']
+			examples: ['lastelec']
 		});
 	}
 

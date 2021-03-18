@@ -127,6 +127,16 @@ export default class UsersHelper {
         };
         return await Database.query(query);
     }
+
+    static async getField(id, field) {
+        const query = {
+            text: `SELECT ${field} FROM users WHERE discord_id = $1`,
+            values: [id]
+        };
+
+        const result = DatabaseHelper.single(await Database.query(query));
+        return result[field] || null;
+    }
     
     static async loadSingle(id) {
         const query = {

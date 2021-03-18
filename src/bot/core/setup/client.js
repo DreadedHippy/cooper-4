@@ -14,6 +14,7 @@ export default () => {
             ['util', 'Utility and assistance commands.'],
             ['community', 'Community related commands.'],
             ['election', 'Election related commands.'],
+            ['sacrifice', 'Sacrifice related commands.'],
             ['economy', 'Economy related commands.'],
             ['skills', 'Skills related commands.'],
             ['misc', 'Miscellaneous commands.'],

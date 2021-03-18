@@ -607,6 +607,7 @@ export default class ElectionHelper {
     static async nextElecFmt() {
         const nextElecSecs = await this.nextElecSecs();
         const nextElecMoment = moment.unix(nextElecSecs);
+        
         return nextElecMoment.format('dddd, MMMM Do YYYY, h:mm:ss a');
     }
 

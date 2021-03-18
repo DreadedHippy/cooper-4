@@ -12,6 +12,8 @@ import STATE from '../../../state';
 
 import Chicken from '../../chicken';
 import CooperMorality from '../minigame/small/cooperMorality';
+import PointsHelper from '../points/pointsHelper';
+import TimeHelper from '../server/timeHelper';
 
 
 
@@ -166,8 +168,29 @@ export default class SacrificeHelper {
         }
     }
 
+    static async getLastSacrificeSecs(userID) {
+        const lastSacSecs = await UsersHelper.getField(userID, 'last_sacrificed_secs');
+        return lastSacSecs;
+    }
+
     static async offer(user) {
-        // TODO: Check last sacrifice time
+        // Check last sacrifice time
+        const lastSacSecs = await this.getLastSacrificeSecs(user.id);
+        
+        // If happened within past week, prevent.
+        const lastWeek = TimeHelper._secs() - ((60 * 60) * 24) * 7;
+        // Ignore null lastSacSecs, these players have never been sacrificed before... no reason not to choose them. :D
+        if (lastSacSecs !== null && lastSacSecs >= lastWeek) {
+            const sparedText = `${user.username} was considered for sacrifice but spared.`
+            return ChannelsHelper._postToFeed(sparedText);
+        }
+
+        // Show some basic user statistics on the sacrifice message.
+        const lastMessageFmt = 'unknown'
+            // UsersHelper.getLastMsgDateFmt()
+        const totalMsgsSent = '#'
+        const points = await PointsHelper.getPointsByID(user.id);
+        // Add total items?
 
         const cooperMood = await CooperMorality.load();
 
@@ -196,7 +219,12 @@ export default class SacrificeHelper {
         // Add message to sacrifice
         const sacrificeEmbed = { embed: embedHelper({ 
             title: `${user.username}, you may be sacrificed${moodText}!`,
-            description: `**Decide <@${user.id}>'s fate**: React to choose! Dagger (remove) OR Shield (keep)`,
+            description: 
+                `**Decide <@${user.id}>'s fate**: React to choose! Dagger (remove) OR Shield (keep)\n` +
+                `_Last message sent: ${lastMessageFmt}_\n` + 
+                `_Total messages sent: ${totalMsgsSent}_` +
+                `_Total points: ${points}_` +
+                `_Total items: ${'?'}_`,
             thumbnail: UsersHelper.avatar(user),
             footerText: 'The best Discord community to be sacrificed from!',
         }) };
@@ -204,6 +232,9 @@ export default class SacrificeHelper {
         // Schedule end of message and reaction voting (24hr)
         const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);
         ServerHelper.addTempMessage(sacrificeMsg, 60 * 60 * 24);
+
+        // Update the user's latest recorded sacrifice time.
+        await UsersHelper.updateField(userID, 'last_sacrificed_secs', TimeHelper._secs());
 
         // Post to feed
         setTimeout(() => {

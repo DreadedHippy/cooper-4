@@ -13,6 +13,7 @@ import TradeHelper from './community/features/economy/tradeHelper';
 import SourceCommand from './commands/community/source';
 import UsersHelper from './core/entities/users/usersHelper';
 import InstantFurnaceMinigame from './community/features/minigame/small/instantfurnace';
+import SacrificeHelper from './community/features/events/sacrificeHelper';
 // ^ DEV IMPORT AREA ^
 
 // Load ENV variables.
@@ -34,29 +35,36 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
           
 
+            // No more than 5 at once DONE
+            // Delete after 72 hours DONE but diff time
             // Sacrifice reform as promised.
-
-            // No more than 5 at once
-
-            const sac = ChannelsHelper._getCode('SACRIFICE');
-            const fetchedMessages = await sac.messages.fetch({ limit: 6 });
-
-            // console.log(sac);
-            console.log(fetchedMessages.size);
-
-
-            // Message at the top of channel
-            // Delete after 72 hours
-
-            // Track last message secs from the latest messages updater and DB COL.
-            // last_msg_secs
-
-            // TODO: Also create a command !lastmsg @{user} to check their last message time.
-
             // const lastMsgFmt = UsersHelper.getLastMsgDateFmt('786671654721683517');
             // console.log(lastMsgFmt);
 
             // Add column and prevent repeats/back to back sacrifice
+            // const lastSacSecs = await UsersHelper.getField('786671654721683517', 'last_sacrificed_secs');
+            // const lastSecs = await SacrificeHelper.getLastSacrificeSecs('786671654721683517');
+            // console.log(lastSacSecs);
+            // console.log(lastSecs);
+
+            // TODO: Also create a command !lastmsg @{user} to check their last message time.
+
+            // Message at the top of channel
+
+
+
+
+
+
+
+            
+            // Track last message secs from the latest messages updater and DB COL.
+            // last_msg_secs
+
+            
+
+
+
             // Track last sacrifice secs from sacrifice initiator and DB COL.
 
 
