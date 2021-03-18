@@ -12,6 +12,7 @@ import ChannelsHelper from './core/entities/channels/channelsHelper';
 import TradeHelper from './community/features/economy/tradeHelper';
 import SourceCommand from './commands/community/source';
 import UsersHelper from './core/entities/users/usersHelper';
+import InstantFurnaceMinigame from './community/features/minigame/small/instantfurnace';
 // ^ DEV IMPORT AREA ^
 
 // Load ENV variables.
@@ -31,7 +32,12 @@ const shallowBot = async () => {
             
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
+
+        
+            console.log(ItemsHelper.interpretItemCodeArg(':axe:'));
+            console.log(ItemsHelper.interpretItemCodeArg('🪓'));
             
+
             // Sacrifice reform as promised.
 
             // No more than 5 at once

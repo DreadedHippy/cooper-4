@@ -16,6 +16,7 @@ import EggHuntMinigame from "../minigame/small/egghunt";
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import ReactionHelper from "../../../core/entities/messages/reactionHelper";
 import Chicken from "../../chicken";
+import EmojiHelper from "./emojiHelper";
 
 
 export default class ItemsHelper {
@@ -299,6 +300,10 @@ export default class ItemsHelper {
         const emojiID = MessagesHelper.strToEmojiID(text);
         const emojiSupportedCode = this.emojiToItemCode(emojiID);
         if (emojiSupportedCode) itemCode = emojiSupportedCode;
+
+        // Prioritise direct emoji overwriting if given as plain/raw/direct emoji encoded string.
+        const rawToItem = EmojiHelper.rawEmojiToCode(text);
+        if (rawToItem) itemCode = rawToItem;
 
         return itemCode;
     }
