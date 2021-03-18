@@ -32,15 +32,19 @@ const shallowBot = async () => {
             
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
-
-        
-            console.log(ItemsHelper.interpretItemCodeArg(':axe:'));
-            console.log(ItemsHelper.interpretItemCodeArg('🪓'));
-            
+          
 
             // Sacrifice reform as promised.
 
             // No more than 5 at once
+
+            const sac = ChannelsHelper._getCode('SACRIFICE');
+            const fetchedMessages = await sac.messages.fetch({ limit: 6 });
+
+            // console.log(sac);
+            console.log(fetchedMessages.size);
+
+
             // Message at the top of channel
             // Delete after 72 hours
 
