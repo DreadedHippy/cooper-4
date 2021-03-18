@@ -14,6 +14,7 @@ import Chicken from '../../chicken';
 import CooperMorality from '../minigame/small/cooperMorality';
 import PointsHelper from '../points/pointsHelper';
 import TimeHelper from '../server/timeHelper';
+import ItemsHelper from '../items/itemsHelper';
 
 
 
@@ -187,10 +188,14 @@ export default class SacrificeHelper {
 
         // Show some basic user statistics on the sacrifice message.
         const lastMessageFmt = 'unknown'
-            // UsersHelper.getLastMsgDateFmt()
-        const totalMsgsSent = '#'
+
+        // Try to access and format last_msg_secs data.v
+        const lastMsgSecs = await UsersHelper.getField(user.id, 'last_msg_secs');
+        if (lastMsgSecs) lastMessageFmt = TimeHelper.secsLongFmt(lastMsgSecs);
+
+        const totalMsgsSent = await UsersHelper.getField(user.id, 'total_msgs');
         const points = await PointsHelper.getPointsByID(user.id);
-        // Add total items?
+        const totalItems = await ItemsHelper.getUserTotal(user.id);
 
         const cooperMood = await CooperMorality.load();
 
@@ -225,7 +230,7 @@ export default class SacrificeHelper {
                 `_Last message sent: ${lastMessageFmt}_\n` + 
                 `_Total messages sent: ${totalMsgsSent}_\n` +
                 `_Total points: ${points}_\n` +
-                `_Total items: ${'?'}_`,
+                `_Total items: ${totalItems}_`,
             thumbnail: UsersHelper.avatar(user),
             footerText: 'The best Discord community to be sacrificed from!',
         }) };

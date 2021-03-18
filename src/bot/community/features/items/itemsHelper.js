@@ -344,6 +344,25 @@ export default class ItemsHelper {
         }
     }
 
+    // Get the total count of user's items.
+    static async getUserTotal(id) {
+        let total = 0;
+
+        const query = {
+            name: "get-user-owned-total",
+            text: `SELECT owner_id, SUM(quantity) as total FROM items
+                WHERE owner_id = $1
+                GROUP BY owner_id ORDER BY total DESC LIMIT 1`,
+            values: [id]
+        };
+
+        const result = await Database.query(query);
+        const userItemsSum = DatabaseHelper.single(result);
+        if (userItemsSum) total = userItemsSum.total;
+
+        return total;
+    }
+
     // Calculating person with most items and rewarding them.
     static async updateMostItems() {
         const query = {

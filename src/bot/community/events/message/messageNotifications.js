@@ -5,6 +5,7 @@ import CHANNELS from '../../../core/config/channels.json';
 import KEY_MESSAGES from '../../../core/config/keymessages.json';
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import Chicken from "../../chicken";
+import TimeHelper from "../../features/server/timeHelper";
 
 export default class MessageNotifications {
 
@@ -69,6 +70,21 @@ export default class MessageNotifications {
 
                 // Add some line spacing.
                 notificationString += '\n\n';
+
+
+                // Update the last message time and total messages count of these users.
+                Object.keys(notificationData.authors).map(authorKey => {
+                    const { count } = notificationData.authors[authorKey];
+
+                    // Update last message secs to current time.
+                    UsersHelper.updateField(authorKey, 'last_msg_secs', TimeHelper._secs());
+
+                    // TODO: Improve with more efficient postgres method UsersHelper.add() like Items.
+
+                    // Update total_msgs field for the user.
+                    const newTotal = (await UsersHelper.getField(authorKey, 'total_msgs')) + count;
+                    UsersHelper.updateField(authorKey, 'total_msgs', newTotal);
+                });
 
                 // All outstanding state accounted for, cleanup.
                 this.clear(channelID);

@@ -124,6 +124,11 @@ CREATE TABLE chicken(
 ALTER TABLE users
     ADD COLUMN email VARCHAR;
 
+ALTER TABLE users
+    ADD COLUMN last_msg_secs int;
+
+ALTER TABLE users
+    ADD COLUMN total_msgs int;
 
 
 CREATE TABLE temp_messages(
