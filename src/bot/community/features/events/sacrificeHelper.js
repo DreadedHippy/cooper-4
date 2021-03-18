@@ -220,10 +220,11 @@ export default class SacrificeHelper {
         const sacrificeEmbed = { embed: embedHelper({ 
             title: `${user.username}, you may be sacrificed${moodText}!`,
             description: 
-                `**Decide <@${user.id}>'s fate**: React to choose! Dagger (remove) OR Shield (keep)\n` +
+                `**Decide <@${user.id}>'s fate**: React to choose! Dagger (remove) OR Shield (keep)!\n` +
+                `\n**Member Stats:**\n` +
                 `_Last message sent: ${lastMessageFmt}_\n` + 
-                `_Total messages sent: ${totalMsgsSent}_` +
-                `_Total points: ${points}_` +
+                `_Total messages sent: ${totalMsgsSent}_\n` +
+                `_Total points: ${points}_\n` +
                 `_Total items: ${'?'}_`,
             thumbnail: UsersHelper.avatar(user),
             footerText: 'The best Discord community to be sacrificed from!',
@@ -234,7 +235,7 @@ export default class SacrificeHelper {
         ServerHelper.addTempMessage(sacrificeMsg, 60 * 60 * 24);
 
         // Update the user's latest recorded sacrifice time.
-        await UsersHelper.updateField(userID, 'last_sacrificed_secs', TimeHelper._secs());
+        await UsersHelper.updateField(user.id, 'last_sacrificed_secs', TimeHelper._secs());
 
         // Post to feed
         setTimeout(() => {
