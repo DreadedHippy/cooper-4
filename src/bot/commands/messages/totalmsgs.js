@@ -1,4 +1,3 @@
-import TimeHelper from '../../community/features/server/timeHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';

@@ -35,7 +35,10 @@ const shallowBot = async () => {
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-            console.log(await ItemsHelper.getUserTotal('786671654721683517'))
+            const user = UsersHelper._get('245315920233234432')
+            SacrificeHelper.offer(user);
+
+            // console.log(await ItemsHelper.getUserTotal('786671654721683517'))
 
             // Track last message secs from the latest messages updater and DB COL.
             // Also create a command !lastmsg @{user} to check their last message time.
