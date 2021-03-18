@@ -25,16 +25,14 @@ const shallowBot = async () => {
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+            // console.log(await ItemsHelper.getRichest());
+            // console.log(await ItemsHelper.getBiggestWhale());
+
             // Track member of week by historical_points DB COL and check every week.
-
-            // Schedule weekly growth analysis like election works...
-            // Need at least 2 db alters or chicken.setConfig to track last analysis time.
-
+                // Schedule weekly growth analysis like election works...
+                // Need at least 2 db alters or chicken.setConfig to track last analysis time.
 
             // Calculate the player with most items.
-
-                // Does this fire too often?
-                // No role exists yet.. sigh.
                 // Reward keys?
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
@@ -48,6 +46,7 @@ const shallowBot = async () => {
             // Harder:
                 // Detect server message/activity velocity increases (as % preferably).
                 // Community set and managed variable/value.
+
     });
 };
 

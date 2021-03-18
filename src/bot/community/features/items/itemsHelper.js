@@ -424,23 +424,24 @@ export default class ItemsHelper {
 
 
 
-
-
-
-
-
-
-
-
     // Calculating person with most items and rewarding them.
-    static async updateMostItems() {
+    static async getBiggestWhale() {
         // Calculate the community user with most items.
         const query = {
             name: "get-all-owned-sums",
             text: `SELECT owner_id, SUM(quantity) as total FROM items GROUP BY owner_id ORDER BY total DESC LIMIT 1`
         };
+        
         const result = await Database.query(query);
         const mostItems = DatabaseHelper.single(result);
+
+        return mostItems;
+    }
+
+
+    // Calculating person with most items and rewarding them.
+    static async updateMostItems() {
+        const mostItems = await this.getBiggestWhale();
 
         // Access the member with the most items.
         const mostItemsMember = UsersHelper._get(mostItems.owner_id);

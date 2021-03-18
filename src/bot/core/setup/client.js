@@ -16,6 +16,7 @@ export default () => {
             ['messages', 'Message related commands.'],
             ['election', 'Election related commands.'],
             ['sacrifice', 'Sacrifice related commands.'],
+            ['items', 'Item related commands.'],
             ['economy', 'Economy related commands.'],
             ['skills', 'Skills related commands.'],
             ['misc', 'Miscellaneous commands.'],
