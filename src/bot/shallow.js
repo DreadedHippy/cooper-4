@@ -25,9 +25,6 @@ const shallowBot = async () => {
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-            // console.log(await ItemsHelper.getRichest());
-            // console.log(await ItemsHelper.getBiggestWhale());
-
             // Track member of week by historical_points DB COL and check every week.
                 // Schedule weekly growth analysis like election works...
                 // Need at least 2 db alters or chicken.setConfig to track last analysis time.
