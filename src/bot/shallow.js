@@ -41,6 +41,9 @@ const shallowBot = async () => {
             // const lastMsgFmt = UsersHelper.getLastMsgDateFmt('786671654721683517');
             // console.log(lastMsgFmt);
 
+
+            ChannelsHelper._postToChannelCode('SACRIFICE', 'RESERVED INFO MESSAGE.')
+
             // Add column and prevent repeats/back to back sacrifice
             // const lastSacSecs = await UsersHelper.getField('786671654721683517', 'last_sacrificed_secs');
             // const lastSecs = await SacrificeHelper.getLastSacrificeSecs('786671654721683517');
@@ -57,7 +60,7 @@ const shallowBot = async () => {
 
 
 
-            
+
             // Track last message secs from the latest messages updater and DB COL.
             // last_msg_secs
 
