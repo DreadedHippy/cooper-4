@@ -159,7 +159,7 @@ export default class MiscMessageHandlers {
 
         // Luni, based.
         if (msg.author.id === '266840470624272385' && msg.content.toLowerCase().indexOf('based') > -1) {
-            msg.react(':baseball:');
+            msg.react('⚾');
         }
 
         // surprise lmf, i hope this works ;--;

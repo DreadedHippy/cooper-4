@@ -129,13 +129,23 @@ export default class UsersHelper {
     }
 
     static async getField(id, field) {
-        const query = {
-            text: `SELECT ${field} FROM users WHERE discord_id = $1`,
-            values: [id]
-        };
+        try {
+            const query = {
+                text: `SELECT ${field} FROM users WHERE discord_id = $1`,
+                values: [id]
+            };
+    
+            // Try to safely access the proposed field.
+            let value = null;
+            const result = DatabaseHelper.single(await Database.query(query));
+            if (typeof result[field] !== 'undefined') value = result[field];
+    
+            return value;
 
-        const result = DatabaseHelper.single(await Database.query(query));
-        return result[field] || null;
+        } catch(e) {
+            console.log('getField error ' + field);
+            console.error(e);
+        }
     }
     
     static async loadSingle(id) {
