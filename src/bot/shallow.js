@@ -34,25 +34,13 @@ const shallowBot = async () => {
             
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
-          
-
-            // Sacrifice reform as promised!
-
-                // No more than 5 at once DONE
-                // Delete after 72 hours DONE but diff time
-                // Add column and prevent repeats/back to back sacrifice DONE
-                // Create !lastsac @{user} to check their last sacrifice time DONE
-                // Message at the top of channel HALF_DONE
-
-            
-
-
-
-
 
             // Track last message secs from the latest messages updater and DB COL.
-            // TODO: Also create a command !lastmsg @{user} to check their last message time.
+            // Also create a command !lastmsg @{user} to check their last message time.
             // last_msg_secs
+
+            // Sacrifice reform as promised!
+                // Message at the top of channel HALF_DONE
 
 
 

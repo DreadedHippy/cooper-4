@@ -30,6 +30,13 @@ export default class LastSacrificeCommand extends CoopCommand {
 	async run(msg, { targetUser }) {
 		super.run(msg);
 
+		// Without any target
+		if (targetUser === '') targetUser = msg.author;
+
+		// Requires a valid user.
+		if (!targetUser) 
+			return MessagesHelper.selfDestruct(msg, '!lastsac requires a valid user target to provide results.');
+
 		// Default status for last sacrifice date.
 		let lastSacrificeFmt = 'unknown';
 
@@ -38,7 +45,7 @@ export default class LastSacrificeCommand extends CoopCommand {
 		if (lastSacSecs) lastSacrificeFmt = TimeHelper.secsLongFmt(lastSacSecs);
 		
 		// Provide the result to the user.
-		const msgText = `${target}'s last sacrifice was: ${lastSacrificeFmt}`;
+		const msgText = `${targetUser.username}'s last sacrifice was: ${lastSacrificeFmt}.`;
 		MessagesHelper.selfDestruct(msg, msgText);
     }
     
