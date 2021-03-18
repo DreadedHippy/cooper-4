@@ -67,7 +67,12 @@ export default function eventsManifest() {
   // TODO: Needs a lot more effort.
   EventsHelper.runInterval(() => CooperMorality.evaluate(), baseTickDur * 4.5);
 
+
+  // Update person with most points role.
   EventsHelper.runInterval(() => PointsHelper.updateCurrentWinner(), baseTickDur * 3);
+
+    // Update person with richest role.
+    EventsHelper.runInterval(() => ItemsHelper.updateRichest(), baseTickDur * 5);
 
   // Update person in the community economy with MOST_ITEMS and give role/reward.
   EventsHelper.runInterval(() => ItemsHelper.updateMostItems(), baseTickDur * 3);
@@ -91,7 +96,7 @@ export default function eventsManifest() {
   // Miscellaneous features.
   EventsHelper.chanceRunInterval(() => {
     ChannelHelper._postToFeed('Ruuuuuu' + 'u'.repeat(STATE.CHANCE.natural({ min: 1, max: 20 })));
-  }, 2.5, baseTickDur * 5);
+  }, 2.5, baseTickDur * 10);
 
   EventsHelper.chanceRunInterval(() => { ChannelHelper._postToFeed('._.') }, 7, baseTickDur * 3.5);
 }

@@ -4,6 +4,8 @@ import STATE from "../../../state";
 import ROLES from "../../../core/config/roles.json";
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import ServerHelper from "../../../core/entities/server/serverHelper";
+import RolesHelper from "../../../core/entities/roles/rolesHelper";
+import UsersHelper from "../../../core/entities/users/usersHelper";
 
 export default class PointsHelper {
     
@@ -88,11 +90,10 @@ export default class PointsHelper {
 
     static async updateCurrentWinner() {
         const highestRecord = await this.getHighest();
-        const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
 
-        const mostPointsRole = await guild.roles.fetch(ROLES.MOSTPOINTS.id);
-
-        const mostPointsMember = await guild.members.fetch(highestRecord.discord_id);
+        const mostPointsRole = RolesHelper._getByCode('MOSTPOINTS');
+        
+        const mostPointsMember = UsersHelper._get(highestRecord.discord_id);
         const username = mostPointsMember.user.username;
         
         let alreadyHadRole = false;

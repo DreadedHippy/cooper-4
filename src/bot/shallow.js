@@ -2,19 +2,9 @@ import { Client } from 'discord.js-commando';
 import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
+import ItemsHelper from './community/features/items/itemsHelper';
 
 // v DEV IMPORT AREA v
-import BlockIO from 'block_io';
-import ReservesHelper from './community/features/economy/reservesHelper';
-import ElectionHelper from './community/features/hierarchy/election/electionHelper';
-import ItemsHelper from './community/features/items/itemsHelper';
-import ChannelsHelper from './core/entities/channels/channelsHelper';
-import TradeHelper from './community/features/economy/tradeHelper';
-import SourceCommand from './commands/community/source';
-import UsersHelper from './core/entities/users/usersHelper';
-import InstantFurnaceMinigame from './community/features/minigame/small/instantfurnace';
-import SacrificeHelper from './community/features/events/sacrificeHelper';
-import TimeHelper from './community/features/server/timeHelper';
 // ^ DEV IMPORT AREA ^
 
 // Load ENV variables.
@@ -35,39 +25,30 @@ const shallowBot = async () => {
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
-            const user = UsersHelper._get('245315920233234432')
-            SacrificeHelper.offer(user);
+            // Track member of week by historical_points DB COL and check every week.
 
-            // console.log(await ItemsHelper.getUserTotal('786671654721683517'))
+            // Schedule weekly growth analysis like election works...
+            // Need at least 2 db alters or chicken.setConfig to track last analysis time.
 
-            // Track last message secs from the latest messages updater and DB COL.
-            // Also create a command !lastmsg @{user} to check their last message time.
-            // last_msg_secs
 
-            // Sacrifice reform as promised!
-                // Message at the top of channel HALF_DONE
+            // Calculate the player with most items.
 
-        // const lastMsgSecs = await UsersHelper.getField(targetUser.id, 'last_msg_secs')
+                // Does this fire too often?
+                // No role exists yet.. sigh.
+                // Reward keys?
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
 
 
         // NOTES AND LONGER TERM CHALLENGES/ISSUES:
-
-            // After sacrifice reform, using a similar patch:
-                // Track member of week by historical_points DB COL and check every week.
-
-                // Calculate the player with most items.
-                    // ItemsHelper.updateMostItems()
-
-        // Hard, Quick:
         
-        // Harder:
-            // Detect server message/activity velocity increases (as % preferably).
-            // Community set and managed variable/value.
-
+            // Hard, Quick:
+                // Sacrifice message at the top of channel HALF_DONE
+            
+            // Harder:
+                // Detect server message/activity velocity increases (as % preferably).
+                // Community set and managed variable/value.
     });
-
 };
 
 shallowBot();

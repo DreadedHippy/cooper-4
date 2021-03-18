@@ -13,6 +13,14 @@ export default class RolesHelper {
         return guild.roles.cache.get(roleID);
     }
 
+    static _get(roleID) {
+        return this.getRoleByID(ServerHelper._coop(), roleID);
+    }
+
+    static _getByCode(roleCode) {
+        return this.getRoleByID(ServerHelper._coop(), ROLES[roleCode].id);
+    }
+
     static async _add(userID, roleCode) {
         try {
             const guild = ServerHelper._coop();

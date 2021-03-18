@@ -74,7 +74,7 @@ export default class MessageNotifications {
 
                 // Update the last message time and total messages count of these users.
                 Object.keys(notificationData.authors).map(async (authorKey) => {
-                    const { count } = notificationData.authors[authorKey];
+                    const count = notificationData.authors[authorKey].count;
 
                     // Update last message secs to current time.
                     UsersHelper.updateField(authorKey, 'last_msg_secs', TimeHelper._secs());

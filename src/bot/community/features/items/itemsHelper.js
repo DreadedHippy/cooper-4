@@ -17,6 +17,7 @@ import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import ReactionHelper from "../../../core/entities/messages/reactionHelper";
 import Chicken from "../../chicken";
 import EmojiHelper from "./emojiHelper";
+import RolesHelper from "../../../core/entities/roles/rolesHelper";
 
 
 export default class ItemsHelper {
@@ -363,20 +364,118 @@ export default class ItemsHelper {
         return total;
     }
 
+
+
+    static async getRichest() {
+        const query = {
+            name: "get-richest",
+            text: `SELECT owner_id, SUM(quantity) as total FROM items 
+                WHERE item_code = 'GOLD_COIN'
+                GROUP BY owner_id ORDER BY total DESC LIMIT 1`
+        };
+        const result = await Database.query(query);
+        const richest = DatabaseHelper.single(result);
+
+        return richest;
+    }
+
+
+    // Calculating person with most items and rewarding them.
+    static async updateRichest() {
+        // Calculate the community user with most items.
+        const richestDb = await this.getRichest();
+
+        // Access the member with the most items.
+        const richestMember = UsersHelper._get(richestDb.owner_id);
+        const username = richestMember.user.username;
+
+        // Load the most items role, cache is probably fine.
+        const richestRole = RolesHelper._getByCode('RICHEST');
+
+        // Calculate if they already had this reward role on last check.
+        let alreadyHadRole = false;
+
+        // Remove the role from previous winner and commiserate.
+        let prevWinner = null;
+        richestRole.members.map(prevMostMember => {
+            if (prevMostMember.user.id === richestMember.user.id) alreadyHadRole = true;
+            else {
+                prevWinner = prevMostMember.user;
+                prevMostMember.roles.remove(richestRole);
+            }
+        });
+
+        // If the new winner didn't already have the role, award it and notify server.
+        if (!alreadyHadRole) {
+            // Add point reward to item leader.
+            const pointsAfter = await this.addPointsByID(richestMember.user.id, 100);
+            
+            // Add the role to new item leader.
+            richestMember.roles.add(richestRole);
+            
+            // Post Feedback.            
+            let successText = `${username} is now the **richest**!`;
+            if (prevWinner) successText = ` ${username} overtakes ${prevWinner.username} as richest member!`;
+            successText += ` Given RICHEST reward role and 100 points (${pointsAfter})!`;
+            ChannelsHelper._postToFeed(successText);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     // Calculating person with most items and rewarding them.
     static async updateMostItems() {
+        // Calculate the community user with most items.
         const query = {
             name: "get-all-owned-sums",
             text: `SELECT owner_id, SUM(quantity) as total FROM items GROUP BY owner_id ORDER BY total DESC LIMIT 1`
         };
-
         const result = await Database.query(query);
         const mostItems = DatabaseHelper.single(result);
 
+        // Access the member with the most items.
         const mostItemsMember = UsersHelper._get(mostItems.owner_id);
         const username = mostItemsMember.user.username;
 
-        ChannelsHelper._postToChannelCode('TALK', `${username} has the most items (${mostItems.total})!`);
+        // Load the most items role, cache is probably fine.
+        const mostItemsRole = RolesHelper._getByCode('MOST_ITEMS');
+
+        // Calculate if they already had this reward role on last check.
+        let alreadyHadRole = false;
+
+        // Remove the role from previous winner and commiserate.
+        let prevWinner = null;
+        mostItemsRole.members.map(prevMostMember => {
+            if (prevMostMember.user.id === highestRecord.discord_id) alreadyHadRole = true;
+            else {
+                prevWinner = prevMostMember.user;
+                prevMostMember.roles.remove(mostItemsRole);
+            }
+        });
+
+        // If the new winner didn't already have the role, award it and notify server.
+        if (!alreadyHadRole) {
+            // Add point reward to item leader.
+            const pointsAfter = await this.addPointsByID(highestRecord.discord_id, 50);
+            
+            // Add the role to new item leader.
+            mostItemsMember.roles.add(mostItemsRole);
+            
+            // Post Feedback.            
+            let successText = `${username} is now the biggest hoarder.`;
+            if (prevWinner) successText = ` ${username} overtakes ${prevWinner.username} for most items!`;
+            successText += ` Given MOST ITEMS reward role and 50 points (${pointsAfter})!`;
+            ChannelsHelper._postToFeed(successText);
+        }
     }
 
 
