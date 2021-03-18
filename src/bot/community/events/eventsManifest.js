@@ -30,6 +30,17 @@ export const baseTickDur = 60 * 25 * 1000;
 
 export default function eventsManifest() {
 
+
+  // Server related house keeping items.
+
+
+
+  // TODO:
+  // Check member of the week historical_points, see if needed... like election style
+  // EventsHelper.runInterval(() => PointsHelper.updateMOTW(), baseTickDur * 6);
+
+
+
   // Server related house keeping items.
   EventsHelper.runInterval(() => StatisticsHelper.update(), baseTickDur * 5);
 

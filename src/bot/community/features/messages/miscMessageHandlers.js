@@ -20,6 +20,7 @@ export default class MiscMessageHandlers {
         const twentyPercRoll = STATE.CHANCE.bool({ likelihood: 20 });
         const isBruh = msg.content.toLowerCase().indexOf('bruh') > -1;
         const isBreh = msg.content.toLowerCase().indexOf('breh') > -1;
+        
         // TODO: Account for bruuuh
         if ((isBreh || isBruh) && !UsersHelper.isCooperMsg(msg)) {
             let type = 'bruh';
@@ -42,6 +43,7 @@ export default class MiscMessageHandlers {
                 }, 1222);
             }, 666);
         }
+
         if (msg.content.toLowerCase() === 'i-' && !UsersHelper.isCooperMsg(msg) && twentyPercRoll) msg.say('U-? Finish your sentence!');
 
 
@@ -153,6 +155,11 @@ export default class MiscMessageHandlers {
 
             if (STATE.CHANCE.bool({ likelihood: 2.5 }) && msg.channel.id === CHANNELS.SOLATWAR.id)
                 MessagesHelper.delayReact(msg, '🪐', 333);
+        }
+
+        // Luni, based.
+        if (msg.author.id === '266840470624272385' && msg.content.toLowerCase().indexOf('based') > -1) {
+            msg.react(':baseball:');
         }
 
         // surprise lmf, i hope this works ;--;

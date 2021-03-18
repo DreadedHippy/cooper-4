@@ -130,6 +130,9 @@ ALTER TABLE users
 ALTER TABLE users
     ADD COLUMN total_msgs int;
 
+ALTER TABLE users
+    ADD COLUMN historical_points int;
+
 
 CREATE TABLE temp_messages(
     id SERIAL PRIMARY KEY,

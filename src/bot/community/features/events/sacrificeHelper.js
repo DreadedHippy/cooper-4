@@ -263,12 +263,15 @@ export default class SacrificeHelper {
     // Sacrifice random member if less than five people are being sacrificed and the member exists
     static async random() {
         try {
+            // Select a member at random.
             const member = await UsersHelper.random();
-            const sacrificeChannel = STATE.CLIENT.channels.cache.get(CHANNELS.SACRIFICE.id);
 
-            const fetchedMessages = await sacrificeChannel.messages.fetch({ limit: 5 });
-            const messageNum = fetchedMessages.size;
-            if (member && messageNum < 5) this.offer(member.user);
+            // Access the sacrifice channel for sacrifice data.
+            const sacrificeChannel = STATE.CLIENT.channels.cache.get(CHANNELS.SACRIFICE.id);
+            const sacrificeOffers = await sacrificeChannel.messages.fetch({ limit: 3 });
+
+            // If space for another offer, offer one.
+            if (member && sacrificeOffers.size < 3) this.offer(member.user);
 
         } catch(e) {
             console.log('Error sacrificing random member!');

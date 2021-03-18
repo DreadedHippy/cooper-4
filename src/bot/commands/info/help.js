@@ -96,7 +96,7 @@ export default class HelpCommand extends CoopCommand {
 				let helpString = `**Available Commands**: \nTo find out more provide a command group or command name. !help {?CMD|GROUP?}\n\n`;
 				this.commando.registry.groups.map(group => {
 					if (hiddenGroups.includes(group.id)) return false;
-					helpString += `**${group.id}: ${group.name}**\n`;
+					helpString += `**${group.name}:**\n`;
 
 					let count = 0;
 					const delimiter = group.commands.size > 1 ? ', ' : '.'; 

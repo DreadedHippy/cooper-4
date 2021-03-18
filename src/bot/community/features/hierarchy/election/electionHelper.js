@@ -241,6 +241,7 @@ export default class ElectionHelper {
             const exCommander = RolesHelper._getUsersWithRoleCodes(['COMMANDER']).first();
             const exLeaders = RolesHelper._getUsersWithRoleCodes(['LEADER']);
             
+            // Remove the former leader roles.
             let index = 0;
             await Promise.all(exLeaders.map(async (exLeader) => {
                 index++;
@@ -248,10 +249,15 @@ export default class ElectionHelper {
                 await RolesHelper._remove(exLeader.user.id, 'LEADER');
                 return true;
             }));
+
+            // Remove the former commander role.
             await RolesHelper._remove(exCommander.user.id, 'COMMANDER');
     
             // Add former commander to ex commander!
-            await RolesHelper._add(exCommander.user.id, 'FORMER_COMMANDER');
+            if (!RolesHelper._has(exCommander, 'FORMER_COMMANDER')) {
+                ChannelsHelper._postToFeed(`${exCommander.user.username} is recognised as a former commander and allowed access into the former commanders' secret channel!`);
+                await RolesHelper._add(exCommander.user.id, 'FORMER_COMMANDER');
+            }
     
             return true;
 
