@@ -6,58 +6,49 @@ import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import ServerHelper from "../../../core/entities/server/serverHelper";
 import RolesHelper from "../../../core/entities/roles/rolesHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
+import ItemsHelper from "../items/itemsHelper";
+
+
 
 export default class PointsHelper {
     
     static async getPointsByID(id) {
-        let points = 0;
-        const result = await Database.query({
-            name: 'fetch-user-points',
-            text: 'SELECT points FROM users WHERE discord_id = $1',
-            values: [id],
-        });
-        if (result.rows.length > 0) points = result.rows[0].points || 0;
-        return points;
+        const qty = await ItemsHelper.getUserItemQty(id, 'COOP_POINT')
+        return qty;
     }
 
     static async addPointsByID(id, points) {
-        let newPoints = 0;
-        const result = await Database.query({
-            name: 'add-user-points',
-            text: 'UPDATE users SET points = points + $1 WHERE discord_id = $2 RETURNING points',
-            values: [points, id],
-        });
-
-        newPoints = (result.rows[0] || { points: 0 }).points;
-
-        return newPoints;
+        const addResult = await ItemsHelper.add(id, 'COOP_POINT', points);
+        return addResult;
     }
 
-    // TODO: Add a shoutout/edit shoutout for current highest points in about
-    // TODO: Add to about every 12 hours or so
     static async getLeaderboard(pos = 0) {
         const query = {
             name: 'get-leaderboard',
             text: `
-                SELECT points, discord_id 
-                FROM users 
-                ORDER BY points DESC
+                SELECT quantity, owner_id 
+                FROM items 
+                WHERE item_code = 'COOP_POINT'
+                ORDER BY quantity DESC
                 OFFSET $1
                 LIMIT 15
             `.trim(),
             values: [pos]
         };
+
         const result = await Database.query(query);
-        return result;
+        const rows = DatabaseHelper.many(result);
+
+        return rows;
     }
 
     static async getAllPositive() {
         const query = {
             name: 'get-all-positive',
             text: `
-                SELECT points, discord_id 
+                SELECT quantity, owner_id
                 FROM users 
-                WHERE points > 0
+                WHERE quantity > 0 AND item_code = 'COOP_POINT'
             `.trim(),
         };
         const result = await Database.query(query);
@@ -68,22 +59,27 @@ export default class PointsHelper {
         const query = {
             name: 'get-negative-leaderboard',
             text: `
-                SELECT points, discord_id 
-                FROM users 
-                ORDER BY points ASC
+                SELECT quantity, owner_id 
+                FROM items
+                ORDER BY quantity ASC
                 OFFSET $1
                 LIMIT 15
             `.trim(),
             values: [pos]
         };
+
         const result = await Database.query(query);
-        return result;
+        const rows = DatabaseHelper.many(result);
+
+        return rows;
     }
 
     static async getHighest() {
         const query = {
             name: 'get-highest-points-user',
-            text: 'SELECT * FROM users ORDER BY points DESC LIMIT 1'
+            text: `SELECT * FROM items
+                WHERE item_code = 'COOP_POINT' 
+                ORDER BY quantity DESC LIMIT 1`
         };
         return DatabaseHelper.single(await Database.query(query));
     }
@@ -93,7 +89,7 @@ export default class PointsHelper {
 
         const mostPointsRole = RolesHelper._getByCode('MOSTPOINTS');
         
-        const mostPointsMember = UsersHelper._get(highestRecord.discord_id);
+        const mostPointsMember = UsersHelper._get(highestRecord.owner_id);
         const username = mostPointsMember.user.username;
         
         let alreadyHadRole = false;
@@ -101,7 +97,7 @@ export default class PointsHelper {
         // Remove the role from previous winner and commiserate.
         let prevWinner = null;
         mostPointsRole.members.map(prevMostMember => {
-            if (prevMostMember.user.id === highestRecord.discord_id) alreadyHadRole = true;
+            if (prevMostMember.user.id === highestRecord.owner_id) alreadyHadRole = true;
             else {
                 prevWinner = prevMostMember.user;
                 prevMostMember.roles.remove(mostPointsRole);
@@ -113,7 +109,7 @@ export default class PointsHelper {
             let successText = `${username} is now the point leader.`;
             if (prevWinner) successText = ` ${username} overtakes ${prevWinner.username} for most points!`;
 
-            const pointsAfter = await this.addPointsByID(highestRecord.discord_id, 5);
+            const pointsAfter = await this.addPointsByID(highestRecord.owner_id, 5);
             successText += ` Given MOST POINTS role and awarded 5 points (${pointsAfter})!`;
 
             ChannelsHelper._postToFeed(successText);
@@ -127,7 +123,7 @@ export default class PointsHelper {
         const rowUsers = await Promise.all(leaderboardRows.map(async (row, index) => {
             let username = '?';
             try {
-                const member = await guild.members.fetch(row.discord_id);
+                const member = await guild.members.fetch(row.owner_id);
                 username = member.user.username;
 
             } catch(e) {

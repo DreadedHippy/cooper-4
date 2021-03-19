@@ -116,8 +116,8 @@ export default class AboutHelper {
         
         // post leaderboard to economy
         const leaderboardMsgLink = await Chicken.getConfigVal('about_leaderboard_msg');
-        const leaderboard = await PointsHelper.getLeaderboard(0);
-        const leaderboardMsgText = await PointsHelper.renderLeaderboard(leaderboard.rows);
+        const leaderboardRows = await PointsHelper.getLeaderboard(0);
+        const leaderboardMsgText = await PointsHelper.renderLeaderboard(leaderboardRows);
         await MessagesHelper.editByLink(leaderboardMsgLink, leaderboardMsgText);
     }
 

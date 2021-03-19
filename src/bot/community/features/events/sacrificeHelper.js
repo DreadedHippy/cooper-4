@@ -6,7 +6,6 @@ import ServerHelper from '../../../core/entities/server/serverHelper';
 import UsersHelper from '../../../core/entities/users/usersHelper';
 import VotingHelper from '../../events/voting/votingHelper';
 import MessagesHelper from '../../../core/entities/messages/messagesHelper';
-import embedHelper from '../../../ui/embed/embedHelper';
 
 import STATE from '../../../state';
 
@@ -222,7 +221,7 @@ export default class SacrificeHelper {
         if (oneRoll && twentyRoll && cooperMood === 'NEUTRAL') moodText = ' all sacrificial rights reserved, The Coop';
 
         // Add message to sacrifice
-        const sacrificeEmbed = { embed: embedHelper({ 
+        const sacrificeEmbed = MessagesHelper.embed({ 
             title: `${user.username}, you may be sacrificed${moodText}!`,
             description: 
                 `**Decide <@${user.id}>'s fate**: React to choose! Dagger (remove) OR Shield (keep)!\n` +
@@ -233,7 +232,7 @@ export default class SacrificeHelper {
                 `_Total items: ${totalItems}_`,
             thumbnail: UsersHelper.avatar(user),
             footerText: 'The best Discord community to be sacrificed from!',
-        }) };
+        });
 
         // Schedule end of message and reaction voting (24hr)
         const sacrificeMsg = await ChannelsHelper._postToChannelCode('SACRIFICE', sacrificeEmbed);

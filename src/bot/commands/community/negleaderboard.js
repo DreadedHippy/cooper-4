@@ -33,9 +33,8 @@ export default class NegativeLeaderboardCommand extends CoopCommand {
 			// None: show top 15
 			// User: show user position and 5 either side
 			// Number: show rank number and 5 either side
-			const leaderboard = await PointsHelper.getNegLeaderboard(position);
+			const leaderboardRows = await PointsHelper.getNegLeaderboard(position);
 			const placeholderMsg = await msg.say('Calculating leaderboard, please wait.');
-			const leaderboardRows = leaderboard.rows;
 
 			const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
 			
@@ -43,7 +42,7 @@ export default class NegativeLeaderboardCommand extends CoopCommand {
 			const rowUsers = await Promise.all(leaderboardRows.map(async (row, index) => {
 				let username = '?';
 				try {
-					const member = await guild.members.fetch(row.discord_id);
+					const member = await guild.members.fetch(row.owner_id);
 					username = member.user.username;
 
 				} catch(e) {

@@ -1,8 +1,15 @@
 import ChannelsHelper from "../channels/channelsHelper";
 import ServerHelper from "../server/serverHelper";
 import EMOJIS from "../../config/emojis.json";
+import createEmbed from "./embedHelper";
 
 export default class MessagesHelper {
+
+    static embed(embedConf) {
+        return { 
+            embed: createEmbed(embedConf) 
+        };
+    }
 
     static parselink(link) {
         let result = null;

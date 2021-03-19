@@ -4,7 +4,7 @@ import ROLES from '../../../../core/config/roles.json';
 import ChannelsHelper from '../../../../core/entities/channels/channelsHelper';
 import MessagesHelper from '../../../../core/entities/messages/messagesHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
-import createEmbed from '../../../../ui/embed/embedHelper';
+
 import TimeHelper from '../../../features/server/timeHelper';
 
 export default async (msg) => {
@@ -44,12 +44,12 @@ export default async (msg) => {
 
       // Send embed to approval channel for redeeming non-members via introduction.
       if (!UsersHelper.hasRoleID(memberSubject, ROLES.MEMBER.id)) {
-        await ChannelsHelper._postToChannelCode('ENTRY', { embed: createEmbed({
+        await ChannelsHelper._postToChannelCode('ENTRY', MessagesHelper.embed({
           url: MessagesHelper.link(msg),
           title: `${username}, you are being considered for approval!`,
           description: `Vote for/against ${username} using reaction emojis on their intro message.`,
           thumbnail: UsersHelper.avatar(memberSubject.user)
-        })});
+        }));
       }
 
       // Add helpful emoji reaction suggestions to the message.

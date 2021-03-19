@@ -26,6 +26,11 @@ const shallowBot = async () => {
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+
+            // console.log(ItemsHelper.getUsableItems());
+
+
+
             // Track member of week by historical_points DB COL and check every week.
                 // Schedule weekly growth analysis like election works...
                 // Need at least 2 db alters or chicken.setConfig to track last analysis time.
@@ -33,8 +38,10 @@ const shallowBot = async () => {
             // Calculate the player with most items.
                 // Reward keys?
 
-            const itemCode = ItemsHelper.interpretItemCodeArg(':axe:');
-            console.log(itemCode);
+
+            // For every player over 0 points
+
+
             
             // CraftingHelper.craft()
 

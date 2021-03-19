@@ -6,7 +6,8 @@ import EMOJIS from '../../core/config/emojis.json';
 import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
 import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
-import embedHelper from '../../ui/embed/embedHelper';
+
+
 import UsersHelper from '../../core/entities/users/usersHelper';
 
 
@@ -77,12 +78,12 @@ export default class StandCommand extends CoopCommand {
 					MessagesHelper.selfDestruct(msg, `${msg.author.username}, you wanna stand for <#${CHANNELS.ELECTION.id}>, eyyy?`);
 
 					const emojiText = MessagesHelper.emojiText(EMOJIS.ELECTION_CROWN);
-					const electionEmbed = { embed: embedHelper({ 
+					const electionEmbed = MessagesHelper.embed({ 
 						title: `Election Event: ${msg.author.username} stands for election!`,
 						description: `${msg.content}\n\n` +
 							`To vote for <@${msg.author.id}> press (react) the crown emoji ${emojiText}.`,
 						thumbnail: UsersHelper.avatar(msg.author)
-					}) };
+					});
 
 					const electionMsg = await ChannelsHelper._postToChannelCode('ELECTION', electionEmbed);
 
