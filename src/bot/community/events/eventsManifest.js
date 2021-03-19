@@ -48,17 +48,14 @@ export default function eventsManifest() {
   EventsHelper.runInterval(() => UsersHelper.cleanupUsers(), baseTickDur * 5);
 
   // Clean up temporary messages around every... quick lol.
-  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 12.5);
+  EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 10);
 
   // New day events/calendar events.
   EventsHelper.runInterval(() => Chicken.checkIfNewDay(), baseTickDur / 2);
 
+  // Election related
+  ElectionHelper.setupIntervals();
 
-  // Check progess is left within new day due to significance, but add another runner.
-  EventsHelper.runInterval(() => ElectionHelper.shouldTriggerStart(), baseTickDur * 4);
-
-  // TODO: Ensure leadership and commander based on items so they are treated seriously.
-  EventsHelper.runInterval(() => ElectionHelper.ensureItemSeriousness(), baseTickDur * 6);
   
   // Above is unfinished
   EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);
@@ -82,8 +79,8 @@ export default function eventsManifest() {
   // Update person with most points role.
   EventsHelper.runInterval(() => PointsHelper.updateCurrentWinner(), baseTickDur * 3);
 
-    // Update person with richest role.
-    EventsHelper.runInterval(() => ItemsHelper.updateRichest(), baseTickDur * 5);
+  // Update person with richest role.
+  EventsHelper.runInterval(() => ItemsHelper.updateRichest(), baseTickDur * 5);
 
   // Update person in the community economy with MOST_ITEMS and give role/reward.
   EventsHelper.runInterval(() => ItemsHelper.updateMostItems(), baseTickDur * 3);
@@ -97,8 +94,7 @@ export default function eventsManifest() {
 
   // TODO: Update and create most items role
  
-  // Processes announcements and election events.
-  EventsHelper.runInterval(() => ElectionHelper.checkProgress(), baseTickDur * 4);
+
 
   // TODO: Add a !bang very, very, rarely.
 

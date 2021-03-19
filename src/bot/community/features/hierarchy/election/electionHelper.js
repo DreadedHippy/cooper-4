@@ -15,6 +15,7 @@ import DatabaseHelper from '../../../../core/entities/databaseHelper';
 import VotingHelper from '../../../events/voting/votingHelper';
 import RolesHelper from '../../../../core/entities/roles/rolesHelper';
 import ItemsHelper from '../../items/itemsHelper';
+import EventsHelper, { baseTickDur } from '../../events/eventsHelper';
 
 // TODO:
 // Vote _once_ for candidate. [DONE - WITH PROBLEMS]
@@ -25,6 +26,8 @@ import ItemsHelper from '../../items/itemsHelper';
 // Create election results table 
 // Inspect candidate campaign
 // Election over unix timestamp
+
+// TODO: May need to clean up any non-info/candidates messages leftover.
 
 export default class ElectionHelper {
 
@@ -67,6 +70,10 @@ export default class ElectionHelper {
         
         // Bulk delete may be better here.
         // Ensure all messages deleted, use bulk delete won't be outside of 14 days
+
+        // TODO: Could create as temp messages so this is unnecessary?
+        // Or offer as double feature.
+
         candidates.map((candidate, index) => {
             setTimeout(() =>
                 MessagesHelper.deleteByLink(candidate.campaign_msg_link), 
@@ -95,14 +102,19 @@ export default class ElectionHelper {
 
         return leftSecs;
     }
-
+    
+    // Calculate if current moment in seconds is a voting period.
     static async isVotingPeriod() {
-        try {
-            const isElectionOn = await this.isElectionOn();
-            const nowSecs = parseInt(Date.now() / 1000);
-            const lastElectionSecs = await this.lastElecSecs();
+        // Declare the variable for voting period calculation.
+        let isVotingOn = false;
 
-            let isVotingOn = false;
+        try {
+            // Calculate current seconds.
+            const nowSecs = parseInt(Date.now() / 1000);
+
+            // Load election data required for calculating election start.
+            const isElectionOn = await this.isElectionOn();
+            const lastElectionSecs = await this.lastElecSecs();
 
             // Check if current moment is earlier than the end of voting.
             if (isElectionOn && nowSecs < lastElectionSecs + this.VOTING_DUR_SECS)
@@ -112,13 +124,30 @@ export default class ElectionHelper {
             if (!isElectionOn && nowSecs > lastElectionSecs + this.TERM_DUR_SECS) 
                 isVotingOn = true;
 
+            // Provide calculation for whether current moment in seconds is a voting period.
             return isVotingOn;
 
         } catch(e) {
             console.log('Voting period check failure.')
             console.error(e);
+
+            // Don't start any elections if this is throwing errors, lol.
+            return false;
         }
     }
+
+    // Setup the intervals needed for detection.
+    static setupIntervals() {
+        // Check progess is left within new day due to significance, but add another runner.
+        EventsHelper.runInterval(() => this.shouldTriggerStart(), baseTickDur * 4);
+
+        // Processes announcements and election events.
+        EventsHelper.runInterval(() => this.checkProgress(), baseTickDur * 5);
+
+        // Ensure leadership and commander based on items so they are treated seriously.
+        EventsHelper.runInterval(() => this.ensureItemSeriousness(), baseTickDur * 6);
+    }
+
 
     static async startElection() {
         try {
@@ -139,7 +168,7 @@ export default class ElectionHelper {
                 `Time remaining: ${readableElecLeft}.`
             );
 
-            // TODO: React crown to this message.
+            // React crown to this message.
             MessagesHelper.delayReact(feedMsg, '👑', 666);
 
         } catch(e) {
@@ -156,7 +185,8 @@ export default class ElectionHelper {
     static async commentateElectionProgress() {
         const votes = await this.fetchAllVotes();
 
-        const readableElecLeft = TimeHelper.humaniseSecs((await this.votingPeriodLeftSecs()));
+        const votingPeriodSecs = await this.votingPeriodLeftSecs();
+        const readableElecLeft = TimeHelper.humaniseSecs(votingPeriodSecs);
 
         const hierarchy = this.calcHierarchy(votes);
         const maxNumLeaders = this.getMaxNumLeaders();
@@ -190,9 +220,9 @@ export default class ElectionHelper {
             await this.resetHierarchyRoles();
 
             // Add roles to winners.
-            await RolesHelper._add(hierarchy.commander.id, 'COMMANDER');
-            await Promise.all(hierarchy.leaders.map(async (leader, index) => {
-                await new Promise(r => setTimeout(r, 777 * index));
+            RolesHelper._add(hierarchy.commander.id, 'COMMANDER');
+            Promise.all(hierarchy.leaders.map(async (leader, index) => {
+                await new Promise(r => setTimeout(r, 333 * index));
                 await RolesHelper._add(leader.id, 'LEADER');
                 return true;
             }));
@@ -218,17 +248,12 @@ export default class ElectionHelper {
             ChannelsHelper._postToFeed(declareText);
             await this.editElectionInfoMsg(declareText);
 
-
             // Handle election items.
             await this.resetHierarchyItems();
 
             // Add the election items.
             ItemsHelper.add(hierarchy.commander.id, 'ELECTION_CROWN', 1);
-            Promise.all(hierarchy.leaders.map(async (leader, index) => {
-                await new Promise(r => setTimeout(r, 333 * index));
-                await ItemsHelper.add(leader.id, 'LEADERS_SWORD', 1);
-                return true;
-            }));
+            hierarchy.leaders.map(leader => ItemsHelper.add(leader.id, 'LEADERS_SWORD', 1));
 
         } catch(e) {
             console.log('Something went wrong ending the election...');
@@ -269,19 +294,17 @@ export default class ElectionHelper {
 
     static async resetHierarchyItems() {
         try {
+            // Load hierarchy of users (role-based hierarchy).
             const leaderItems = await ItemsHelper.getUsersWithItem('LEADERS_SWORD');
             const commanderItems = await ItemsHelper.getUsersWithItem('ELECTION_CROWN');        
 
-            let index = 0;
-            await Promise.all(leaderItems.map(async (exLeader) => {
-                index++;
-                await new Promise(r => setTimeout(r, 777 * index));
-                await ItemsHelper.subtract(exLeader.owner_id, 'LEADERS_SWORD');
-                return true;
-            }));
+            // Remove all of the sworsd from the old leaders.
+            leaderItems.map(exLeader => 
+                ItemsHelper.subtract(exLeader.owner_id, 'LEADERS_SWORD'));
 
-            if (commanderItems) await ItemsHelper.subtract(commanderItems[0].owner_id, 'ELECTION_CROWN', 1);
-            return true;
+            // Remove the commander crown item from the (now) ex commander.
+            if (commanderItems) 
+                ItemsHelper.subtract(commanderItems[0].owner_id, 'ELECTION_CROWN', 1);
 
         } catch(e) {
             console.log('Error reseting hierarchy items');
@@ -333,28 +356,37 @@ export default class ElectionHelper {
         }
     }
 
+
+
     static async checkProgress() {
+        // A variable used for tracking election before/after (start).
         let electionStarted = false;
         try {
+            // Load the current state of election from database.
             const isElecOn = await this.isElectionOn();
             const isVotingPeriod = await this.isVotingPeriod();
-
-            // TODO: May need to clean up any non-info/candidates messages leftover.
 
             // Election needs to be started?
             if (isVotingPeriod && !isElecOn) {
                 await this.startElection();
                 electionStarted = true;
             }
-    
-            // Election needs to be declared?
-            if (!isVotingPeriod && isElecOn) await this.endElection();
-    
-            // Election needs to announce update?
-            if (isVotingPeriod && isElecOn) await this.commentateElectionProgress();
             
-            // If election isn't running (sometimes) update about next election secs.
-            if (!isElecOn && !electionStarted) await this.countdownFeedback();
+            // Code to only run until after the first time after election start, not before.
+            if (!electionStarted) {
+
+                // Commentate election and detect conclusion of.
+                if (isElecOn) {
+                    // Election needs to be declared?
+                    if (!isVotingPeriod && isElecOn) await this.endElection();
+            
+                    // Election needs to announce update?
+                    if (isVotingPeriod && isElecOn) await this.commentateElectionProgress();
+                }
+                
+                // If election isn't running (sometimes) update about next election secs.
+                if (!isElecOn) await this.countdownFeedback();
+            }
 
         } catch(e) {
             console.log('SOMETHING WENT WRONG WITH CHECKING ELECTION!');
@@ -467,12 +499,10 @@ export default class ElectionHelper {
                         if (chan) {
                             const msg = await chan.messages.fetch(idSet.message);
                             if (msg) resolve(msg);
-                            // else reject('load_failure');
                         }
                     } catch(e) {
                         console.log(idSet);
                         console.log('Error loading campaign message')
-                        // reject(e);
                     }
                 }, 666 * index);
             });
@@ -493,12 +523,7 @@ export default class ElectionHelper {
             values: [msgLink]
         };
 
-        let candidate = null;
-        const result = await Database.query(query);
-
-        if (result.rows) candidate = result.rows[0];
-
-        return candidate;
+        return await DatabaseHelper.singleQuery(query);
     }
 
     // TODO: could use this feature/data to direct message the candidates an update
@@ -532,7 +557,8 @@ export default class ElectionHelper {
                 });
             }
         });
-   
+        
+        // Sort votes by most voted for candidate.
         votes.sort((a, b) => {
             if (a.votes < b.votes) return 1;
             if (a.votes > b.votes) return -1;

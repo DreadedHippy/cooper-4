@@ -1,3 +1,4 @@
+
 export default class DatabaseHelper {
 
 	static single(queryResult) {
@@ -10,6 +11,11 @@ export default class DatabaseHelper {
 		let manyResult = [];
 		if (queryResult.rowCount > 0) manyResult = queryResult.rows;
 		return manyResult;
+	}
+
+	static singleQuery(query) {
+		const queryResult = await Database.query(query);
+		return DatabaseHelper.single(queryResult);
 	}
 
 };

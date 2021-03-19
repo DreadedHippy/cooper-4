@@ -46,8 +46,8 @@ export default class EggHuntMinigame {
     static onReaction(reaction, user) {
         try {
             // Disallow egghunt effects on dropped eggs.
-            const droppedEmojiQty = ReactionHelper.countTypeCode(reaction.message, EMOJIS.DROPPED);
-            if (droppedEmojiQty > 0) return false;
+            // const droppedEmojiQty = ReactionHelper.countTypeCode(reaction.message, EMOJIS.DROPPED);
+            // if (droppedEmojiQty > 0) return false;
 
             const isCooperMessage = UsersHelper.isCooperMsg(reaction.message);
             const isEgghuntDrop = this.isEgghuntDrop(reaction);

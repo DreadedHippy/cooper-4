@@ -29,9 +29,6 @@ export default class ItemsHelper {
         if (!UsersHelper.isCooper(user.id)) {
             
             BombHandler.onReaction(reaction, user);
-            ToxicEggHandler.onReaction(reaction, user);
-            LegendaryEggHandler.onReaction(reaction, user);
-
             DiamondHandler.onReaction(reaction, user);
     
             // Check if message is dropped item message being picked up.
@@ -40,6 +37,8 @@ export default class ItemsHelper {
 
         // Allow Cooper to add average/rare eggs when prompted.
         // TODO: Should fail silently.
+        ToxicEggHandler.onReaction(reaction, user);
+        LegendaryEggHandler.onReaction(reaction, user);
         AverageEggHandler.onReaction(reaction, user);
         RareEggHandler.onReaction(reaction, user);
     }
