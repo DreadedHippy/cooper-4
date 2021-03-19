@@ -7,6 +7,7 @@ import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 
 import EMOJIS from "../../../../core/config/emojis.json";
 import ReactionHelper from "../../../../core/entities/messages/reactionHelper";
+import UsersHelper from "../../../../core/entities/users/usersHelper";
 
 export default class RareEggHandler {
 
@@ -38,8 +39,11 @@ export default class RareEggHandler {
                     // Send feedback and emojis.
                     ChannelsHelper.codeShoutReact(reaction.message, feedbackMsgText, 'ACTIONS', '💙');
 
+                    // Remove the egg based on popularity.
                     const popularity = ReactionHelper.countType(reaction.message, '💙');
-                    if (popularity < 3) MessagesHelper.delayReactionRemove(reaction, 333);
+                    if (popularity < 3 && !UsersHelper.isCooper(user.id)) 
+                        MessagesHelper.delayReactionRemove(reaction, 333);
+                        
 
                     MessagesHelper.delayReact(reaction.message, '💙', 666);
                 }

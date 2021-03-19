@@ -20,7 +20,7 @@ export default class ItemListCommand extends CoopCommand {
 		super.run(msg);
 
 		const usableItems = ItemsHelper.getUsableItems().map((x) => ItemsHelper.beautifyItemCode(x)).join('\n');
-		const usableItemsMsgText = `Usable Items: \n ${usableItems}`;
+		const usableItemsMsgText = `Usable Items:\n${usableItems}`;
 		const listMsg = await msg.say(usableItemsMsgText);
 
 		MessagesHelper.delayDelete(listMsg, 10000);

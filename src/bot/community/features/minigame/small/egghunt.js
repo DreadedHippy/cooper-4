@@ -11,6 +11,7 @@ import STATE from '../../../../state';
 import MessagesHelper from '../../../../core/entities/messages/messagesHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
 import DropTable from '../../items/droptable';
+import ReactionHelper from '../../../../core/entities/messages/reactionHelper';
 
 
 export const EGG_DATA = {
@@ -44,10 +45,15 @@ export default class EggHuntMinigame {
 
     static onReaction(reaction, user) {
         try {
+            // Disallow egghunt effects on dropped eggs.
+            const droppedEmojiQty = ReactionHelper.countTypeCode(reaction.message, EMOJIS.DROPPED);
+            if (droppedEmojiQty > 0) return false;
+
             const isCooperMessage = UsersHelper.isCooperMsg(reaction.message);
             const isEgghuntDrop = this.isEgghuntDrop(reaction);
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             const isEggCollectible = isCooperMessage && isEgghuntDrop && hasEggRarity;
+
             
             const isBombEmoji = reaction.emoji.name === '💣';
             const isBasketEmoji = reaction.emoji.name === '🧺';

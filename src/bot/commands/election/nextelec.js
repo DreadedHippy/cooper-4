@@ -1,5 +1,4 @@
 import CoopCommand from '../../core/entities/coopCommand';
-
 import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
@@ -8,13 +7,13 @@ export default class NextElectionCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
-			name: 'next',
+			name: 'nextelec',
 			group: 'election',
-			memberName: 'next',
+			memberName: 'nextelec',
 			aliases: [],
-			description: 'Check next election date',
+			description: 'Check nextelec election date',
 			details: ``,
-			examples: ['next']
+			examples: ['nextelec']
 		});
 	}
 
@@ -22,7 +21,8 @@ export default class NextElectionCommand extends CoopCommand {
 		super.run(msg);
 
 		const dateFmt = await ElectionHelper.nextElecFmt();
-		const msgText = `Next Election: ${dateFmt}`;
+		const humanRemaining = await ElectionHelper.humanRemainingNext();
+		const msgText = `Next Election: ${dateFmt}, (${humanRemaining}).`;
 
 		MessagesHelper.selfDestruct(msg, msgText);
     }

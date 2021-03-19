@@ -6,12 +6,14 @@ import PointsHelper from "../../points/pointsHelper";
 import ItemsHelper from "../itemsHelper";
 import EMOJIS from "../../../../core/config/emojis.json";
 import ReactionHelper from "../../../../core/entities/messages/reactionHelper";
+import UsersHelper from "../../../../core/entities/users/usersHelper";
 
 
 // TODO: Make into "ReactionUsableItem" and add callback
 
 export default class AverageEggHandler {
 
+    // TODO: Eggs need some way of dealing with user's using on self...
     static async onReaction(reaction, user) {
         if (reaction.emoji.name === 'average_egg') {
             try {
@@ -19,9 +21,6 @@ export default class AverageEggHandler {
                 if (!didUse) {
                     const failureText = `${user.username} tried to use an average egg, but has none. Lul.`;
                     MessagesHelper.selfDestruct(reaction.message, failureText);
-
-                    // TODO: Experimenting with it off.
-                    // MessagesHelper.delayReactionRemoveUser(reaction, user.id, 333);
 
                 } else {
                     const backFired = STATE.CHANCE.bool({ likelihood: 25 });
@@ -34,9 +33,10 @@ export default class AverageEggHandler {
                     // Apply the damage to the target's points.
                     const updatedPoints = await PointsHelper.addPointsByID(targetID, damage);
 
-                    // Add visuals animation.
+                    // Remove the egg based on popularity.
                     const popularity = ReactionHelper.countType(reaction.message, '💚');
-                    if (popularity < 3) MessagesHelper.delayReactionRemove(reaction, 333);
+                    if (popularity < 3 && !UsersHelper.isCooper(user.id)) 
+                        MessagesHelper.delayReactionRemove(reaction, 333);
 
                     // Add Cooper's popularity suggestion.
                     MessagesHelper.delayReact(reaction.message, '💚', 666);

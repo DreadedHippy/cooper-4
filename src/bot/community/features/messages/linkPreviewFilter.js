@@ -19,7 +19,7 @@ export default class LinkPreviewFilter {
                 MessagesHelper.delayReact(msg, '🖼️', 666);
 
                 // If it does not contain gif or tenor, suppress preview.
-                if (msg.content.indexOf('tenor') > -1 || msg.content.indexOf('gif') > -1)
+                if (msg.content.indexOf('tenor') === -1 && msg.content.indexOf('gif') === -1)
                     msg.suppressEmbeds(true);
             }
         }

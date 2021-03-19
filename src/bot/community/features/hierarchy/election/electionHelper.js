@@ -649,14 +649,19 @@ export default class ElectionHelper {
         return hierarchy;
     }
 
+    static async humanRemainingNext() {
+        const diff = await this.nextElecSecs() - parseInt(Date.now() / 1000)
+        const humanRemaining = TimeHelper.humaniseSecs(diff);
+        return humanRemaining;
+    }
+
     static async countdownFeedback() {
         const elecMsg = await this.getElectionMsg();
         const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
         const hour = 360000;
 
         if (diff > hour * 8) {
-            const diff = await this.nextElecSecs() - parseInt(Date.now() / 1000)
-            const humanRemaining = TimeHelper.humaniseSecs(diff);
+            const humanRemaining = await this.humanRemainingNext();
             const nextElecReadable = await this.nextElecFmt();
 
             const hierarchy = this._roleHierarchy();

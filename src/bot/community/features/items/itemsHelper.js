@@ -66,7 +66,7 @@ export default class ItemsHelper {
         const lowerName = itemCode.replace("_", " ").toLowerCase();
         const nameCapitalized = lowerName.charAt(0).toUpperCase() + lowerName.slice(1);
         const emoji = MessagesHelper.emojifyID(EMOJIS[itemCode]);
-        return nameCapitalized + " " + emoji;
+        return emoji + " " + nameCapitalized + " ";
     }
 
 

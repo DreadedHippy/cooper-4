@@ -158,7 +158,7 @@ export default class TradeCommand extends CoopCommand {
 							`**${tradeeName} created trade #${createdOfferID}**\n\n` +
 							exchangeString + `\n\n` +
 							`_Send message "!tradeaccept ${createdOfferID}" to accept this trade._`,
-							'ACTIONS');
+							'TRADE');
 
 						// TODO: add a reaction to accept the trade, using trade logic.
 

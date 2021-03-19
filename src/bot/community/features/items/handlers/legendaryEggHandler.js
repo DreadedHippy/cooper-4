@@ -5,6 +5,7 @@ import ItemsHelper from "../itemsHelper";
 import { EGG_DATA } from '../../minigame/small/egghunt';
 import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import ReactionHelper from "../../../../core/entities/messages/reactionHelper";
+import UsersHelper from "../../../../core/entities/users/usersHelper";
 
 export default class LegendaryEggHandler {
 
@@ -28,12 +29,15 @@ export default class LegendaryEggHandler {
                     // Apply the damage to the target's points.
                     const updatedPoints = await PointsHelper.addPointsByID(targetID, damage);
 
+                    // Remove egg reaction based on popularity
                     const popularity = ReactionHelper.countType(reaction.message, '💜');
-                    if (popularity < 3) MessagesHelper.delayReactionRemove(reaction, 333);
+                    if (popularity < 3 && !UsersHelper.isCooper(user.id)) 
+                        MessagesHelper.delayReactionRemove(reaction, 333);
                     
                     // Add visuals animation
                     MessagesHelper.delayReact(reaction.message, '💜', 666);
 
+                    // Build the output message.
                     const damageInfoText = ` ${damage} points (${updatedPoints})`;
                     let actionInfoText = `${user.username} used a legendary egg on ${author.username}`;
                     if (backFired) actionInfoText = `**${user.username} tried to use a legendary egg on ${author.username}, but it backfired.**`;
