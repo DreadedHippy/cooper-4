@@ -3,6 +3,7 @@ import Database from './core/setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
 import ItemsHelper from './community/features/items/itemsHelper';
+import CraftingHelper from './community/features/skills/crafting/craftingHelper';
 
 // v DEV IMPORT AREA v
 // ^ DEV IMPORT AREA ^
@@ -31,6 +32,11 @@ const shallowBot = async () => {
 
             // Calculate the player with most items.
                 // Reward keys?
+
+            const itemCode = ItemsHelper.interpretItemCodeArg(':axe:');
+            console.log(itemCode);
+            
+            // CraftingHelper.craft()
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
 

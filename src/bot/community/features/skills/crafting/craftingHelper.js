@@ -65,18 +65,23 @@ export default class CraftingHelper {
         return craftable;
     }
 
+    
     static async craft(memberID, itemCode, qty) {
         try {
+            // Access the required ingredients for crafting operation.
             const ingredients = this.CRAFTABLES[itemCode].ingredients;
             const ingredList = Object.keys(this.CRAFTABLES[itemCode].ingredients);
 
             // Subtract all of the ingredients.
             await Promise.all(
+                // TODO: Optimise into one database call.
                 ingredList.map(ingred => ItemsHelper.subtract(memberID, ingred, ingredients[ingred] * qty)
             ));
 
             // Add the resultant item.
             await ItemsHelper.add(memberID, itemCode, qty);
+
+            // Indicate succesful craft.
             return true;
 
         } catch(e) {

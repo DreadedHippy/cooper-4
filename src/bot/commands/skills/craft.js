@@ -47,12 +47,12 @@ export default class CraftCommand extends CoopCommand {
 				return MessagesHelper.selfDestruct(msg, `Cannot craft ${itemCode}.`);
 
 			// Check for ingredients and multiply quantities.
-			const canCraft = await CraftingHelper.canCraft(msg.author.id, craftItemCode, qty);
+			const canCraft = await CraftingHelper.canCraft(msg.author.id, itemCode, qty);
 			// TODO: Improve this error.
 			if (!canCraft) return MessagesHelper.selfDestruct(msg, `Insufficient crafting supplies.`);
 
 			// Attempt to craft the object.
-			const craftResult = await CraftingHelper.craft(msg.author.id, craftItemCode, qty);
+			const craftResult = await CraftingHelper.craft(msg.author.id, itemCode, qty);
 			if (craftResult) {
 				const addText = `${msg.author.username} crafted ${itemCode}x${qty}.`;
 				ChannelsHelper.propagate(msg, addText, 'ACTIONS');
