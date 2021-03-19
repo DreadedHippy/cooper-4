@@ -457,7 +457,7 @@ export default class ItemsHelper {
         // Remove the role from previous winner and commiserate.
         let prevWinner = null;
         mostItemsRole.members.map(prevMostMember => {
-            if (prevMostMember.user.id === mostItems.discord_id) alreadyHadRole = true;
+            if (prevMostMember.user.id === mostItems.owner_id) alreadyHadRole = true;
             else {
                 prevWinner = prevMostMember.user;
                 prevMostMember.roles.remove(mostItemsRole);
@@ -467,7 +467,7 @@ export default class ItemsHelper {
         // If the new winner didn't already have the role, award it and notify server.
         if (!alreadyHadRole) {
             // Add point reward to item leader.
-            const pointsAfter = await PointsHelper.addPointsByID(mostItems.discord_id, 50);
+            const pointsAfter = await PointsHelper.addPointsByID(mostItems.owner_id, 50);
             
             // Add the role to new item leader.
             mostItemsMember.roles.add(mostItemsRole);
