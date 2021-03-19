@@ -32,7 +32,7 @@ export default class BombHandler {
                         if (reaction.count > 1) doubledInfo = `(x${reaction.count})`;
 
                         const subjectsInvolved = `${user.username} bombed ${messageAuthor.username}`;
-                        const changesOccurred = `-${damage}${doubledInfo} points (${updatedPoints}).`;
+                        const changesOccurred = `${damage}${doubledInfo} points (${updatedPoints}).`;
                         const feedbackText = `${subjectsInvolved}: ${changesOccurred}`;
 
                         ChannelsHelper.propagate(reaction.message, feedbackText, 'ACTIONS');

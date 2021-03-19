@@ -177,17 +177,20 @@ export default class EggHuntMinigame {
 
                 setTimeout(async () => {
                     if (!ChannelsHelper.checkIsByCode(reaction.message.channel.id, 'FEED')) {
+
                         const feedbackMsg = await reaction.message.say(feedbackText);
-                        setTimeout(() => { feedbackMsg.react('🍳'); }, 1333);
-                        setTimeout(() => { feedbackMsg.delete(); }, 10000);
+                        MessagesHelper.delayReact(feedbackMsg, EMOJIS.FRYING_PAN, 1333);
+                        MessagesHelper.delayDelete(feedbackMsg, 10000);
                     }
                     setTimeout(() => { ChannelsHelper._postToChannelCode('ACTIONS', feedbackText); }, 666);
+
+                    // ChannelsHelper.propagate()
                 }, 333)
             } else {
                 const unableMsg = await reaction.message.say('Unable to use FRYING_PAN, you own none. :/');
-                setTimeout(() => { reaction.users.remove(user.id); }, 666);
-                setTimeout(() => { unableMsg.react('🍳'); }, 1333);
-                setTimeout(() => { unableMsg.delete(); }, 10000);
+                setTimeout(() => reaction.users.remove(user.id), 666);
+                MessagesHelper.delayReact(unableMsg, EMOJIS.FRYING_PAN, 1333);
+                MessagesHelper.delayDelete(unableMsg, 10000);
             }
         } catch(e) {
             console.log('Frying egg failed...');

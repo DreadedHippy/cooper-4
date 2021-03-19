@@ -37,7 +37,7 @@ export default class IEDHandler {
                     //     let doubledInfo = '';
                     //     if (reaction.count > 1) doubledInfo = `(x${reaction.count})`;
                     //     const subjectsInvolved = `${user.username} bombed ${messageAuthor.username}`;
-                    //     const changesOccurred = `-${damage}${doubledInfo} points (${updatedPoints}).`;
+                    //     const changesOccurred = `${damage}${doubledInfo} points (${updatedPoints}).`;
                     //     await ChannelsHelper._postToFeed(`${subjectsInvolved}: ${changesOccurred}`);
                     // }, 5000);
                 }
