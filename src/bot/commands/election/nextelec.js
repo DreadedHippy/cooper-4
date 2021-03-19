@@ -20,10 +20,10 @@ export default class NextElectionCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 
+		// Format and send next election/remaining time info.
 		const dateFmt = await ElectionHelper.nextElecFmt();
 		const humanRemaining = await ElectionHelper.humanRemainingNext();
 		const msgText = `Next Election: ${dateFmt}, (${humanRemaining}).`;
-
 		MessagesHelper.selfDestruct(msg, msgText);
     }
     

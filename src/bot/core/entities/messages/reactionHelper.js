@@ -1,3 +1,5 @@
+import EMOJIS from '../../config/emojis.json';
+
 export default class ReactionHelper {
 
     // Check if the user with specified ID reacted to a message with a certain emoji.
