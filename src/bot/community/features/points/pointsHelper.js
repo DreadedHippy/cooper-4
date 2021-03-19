@@ -133,7 +133,7 @@ export default class PointsHelper {
             return {
                 username,
                 rank: index + position,
-                points: row.points
+                points: row.quantity
             }
         }));
 

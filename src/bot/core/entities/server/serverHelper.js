@@ -47,10 +47,16 @@ export default class ServerHelper {
             text: `SELECT * FROM temp_messages 
                 WHERE expiry_time <= extract(epoch from now())
                 LIMIT 20`
+                // TODO: Add sort by oldest
         };
         
         const result = await Database.query(query);
         const tempMessages = DatabaseHelper.many(result);
+
+
+
+        // TODO: Take the channel bulkDelete approach instead, may achieve better throttled results.
+
 
         // Batch delete won't work due to different channels, use message link approach.
         const expiredMsgIDs = tempMessages.map(tempMsg => tempMsg.message_link);

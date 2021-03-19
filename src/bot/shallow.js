@@ -27,7 +27,12 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
 
-            // console.log(ItemsHelper.getUsableItems());
+            // See if toxic egg still works on someone with no points -> negative
+            // See if toxic egg still works on someone with points as items
+
+
+
+
 
 
 

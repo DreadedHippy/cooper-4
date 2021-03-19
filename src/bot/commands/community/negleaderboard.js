@@ -52,12 +52,12 @@ export default class NegativeLeaderboardCommand extends CoopCommand {
 				return {
 					username,
 					rank: index + position,
-					points: row.points
+					pointsQty: row.quantity
 				}
 			}));
 
 			let leaderboardMsgText = '```\n\n ~ NEGATIVE LEADERBOARD ~ \n\n' + 
-				rowUsers.map(user => `${user.rank + 1}. ${user.username} ${user.points}`).join('\n') +
+				rowUsers.map(user => `${user.rank + 1}. ${user.username} ${user.pointsQty}`).join('\n') +
 				'```';
 
 			await placeholderMsg.edit(leaderboardMsgText)

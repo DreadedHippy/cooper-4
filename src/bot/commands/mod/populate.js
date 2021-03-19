@@ -27,14 +27,16 @@ export default class PopulateCommand extends CoopCommand {
 		super.run(msg);
 
 		try {
+			// TODO: This should be ran somewhere IMPORTANT!!!
+			// TODO: The inverse should be ran somewhere IMPORTANT!!!
+			
 			const usersResponse = await Database.query('SELECT * FROM users');
 			const includedIDs = _.map(usersResponse.rows, "discord_id");
 
 			const membersData = msg.guild.members.cache.map(member => {
 				return {
 					discord_id: member.user.id,
-					join_date: member.joinedTimestamp,
-					points: 0
+					join_date: member.joinedTimestamp
 				};
 			});
 
@@ -44,8 +46,8 @@ export default class PopulateCommand extends CoopCommand {
 
 			missingItems.forEach(async (item) => {
 				await Database.query(
-					`INSERT INTO users(discord_id,join_date,points) VALUES 
-					(${item.discord_id},${item.join_date},${item.points})`
+					`INSERT INTO users(discord_id,join_date) VALUES 
+					(${item.discord_id},${item.join_date})`
 				);
 			})
 
