@@ -4,6 +4,7 @@ import STATE from './state';
 import dotenv from 'dotenv';
 import ItemsHelper from './community/features/items/itemsHelper';
 import CraftingHelper from './community/features/skills/crafting/craftingHelper';
+import PointsHelper from './community/features/points/pointsHelper';
 
 // v DEV IMPORT AREA v
 // ^ DEV IMPORT AREA ^
@@ -31,6 +32,7 @@ const shallowBot = async () => {
             // See if toxic egg still works on someone with points as items
 
 
+            // console.log(await PointsHelper.getHighest());
 
 
 
