@@ -18,6 +18,7 @@ import ReactionHelper from "../../../core/entities/messages/reactionHelper";
 import Chicken from "../../chicken";
 import EmojiHelper from "./emojiHelper";
 import RolesHelper from "../../../core/entities/roles/rolesHelper";
+import PointsHelper from "../points/pointsHelper";
 
 
 export default class ItemsHelper {
@@ -408,7 +409,7 @@ export default class ItemsHelper {
         // If the new winner didn't already have the role, award it and notify server.
         if (!alreadyHadRole) {
             // Add point reward to item leader.
-            const pointsAfter = await this.addPointsByID(richestMember.user.id, 100);
+            const pointsAfter = await PointsHelper.addPointsByID(richestMember.user.id, 100);
             
             // Add the role to new item leader.
             richestMember.roles.add(richestRole);
@@ -466,7 +467,7 @@ export default class ItemsHelper {
         // If the new winner didn't already have the role, award it and notify server.
         if (!alreadyHadRole) {
             // Add point reward to item leader.
-            const pointsAfter = await this.addPointsByID(mostItems.discord_id, 50);
+            const pointsAfter = await PointsHelper.addPointsByID(mostItems.discord_id, 50);
             
             // Add the role to new item leader.
             mostItemsMember.roles.add(mostItemsRole);
