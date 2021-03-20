@@ -1,5 +1,12 @@
 import CoopCommand from '../../core/entities/coopCommand';
 
+
+import STATE from '../../core/state';
+
+
+
+
+
 export default class EvalCommand extends CoopCommand {
 
 	constructor(client) {

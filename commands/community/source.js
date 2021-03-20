@@ -134,6 +134,8 @@ export default class SourceCommand extends CoopCommand {
 				if (!rawFileContent) 
 					return MessagesHelper.selfDestruct(msg, `Could not load the file for ${path}.`, 666, 15000);
 	
+				// TODO: Try to support returning documentation and syntax of a js class function.
+
 				// Decide if it will fit in an embed or not.
 				if (rawFileContent.length > 1000 - 20)
 					MessagesHelper.selfDestruct(msg, fileContent.replace(gitBaseUrl + path, `<${gitBaseUrl + path}>`)
