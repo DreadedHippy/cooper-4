@@ -2,7 +2,6 @@ import EMOJIS from '../../core/config/emojis.json';
 import CHANNELS from '../../core/config/channels.json';
 import ROLES from '../../core/config/roles.json';
 
-
 import ChannelsHelper from "../../core/entities/channels/channelsHelper";
 import VotingHelper from "../events/voting/votingHelper";
 import UsersHelper from "../../core/entities/users/usersHelper";
@@ -83,7 +82,7 @@ export default class RedemptionHelper {
                 );
                 
                 // Add to database
-                await UsersHelper.addToDatabase(targetMember);
+                await UsersHelper.addToDatabase(targetMember.user.id, targetMember.joinedDate);
 
                 // TODO: Update latest member on about stat.
 
