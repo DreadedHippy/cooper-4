@@ -15,7 +15,8 @@ import DatabaseHelper from '../../../../core/entities/databaseHelper';
 import VotingHelper from '../../../events/voting/votingHelper';
 import RolesHelper from '../../../../core/entities/roles/rolesHelper';
 import ItemsHelper from '../../items/itemsHelper';
-import EventsHelper, { baseTickDur } from '../../events/eventsHelper';
+import EventsHelper from '../../events/eventsHelper';
+import { baseTickDur } from '../../../events/eventsManifest';                               
 
 // TODO:
 // Vote _once_ for candidate. [DONE - WITH PROBLEMS]
