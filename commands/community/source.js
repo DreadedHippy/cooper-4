@@ -105,9 +105,17 @@ export default class SourceCommand extends CoopCommand {
 						// TODO: Add distance/breadcrumbs from root here.
 
 						`-- :file_folder: ${path}\n` +
-						`${rawFolderContent.map(folderItem => 
-							`---- ${!isFolder(folderItem) ? ':minidisc:' : ':file_folder:'} ${folderItem}`
-						).join('\n')}`;
+						`${rawFolderContent
+							.filter(folderItem => folderItem.indexOf('node_modules') > -1)
+							.filter(folderItem => folderItem.indexOf('@1') > -1)
+							.filter(folderItem => folderItem.indexOf('.heroku') > -1)
+							.filter(folderItem => folderItem.indexOf('package-lock') > -1)
+							.filter(folderItem => folderItem.indexOf('.config') > -1)
+							.filter(folderItem => folderItem.indexOf('.profile.d') > -1)
+							
+							.map(folderItem => {
+								return `---- ${!isFolder(folderItem) ? ':minidisc:' : ':file_folder:'} ${folderItem}`
+						}).join('\n')}`;
 
 					// Output the display text lines of the folders.
 					MessagesHelper.selfDestruct(msg, folderContent, 666, 15000);
