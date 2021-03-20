@@ -91,11 +91,11 @@ export default class UsersHelper {
         return await Database.query(query);
     }
 
-    static async addToDatabase(member) {
+    static async addToDatabase(userID, joindate) {
         const query = {
             name: "add-user",
             text: "INSERT INTO users(discord_id, join_date) VALUES ($1, $2)",
-            values: [member.user.id, member.joinedDate]
+            values: [userID, joindate]
         };
         return await Database.query(query);
     }
@@ -223,11 +223,10 @@ export default class UsersHelper {
         });
     }
 
-    static async cleanupUsers() {
+    static async populateUsers() {
         const dbUsers = await this.load();
         const includedIDs = _.map(dbUsers, "discord_id");
         
-
         const membersData = this._cache().map(member => {
             return {
                 discord_id: member.user.id,
@@ -240,7 +239,6 @@ export default class UsersHelper {
         });
 
         missingItems.forEach(item => this.addToDatabase(item.discord_id, item.join_date))
-
     }
 
 
