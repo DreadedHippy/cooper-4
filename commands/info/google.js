@@ -8,7 +8,7 @@ export default class GoogleCommand extends CoopCommand {
 			name: 'google',
 			group: 'info',
 			memberName: 'google',
-			aliases: ['g'],
+			aliases: ['gg'],
 			description: 'Information google our fine community!',
 			details: `Details`,
 			examples: ['google', 'google example?'],
