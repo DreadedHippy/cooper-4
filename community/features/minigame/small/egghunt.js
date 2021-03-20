@@ -64,8 +64,14 @@ export default class EggHuntMinigame {
             const isPanEmoji = reaction.emoji.name === EMOJIS.FRYING_PAN;
 
             if (isEggCollectible && isPanEmoji) this.fry(reaction, user);
-            if (isEggCollectible && isBasketEmoji) this.collect(reaction, user);
             if (isEggCollectible && isBombEmoji) this.explode(reaction, user);
+
+            // Prevent collection of dropped egg effects (cyclical).
+            const wasDropped = ItemsHelper.isDroppedItemMsg(reaction.message);
+
+            // If collectible, collect emoji and wasn't dropped, allow collection.
+            if (isEggCollectible && isBasketEmoji && !wasDropped) 
+                this.collect(reaction, user);
 
         } catch(e) {
             console.error(e);

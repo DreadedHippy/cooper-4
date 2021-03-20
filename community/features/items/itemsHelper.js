@@ -264,18 +264,16 @@ export default class ItemsHelper {
         return `${this.lossItemQtyStr(lossItem, lossQty)}\n${this.gainItemQtyStr(gainItem, gainQty)}`;
     }
 
+    static isDroppedItemMsg(msg) {
+        return ReactionHelper.didUserReactWith(
+            msg, Chicken.getDiscordID(), EMOJIS.DROPPED
+        );
+    }
+
     // Check if a message has an emoji and is pickupable.
     static isPickupable(reaction, user) {
-        // Filter out eggs, since they already have their own handler.
-        if (EggHuntMinigame.reactValid(reaction)) return false;
-
         // Check if message has dropped emoji and by Cooper (official/valid drop).
-        const officiallyDropped = ReactionHelper.didUserReactWith(
-            reaction.message, 
-            Chicken.getDiscordID(), 
-            EMOJIS.DROPPED
-        );
-        if (!officiallyDropped) return false;
+        if (!ReactionHelper.didUserReactWith(reaction.message)) return false;
 
         // Check if they are trying to collect via basket
         if (reaction.emoji.name !== EMOJIS.BASKET) return false;
