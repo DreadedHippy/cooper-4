@@ -1,5 +1,5 @@
 import { Client } from 'discord.js-commando';
-import Database from './core/setup/database';
+import Database from './setup/database';
 import STATE from './src/state';
 import dotenv from 'dotenv';
 

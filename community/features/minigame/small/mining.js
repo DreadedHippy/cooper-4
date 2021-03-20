@@ -1,6 +1,6 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
 import EMOJIS from "../../../../core/config/emojis.json";
-import STATE from "../../../../state";
+import STATE from "../../../../core/state";
 
 import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../../core/entities/users/usersHelper";

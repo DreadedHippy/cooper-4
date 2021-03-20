@@ -1,6 +1,7 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
 import MessagesHelper from "../../../../core/entities/messages/messagesHelper";
-import STATE from "../../../../state";
+import STATE from "../../../../core/state";
+
 import CratedropMinigame from "../../minigame/small/cratedrop";
 import ItemsHelper from "../itemsHelper";
 

@@ -9,7 +9,7 @@ import StatisticsHelper from "../features/server/statisticsHelper";
 import MessageNotifications from "./message/messageNotifications";
 import EconomyNotifications from "../features/minigame/economyNotifications";
 
-import STATE from "../../state";
+import STATE from "../../core/state";
 
 import CratedropMinigame from "../features/minigame/small/cratedrop";
 import EggHuntMinigame from "../features/minigame/small/egghunt";
@@ -42,10 +42,13 @@ export default function eventsManifest() {
 
 
   // Server related house keeping items.
-  EventsHelper.runInterval(() => StatisticsHelper.update(), baseTickDur * 5);
+  EventsHelper.runInterval(() => StatisticsHelper.update(), baseTickDur * 3.5);
 
   // Clean up user data, may have missed detection on a leave/kick/ban.
-  EventsHelper.runInterval(() => UsersHelper.cleanupUsers(), baseTickDur * 5);
+  EventsHelper.runInterval(() => UsersHelper.cleanupUsers(), baseTickDur * 6);
+
+  // Ensure all users registered in memory for functionality.
+  EventsHelper.runInterval(() => UsersHelper.populateUsers(), baseTickDur * 7);
 
   // Clean up temporary messages around every... quick lol.
   EventsHelper.runInterval(() => ServerHelper.cleanupTempMessages(), baseTickDur / 10);

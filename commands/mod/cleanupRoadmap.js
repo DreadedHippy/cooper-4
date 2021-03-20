@@ -1,6 +1,6 @@
 import CoopCommand from '../../core/entities/coopCommand';
 import ChannelsHelper from '../../core/entities/channels/channelsHelper';
-import STATE from '../../state';
+import STATE from '../../core/state';
 
 export default class CleanupRoadmapCommand extends CoopCommand {
 

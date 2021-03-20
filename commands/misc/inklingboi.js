@@ -1,5 +1,5 @@
 import CoopCommand from '../../core/entities/coopCommand';
-import STATE from '../../state';
+import STATE from '../../core/state';
 
 
 export default class InklingboiCommand extends CoopCommand {

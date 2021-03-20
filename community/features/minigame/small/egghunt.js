@@ -7,7 +7,7 @@ import ServerHelper from '../../../../core/entities/server/serverHelper';
 import PointsHelper from '../../points/pointsHelper';
 import ItemsHelper from '../../items/itemsHelper';
 
-import STATE from '../../../../state';
+import STATE from '../../../../core/state';
 import MessagesHelper from '../../../../core/entities/messages/messagesHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
 import DropTable from '../../items/droptable';

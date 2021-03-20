@@ -1,6 +1,6 @@
 import DatabaseHelper from "../../../core/entities/databaseHelper";
 import Database from "../../../core/setup/database";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 import ROLES from "../../../core/config/roles.json";
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import ServerHelper from "../../../core/entities/server/serverHelper";

@@ -1,4 +1,4 @@
-import STATE from '../../../state';
+import STATE from '../../state';
 import SERVERS from '../../config/servers.json';
 import Database from '../../setup/database';
 import DatabaseHelper from '../databaseHelper';

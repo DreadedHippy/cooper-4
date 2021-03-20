@@ -1,6 +1,6 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 
 export default function achievementPostedHandler(msg) {
 

@@ -1,4 +1,4 @@
-import STATE from "../../../state";
+import STATE from "../../state";
 
 import DatabaseHelper from "../databaseHelper";
 import Database from "../../setup/database";
@@ -94,8 +94,8 @@ export default class UsersHelper {
     static async addToDatabase(member) {
         const query = {
             name: "add-user",
-            text: "INSERT INTO users(discord_id, join_date, points) VALUES ($1, $2, $3)",
-            values: [member.user.id, member.joinedDate, 0]
+            text: "INSERT INTO users(discord_id, join_date) VALUES ($1, $2)",
+            values: [member.user.id, member.joinedDate]
         };
         return await Database.query(query);
     }
@@ -116,8 +116,7 @@ export default class UsersHelper {
             text: "SELECT * FROM users"
         };
         const result = await Database.query(query);        
-        if (result) users = result.rows;
-        return users;
+        return DatabaseHelper.many(result);
     }
 
     static async updateField(id, field, value) {
@@ -223,5 +222,26 @@ export default class UsersHelper {
             }), 666 * index);
         });
     }
+
+    static async cleanupUsers() {
+        const dbUsers = await this.load();
+        const includedIDs = _.map(dbUsers, "discord_id");
+        
+
+        const membersData = this._cache().map(member => {
+            return {
+                discord_id: member.user.id,
+                join_date: member.joinedTimestamp
+            };
+        });
+
+        const missingItems = membersData.filter(member => {
+            return includedIDs.indexOf(member.discord_id) === -1;
+        });
+
+        missingItems.forEach(item => this.addToDatabase(item.discord_id, item.join_date))
+
+    }
+
 
 }

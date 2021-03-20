@@ -1,5 +1,5 @@
 import Database from "../../../core/setup/database";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 
 const numberEnding = number => (number > 1) ? 's' : '';
 

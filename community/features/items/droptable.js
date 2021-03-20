@@ -1,4 +1,4 @@
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 
 export default class DropTable {
 

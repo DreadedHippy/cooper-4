@@ -1,6 +1,6 @@
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 
 export default class LinkPreviewFilter {
 

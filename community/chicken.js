@@ -6,7 +6,7 @@ import moment from 'moment';
 import TimeHelper from "./features/server/timeHelper";
 import ChannelsHelper from "../core/entities/channels/channelsHelper";
 import ElectionHelper from "./features/hierarchy/election/electionHelper";
-import STATE from "../state";
+import STATE from "../core/state";
 import CooperMorality from "./features/minigame/small/cooperMorality";
 
 

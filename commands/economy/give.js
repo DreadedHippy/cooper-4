@@ -8,7 +8,7 @@ import UsersHelper from '../../core/entities/users/usersHelper';
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
 
-import STATE from '../../state';
+import STATE from '../../core/state';
 
 export default class GiveCommand extends CoopCommand {
 

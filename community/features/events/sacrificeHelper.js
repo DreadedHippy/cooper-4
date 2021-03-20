@@ -7,7 +7,7 @@ import UsersHelper from '../../../core/entities/users/usersHelper';
 import VotingHelper from '../../events/voting/votingHelper';
 import MessagesHelper from '../../../core/entities/messages/messagesHelper';
 
-import STATE from '../../../state';
+import STATE from '../../../core/state';
 
 import Chicken from '../../chicken';
 import CooperMorality from '../minigame/small/cooperMorality';

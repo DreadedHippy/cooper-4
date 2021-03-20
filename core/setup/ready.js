@@ -1,6 +1,6 @@
 import ElectionHelper from "../../community/features/hierarchy/election/electionHelper";
 import AboutHelper from "../../community/features/server/aboutHelper";
-import STATE from "../../state";
+import STATE from "../state";
 import ServerHelper from "../entities/server/serverHelper";
 
 export default async () => { 

@@ -1,7 +1,7 @@
 import ChannelsHelper from '../../../../core/entities/channels/channelsHelper';
 import ServerHelper from '../../../../core/entities/server/serverHelper';
 import UsersHelper from '../../../../core/entities/users/usersHelper';
-import STATE from '../../../../state';
+import STATE from '../../../../core/state';
 
 export default async function memberLeft(member) {
 

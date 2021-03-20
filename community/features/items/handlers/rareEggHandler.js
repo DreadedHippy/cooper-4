@@ -1,5 +1,5 @@
 import ChannelsHelper from "../../../../core/entities/channels/channelsHelper";
-import STATE from "../../../../state";
+import STATE from "../../../../core/state";
 import PointsHelper from "../../points/pointsHelper";
 import ItemsHelper from "../itemsHelper";
 import { EGG_DATA } from '../../minigame/small/egghunt';

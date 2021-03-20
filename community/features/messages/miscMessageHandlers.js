@@ -4,7 +4,7 @@ import UsersHelper from "../../../core/entities/users/usersHelper";
 import PointsHelper from "../points/pointsHelper";
 
 import CHANNELS from "../../../core/config/channels.json";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 
 export default class MiscMessageHandlers {
 

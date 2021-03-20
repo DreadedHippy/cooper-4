@@ -1,6 +1,6 @@
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
-import STATE from '../../state';
+import STATE from '../../core/state';
 
 
 export default class BanCommand extends CoopCommand {

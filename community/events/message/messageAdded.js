@@ -3,7 +3,7 @@ import CHANNELS from "../../../core/config/channels.json";
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 
 import achievementPostedHandler from "../../features/encouragement/achievementPosted";
 import workPostHandler from "../../features/encouragement/workPosted";

@@ -1,6 +1,6 @@
 import CHANNELS from '../../config/channels.json';
 
-import STATE from '../../../state';
+import STATE from '../../state';
 import ServerHelper from '../server/serverHelper';
 import MessagesHelper from '../messages/messagesHelper';
 

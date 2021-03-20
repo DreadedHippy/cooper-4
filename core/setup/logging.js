@@ -1,4 +1,4 @@
-import STATE from "../../state";
+import STATE from "../state";
 import ready from "./ready";
 
 export default () => {

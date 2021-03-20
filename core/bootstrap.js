@@ -9,7 +9,7 @@ import registerLogging from './setup/logging';
 import registerCommunityEvents from '../community/events/eventsManifest';
 
 // Singleton state accessor
-import STATE from '../state';
+import STATE from './state';
 
 export default async function bootstrap() {
     // Globalise the created client (extended Discordjs).

@@ -7,7 +7,7 @@ import ServerHelper from '../../core/entities/server/serverHelper';
 import ItemsHelper from '../../community/features/items/itemsHelper';
 import EggHuntMinigame from '../../community/features/minigame/small/egghunt';
 
-import STATE from '../../state';
+import STATE from '../../core/state';
 
 export default class DropCommand extends CoopCommand {
 

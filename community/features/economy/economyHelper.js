@@ -1,6 +1,6 @@
 import ItemTotalCommand from "../../../commands/economy/itemTotal";
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 import ItemsHelper from "../items/itemsHelper";
 
 export default class EconomyHelper {

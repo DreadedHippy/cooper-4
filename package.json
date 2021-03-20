@@ -4,11 +4,11 @@
   "description": "get cooped with cooper",
   "main": "src/index.js",
   "scripts": {
-    "startBot": "node -r esm ./index.js",
+    "startBot": "node -r esm ./core/index.js",
     "startWeb": "node -r esm ./web/index.js",
     "db": "heroku pg:psql --app cooperchickenbot",
-    "shallowBot": "node -r esm ./shallow.js",
-    "shallowBotDev": "nodemon -r esm ./shallow.js"
+    "shallowBot": "node -r esm ./core/shallow.js",
+    "shallowBotDev": "nodemon -r esm ./core/shallow.js"
   },
   "engines": {
     "node": "12.x",

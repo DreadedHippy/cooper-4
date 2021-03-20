@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import EMOJIS from '../../../../core/config/emojis.json';
 
-import STATE from '../../../../state';
+import STATE from '../../../../core/state';
 
 import ChannelsHelper from '../../../../core/entities/channels/channelsHelper';
 import EventsHelper from '../../events/eventsHelper';

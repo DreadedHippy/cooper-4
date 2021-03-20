@@ -1,5 +1,5 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 
 export default class ReservesHelper {
 

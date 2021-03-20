@@ -1,7 +1,7 @@
 import PointsHelper from '../../community/features/points/pointsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 import ServerHelper from '../../core/entities/server/serverHelper';
-import STATE from '../../state';
+import STATE from '../../core/state';
 
 export default class NegativeLeaderboardCommand extends CoopCommand {
 

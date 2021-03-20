@@ -1,6 +1,6 @@
 import ChannelsHelper from "../../../core/entities/channels/channelsHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
-import STATE from "../../../state";
+import STATE from "../../../core/state";
 import CHANNELS from '../../../core/config/channels.json';
 import KEY_MESSAGES from '../../../core/config/keymessages.json';
 import MessagesHelper from "../../../core/entities/messages/messagesHelper";

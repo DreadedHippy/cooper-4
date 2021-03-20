@@ -31,14 +31,14 @@ export default class ChristmasCommand extends CoopCommand {
 	async run(msg, { user }) {
 		super.run(msg);
 		
-		const eggEmoji = MessagesHelper.emojiText(EMOJIS.CHRISTMAS_EGG);
-		const coopEmoji = MessagesHelper.emojiText(EMOJIS.COOP);
-		const msgText = `You were given a Christmas Egg ${eggEmoji} as a reward,` +
-			` thank you for being part of The Coop! ${coopEmoji}\n` +
-			`Merry Christmas, ${user.username}!`;
+		// const eggEmoji = MessagesHelper.emojiText(EMOJIS.CHRISTMAS_EGG);
+		// const coopEmoji = MessagesHelper.emojiText(EMOJIS.COOP);
+		// const msgText = `You were given a Christmas Egg ${eggEmoji} as a reward,` +
+		// 	` thank you for being part of The Coop! ${coopEmoji}\n` +
+		// 	`Merry Christmas, ${user.username}!`;
 
-		await ItemsHelper.add(user.id, 'CHRISTMAS_EGG', 1)
-		await UsersHelper.directMSG(ServerHelper._coop(), user.id, msgText);
+		// await ItemsHelper.add(user.id, 'CHRISTMAS_EGG', 1)
+		// await UsersHelper.directMSG(ServerHelper._coop(), user.id, msgText);
     }
     
 };
