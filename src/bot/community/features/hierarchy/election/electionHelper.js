@@ -18,18 +18,6 @@ import ItemsHelper from '../../items/itemsHelper';
 import EventsHelper from '../../events/eventsHelper';
 import { baseTickDur } from '../../../events/eventsManifest';                               
 
-// TODO:
-// Vote _once_ for candidate. [DONE - WITH PROBLEMS]
-// Stand for election [DONE - WITH PROBLEMS]
-
-// Inspect candidates list (tio 10)
-// track voting like US election
-// Create election results table 
-// Inspect candidate campaign
-// Election over unix timestamp
-
-// TODO: May need to clean up any non-info/candidates messages leftover.
-
 export default class ElectionHelper {
 
     // Duration of election voting
@@ -49,13 +37,7 @@ export default class ElectionHelper {
         const result = await Database.query(query);
         return result;
     }
-
-    static async clearElection() {
-        // vv same as below but for votes.
-        await this.clearVotes();
-        await this.clearCandidates();
-    }
-
+    
     static async clearVotes() {
         const query = {
             name: "delete-votes",
@@ -65,6 +47,14 @@ export default class ElectionHelper {
         const result = await Database.query(query);
         return result;
     }
+
+    static async clearElection() {
+        // vv same as below but for votes.
+        await this.clearVotes();
+        await this.clearCandidates();
+    }
+
+
 
     static async clearCandidates() {
         const candidates = await this.getAllCandidates();

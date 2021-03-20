@@ -2,6 +2,7 @@ import ChannelsHelper from "../channels/channelsHelper";
 import ServerHelper from "../server/serverHelper";
 import EMOJIS from "../../config/emojis.json";
 import createEmbed from "./embedHelper";
+import { result } from "lodash";
 
 export default class MessagesHelper {
 
@@ -53,8 +54,14 @@ export default class MessagesHelper {
         let withoutSpace = withSpace.replace(/\s\s+/g, ' ');
         return withoutSpace;
     }
+    
     static purifyEmojiIDStr(str) {
-        return str.trim().replace('>', '').replace('<', '');
+        let result = null
+
+        if (str && typeof str === 'string')
+            result = str.trim().replace('>', '').replace('<', '')
+
+        return result;
     }
 
     static strToEmojiID(str) {
