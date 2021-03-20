@@ -53,16 +53,16 @@ export default class MessagesHelper {
         let withoutSpace = withSpace.replace(/\s\s+/g, ' ');
         return withoutSpace;
     }
-    static removeSymbols(str) {
-        return str.replace('>', '').replace('<', '');
+    static purifyEmojiIDStr(str) {
+        return str.trim().replace('>', '').replace('<', '');
     }
 
     static strToEmojiID(str) {
-        return this.removeSymbols(str.trim());
+        return this.purifyEmojiIDStr(str);
     }
     
     static getEmojiIdentifier(msg) {
-        return this.removeSymbols(msg.content.trim());
+        return this.purifyEmojiIDStr(msg.content);
     }
 
     static isOnlyEmojis(text) {

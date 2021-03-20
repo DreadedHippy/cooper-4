@@ -2,8 +2,9 @@ import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import EMOJIS from '../../../bot/core/config/emojis.json';
-import { Message } from 'discord.js';
 import ServerHelper from '../../core/entities/server/serverHelper';
+import EggHuntMinigame from '../../community/features/minigame/small/egghunt';
+import STATE from '../../state';
 
 export default class DropCommand extends CoopCommand {
 
@@ -43,15 +44,23 @@ export default class DropCommand extends CoopCommand {
 				const emojiText = MessagesHelper.emojiText(EMOJIS[itemCode]);
 				const dropMsg = await msg.say(emojiText);
 
+				// High chance of egg breaking if dropped.
+				const eggDrop = EggHuntMinigame.isEgghuntDrop(emojiText);
+				const breakRoll = STATE.CHANCE.bool({ likelihood: 66.6 });
+				if (eggDrop && breakRoll) {
+					// Change the message text to indicate breakage.
+					MessagesHelper.delayEdit(dropMsg, `${msg.author.username} broke ${emojiText} by dropping it, d'oh.`);
 
-				// TODO: If dropping an egg, high chance of breaking due to dropping it.
-				// TODO: If collecting a dropped egg, high chance of breaking due to having been dropped.
+					// Clear the message.
+					MessagesHelper.delayDelete(dropMsg, 4444);
+				}
+
 
 
 				// TODO: Add to statistics.
 	
 				// Make it a temporary message to it gets cleaned up after an hour.
-				ServerHelper.addTempMessage(msg, 60 * 60);
+				ServerHelper.addTempMessage(dropMsg, 60 * 60);
 	
 				// Add indicative and suggestive icons, maybe refactor.
 				MessagesHelper.delayReact(dropMsg, EMOJIS.DROPPED, 333);

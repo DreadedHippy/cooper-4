@@ -64,7 +64,7 @@ export default class SourceCommand extends CoopCommand {
 			// Load the file content.
 			const folder = await fs.readdir(path, "utf8");
 
-			// TODO: Sort by type, folders at top, files at bottom.
+			// Sort by type, folders at top, files at bottom.
 			folder.sort((a, b) => (isFolder(a) === isFolder(b)) ? 0 : isFolder(a) ? -1 : 1);
 
 			return folder;

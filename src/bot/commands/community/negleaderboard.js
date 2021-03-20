@@ -38,7 +38,7 @@ export default class NegativeLeaderboardCommand extends CoopCommand {
 
 			const guild = ServerHelper.getByCode(STATE.CLIENT, 'PROD');
 			
-			// TODO: Form leaderboard text and bring into points helper
+			// Form leaderboard text
 			const rowUsers = await Promise.all(leaderboardRows.map(async (row, index) => {
 				let username = '?';
 				try {

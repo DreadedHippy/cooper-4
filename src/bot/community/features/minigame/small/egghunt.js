@@ -36,12 +36,16 @@ export const EGG_DATA = {
 
 export default class EggHuntMinigame {
     
-    static isEgghuntDrop(reaction) {
-        const eggEmojiNames = _map(_values(EGG_DATA), "emoji");
-        const emojiIdentifier = MessagesHelper.getEmojiIdentifier(reaction.message);
-        const isEgghuntDrop = eggEmojiNames.includes(emojiIdentifier);
-        return isEgghuntDrop;
+    static reactValid(reaction) {
+        return this.isEgghuntDrop(reaction.message.content);
     }
+
+    static isEgghuntDrop(messageStr) {
+        const eggEmojiNames = _map(_values(EGG_DATA), "emoji");
+        const emojiIdentifier = MessagesHelper.purifyEmojiIDStr(messageStr);
+        return eggEmojiNames.includes(emojiIdentifier);
+    }
+
 
     static onReaction(reaction, user) {
         try {

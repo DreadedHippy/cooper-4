@@ -31,8 +31,11 @@ export default class ItemsHelper {
             BombHandler.onReaction(reaction, user);
             DiamondHandler.onReaction(reaction, user);
     
+            				
             // Check if message is dropped item message being picked up.
-            if (this.isPickupable(reaction, user)) this.pickup(reaction, user);
+            if (this.isPickupable(reaction, user)) {
+                this.pickup(reaction, user);
+            }
         }
 
         // Allow Cooper to add average/rare eggs when prompted.
@@ -264,7 +267,7 @@ export default class ItemsHelper {
     // Check if a message has an emoji and is pickupable.
     static isPickupable(reaction, user) {
         // Filter out eggs, since they already have their own handler.
-        if (EggHuntMinigame.isEgghuntDrop(reaction)) return false;
+        if (EggHuntMinigame.reactValid(reaction)) return false;
 
         // Check if message has dropped emoji and by Cooper (official/valid drop).
         const officiallyDropped = ReactionHelper.didUserReactWith(
@@ -273,7 +276,6 @@ export default class ItemsHelper {
             EMOJIS.DROPPED
         );
         if (!officiallyDropped) return false;
-
 
         // Check if they are trying to collect via basket
         if (reaction.emoji.name !== EMOJIS.BASKET) return false;
@@ -321,9 +323,18 @@ export default class ItemsHelper {
                 return MessagesHelper.selfDestruct(reaction.message,
                     `${user.username} you can't pick that up. (${itemCode})`
                 );
+
+            // If collecting a dropped egg, high chance of breaking due to having been dropped.
+            if (EggHuntMinigame.reactValid(reaction)) {
+                // Clear after a while of showing the edited state.
+                MessagesHelper.delayDelete(reaction.message, 10000);
+                return MessagesHelper.delayEdit(reaction.message,
+                    `${user.username} broke ${reaction.message.content}...`
+                );
+            }
             
             // Clear the message to prevent abuse.
-            MessagesHelper.delayDelete(reaction.message, 33);
+            MessagesHelper.delayDelete(reaction.message, 333);
 
             // Add recalculated item ownership to user.
             const addEvent = await ItemsHelper.add(user.id, itemCode, 1);
