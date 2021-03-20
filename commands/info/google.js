@@ -19,7 +19,11 @@ export default class GoogleCommand extends CoopCommand {
 		super.run(msg);
 		
 		// Trim query and encode
-		const searchStr = encodeURIComponent(msg.content.replace('!calc ', ''));
+		const searchStr = encodeURIComponent(
+			msg.content
+				.replace('!google ', '')
+				.replace('!gg ', '')
+		);
 
 		// Generate feedback flash
 		MessagesHelper.selfDestruct(msg, 'https://www.google.com/search?q=' + searchStr);
