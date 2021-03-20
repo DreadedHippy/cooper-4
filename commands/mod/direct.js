@@ -1,10 +1,10 @@
 import CoopCommand from '../../core/entities/coopCommand';
-import ChannelsHelper from '../../core/entities/channels/channelsHelper';
-import ServerHelper from '../../core/entities/server/serverHelper';
-import UsersHelper from '../../core/entities/users/usersHelper';
-import STATE from '../../state';
 
-export default class directCommand extends CoopCommand {
+import UsersHelper from '../../core/entities/users/usersHelper';
+import ServerHelper from '../../core/entities/server/serverHelper';
+
+
+export default class DirectCommand extends CoopCommand {
 
 	constructor(client) {
 		super(client, {
@@ -31,10 +31,12 @@ export default class directCommand extends CoopCommand {
 		});
 	}
 
+	// TODO: Allow commander to use.
 	async run(msg, { target, message }) {
 		super.run(msg);
 
 		try {
+
 			await UsersHelper.directMSG(ServerHelper._coop(), target.id, message);
 		} catch (e) {
 			console.error(e);

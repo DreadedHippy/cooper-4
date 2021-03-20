@@ -3,7 +3,7 @@ import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
 import PointsHelper from "../points/pointsHelper";
 
-import CHANNELS from "../../../../bot/core/config/channels.json";
+import CHANNELS from "../../../core/config/channels.json";
 import STATE from "../../../state";
 
 export default class MiscMessageHandlers {

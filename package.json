@@ -2,13 +2,13 @@
   "name": "cooper",
   "version": "1.0.0",
   "description": "get cooped with cooper",
-  "main": "src/bot/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "startBot": "node -r esm src/bot/index.js",
-    "startWeb": "node -r esm src/web/index.js",
+    "startBot": "node -r esm ./index.js",
+    "startWeb": "node -r esm ./web/index.js",
     "db": "heroku pg:psql --app cooperchickenbot",
-    "shallowBot": "node -r esm src/bot/shallow.js",
-    "shallowBotDev": "nodemon -r esm src/bot/shallow.js"
+    "shallowBot": "node -r esm ./shallow.js",
+    "shallowBotDev": "nodemon -r esm ./shallow.js"
   },
   "engines": {
     "node": "12.x",

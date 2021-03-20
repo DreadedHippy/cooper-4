@@ -6,7 +6,7 @@ import client from './setup/client';
 import registerLogging from './setup/logging';
 
 // Feature/abstract usage.
-import registerCommunityEvents from '../../bot/community/events/eventsManifest';
+import registerCommunityEvents from '../community/events/eventsManifest';
 
 // Singleton state accessor
 import STATE from '../state';

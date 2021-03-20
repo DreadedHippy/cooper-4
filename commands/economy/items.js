@@ -1,4 +1,4 @@
-import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
+import ItemsHelper from '../../community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import EMOJIS from '../../core/config/emojis.json';

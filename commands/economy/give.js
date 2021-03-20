@@ -1,11 +1,14 @@
-import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
+
 import ChannelsHelper from '../../core/entities/channels/channelsHelper';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import ServerHelper from '../../core/entities/server/serverHelper';
 import UsersHelper from '../../core/entities/users/usersHelper';
-import STATE from '../../state';
+
+import ItemsHelper from '../../community/features/items/itemsHelper';
 import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
+
+import STATE from '../../state';
 
 export default class GiveCommand extends CoopCommand {
 

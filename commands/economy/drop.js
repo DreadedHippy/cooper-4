@@ -1,9 +1,12 @@
-import ItemsHelper from '../../../bot/community/features/items/itemsHelper';
 import CoopCommand from '../../core/entities/coopCommand';
+
+import EMOJIS from '../../core/config/emojis.json';
+
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
-import EMOJIS from '../../../bot/core/config/emojis.json';
 import ServerHelper from '../../core/entities/server/serverHelper';
+import ItemsHelper from '../../community/features/items/itemsHelper';
 import EggHuntMinigame from '../../community/features/minigame/small/egghunt';
+
 import STATE from '../../state';
 
 export default class DropCommand extends CoopCommand {

@@ -1,10 +1,8 @@
 import { Client } from 'discord.js-commando';
 import Database from './core/setup/database';
-import STATE from './state';
+import STATE from './src/state';
 import dotenv from 'dotenv';
-import ItemsHelper from './community/features/items/itemsHelper';
-import CraftingHelper from './community/features/skills/crafting/craftingHelper';
-import PointsHelper from './community/features/points/pointsHelper';
+
 
 // v DEV IMPORT AREA v
 // ^ DEV IMPORT AREA ^
