@@ -18,11 +18,9 @@ export default class CalcCommand extends CoopCommand {
 	async run(msg) {
 		super.run(msg);
 		
-		// Trim query and encode.
-		const searchStr = encodeURIComponent(msg.content.replace('!calc ', ''));
 
 		// Generate feedback flash
-		MessagesHelper.selfDestruct(msg, 'https://www.google.com/search?q=' + searchStr);
+		MessagesHelper.selfDestruct(msg, 'should calculate... isoooooo');
     }
     
 };
