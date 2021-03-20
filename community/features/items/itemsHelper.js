@@ -21,6 +21,7 @@ import Chicken from "../../chicken";
 import EmojiHelper from "./emojiHelper";
 import RolesHelper from "../../../core/entities/roles/rolesHelper";
 import PointsHelper from "../points/pointsHelper";
+import STATE from "../../../core/state";
 
 
 export default class ItemsHelper {
@@ -324,8 +325,8 @@ export default class ItemsHelper {
                     `${user.username} you can't pick that up. (${itemCode})`
                 );
 
-            // If collecting a dropped egg, high chance of breaking due to having been dropped.
-            if (EggHuntMinigame.reactValid(reaction)) {
+            // If collecting a dropped egg, high chance (40%) of breaking due to having been dropped.
+            if (EggHuntMinigame.reactValid(reaction) && STATE.CHANCE.bool({ likelihood: 40 })) {
                 // Clear after a while of showing the edited state.
                 MessagesHelper.delayDelete(reaction.message, 10000);
                 return MessagesHelper.delayEdit(reaction.message,

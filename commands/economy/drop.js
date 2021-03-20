@@ -50,7 +50,7 @@ export default class DropCommand extends CoopCommand {
 
 				// High chance of egg breaking if dropped.
 				const eggDrop = EggHuntMinigame.isEgghuntDrop(emojiText);
-				const breakRoll = STATE.CHANCE.bool({ likelihood: 66.6 });
+				const breakRoll = STATE.CHANCE.bool({ likelihood: 45 });
 				if (eggDrop && breakRoll) {
 					// Change the message text to indicate breakage.
 					MessagesHelper.delayEdit(dropMsg, `${msg.author.username} broke ${emojiText} by dropping it, d'oh.`);
@@ -58,8 +58,6 @@ export default class DropCommand extends CoopCommand {
 					// Clear the message.
 					MessagesHelper.delayDelete(dropMsg, 4444);
 				}
-
-
 
 				// TODO: Add to statistics.
 	
