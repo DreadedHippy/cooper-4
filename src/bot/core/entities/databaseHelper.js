@@ -1,3 +1,4 @@
+import Database from "../setup/database";
 
 export default class DatabaseHelper {
 
@@ -13,7 +14,7 @@ export default class DatabaseHelper {
 		return manyResult;
 	}
 
-	static singleQuery(query) {
+	static async singleQuery(query) {
 		const queryResult = await Database.query(query);
 		return DatabaseHelper.single(queryResult);
 	}
