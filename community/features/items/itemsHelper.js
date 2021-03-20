@@ -2,6 +2,8 @@ import MessagesHelper from "../../../core/entities/messages/messagesHelper";
 import Database from "../../../core/setup/database";
 
 import EMOJIS from '../../../core/config/emojis.json';
+import RAW_EMOJIS from '../../../core/config/rawemojis.json';
+
 import DatabaseHelper from "../../../core/entities/databaseHelper";
 
 // Items with reaction usages.
@@ -266,7 +268,7 @@ export default class ItemsHelper {
 
     static isDroppedItemMsg(msg) {
         return ReactionHelper.didUserReactWith(
-            msg, Chicken.getDiscordID(), EMOJIS.DROPPED
+            msg, Chicken.getDiscordID(), RAW_EMOJIS.DROPPED
         );
     }
 

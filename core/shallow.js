@@ -1,8 +1,11 @@
 import { Client } from 'discord.js-commando';
 import Database from './setup/database';
-import STATE from './src/state';
+import STATE from './state';
 import dotenv from 'dotenv';
+import MessagesHelper from './entities/messages/messagesHelper';
 
+import EMOJIS from '../core/config/emojis.json';
+import RAW_EMOJIS from '../core/config/rawemojis.json';
 
 // v DEV IMPORT AREA v
 // ^ DEV IMPORT AREA ^
@@ -24,6 +27,14 @@ const shallowBot = async () => {
             
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
+
+
+            const msg = await MessagesHelper.getByLink('https://discord.com/channels/723660447508725802/821935120570515467/822864659077267506');
+            msg.reactions.cache.map(react => {
+                console.log(react.emoji.name);
+                console.log(react.emoji.name === EMOJIS['DROPPED']);
+                console.log(react.emoji.name === RAW_EMOJIS['DROPPED']);
+            });
 
 
             // See if toxic egg still works on someone with no points -> negative

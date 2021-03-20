@@ -49,9 +49,7 @@ export default class EggHuntMinigame {
 
     static onReaction(reaction, user) {
         try {
-            // Disallow egghunt effects on dropped eggs.
-            // const droppedEmojiQty = ReactionHelper.countTypeCode(reaction.message, EMOJIS.DROPPED);
-            // if (droppedEmojiQty > 0) return false;
+
 
             const isCooperMessage = UsersHelper.isCooperMsg(reaction.message);
             const isEgghuntDrop = this.isEgghuntDrop(reaction);
@@ -69,8 +67,9 @@ export default class EggHuntMinigame {
             // Prevent collection of dropped egg effects (cyclical).
             const wasDropped = ItemsHelper.isDroppedItemMsg(reaction.message);
 
-            // If collectible, collect emoji and wasn't dropped, allow collection.
+            // Disallow egghunt effects on dropped eggs.
             if (isEggCollectible && isBasketEmoji && !wasDropped) 
+                // If collectible, collect emoji and wasn't dropped, allow collection.
                 this.collect(reaction, user);
 
         } catch(e) {
