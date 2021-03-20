@@ -1,6 +1,7 @@
 import CoopCommand from '../../core/entities/coopCommand';
 
 import EMOJIS from '../../core/config/emojis.json';
+import RAW_EMOJIS from '../../core/config/rawemojis.json';
 
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import ServerHelper from '../../core/entities/server/serverHelper';
@@ -66,7 +67,7 @@ export default class DropCommand extends CoopCommand {
 				ServerHelper.addTempMessage(dropMsg, 60 * 60);
 	
 				// Add indicative and suggestive icons, maybe refactor.
-				MessagesHelper.delayReact(dropMsg, EMOJIS.DROPPED, 333);
+				MessagesHelper.delayReact(dropMsg, RAW_EMOJIS.DROPPED, 333);
 				MessagesHelper.delayReact(dropMsg, EMOJIS.BASKET, 666);
 
 				// Add success feedback message. (Could edit instead)
