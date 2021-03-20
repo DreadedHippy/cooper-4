@@ -273,7 +273,7 @@ export default class ItemsHelper {
     // Check if a message has an emoji and is pickupable.
     static isPickupable(reaction, user) {
         // Check if message has dropped emoji and by Cooper (official/valid drop).
-        if (!ReactionHelper.isDroppedItemMsg(reaction.message)) return false;
+        if (!this.isDroppedItemMsg(reaction.message)) return false;
 
         // Check if they are trying to collect via basket
         if (reaction.emoji.name !== EMOJIS.BASKET) return false;
