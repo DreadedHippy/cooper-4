@@ -29,8 +29,8 @@ export default class CalcCommand extends CoopCommand {
 			const result = await fetch(apiEndpoint);
 	
 			if (result) {
-				// const buffer = Buffer.from(result.buffer());
-				const attachment = new MessageAttachment(result.buffer(), 'file.txt')
+				const buffer = Buffer.from(result.buffer());
+				const attachment = new MessageAttachment(buffer(), 'file.txt')
 		
 				// Send the buffer
 				return msg.channel.send(attachment);
