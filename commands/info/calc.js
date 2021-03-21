@@ -45,10 +45,10 @@ export default class CalcCommand extends CoopCommand {
 
 
 				// Send the buffer
-				return msg.channel.send("Test", {
-					attachment: await result.buffer(), 
-					name: 'file.png'
-				});
+				return msg.channel.send("Test", { files: [Buffer.from(result.buffer())] });
+				// Test these two:
+				// return msg.channel.send("Test", { files: [Buffer.from(await result.buffer())] });
+				// return msg.channel.send("Test", { files: [await result.buffer()] });
 			} else {
 				throw new Error('API calc failed.')
 			}
