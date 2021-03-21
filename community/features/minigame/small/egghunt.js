@@ -2,16 +2,15 @@ import { map as _map, values as _values } from 'lodash';
 
 import EMOJIS from '../../../../core/config/emojis.json';
 
-import ChannelsHelper from '../../../../core/entities/channels/channelsHelper';
-import ServerHelper from '../../../../core/entities/server/serverHelper';
-import PointsHelper from '../../points/pointsHelper';
-import ItemsHelper from '../../items/itemsHelper';
-
 import STATE from '../../../../core/state';
-import MessagesHelper from '../../../../core/entities/messages/messagesHelper';
-import UsersHelper from '../../../../core/entities/users/usersHelper';
 import DropTable from '../../items/droptable';
-import ReactionHelper from '../../../../core/entities/messages/reactionHelper';
+
+import UsersHelper from '../../../../core/entities/users/usersHelper';
+import ItemsHelper from '../../items/itemsHelper';
+import PointsHelper from '../../points/pointsHelper';
+import ServerHelper from '../../../../core/entities/server/serverHelper';
+import MessagesHelper from '../../../../core/entities/messages/messagesHelper';
+import ChannelsHelper from '../../../../core/entities/channels/channelsHelper';
 
 
 export const EGG_DATA = {
@@ -49,8 +48,6 @@ export default class EggHuntMinigame {
 
     static onReaction(reaction, user) {
         try {
-
-
             const isCooperMessage = UsersHelper.isCooperMsg(reaction.message);
             const isEgghuntDrop = this.isEgghuntDrop(reaction);
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
@@ -67,10 +64,15 @@ export default class EggHuntMinigame {
             // Prevent collection of dropped egg effects (cyclical).
             const wasDropped = ItemsHelper.isDroppedItemMsg(reaction.message);
 
+            console.log('isEggCollectible', 'isBasketEmoji', '!wasDropped');
+            console.log(isEggCollectible, isBasketEmoji, !wasDropped);
+
             // Disallow egghunt effects on dropped eggs.
-            if (isEggCollectible && isBasketEmoji && !wasDropped) 
+            const egghuntDroppedEgg = isEggCollectible && isBasketEmoji && !wasDropped;
+            if (egghuntDroppedEgg) {
                 // If collectible, collect emoji and wasn't dropped, allow collection.
                 this.collect(reaction, user);
+            }
 
         } catch(e) {
             console.error(e);
