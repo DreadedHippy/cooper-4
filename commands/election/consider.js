@@ -14,18 +14,19 @@ export default class ConsiderCommand extends CoopCommand {
 			description: 'Consider an electoral candate, shows their campaign message and platform.',
 			details: ``,
 			examples: ['consider', '!consider {OPTIONAL:?@user OR "username"?}'],
-			args: [
-				{
-					key: 'candidate',
-					prompt: 'Please provide your written electoral campaign message.',
-					type: 'user',
-					default: null
-				},
-			],
+			// args: [
+			// 	{
+			// 		key: 'candidate',
+			// 		prompt: 'Indicate the user/candidate you want to check',
+			// 		type: 'user',
+			// 		default: null
+			// 	},
+			// ],
 		});
 	}
 
-	async run(msg, { candidate }) {
+	// async run(msg, { candidate }) {
+	async run(msg) {
 		super.run(msg);
 
 		// Check if election is ongoing.
@@ -33,25 +34,24 @@ export default class ConsiderCommand extends CoopCommand {
 
 		if (!isElec) {
 			const nextElecFmt = await ElectionHelper.nextElecFmt();
-			const noElecText = `There is no election currently ongoing. Next is ${nextElecFmt}`;
+			const noElecText = `There is no election currently ongoing. !nextelec: ${nextElecFmt}`;
 			return MessagesHelper.selfDestruct(msg, noElecText);
 		}
 
-		if (candidate) {
-			// Retrieve the campaign message of candidate
-			console.log('should try to access candidate');
-			MessagesHelper.selfDestruct(msg, 'You wanna know bout dis here candidate?');
+		// Otherwise show the list in a self-destruct msg.
+		const candidates = await ElectionHelper.getAllCandidates();
+		const VotesCounts = await ElectionHelper.countVotes();
 
-		} else {
-			// Otherwise show the list in a self-destruct msg.
-			const candidates = await ElectionHelper.getAllCandidates();
-			const VotesCounts = await ElectionHelper.countVotes();
+		const resultsText = candidates.map(u => `${u.candidate_id}:${VotesCounts[u.candidate_id]}`).join('\n');
+		MessagesHelper.selfDestruct(msg, resultsText);
 
-			const resultsText = candidates.map(u => `${u.candidate_id}:${VotesCounts[u.candidate_id]}`).join('\n');
-			MessagesHelper.selfDestruct(msg, resultsText);
-		
-		}
+		// if (candidate) {
+		// 	// Retrieve the campaign message of candidate
+		// 	console.log('should try to access candidate');
+		// 	MessagesHelper.selfDestruct(msg, 'You wanna know bout dis here candidate?');
 
+		// } else {
+		// }	
     }
     
 };
