@@ -8,6 +8,8 @@ import EMOJIS from '../core/config/emojis.json';
 import RAW_EMOJIS from '../core/config/rawemojis.json';
 import ItemsHelper from '../community/features/items/itemsHelper';
 import ServerHelper from './entities/server/serverHelper';
+import Chicken from '../community/chicken';
+import TimeHelper from '../community/features/server/timeHelper';
 
 // v DEV IMPORT AREA v
 // ^ DEV IMPORT AREA ^
@@ -30,8 +32,13 @@ const shallowBot = async () => {
         
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+
+
+
+
+
         // TODO: Take the channel bulkDelete approach instead, may achieve better throttled results.
-        ServerHelper.cleanupTempMessages()
+        // ServerHelper.cleanupTempMessages()
 
 
             // Track member of week by historical_points DB COL and check every week.

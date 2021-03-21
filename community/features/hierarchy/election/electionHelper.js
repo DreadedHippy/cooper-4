@@ -171,6 +171,13 @@ export default class ElectionHelper {
 
     // Provide updates and functionality for an ongoing election.
     static async commentateElectionProgress() {
+        // Check time since last election commentation message (prevent spam).
+        const lastElecMsgSecs = await Chicken.getConfigVal('last_elecupdatemsg_secs')
+        const hour = 360000;
+        const fresh = TimeHelper._secs() < lastElecMsgSecs - (hour * 3);
+        if (fresh) return false;
+
+        // Note: Votes aren't saved in the database... we rely solely on Discord counts.
         const votes = await this.fetchAllVotes();
 
         const votingPeriodSecs = await this.votingPeriodLeftSecs();
@@ -194,9 +201,11 @@ export default class ElectionHelper {
 
         await this.editElectionInfoMsg(electionProgressText);
         
-        ChannelsHelper._codes(['FEED', 'TALK'], electionProgressText);
+        ChannelsHelper._codes(['FEED', 'TALK', 'ACTIONS'], electionProgressText);
 
-        // Note: Votes aren't saved in the database... we rely solely on Discord counts.
+        // Ensure Cooper knows when the last time this was updated (sent).
+        Chicken.setConfig('last_elecupdatemsg_secs', TimeHelper._secs());
+        
     }
 
     static async endElection() {
@@ -270,6 +279,9 @@ export default class ElectionHelper {
             if (!RolesHelper._has(exCommander, 'FORMER_COMMANDER')) {
                 ChannelsHelper._postToFeed(`${exCommander.user.username} is recognised as a former commander and allowed access into the former commanders' secret channel!`);
                 await RolesHelper._add(exCommander.user.id, 'FORMER_COMMANDER');
+
+                // Update last served data for the former commander.
+                // last_served
             }
     
             return true;
@@ -668,7 +680,7 @@ export default class ElectionHelper {
         const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
         const hour = 360000;
 
-        if (diff > hour * 8) {
+        if (diff > hour * 4) {
             const humanRemaining = await this.humanRemainingNext();
             const nextElecReadable = await this.nextElecFmt();
 

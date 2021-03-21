@@ -3,6 +3,7 @@ import SERVERS from '../../config/servers.json';
 import Database from '../../setup/database';
 import DatabaseHelper from '../databaseHelper';
 import MessagesHelper from '../messages/messagesHelper';
+import ChannelsHelper from '../channels/channelsHelper';
 
 export default class ServerHelper {
     static getByID(client, id) {
@@ -41,47 +42,72 @@ export default class ServerHelper {
         return result;
     }
 
+    // TODO: Add types and log that a resource wasn't gathered.
     // TODO: Take the channel bulkDelete approach instead, may achieve better throttled results.
+
+    // Load and delete expired messages sorted by oldest first.
     static async cleanupTempMessages() {
         const query = {
             name: "get-temp-messages",
             text: `SELECT * FROM temp_messages 
                 WHERE expiry_time <= extract(epoch from now())
-                LIMIT 20`
-                // TODO: Add sort by oldest
+                ORDER BY expiry_time ASC
+                LIMIT 40`
         };
         
         const result = await Database.query(query);
         const tempMessages = DatabaseHelper.many(result);
 
 
+        // Build an object of deletions for bulk delete.
+        const deletions = {};
 
-
-
-        // Batch delete won't work due to different channels, use message link approach.
+        // Calculate from message links and batch the messages for bulkDeletion.
         const expiredMsgIDs = tempMessages.map(tempMsg => tempMsg.message_link);
-        expiredMsgIDs.map((expiredID, index) => {
-            // Load message by link and delete.
-            setTimeout(async () => {
-                try {
-                    const message = await MessagesHelper.getByLink(expiredID);
+        expiredMsgIDs.map(expiredMsgLink => {
+            const messageData = MessagesHelper.parselink(expiredMsgLink);
+            if (messageData && messageData.channel) {
+                // Start tracking the channel if it wasn't already.
+                if (typeof deletions[messageData.channel] === 'undefined')
+                    deletions[messageData.channel] = [];
 
-                    // If message could be loaded/wasn't already deleted -> delete.
-                    if (message)
-                        await MessagesHelper.delayDelete(message, index * 2000);
-                    
-                    // Remove record from temp messages table.
-                    this.deleteTempMsgLink(expiredID);
-                        
-                    // TODO: After a very long time, leave to manual so we notice it visually.
-
-                } catch(e) {
-                    console.log('Temp message cleanup failure');
-                    console.error(e);
-                }
-            }, index * 5000);
+                // Track the message which needs deleting too.
+                deletions[messageData.channel].push(messageData.message);
+            }
         });
 
-        // TODO: Add types and log that a resource wasn't gathered.
+        const guildID = ServerHelper._coop().id;
+        const msgUrlBase = `https://discordapp.com/channels/${guildID}`;
+        
+        // Iterate through the deletion data and bulkDelete for each channel.
+        Object.keys(deletions).map((deleteChanKey, index) => {
+            setTimeout(async () => {
+                try {
+                    // Load the channel for its bulkDelete method.
+                    const chan = ChannelsHelper._get(deleteChanKey);
+        
+                    // Get the messages from this deletion channel.
+                    const deletionMessages = deletions[deleteChanKey];
+                    
+                    // Delete messages from discord.
+                    const successfulDeletions = await chan.bulkDelete(deletionMessages);
+                    
+                    // On bulkDelete success, remove from our database.
+                    successfulDeletions.map((item, id) => {
+                        const msgUrl = `${msgUrlBase}/${chan.id}/${id}`;
+
+                        // Remove record from temp messages table.
+                        this.deleteTempMsgLink(msgUrl);
+                    });
+
+                } catch(e) {
+                    // Ignore unknown messages.
+                    if (e.message !== 'Unknown Message') {
+                        console.log('Error cleaning up our temporary messages.');
+                        console.error(e);
+                    }
+                }
+            }, 2222 * index);
+        });
     }
 }

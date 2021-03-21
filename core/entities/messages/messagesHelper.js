@@ -2,7 +2,6 @@ import ChannelsHelper from "../channels/channelsHelper";
 import ServerHelper from "../server/serverHelper";
 import EMOJIS from "../../config/emojis.json";
 import createEmbed from "./embedHelper";
-import { result } from "lodash";
 
 export default class MessagesHelper {
 
