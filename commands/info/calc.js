@@ -1,7 +1,7 @@
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import fetch from 'node-fetch';
-import { MessageAttachment } from 'discord.js';
+import fileType from 'file-type';
 
 export default class CalcCommand extends CoopCommand {
 
@@ -28,12 +28,27 @@ export default class CalcCommand extends CoopCommand {
 		try {		
 			const result = await fetch(apiEndpoint);
 	
-			if (result) {
-				// const buffer = Buffer.from(result.buffer());
-				const attachment = new MessageAttachment(result.arrayBuffer(), 'file.png')
-		
+			if (result) {	
+				// const response = await fetch('https://octodex.github.com/images/Fintechtocat.png');
+				// const buffer = await response.buffer();
+				// const type = await fileType.fromBuffer(buffer)
+
+				// console.log('buffer, buffer, buffer, buffer buffer, buffer, buffer, buffer, buffer, buffer, buffer, buffer');
+				// console.log('buffer, buffer, buffer, buffer buffer, buffer, buffer, buffer, buffer, buffer, buffer, buffer');
+				// console.log('buffer, buffer, buffer, buffer buffer, buffer, buffer, buffer, buffer, buffer, buffer, buffer');
+				// console.log(buffer);
+
+				// console.log('type, type, type, type type, type, type, type, type, type, type, type');
+				// console.log('type, type, type, type type, type, type, type, type, type, type, type');
+				// console.log('type, type, type, type type, type, type, type, type, type, type, type');
+				// console.log(type);
+
+
 				// Send the buffer
-				return msg.channel.send(attachment);
+				return msg.channel.send({
+					attachment: await result.buffer(), 
+					name: 'file.png'
+				});
 			} else {
 				throw new Error('API calc failed.')
 			}
