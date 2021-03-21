@@ -30,7 +30,7 @@ export default class CalcCommand extends CoopCommand {
 	
 			if (result) {
 				// const buffer = Buffer.from(result.buffer());
-				const attachment = new MessageAttachment(result.buffer(), 'file.png')
+				const attachment = new MessageAttachment(result.arrayBuffer(), 'file.png')
 		
 				// Send the buffer
 				return msg.channel.send(attachment);
