@@ -24,22 +24,18 @@ import UsersHelper from "../../core/entities/users/usersHelper";
 import ServerHelper from "../../core/entities/server/serverHelper";
 import InstantFurnaceMinigame from "../features/minigame/small/instantfurnace";
 import ItemsHelper from "../features/items/itemsHelper";
+import ChestPopMinigame from "../features/minigame/small/chestpop";
 
 
 export const baseTickDur = 60 * 25 * 1000;
 
 export default function eventsManifest() {
 
+  // Bring in the new minigame.
+  EventsHelper.runInterval(() => ChestPopMinigame.dev(), (baseTickDur * 2) * 9);
 
-  // Server related house keeping items.
-
-
-
-  // TODO:
   // Check member of the week historical_points, see if needed... like election style
-  // EventsHelper.runInterval(() => PointsHelper.updateMOTW(), baseTickDur * 6);
-
-
+  EventsHelper.runInterval(() => PointsHelper.updateMOTW(), baseTickDur * 5);
 
   // Server related house keeping items.
   EventsHelper.runInterval(() => StatisticsHelper.update(), baseTickDur * 3.5);

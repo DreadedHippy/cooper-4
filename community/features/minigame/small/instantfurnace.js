@@ -92,7 +92,10 @@ export default class InstantFurnaceMinigame {
         try {
             // An instant furnace appears.
             const msg = await ChannelsHelper._postToChannelCode('TALK', '🌋');
-    
+            
+            // TODO: Maybe should be self-destruct too?
+            // baseTickDur / 10
+
             // Hurts the person next to it on spawn.
             // console.log(msg);
 

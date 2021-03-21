@@ -10,6 +10,7 @@ import ItemsHelper from '../community/features/items/itemsHelper';
 import ServerHelper from './entities/server/serverHelper';
 import Chicken from '../community/chicken';
 import TimeHelper from '../community/features/server/timeHelper';
+import UsersHelper from './entities/users/usersHelper';
 
 // v DEV IMPORT AREA v
 // ^ DEV IMPORT AREA ^
@@ -33,27 +34,11 @@ const shallowBot = async () => {
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
 
-
-
-
-
-        // TODO: Take the channel bulkDelete approach instead, may achieve better throttled results.
-        // ServerHelper.cleanupTempMessages()
-
-
-            // Track member of week by historical_points DB COL and check every week.
-                // Schedule weekly growth analysis like election works...
-                // Need at least 2 db alters or chicken.setConfig to track last analysis time.
-
             // Calculate the player with most items.
                 // Reward keys?
 
 
             // For every player over 0 points
-
-
-            
-            // CraftingHelper.craft()
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
 

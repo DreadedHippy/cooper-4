@@ -7,6 +7,8 @@ import ServerHelper from "../../../core/entities/server/serverHelper";
 import RolesHelper from "../../../core/entities/roles/rolesHelper";
 import UsersHelper from "../../../core/entities/users/usersHelper";
 import ItemsHelper from "../items/itemsHelper";
+import Chicken from "../../chicken";
+import TimeHelper from "../server/timeHelper";
 
 
 
@@ -82,6 +84,66 @@ export default class PointsHelper {
                 ORDER BY quantity DESC LIMIT 1`
         };
         return DatabaseHelper.single(await Database.query(query));
+    }
+
+
+    static async getPercChange(userID) {
+        const oldPoints = (await UsersHelper.getField(userID, 'historical_points')) || 0;
+        const qty = await ItemsHelper.getUserItemQty(userID, 'COOP_POINT')
+        const diff = qty - oldPoints;
+        let percChange = (diff / oldPoints) * 100;
+
+        // Prevent the weird unnecessary result that occurs without it.
+        // Defies mathematical/js sense...? Maybe string/int type collision.
+        if (isNaN(percChange)) percChange = 0;
+
+        return {
+            user: userID,
+            points: qty,
+            lastWeekPoints: oldPoints,
+            percChange
+        };
+    }
+
+    static async updateMOTW() {
+        // Check time since last election commentation message (prevent spam).
+        const lastMOTWCheck = parseInt(await Chicken.getConfigVal('last_motwcheck_secs'));
+        const hour = 3600;
+        const week = hour * 24 * 7;
+        const fresh = TimeHelper._secs() < lastMOTWCheck - week;
+        if (fresh) return false;
+
+        // Load player points and historical points.
+        const users = await UsersHelper.load();
+        const percChanges = await Promise.all(users.map(async (user) => {
+            return await this.getPercChange(user.discord_id);
+        }));
+
+        // Sort the points changes by highest (positive) perc change first.
+
+        // Check if that winner has the role already.
+
+        // Give the winner the role.
+
+        // Give the winner the reward.
+
+        // Inform the community.
+
+
+		// Create an item that lets people try this and make it vote-guarded.
+        // Track member of week by historical_points DB COL and check every week.
+        // Schedule weekly growth analysis like election works...
+        // Need at least 2 db alters or chicken.setConfig to track last analysis time.
+        // const memberOfWeekRole = RolesHelper.getRoleByID(ServerHelper._coop(), ROLES.MEMBEROFWEEK.id);
+        // const membersOfWeek = UsersHelper.getMembersByRoleID(ServerHelper._coop(), ROLES.MEMBEROFWEEK.id);
+        
+        // historical_points
+        // all points
+
+        ChannelsHelper._codes(['FEED', 'TALK'], 'MOTW check ran.');
+
+        // Ensure Cooper knows when the last time this was updated (sent).
+        Chicken.setConfig('last_motwcheck_secs', TimeHelper._secs());
     }
 
     static async updateCurrentWinner() {

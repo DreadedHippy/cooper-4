@@ -172,9 +172,9 @@ export default class ElectionHelper {
     // Provide updates and functionality for an ongoing election.
     static async commentateElectionProgress() {
         // Check time since last election commentation message (prevent spam).
-        const lastElecMsgSecs = await Chicken.getConfigVal('last_elecupdatemsg_secs')
-        const hour = 360000;
-        const fresh = TimeHelper._secs() < lastElecMsgSecs - (hour * 3);
+        const lastElecMsgSecs = parseInt(await Chicken.getConfigVal('last_elecupdatemsg_secs'));
+        const hour = 3600;
+        const fresh = TimeHelper._secs() < lastElecMsgSecs + (hour * 3);
         if (fresh) return false;
 
         // Note: Votes aren't saved in the database... we rely solely on Discord counts.
@@ -198,14 +198,13 @@ export default class ElectionHelper {
                     .join('\n')
             }` +
             `\n\n`;
-
-        await this.editElectionInfoMsg(electionProgressText);
         
-        ChannelsHelper._codes(['FEED', 'TALK', 'ACTIONS'], electionProgressText);
-
         // Ensure Cooper knows when the last time this was updated (sent).
         Chicken.setConfig('last_elecupdatemsg_secs', TimeHelper._secs());
-        
+
+        // Inform the community and update records.
+        await this.editElectionInfoMsg(electionProgressText);
+        ChannelsHelper._codes(['FEED', 'TALK', 'ACTIONS'], electionProgressText);
     }
 
     static async endElection() {
@@ -678,7 +677,7 @@ export default class ElectionHelper {
     static async countdownFeedback() {
         const elecMsg = await this.getElectionMsg();
         const diff = parseInt(Date.now()) - elecMsg.editedTimestamp;
-        const hour = 360000;
+        const hour = 3600;
 
         if (diff > hour * 4) {
             const humanRemaining = await this.humanRemainingNext();
@@ -697,6 +696,8 @@ export default class ElectionHelper {
                 `**Next Election:** ${nextElecReadable} (${humanRemaining})`
             );
         }
+
+        // TODO: Post the occassional reminder too...
     }
 
 }
