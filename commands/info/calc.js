@@ -1,7 +1,7 @@
 import CoopCommand from '../../core/entities/coopCommand';
 import MessagesHelper from '../../core/entities/messages/messagesHelper';
 import fetch from 'node-fetch';
-import fileType from 'file-type';
+// import fileType from 'file-type';
 
 export default class CalcCommand extends CoopCommand {
 
