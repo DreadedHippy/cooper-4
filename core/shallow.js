@@ -4,6 +4,7 @@ import STATE from './state';
 import dotenv from 'dotenv';
 
 // v DEV IMPORT AREA v
+import fetch from 'node-fetch';
 // ^ DEV IMPORT AREA ^
 
 // Load ENV variables.
@@ -20,7 +21,7 @@ dotenv.config();
         // MOTW automation.
         // Detect server message/activity velocity increases (as % preferably).
         // Community set and managed variable/value.
-        
+
 const shallowBot = async () => {
     // Instantiate a CommandoJS "client".
     STATE.CLIENT = new Client({ owner: '786671654721683517' });
@@ -34,6 +35,13 @@ const shallowBot = async () => {
         console.log('Shallow bot is ready');
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
+		// const appID = "EL6YXA-LGWAWXQPHE";
+		// const inputQueryStr = encodeURIComponent('5 + 5');
+		// const apiEndpoint = `https://api.wolframalpha.com/v1/simple?appid=${appID}&i=${inputQueryStr}`;
+
+		// const result = await fetch(apiEndpoint);
+
+		// console.log(await result.text());
 
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
