@@ -20,6 +20,7 @@ export default () => {
             ['economy', 'Economy related commands.'],
             ['skills', 'Skills related commands.'],
             ['misc', 'Miscellaneous commands.'],
+            ['points', 'Points commands.'],
             ['mod', 'Moderation commands.'],
             ['info', 'Information commands.']
         ])

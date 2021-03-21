@@ -2,15 +2,6 @@ import { Client } from 'discord.js-commando';
 import Database from './setup/database';
 import STATE from './state';
 import dotenv from 'dotenv';
-import MessagesHelper from './entities/messages/messagesHelper';
-
-import EMOJIS from '../core/config/emojis.json';
-import RAW_EMOJIS from '../core/config/rawemojis.json';
-import ItemsHelper from '../community/features/items/itemsHelper';
-import ServerHelper from './entities/server/serverHelper';
-import Chicken from '../community/chicken';
-import TimeHelper from '../community/features/server/timeHelper';
-import UsersHelper from './entities/users/usersHelper';
 
 // v DEV IMPORT AREA v
 // ^ DEV IMPORT AREA ^
@@ -18,6 +9,18 @@ import UsersHelper from './entities/users/usersHelper';
 // Load ENV variables.
 dotenv.config();
 
+// NOTES AND LONGER TERM CHALLENGES/ISSUES:
+
+    // General/Straightforward
+        // Sacrifice message at the top of channel HALF_DONE
+
+    // Hard, Quick:
+
+    // Harder:
+        // MOTW automation.
+        // Detect server message/activity velocity increases (as % preferably).
+        // Community set and managed variable/value.
+        
 const shallowBot = async () => {
     // Instantiate a CommandoJS "client".
     STATE.CLIENT = new Client({ owner: '786671654721683517' });
@@ -29,29 +32,11 @@ const shallowBot = async () => {
     await STATE.CLIENT.login(process.env.DISCORD_TOKEN);
     STATE.CLIENT.on('ready', async () => {
         console.log('Shallow bot is ready');
-            
-        
         // DEV WORK AND TESTING ON THE LINES BELOW.
 
 
-            // Calculate the player with most items.
-                // Reward keys?
-
-
-            // For every player over 0 points
 
         // DEV WORK AND TESTING ON THE LINES ABOVE.
-
-
-        // NOTES AND LONGER TERM CHALLENGES/ISSUES:
-        
-            // Hard, Quick:
-                // Sacrifice message at the top of channel HALF_DONE
-            
-            // Harder:
-                // Detect server message/activity velocity increases (as % preferably).
-                // Community set and managed variable/value.
-
     });
 };
 
