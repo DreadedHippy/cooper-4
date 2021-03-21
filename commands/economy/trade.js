@@ -129,7 +129,7 @@ export default class TradeCommand extends CoopCommand {
 						
 						// If passed a message reference, handle interaction feedback.
 							// Refactor this hash string into channelsHelper?
-							const actionsLinkStr = `\n\n_View in <#${CHANNELS.ACTIONS.id}>_`;
+							const actionsLinkStr = `\n\n_View in <#${CHANNELS.TRADE.id}>_`;
 		
 							// Post accepted trade to channel and record channel.
 							MessagesHelper.delayEdit(confirmMsg, tradeConfirmStr + actionsLinkStr, 666);

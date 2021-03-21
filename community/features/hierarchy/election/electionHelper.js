@@ -129,11 +129,8 @@ export default class ElectionHelper {
 
     // Setup the intervals needed for detection.
     static setupIntervals() {
-        // Check progess is left within new day due to significance, but add another runner.
-        EventsHelper.runInterval(() => this.shouldTriggerStart(), baseTickDur * 4);
-
         // Processes announcements and election events.
-        EventsHelper.runInterval(() => this.checkProgress(), baseTickDur * 5);
+        EventsHelper.runInterval(() => this.checkProgress(), baseTickDur);
 
         // Ensure leadership and commander based on items so they are treated seriously.
         EventsHelper.runInterval(() => this.ensureItemSeriousness(), baseTickDur * 6);
@@ -352,6 +349,7 @@ export default class ElectionHelper {
     static async checkProgress() {
         // A variable used for tracking election before/after (start).
         let electionStarted = false;
+        
         try {
             // Load the current state of election from database.
             const isElecOn = await this.isElectionOn();
@@ -605,13 +603,6 @@ export default class ElectionHelper {
         if (result.rows) candidates = result.rows;
 
         return candidates;
-    }
-
-    static async shouldTriggerStart() {
-        const isVotingPeriod = await this.isVotingPeriod();
-        const isElecOn = await this.isElectionOn();
-
-        if (isVotingPeriod && !isElecOn) this.checkProgress();
     }
 
 

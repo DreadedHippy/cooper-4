@@ -41,6 +41,7 @@ export default class ServerHelper {
         return result;
     }
 
+    // TODO: Take the channel bulkDelete approach instead, may achieve better throttled results.
     static async cleanupTempMessages() {
         const query = {
             name: "get-temp-messages",
@@ -55,7 +56,6 @@ export default class ServerHelper {
 
 
 
-        // TODO: Take the channel bulkDelete approach instead, may achieve better throttled results.
 
 
         // Batch delete won't work due to different channels, use message link approach.

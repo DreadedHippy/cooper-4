@@ -58,7 +58,6 @@ export default function eventsManifest() {
 
   // Election related
   ElectionHelper.setupIntervals();
-
   
   // Above is unfinished
   EventsHelper.runInterval(() => SuggestionsHelper.check(), baseTickDur * 4);
@@ -68,7 +67,6 @@ export default function eventsManifest() {
 
   // Update trades channel message
   EventsHelper.runInterval(() => TradingHelper.updateChannel(), baseTickDur * 2);
-  EventsHelper.runInterval(() => TradingHelper.updateChannel(), baseTickDur * 6);
 
   // TODO: Incomplete.
   EventsHelper.chanceRunInterval(() => EconomyHelper.circulation(), 45, baseTickDur * 4);

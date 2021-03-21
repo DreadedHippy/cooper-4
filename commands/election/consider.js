@@ -1,5 +1,6 @@
 import ElectionHelper from '../../community/features/hierarchy/election/electionHelper';
 import CoopCommand from '../../core/entities/coopCommand';
+import MessagesHelper from '../../core/entities/messages/messagesHelper';
 
 
 export default class ConsiderCommand extends CoopCommand {
@@ -13,14 +14,14 @@ export default class ConsiderCommand extends CoopCommand {
 			description: 'Consider an electoral candate, shows their campaign message and platform.',
 			details: ``,
 			examples: ['consider', '!consider {OPTIONAL:?@user OR "username"?}'],
-			//args: [
-			//	{
-			//		key: 'candidate',
-			//		prompt: 'Please provide your written electoral campaign message.',
-			//		type: 'user',
-			//		default: null
-			//	},
-			//],
+			args: [
+				{
+					key: 'candidate',
+					prompt: 'Please provide your written electoral campaign message.',
+					type: 'user',
+					default: null
+				},
+			],
 		});
 	}
 
@@ -39,6 +40,7 @@ export default class ConsiderCommand extends CoopCommand {
 		if (candidate) {
 			// Retrieve the campaign message of candidate
 			console.log('should try to access candidate');
+			MessagesHelper.selfDestruct(msg, 'You wanna know bout dis here candidate?');
 
 		} else {
 			// Otherwise show the list in a self-destruct msg.
@@ -46,7 +48,7 @@ export default class ConsiderCommand extends CoopCommand {
 			const VotesCounts = await ElectionHelper.countVotes();
 
 			const resultsText = candidates.map(u => `${u.candidate_id}:${VotesCounts[u.candidate_id]}`).join('\n');
-			await msg.reply(resultsText);
+			MessagesHelper.selfDestruct(msg, resultsText);
 		
 		}
 

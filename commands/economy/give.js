@@ -79,7 +79,7 @@ export default class GiveCommand extends CoopCommand {
 					ElectionHelper.ensureItemSeriousness();
 
 				const addText = `${msg.author.username} gave ${target.username} ${itemCode}x${qty}.`;
-				ChannelsHelper.propagate(msg, addText, 'ACTIONS');
+				ChannelsHelper.propagate(msg, addText, 'FEED');
 			}
 		} catch(e) {
 			console.log('Failed to give item.');

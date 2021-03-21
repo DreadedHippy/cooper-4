@@ -30,23 +30,23 @@ import DropTable from '../../items/droptable';
 const CRATE_DATA = {
     AVERAGE_CRATE: {
         emoji: EMOJIS.AVERAGE_CRATE,
-        maxReward: 2,
-        openingPoints: 1,
-        percHitsReq: .0125,
+        maxReward: 4,
+        openingPoints: 2,
+        percHitsReq: .015,
         rewards: DropTable.TIERS.AVERAGE
     },
     RARE_CRATE: {
         emoji: EMOJIS.RARE_CRATE,
-        maxReward: 4,
-        openingPoints: 2,
-        percHitsReq: .015,
+        maxReward: 5,
+        openingPoints: 5,
+        percHitsReq: .02,
         rewards: DropTable.TIERS.RARE
     },
     LEGENDARY_CRATE: {
         emoji: EMOJIS.LEGENDARY_CRATE,
         maxReward: 3,
-        openingPoints: 3,
-        percHitsReq: .03,
+        openingPoints: 25,
+        percHitsReq: .04,
         rewards: DropTable.TIERS.LEGENDARY
     },
 };
@@ -191,9 +191,9 @@ export default class CratedropMinigame {
             // Post and delete the points reward message feedback.
             const hitterNamesStr = hitterNames.join(', ');
             const tenseStr = hitterNames.length > 1 ? 'were' : 'was';
-            const usersRewardedText = `${hitterNamesStr} ${tenseStr} rewarded ${crate.openingPoints} point(s)`;
+            const usersRewardedText = `${hitterNamesStr} ${tenseStr} rewarded ${crate.openingPoints} points`;
             const rewardTypeText = `${!anyRewardGiven ? 'empty ' : ''}${rarity.replace('_', ' ').toLowerCase()}`;
-            const pointsRewardString = `${usersRewardedText} for attempting to open the ${rewardTypeText}!`;
+            const pointsRewardString = `${usersRewardedText} for opening the ${rewardTypeText}!`;
             ChannelsHelper.propagate(msg, pointsRewardString, 'ACTIONS');
 
             // Remove the opened crate.

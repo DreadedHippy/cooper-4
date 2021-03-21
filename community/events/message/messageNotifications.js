@@ -92,6 +92,7 @@ export default class MessageNotifications {
 
             // Edit the message in about channel.
             MessagesHelper.editByLink(KEY_MESSAGES.latest_messages, notificationString);
+            ChannelsHelper._postToFeed(notificationString, 4444);
         }
     }
 
