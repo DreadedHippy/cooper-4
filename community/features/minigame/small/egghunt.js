@@ -1,6 +1,7 @@
 import { map as _map, values as _values } from 'lodash';
 
 import EMOJIS from '../../../../core/config/emojis.json';
+import RAW_EMOJIS from '../../../../core/config/rawemojis.json';
 
 import STATE from '../../../../core/state';
 import DropTable from '../../items/droptable';
@@ -49,13 +50,13 @@ export default class EggHuntMinigame {
     static onReaction(reaction, user) {
         try {
             const isCooperMessage = UsersHelper.isCooperMsg(reaction.message);
-            const isEgghuntDrop = this.isEgghuntDrop(reaction);
+            const isEgghuntDrop = this.isEgghuntDrop(reaction.message.content);
             const hasEggRarity = this.calculateRarityFromMessage(reaction.message);
             const isEggCollectible = isCooperMessage && isEgghuntDrop && hasEggRarity;
 
             
-            const isBombEmoji = reaction.emoji.name === '💣';
-            const isBasketEmoji = reaction.emoji.name === '🧺';
+            const isBombEmoji = reaction.emoji.name === RAW_EMOJIS.BOMB;
+            const isBasketEmoji = reaction.emoji.name === RAW_EMOJIS.BASKET;
             const isPanEmoji = reaction.emoji.name === EMOJIS.FRYING_PAN;
 
             if (isEggCollectible && isPanEmoji) this.fry(reaction, user);
@@ -241,7 +242,7 @@ export default class EggHuntMinigame {
 
                     // Animate the egg collection.
                     const emojiText = MessagesHelper.emojiText(EGG_DATA[rarity].emoji);
-                    const basketEmojiText = MessagesHelper.emojiText(EMOJIS.BASKET);
+                    const basketEmojiText = MessagesHelper.emojiText(RAW_EMOJIS.BASKET);
                     MessagesHelper.delayEdit(
                         reaction.message, 
                         `${emojiText}${basketEmojiText}💨\n\n${acknowledgementMsgText}`, 

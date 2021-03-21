@@ -1,5 +1,7 @@
 {
     "PICK_AXE": "⛏️",
     "AXE": "🪓",
-    "DROPPED": "⤵️"
+    "DROPPED": "⤵️",
+    "BASKET": "🧺",
+    "BOMB": "💣"
 }
