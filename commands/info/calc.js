@@ -45,7 +45,7 @@ export default class CalcCommand extends CoopCommand {
 
 
 				// Send the buffer
-				return msg.channel.send({
+				return msg.channel.send("Test", {
 					attachment: await result.buffer(), 
 					name: 'file.png'
 				});
